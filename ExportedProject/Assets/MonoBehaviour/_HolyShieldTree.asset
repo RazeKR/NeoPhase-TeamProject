@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2baebf312be09e07327c21c1c8b0f69f, type: 3}
+  m_Name: _HolyShieldTree
+  m_EditorClassIdentifier:
+  startingPowerup: {fileID: 11400000, guid: 1a921d5bcc483d949ae44150983ed33c, type: 2}
+  leftPowerup: {fileID: 11400000, guid: 8c549b21848a9e84db4359d6eec8b626, type: 2}
+  rightPowerup: {fileID: 11400000, guid: eca6528eac2f8b347993303612d0c2f1, type: 2}
+  finalPowerup: {fileID: 11400000, guid: 52d041b6e504c7649bd39787bb85d038, type: 2}

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: AC_Hina
+  m_Controller: {fileID: 9100000, guid: f1f782b9196e4d34fa8c83e97cc98f1c, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: b5054a86a3819ea40af3889630ea1c8c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 656a1a5d556f1ed44bb140c5acebf606, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: eccda35a60ba11b468611d9b6c749d8a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: b9f9b83bf829d544aa1c9812f53bf53d, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 803d4d242bbe81448b695cff9fba72df, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 36d12120280ce9049b8cd31cc91e392f, type: 2}

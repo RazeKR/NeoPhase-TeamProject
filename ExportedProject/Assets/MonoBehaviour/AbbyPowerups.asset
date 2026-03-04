@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 663e5bc1ab9dd3be0bfe407121534277, type: 3}
+  m_Name: AbbyPowerups
+  m_EditorClassIdentifier:
+  powerupPool:
+  - {fileID: 11400000, guid: 2ba852069f768c342b9e77ca748871a0, type: 2}
+  - {fileID: 11400000, guid: 9fa166773e9bffe43b9f032ee7ac5169, type: 2}
+  - {fileID: 11400000, guid: db7fa2c924393a446bcbc40d827f95c0, type: 2}

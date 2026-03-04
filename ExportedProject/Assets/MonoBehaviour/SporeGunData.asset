@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3c17244eb86aacfc233eea44cf3402, type: 3}
+  m_Name: SporeGunData
+  m_EditorClassIdentifier:
+  nameStringID:
+    key: watering_gun_name
+  descriptionStringID:
+    key: watering_gun_description
+  model: {fileID: 1263197541524357, guid: ad5d4e4cbac82d848aaa69aa5149aa43, type: 2}
+  icon: {fileID: 21300000, guid: 9376ad60ff6c81e4990ff70d1fcffa9d, type: 2}
+  gunshotSFX: {fileID: 11400000, guid: c1c9c0c2a1a7d8e4fb0bcf8e4d558c13, type: 2}
+  reloadSFXOverride: {fileID: 0}
+  damage: 18
+  shotCooldown: 0.2
+  maxAmmo: 10
+  reloadDuration: 0.8
+  numOfProjectiles: 1
+  spread: 0
+  knockback: 1
+  projectileSpeed: 15
+  bounce: 0
+  piercing: 0
+  inaccuracy: 10
+  bullet: {fileID: 1796622551036716, guid: 5926380555652804b993a4643673670d, type: 2}
+  isSummonGun: 0
+  disableManualReload: 0
+  gunEvolutions:
+  - {fileID: 11400000, guid: f9e5d5d9def622b46a284e73fb6f88bd, type: 2}
+  - {fileID: 11400000, guid: 2eb4d22d53629c24cb68900d95c755de, type: 2}
+  - {fileID: 11400000, guid: 6f3daf1b8b1f5ab449ced26d3695403c, type: 2}

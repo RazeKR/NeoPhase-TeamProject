@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3c17244eb86aacfc233eea44cf3402, type: 3}
+  m_Name: WindBoltGun
+  m_EditorClassIdentifier:
+  nameStringID:
+    key: crossbow_name
+  descriptionStringID:
+    key: crossbow_description
+  model: {fileID: 1916268040978959, guid: 3f3a5a9ad8e2cb7478cf6341df227e59, type: 2}
+  icon: {fileID: 21300000, guid: 822e60e2e4ef1d247b4d713d39671d64, type: 2}
+  gunshotSFX: {fileID: 11400000, guid: a79e1b13a7e711c4295d24a27ec76bf8, type: 2}
+  reloadSFXOverride: {fileID: 0}
+  damage: 20
+  shotCooldown: 0.15
+  maxAmmo: 1
+  reloadDuration: 1
+  numOfProjectiles: 1
+  spread: 0
+  knockback: 5
+  projectileSpeed: 40
+  bounce: 0
+  piercing: 1
+  inaccuracy: 0
+  bullet: {fileID: 1299101633742151, guid: 464b60f1a34669241889fc050fff8696, type: 2}
+  isSummonGun: 0
+  disableManualReload: 0
+  gunEvolutions:
+  - {fileID: 0}

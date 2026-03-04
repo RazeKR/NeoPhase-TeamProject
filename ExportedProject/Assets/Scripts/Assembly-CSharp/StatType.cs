@@ -1,0 +1,25 @@
+public enum StatType
+{
+	FireRate = 0,
+	ReloadRate = 1,
+	MaxAmmo = 2,
+	BulletDamage = 3,
+	SummonDamage = 4,
+	SummonAttackSpeed = 5,
+	Projectiles = 6,
+	ProjectileSpeed = 7,
+	ProjectileSize = 8,
+	Knockback = 9,
+	MoveSpeed = 10,
+	WalkSpeed = 11,
+	Spread = 12,
+	Bounce = 13,
+	Piercing = 14,
+	MaxHP = 15,
+	CharacterSize = 16,
+	PickupRange = 17,
+	VisionRange = 18,
+	Dodge = 19,
+	DodgeCapMod = 20,
+	Count = 21
+}

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2baebf312be09e07327c21c1c8b0f69f, type: 3}
+  m_Name: _SummonDamageTree
+  m_EditorClassIdentifier:
+  startingPowerup: {fileID: 11400000, guid: e62e959d17d18164e93b2c9c21215bae, type: 2}
+  leftPowerup: {fileID: 11400000, guid: 7ef7fd0b044195749a5dae149d50247a, type: 2}
+  rightPowerup: {fileID: 11400000, guid: bfc01956fde3498469579112d44cbe62, type: 2}
+  finalPowerup: {fileID: 11400000, guid: 4a496869f906ad34c92c87df7da4cf42, type: 2}

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2baebf312be09e07327c21c1c8b0f69f, type: 3}
+  m_Name: _MagicLensTree
+  m_EditorClassIdentifier:
+  startingPowerup: {fileID: 11400000, guid: d6489c1131a087b419fb0ea219cd9cdb, type: 2}
+  leftPowerup: {fileID: 11400000, guid: 0f9b0dd6e890f9449b93dfbcaebe8938, type: 2}
+  rightPowerup: {fileID: 11400000, guid: 8e2ca43941412274b9a35152ed3f28cc, type: 2}
+  finalPowerup: {fileID: 11400000, guid: 3f299b24af51e4a40875844f9583fab1, type: 2}
