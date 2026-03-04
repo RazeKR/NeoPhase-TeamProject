@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2baebf312be09e07327c21c1c8b0f69f, type: 3}
+  m_Name: _FireRateTree
+  m_EditorClassIdentifier:
+  startingPowerup: {fileID: 11400000, guid: 707b02b72fbd47f4b92b29bf257610a3, type: 2}
+  leftPowerup: {fileID: 11400000, guid: cf9f296059a582b428a5a4446c76e8bb, type: 2}
+  rightPowerup: {fileID: 11400000, guid: a7f3b5b17c28ea74ea76bee54b697bf5, type: 2}
+  finalPowerup: {fileID: 11400000, guid: 768012f0cbb1b174d81ca1af8d6ab78c, type: 2}

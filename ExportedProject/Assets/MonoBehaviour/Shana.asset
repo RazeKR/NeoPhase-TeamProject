@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6530dee5161bde89a41ad2d8eedfd278, type: 3}
+  m_Name: Shana
+  m_EditorClassIdentifier:
+  nameStringID:
+    key: shana_name
+  descriptionStringID:
+    key: shana_description
+  animController: {fileID: 22100000, guid: b9ee86b2dc7418245b8923ec5ae009cd, type: 2}
+  uiAnimController: {fileID: 22100000, guid: 720a0fab1d085364aa2e27380962c618, type: 2}
+  portrait: {fileID: 21300000, guid: 0382d9e125b4c59429b1b6651bf3b722, type: 2}
+  icon: {fileID: 21300000, guid: 1bae861fc59d5844c8af4f4a4a01b3cb, type: 2}
+  startHP: 4
+  passivePrefab: {fileID: 1915985067037010, guid: 2b46c4a15e4e06c458b66a95801e0710, type: 2}
+  exclusivePowerups: {fileID: 11400000, guid: 0fde0fe62b70f1f4b835c4eb6ab2df30, type: 2}

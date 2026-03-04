@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e3c17244eb86aacfc233eea44cf3402, type: 3}
+  m_Name: SwordOfDeathGun
+  m_EditorClassIdentifier:
+  nameStringID:
+    key: revolver_name
+  descriptionStringID:
+    key: revolver_description
+  model: {fileID: 1645588532741649, guid: d26fb98a999659c4e897a8d3dc435370, type: 2}
+  icon: {fileID: 21300000, guid: e5c300c8fb40ad74fb8f12620853b739, type: 2}
+  gunshotSFX: {fileID: 11400000, guid: b8123a4d20883704d8a748731cda7bc3, type: 2}
+  reloadSFXOverride: {fileID: 11400000, guid: 9276e71f3e8b20744b1efb42eb081590, type: 2}
+  damage: 20
+  shotCooldown: 0.25
+  maxAmmo: 8
+  reloadDuration: 1
+  numOfProjectiles: 1
+  spread: 0
+  knockback: 2
+  projectileSpeed: 20
+  bounce: 0
+  piercing: 999
+  inaccuracy: 10
+  bullet: {fileID: 1082504995263000, guid: 0f90b669a18229a4eb4ce7f7808421f5, type: 2}
+  isSummonGun: 0
+  disableManualReload: 1
+  gunEvolutions:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}

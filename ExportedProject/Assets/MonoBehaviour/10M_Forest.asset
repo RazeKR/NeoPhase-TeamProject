@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5699205e2c2d12d05cf877893343b0c4, type: 3}
+  m_Name: 10M_Forest
+  m_EditorClassIdentifier:
+  nameStringID:
+    key: quickplay_mode_name
+  descriptionStringID:
+    key: quickplay_mode_description
+  mapPrefab: {fileID: 1066421431856519, guid: df30cd81011f3af4cb10d822e54919fa, type: 2}
+  achievementsDisabled: 1
+  darknessDisabled: 0
+  runesDisabled: 0
+  numPowerupsRepeat: 1
+  timeLimit: 600
+  spawnSessions:
+  - monsterPrefab: {fileID: 1219588859638415, guid: 5782fa5b79ee6d3458b756cfef39bff2, type: 2}
+    HP: 24
+    maximum: 20
+    numPerSpawn: 4
+    spawnCooldown: 3
+    startTime: 0
+    duration: 60
+    isElite: 1
+  - monsterPrefab: {fileID: 1219588859638415, guid: 5782fa5b79ee6d3458b756cfef39bff2, type: 2}
+    HP: 24
+    maximum: 50
+    numPerSpawn: 10
+    spawnCooldown: 4
+    startTime: 60
+    duration: 60
+    isElite: 0
+  - monsterPrefab: {fileID: 1535342064439604, guid: 91853446e3259d845a1591761fcd193d, type: 2}
+    HP: 30
+    maximum: 2
+    numPerSpawn: 1
+    spawnCooldown: 4
+    startTime: 60
+    duration: 60
+    isElite: 0
+  - monsterPrefab: {fileID: 1219588859638415, guid: 5782fa5b79ee6d3458b756cfef39bff2, type: 2}
+    HP: 30
+    maximum: 200
+    numPerSpawn: 7
+    spawnCooldown: 2
+    startTime: 120
+    duration: 240
+    isElite: 0
+  - monsterPrefab: {fileID: 1535342064439604, guid: 91853446e3259d845a1591761fcd193d, type: 2}
+    HP: 30
+    maximum: 10
+    numPerSpawn: 2
+    spawnCooldown: 5
+    startTime: 120
+    duration: 240
+    isElite: 0
+  - monsterPrefab: {fileID: 1757376134392010, guid: c9495ed42f0a651459b1258d5dbe9cde, type: 2}
+    HP: 1000
+    maximum: 1
+    numPerSpawn: 1
+    spawnCooldown: 2
+    startTime: 180
+    duration: 1
+    isElite: 1
+  - monsterPrefab: {fileID: 1219588859638415, guid: 5782fa5b79ee6d3458b756cfef39bff2, type: 2}
+    HP: 60
+    maximum: 400
+    numPerSpawn: 12
+    spawnCooldown: 2
+    startTime: 360
+    duration: 120
+    isElite: 0
+  - monsterPrefab: {fileID: 1858319500521506, guid: c2288a6b7dc282f4986a3d6bde0b07e9, type: 2}
+    HP: 400
+    maximum: 2
+    numPerSpawn: 2
+    spawnCooldown: 10
+    startTime: 360
+    duration: 120
+    isElite: 0
+  - monsterPrefab: {fileID: 1535342064439604, guid: 91853446e3259d845a1591761fcd193d, type: 2}
+    HP: 60
+    maximum: 1
+    numPerSpawn: 1
+    spawnCooldown: 1
+    startTime: 420
+    duration: 120
+    isElite: 0
+  - monsterPrefab: {fileID: 1219588859638415, guid: 5782fa5b79ee6d3458b756cfef39bff2, type: 2}
+    HP: 100
+    maximum: 500
+    numPerSpawn: 20
+    spawnCooldown: 1
+    startTime: 480
+    duration: 119
+    isElite: 0
+  bossSpawns:
+  - maxHP: 2500
+    bossPrefab: {fileID: 1905688239495684, guid: 4c35f3fe00f399443b0d210e758b70b2, type: 2}
+    timeToSpawn: 300
+    spawnPosition: {x: -15, y: 0, z: 0}
+    dontSpawnArena: 0
+    killAllOnSpawn: 0
+  endless: 0
+  endlessLoopTime: 0
+  endlessSpawnSessions: []
+  endlessBossSpawn: []

@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 642d99240aa21877d188b774444184e8, type: 3}
+  m_Name: D7_SmallEnemySpeedUp
+  m_EditorClassIdentifier:
+  descriptionStringID:
+    key: difficulty_level_7
+  additionalSpeedPercent: 0.15

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c56087a9b0b2505a5bd49df5dfc34071, type: 3}
+  m_Name: Energized_SFX
+  m_EditorClassIdentifier:
+  clips:
+  - {fileID: 8300000, guid: 563b488c5b0257c4eb46f6893f090eb2, type: 3}
+  volume: {x: 0.29314616, y: 0.3492981}
+  useSemitones: 1
+  semitones: {x: 0, y: 5}
+  pitch: {x: 1, y: 1.3348206}
+  playOrder: 0
+  playIndex: 0

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2baebf312be09e07327c21c1c8b0f69f, type: 3}
+  m_Name: _MoveSpeedTree
+  m_EditorClassIdentifier:
+  startingPowerup: {fileID: 11400000, guid: b18e9c59f874cda46af407d4096fa3b2, type: 2}
+  leftPowerup: {fileID: 11400000, guid: 663cb85e6b84f99499dd459004fca623, type: 2}
+  rightPowerup: {fileID: 11400000, guid: 98dfee3ba46c62941b9dce70c04835af, type: 2}
+  finalPowerup: {fileID: 11400000, guid: 3fca5328b5c77e54491b0377bd20acd1, type: 2}

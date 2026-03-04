@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2baebf312be09e07327c21c1c8b0f69f, type: 3}
+  m_Name: _DodgeTree
+  m_EditorClassIdentifier:
+  startingPowerup: {fileID: 11400000, guid: ca4c3f4cafe5bdf4db8338de0e2500f8, type: 2}
+  leftPowerup: {fileID: 11400000, guid: 97dfdd4deebe40d43946b44d2f45345c, type: 2}
+  rightPowerup: {fileID: 11400000, guid: db5d112a17b35d04fa6ea6ae470a0a52, type: 2}
+  finalPowerup: {fileID: 11400000, guid: 57070117fcf2cbb45894b92c08079db3, type: 2}
