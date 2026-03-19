@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eafe04373dd89ca40be3b65cb58e58f3, type: 3}
+  m_Name: PlayerDataSO_Hastur
+  m_EditorClassIdentifier: 
+  _characterName: "\uD558\uC2A4\uD130"
+  _description: "\uC8FC\uAE30\uC801\uC73C\uB85C \uC801\uC5D0\uAC8C 30\uB370\uBBF8\uC9C0\uB97C
+    \uC8FC\uB294 \uCD09\uC218\uB97C \uC18C\uD658\uD569\uB2C8\uB2E4."
+  _characterPortrait: {fileID: 21300000, guid: ccc3084cc10ce324e8397c0a855720f4, type: 3}
+  _maxHealth: 100
+  _maxMana: 20
+  _defaultDamage: 10
+  _attackSpeed: 2
+  _healthRegen: 2.5
+  _manaRegen: 2
+  _moveSpeed: 5
+  _expMultiplier: 1
+  _prefab: {fileID: 5717717816164410344, guid: d4447a631e0a30c48a0aba016693818b, type: 3}
