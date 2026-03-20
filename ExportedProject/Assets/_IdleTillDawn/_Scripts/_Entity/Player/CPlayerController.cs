@@ -1,5 +1,14 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// 게임 저장 시 데이터를 담고 있는 임시 클래스, 추후에 병합 시 삭제
+/// </summary>
+public class PlayerSavedData
+{
+    public bool isNewGame;
+    public float savedCurrentHealth;
+}
+
 [RequireComponent(typeof(CPlayerInputHandler))]
 public class CPlayerController : CEntityBase
 {
@@ -18,11 +27,6 @@ public class CPlayerController : CEntityBase
     [Header("애니메이터 파라미터")]
     [SerializeField] private string _paramSpeed = "aSpeed";
 
-    [Header("적 탐지 설정")]
-    [SerializeField] private float _scanRadius = 10f;
-    [SerializeField] private LayerMask _enemyLayer;
-    [SerializeField] private float _scanInterval = 0.2f;
-
     [Header("공격 기본 설정")]
     [SerializeField] private float _defaultAttackRange = 1.5f;
     #endregion
@@ -35,9 +39,6 @@ public class CPlayerController : CEntityBase
     private float _lastInputTime = 0f;
 
     private int _hashSpeed;
-
-    private Transform _currentTarget;
-    private float _scanTimer = 0f;
     #endregion
 
     /// <summary>
@@ -89,10 +90,9 @@ public class CPlayerController : CEntityBase
         }
     }
 
-    private void OnDrawGizmosSelected()
+    protected override void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, _scanRadius);
+        base.OnDrawGizmosSelected();
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, CurrentAttackRange);
@@ -100,18 +100,57 @@ public class CPlayerController : CEntityBase
 
     private void Start()
     {
-        if (_characterData != null)
-        {
-            _moveSpeed = _characterData.MoveSpeed;
-            _currentHealth = _characterData.MaxHealth;
-        }
+        #region 임시, 추후에 삭제
+        PlayerSavedData savedData = new PlayerSavedData();
+        savedData.isNewGame = true;
+        InitPlayer(savedData);
+        #endregion
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+    }
 
-        FindNearestTarget();
+    /// <summary>
+    /// 세이브 데이터와 SO 데이터를 조합해 캐릭터 초기화
+    /// </summary>
+    /// <param name="saveData">세이브 데이터 (나중에 병합 시 맞는 타입으로 변경)</param>
+    public void InitPlayer(PlayerSavedData saveData)
+    {
+        // TODO : 병합 후 추가 내용 작성
+
+        if (_characterData == null) return;
+
+        if (saveData == null)
+        {
+            Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
+            _maxHealth = _characterData.BaseHealth;
+            _moveSpeed = _characterData.BaseMoveSpeed;
+            _currentHealth = _maxHealth;
+            return;
+        }
+
+        float baseHealth = _characterData.BaseHealth;
+        float baseSpeed = _characterData.BaseMoveSpeed;
+
+        // 각종 수치 계산
+
+        // 스탯 적용
+        _maxHealth = baseHealth;
+        _moveSpeed = baseSpeed;
+
+        // 게임 데이터 불러오기
+        if (saveData.isNewGame)
+        {
+            _currentHealth = _maxHealth;
+        }
+        else
+        {
+            _currentHealth = saveData.savedCurrentHealth;
+        }
+
+        Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {_currentHealth}");
     }
 
     /// <summary>
@@ -159,19 +198,19 @@ public class CPlayerController : CEntityBase
     }
 
     /// <summary>
-    /// 자동 이동 메서드
+    /// 자동 이동 로직
     /// </summary>
     private Vector2 AutoMove()
     {
         if (_currentTarget == null)
         {
-            _rb.velocity = Vector2.zero;
             return Vector2.zero;
         }
 
         float distance = Vector2.Distance(transform.position, _currentTarget.position);
         Vector2 dirToTarget = (_currentTarget.position - transform.position).normalized;
 
+        // 타겟과의 거리가 장착한 무기의 사거리 보다 멀면 타겟을 향해 이동
         if (distance > CurrentAttackRange)
         {
             return dirToTarget * _moveSpeed;
@@ -201,50 +240,5 @@ public class CPlayerController : CEntityBase
         {
             Debug.Log($"{index + 1} 번 슬롯 비어있음");
         }
-    }
-
-    /// <summary>
-    /// 캐릭터 좌우 반전
-    /// </summary>
-    /// <param name="velocityX"></param>
-    private void FlipCharacter(float velocityX)
-    {
-        if (velocityX > 0.001f)
-        {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else if (velocityX < -0.001f)
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
-        }
-    }
-
-    /// <summary>
-    /// 가장 가까운 적을 찾는 메서드
-    /// </summary>
-    private void FindNearestTarget()
-    {
-        _scanTimer += Time.fixedDeltaTime;
-
-        if (_scanTimer < _scanInterval) return;
-        _scanTimer = 0f;
-
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _scanRadius, _enemyLayer);
-
-        float shortestDistance = Mathf.Infinity;
-        Transform nearestEnemy = null;
-
-        foreach (Collider2D collider in colliders)
-        {
-            float distance = Vector2.Distance(transform.position, collider.transform.position);
-
-            if (distance < shortestDistance)
-            {
-                shortestDistance = distance;
-                nearestEnemy = collider.transform;
-            }
-        }
-
-        _currentTarget = nearestEnemy;
     }
 }
