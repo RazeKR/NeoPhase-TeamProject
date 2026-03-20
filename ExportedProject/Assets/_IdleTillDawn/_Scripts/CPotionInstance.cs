@@ -5,6 +5,7 @@
 public class CPotionInstance : CItemInstance
 {
     public int _amount;
+    public int _maxAmount = 999;
     public CPotionDataSO _data => _itemData as CPotionDataSO;
 
     // 새로운 포션 생성 호출하는 생성자 함수

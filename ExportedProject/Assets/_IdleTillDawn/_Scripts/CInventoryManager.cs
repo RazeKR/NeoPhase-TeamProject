@@ -12,8 +12,9 @@ using System;
 
 public class CInventoryManager : MonoBehaviour
 {
-    [SerializeField] private Transform _slotParent = null;
-    [SerializeField] private GameObject _slotPrefab = null;
+    [SerializeField] private Transform _slotParent = null;      // 인벤토리 슬롯이 들어갈 부모 객체
+    [SerializeField] private GameObject _slotPrefab = null;     // 인벤토리 슬롯 프리팹
+    [SerializeField] private GameObject _inventoryUI = null;    // 인벤토리 UI (창 On/Off 조절)
 
     public static CInventoryManager Instance {  get; private set; }
 
@@ -78,6 +79,12 @@ public class CInventoryManager : MonoBehaviour
         {
             AutoEquipWeapon();
         }
+
+
+        if (_inventoryUI != null)
+        {
+            _inventoryUI.SetActive(false);
+        }
     }
 
 
@@ -100,7 +107,7 @@ public class CInventoryManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            AddItem("potion_01", 5);
+            AddItem("potion_01", 100);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
@@ -108,8 +115,6 @@ public class CInventoryManager : MonoBehaviour
             ResetInventory();
         }
     }
-
-
 
 
     // 최고 등급 무기 자동 장착 (미장착 방지용, 차후 자동 무기 장착 버튼으로 써도 됨)
@@ -258,6 +263,8 @@ public class CInventoryManager : MonoBehaviour
     }
 
 
+    // 포션 사용
+    // 포션의 스택 반영 (0개가 되면 삭제 처리)
     public void UsePotion(string targetInstanceID)
     {
         Debug.Log("포션사용 임시 로그");
@@ -289,7 +296,7 @@ public class CInventoryManager : MonoBehaviour
 
 
     // 아이템 획득 함수
-    public void AddItem(string itemID, int count = 1)
+    public void AddItem(string itemID, int count = 1, int rank = 0)
     { 
         if (!_itemDataCache.TryGetValue(itemID, out var originSO))
         {
@@ -301,7 +308,11 @@ public class CInventoryManager : MonoBehaviour
         {
             for (int i = 0; i < count; i++)
             {
-                Inventory.Add(new CWeaponInstance(originSO as CWeaponDataSO));
+                CWeaponInstance w = new CWeaponInstance(originSO as CWeaponDataSO);
+                
+                w._rank = rank;
+
+                Inventory.Add(w);
             }
             Debug.Log($"{originSO.ItemName} : {count}개 획득");
         }
@@ -312,7 +323,39 @@ public class CInventoryManager : MonoBehaviour
 
             if (existPotion != null)
             {
+                // 보류
+                /*
+                if (existPotion._amount + count > existPotion._maxAmount)
+                {
+                    // 카운트에서 최대량만큼 차감
+                    // 기존 포션 최대치로 설정
+                    // 차감한 카운트를 최대치로 나누고, 카운트 = 나머지
+                    // 나눗셈 값만큼 Add 반복
+                
+                    count -= (byte)(existPotion._maxAmount - existPotion._amount);
+                
+                    existPotion._amount = existPotion._maxAmount;
+                
+                
+                    int bundle = count / existPotion._maxAmount;
+                    int left = count % existPotion._maxAmount;
+                
+                    for (int i = 0; i < bundle; i++)
+                    {
+                        Inventory.Add(new CPotionInstance(originSO as CPotionDataSO, count));
+                    }
+                    ...
+                }
+                */
+                
                 existPotion._amount += count;
+
+                if (existPotion._amount + count > existPotion._maxAmount)
+                {
+                    existPotion._amount = existPotion._maxAmount;
+                    Debug.Log("포션 최대치 = 999");
+                }
+
                 Debug.Log($"{originSO.ItemName} : {count}개 획득, 수량 : {existPotion._amount}");
             }
             else
@@ -322,26 +365,27 @@ public class CInventoryManager : MonoBehaviour
         }
 
         SaveInventory(Inventory);
-
-        if (_slotParent.gameObject.activeInHierarchy)
-        {
-            Debug.Log("인벤토리가 열려있어 즉시 슬롯UI를 최신화합니다.");
-            RefreshUI();
-        }        
     }
 
 
-    // 인벤토리 리셋 (필요 시 활용)
+    // 인벤토리 리셋 (장착중인 무기는 버리지 않음, 필요 시 활용)
     public void ResetInventory()
     {
-        if (File.Exists(SavePath))
-        {
-            File.Delete(SavePath);
-            Debug.Log("세이브 파일 삭제 완료");
-        }
+        CWeaponInstance backupEquipped = _equippedWeapon;
 
         Inventory.Clear();
-        _equippedWeapon = null;
+
+        if (backupEquipped != null)
+        {
+            Inventory.Add(_equippedWeapon);
+            Debug.Log("장착중인 무기를 제외한 모든 무기 제거");
+        }
+        else
+        {
+            // 이 상황은 생기지 않도록 방어 필요하지만, 일단 예외처리함
+            Debug.Log("장착중인 무기가 없어 인벤토리 완전 초기화");
+        }
+
 
         RefreshUI();
     }
@@ -352,15 +396,11 @@ public class CInventoryManager : MonoBehaviour
     public void RemoveItem(string targetInstanceID)
     {
         var target = Inventory.Find(i => i._instanceID == targetInstanceID);
-
         
-        if (target != null)
+        if (target != null && target == _equippedWeapon)
         {
-            if (target == _equippedWeapon)
-            {
-                _equippedWeapon = null;
-                AutoEquipWeapon();
-            }
+            Debug.Log("장착중인 무기는 버릴 수 없음");
+            return;
         }
 
         Inventory.Remove(target);
@@ -369,6 +409,24 @@ public class CInventoryManager : MonoBehaviour
         SaveInventory(Inventory);
 
         RefreshUI();
+    }
+
+
+    // 인벤토리 창 열고 닫는 기능 (버튼이나 키 할당해서 사용)
+    public void OnOffInventoryUI()
+    {
+        if (_inventoryUI == null) return;
+
+        if (_inventoryUI.activeInHierarchy)
+        {
+            _inventoryUI.SetActive(false);
+        }
+
+        else
+        {
+            _inventoryUI.SetActive(true);
+            RefreshUI();
+        }
     }
 
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /*
@@ -13,10 +14,10 @@ public class CWeaponEquip : MonoBehaviour
 
     [SerializeField] private GameObject _targetObject = null;
 
-    private string _currentInstanceID;
-    private SpriteRenderer _targetSpriteRdr;
-    private CItemDataSO _itemDataSO;
-    
+    private string _currentInstanceID;              // 현재 장착중인 무기의 인스턴스ID
+    private SpriteRenderer _targetSpriteRdr;        // 무기 종류에 따라 바꿔줄 대상 스프라이트
+    private CItemDataSO _itemDataSO;                // 현재 들고 있는 무기 정보SO
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -81,12 +82,8 @@ public class CWeaponEquip : MonoBehaviour
         // 확인용, 차후 인풋으로 변경
         if (Input.GetMouseButtonDown(0))
         {
+            GenerateBullet();
             WeaponRebound();
-        }
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            CInventoryManager.Instance.SwapWeapon("b");
         }
     }
 
@@ -116,5 +113,29 @@ public class CWeaponEquip : MonoBehaviour
         {
             anim.Play("Fire", 0, 0f);
         }
+    }
+
+    // 투사체 파트랑 논의 필요
+    public void GenerateBullet()
+    {
+        GameObject a = Instantiate((_itemDataSO as CWeaponDataSO).BulletPrefab);
+
+        a.transform.position = _targetObject.transform.position + Vector3.right * 0.2f;
+
+        Rigidbody2D rb = a.GetComponent<Rigidbody2D>();
+
+        if (rb != null)
+        {
+            rb.AddForce(a.transform.right * 10, ForceMode2D.Impulse);
+        }
+
+        StartCoroutine(CoBulletLifeTime(a, (_itemDataSO as CWeaponDataSO).LifeTime));
+    }
+
+
+    private IEnumerator CoBulletLifeTime(GameObject a, float time)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(a);
     }
 }
