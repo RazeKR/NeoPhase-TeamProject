@@ -19,4 +19,14 @@ public class CWeaponDataBaseSO : ScriptableObject
     {
         return _weaponDataBase.Find(w => w.ItemId == id);
     }
+
+    public CWeaponDataSO GetWeaponDataByIndex(int index)
+    {
+        return _weaponDataBase[index];
+    }
+
+    public int WeaponDataBaseSOCount()
+    {
+        return _weaponDataBase.Count;
+    }
 }
