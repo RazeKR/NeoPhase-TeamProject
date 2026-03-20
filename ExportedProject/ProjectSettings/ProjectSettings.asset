@@ -177,7 +177,8 @@ PlayerSettings:
   resetResolutionOnWindowResize: 0
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
-  applicationIdentifier: {}
+  applicationIdentifier:
+    Standalone: com.Flanne.MinutesTillDawn
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -780,7 +781,7 @@ PlayerSettings:
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
   apiCompatibilityLevel: 3
-  activeInputHandler: 1
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: bb3ce459-8a28-41a1-a1da-d05291af9a77
   framebufferDepthMemorylessMode: 0
