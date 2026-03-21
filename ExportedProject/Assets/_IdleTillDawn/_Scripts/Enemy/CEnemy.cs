@@ -23,15 +23,21 @@ public class CEnemy : MonoBehaviour
     [Header("스탯 데이터")]
     [SerializeField] private CEnemyStatData _statData; // 기본 스탯 SO (기본 HP, 이동속도 기준값)
 
+    [Header("전투")]
+    [SerializeField] private float _attackDamage   = 5f;  // 플레이어에게 입힐 데미지
+    [SerializeField] private float _attackCooltime = 1f;  // 공격 쿨타임 (초)
+    [SerializeField] private float _attackRange    = 0.8f; // 공격 가능 거리
+
     #endregion
 
     #region Private Variables
 
-    private Rigidbody2D rb;          // 물리 이동 처리를 위해 캐싱한 Rigidbody2D 컴포넌트
-    private Transform   target;      // 추적 대상인 플레이어의 Transform
-    private float       currentHp;   // 현재 체력 (피격 시 감소)
-    private float       maxHp;       // 최대 체력 (스테이지 배율 적용 후 확정값)
-    private bool        isDead;      // 사망 여부 플래그 (중복 사망 이벤트 방지용)
+    private Rigidbody2D rb;               // 물리 이동 처리를 위해 캐싱한 Rigidbody2D 컴포넌트
+    private Transform   target;           // 추적 대상인 플레이어의 Transform
+    private float       currentHp;        // 현재 체력 (피격 시 감소)
+    private float       maxHp;            // 최대 체력 (스테이지 배율 적용 후 확정값)
+    private bool        isDead;           // 사망 여부 플래그 (중복 사망 이벤트 방지용)
+    private float       _lastAttackTime;  // 마지막 공격 시각 (쿨타임 계산)
 
     #endregion
 
@@ -50,8 +56,9 @@ public class CEnemy : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        if (rb != null) rb.velocity = Vector2.zero; // 이전 관성 제거
-        isDead = false;                              // 플래그 초기화
+        if (rb != null) rb.velocity = Vector2.zero;
+        isDead         = false;
+        _lastAttackTime = 0f; // 풀 반환 시 공격 타이머 초기화
     }
 
     /// <summary>
@@ -64,8 +71,33 @@ public class CEnemy : MonoBehaviour
         if (target == null) return;
         if (isDead) return;
 
-        Vector2 dir = ((Vector2)target.position - (Vector2)transform.position).normalized; // 플레이어 방향 단위 벡터
-        rb.velocity = dir * _moveSpeed;
+        float dist = Vector2.Distance(transform.position, target.position);
+        Vector2 dir = ((Vector2)target.position - (Vector2)transform.position).normalized;
+
+        // 공격 사거리 밖이면 추적 이동
+        if (dist > _attackRange)
+        {
+            rb.velocity = dir * _moveSpeed;
+        }
+        else
+        {
+            rb.velocity = Vector2.zero;
+            AttackPlayer();
+        }
+    }
+
+    /// <summary>
+    /// 쿨타임마다 플레이어에게 근접 데미지를 입힌다
+    /// </summary>
+    private void AttackPlayer()
+    {
+        if (Time.time < _lastAttackTime + _attackCooltime) return;
+
+        IDamageable player = target.GetComponent<IDamageable>();
+        if (player == null) return;
+
+        _lastAttackTime = Time.time;
+        player.TakeDamage(_attackDamage);
     }
 
     #endregion
