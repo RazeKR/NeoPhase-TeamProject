@@ -179,7 +179,7 @@ public class CStageManager : MonoBehaviour
 
             case EStageState.StageClear:
                 OnStageClear?.Invoke();
-                CGameManager.Instance.SaveProgress();   // 클리어 즉시 저장
+                // 저장은 CGameManager.OnApplicationQuit에서 처리 — 여기서 호출하지 않음
                 CGameManager.Instance.ProgressToNextStage();
                 break;
         }

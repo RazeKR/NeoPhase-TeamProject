@@ -23,10 +23,7 @@ public class CStageData : ScriptableObject
     [Header("보스 설정")]
     [SerializeField] public GameObject _bossPrefab; // 이 스테이지에서 등장할 보스 프리팹
 
-    [Header("스탯 스케일링 배율")]
-    [SerializeField] public float _hpMultiplier;     // 일반 몬스터 HP 배율
-    [SerializeField] public float _bossHpMultiplier;  // 보스 HP 배율
-    [SerializeField] public float _bossAtkMultiplier; // 보스 공격력 배율
+    // 스탯 배율은 CGameManager.GetStatScale()이 stageIndex 기반으로 자동 계산하므로 여기서 제거
 
     #endregion
 
