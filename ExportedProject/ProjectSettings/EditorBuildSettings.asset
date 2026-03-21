@@ -6,11 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/TitleScreen.unity
-    guid: edc3a11294f515f4bb79656fedc58cbc
+    path: Assets/_IdleTillDawn/_Scenes/Stage1_KSH.unity
+    guid: 2370c581be2290b41b45c02a681c74b6
   - enabled: 1
-    path: Assets/Scenes/Battle.unity
-    guid: ead5dea23cbdacb4c89e8822deb36a20
-  m_configObjects:
-    com.unity.addressableassets: {fileID: 11400000, guid: 01c795df21650cd47974bca0f79fb017,
-      type: 2}
+    path: Assets/_IdleTillDawn/_Scenes/Stage2_KSH.unity
+    guid: 9a2c761be654fa247bf4b5c9f70659fd
+  - enabled: 1
+    path: Assets/_IdleTillDawn/_Scenes/Stage3_KSH.unity
+    guid: 3c809af6da53d7c429fc24e72a1e34c2
+  m_configObjects: {}
