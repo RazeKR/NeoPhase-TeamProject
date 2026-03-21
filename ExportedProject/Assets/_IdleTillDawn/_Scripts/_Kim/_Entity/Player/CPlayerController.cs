@@ -29,32 +29,25 @@ public class CPlayerController : CEntityBase
 
     [Header("공격 기본 설정")]
     [SerializeField] private float _defaultAttackRange = 1.5f;
+    [SerializeField] private float _bulletSpeed = 10f;
     #endregion
 
     #region 내부 변수
-    // CWeaponDataSO, CWeaponInstance
-    public ScriptableObject EquippedWeapon { get; private set; }
-
     private CPlayerInputHandler _inputHandler;
-    private float _lastInputTime = 0f;
-
-    private int _hashSpeed;
+    private float _lastInputTime  = 0f;
+    private float _lastAttackTime = 0f;
+    private int   _hashSpeed;
     #endregion
 
     /// <summary>
-    /// 장착한 무기의 사거리를 넘길 프로퍼티
+    /// 장착 무기의 사거리 — 무기 미장착 시 기본값 반환
     /// </summary>
     public float CurrentAttackRange
     {
         get
         {
-            if (EquippedWeapon != null)
-            {
-                // 무기의 사거리 리턴
-                return 0f;
-            }
-
-            return _defaultAttackRange;
+            CWeaponDataSO data = GetEquippedWeaponData();
+            return data != null ? data.WeaponRange : _defaultAttackRange;
         }
     }
 
@@ -191,10 +184,29 @@ public class CPlayerController : CEntityBase
 
     /// <summary>
     /// 플레이어 공격 메서드
+    /// 가장 가까운 적(_currentTarget)이 사거리 안에 있을 때 무기 발사 속도(FireRate)에 맞춰 투사체를 발사한다
     /// </summary>
     protected override void HandleAttack()
     {
-        // TODO : 발사 이벤트
+        if (_currentTarget == null) return;
+
+        float distance = Vector2.Distance(transform.position, _currentTarget.position);
+        if (distance > CurrentAttackRange) return;
+
+        CWeaponDataSO weaponData = GetEquippedWeaponData();
+        if (weaponData == null || weaponData.BulletPrefab == null) return;
+
+        float fireInterval = 1f / Mathf.Max(0.01f, weaponData.WeaponFireRate);
+        if (Time.time < _lastAttackTime + fireInterval) return;
+
+        _lastAttackTime = Time.time;
+
+        // 타겟 방향으로 투사체 생성
+        Vector2 dir = (_currentTarget.position - transform.position).normalized;
+        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.identity);
+        CBullet bullet = bulletObj.GetComponent<CBullet>();
+        if (bullet != null)
+            bullet.Init(dir, weaponData.WeaponDamage, _bulletSpeed, weaponData.LifeTime);
     }
 
     /// <summary>
@@ -219,6 +231,27 @@ public class CPlayerController : CEntityBase
         {
             return Vector2.zero;
         }
+    }
+
+    /// <summary>
+    /// 플레이어 사망 — 씬 리로드로 현재 스테이지 재시작
+    /// </summary>
+    public override void Die()
+    {
+        CGameManager.Instance.RespawnCurrentStage();
+        base.Die();
+    }
+
+    /// <summary>
+    /// 현재 장착된 무기 SO를 반환한다
+    /// CInventoryManager 미연결 또는 무기 미장착 시 null 반환
+    /// </summary>
+    private CWeaponDataSO GetEquippedWeaponData()
+    {
+        if (CInventoryManager.Instance == null) return null;
+        CWeaponInstance weapon = CInventoryManager.Instance.EquippedWeapon;
+        if (weapon == null) return null;
+        return weapon._itemData as CWeaponDataSO;
     }
 
     /// <summary>
