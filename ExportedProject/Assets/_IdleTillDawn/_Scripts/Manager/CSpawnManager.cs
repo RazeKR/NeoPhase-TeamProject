@@ -193,9 +193,23 @@ public class CSpawnManager : MonoBehaviour
             pools[key].Enqueue(enemy);
     }
 
-    /// <summary>풀 설정 배열에서 무작위로 적 타입을 선택한다</summary>
-    private CEnemyPoolConfig GetRandomConfig() =>
-        _enemyPoolConfigs[UnityEngine.Random.Range(0, _enemyPoolConfigs.Length)];
+    /// <summary>가중치 기반으로 적 타입을 무작위 선택한다</summary>
+    private CEnemyPoolConfig GetRandomConfig()
+    {
+        float total = 0f;
+        foreach (CEnemyPoolConfig config in _enemyPoolConfigs)
+            total += Mathf.Max(0f, config._spawnWeight);
+
+        float roll = UnityEngine.Random.Range(0f, total);
+        float cumulative = 0f;
+        foreach (CEnemyPoolConfig config in _enemyPoolConfigs)
+        {
+            cumulative += Mathf.Max(0f, config._spawnWeight);
+            if (roll < cumulative) return config;
+        }
+
+        return _enemyPoolConfigs[_enemyPoolConfigs.Length - 1];
+    }
 
     /// <summary>플레이어 주변 링(도넛) 영역 내 무작위 스폰 위치를 반환한다</summary>
     private Vector3 GetRandomSpawnPosition()
@@ -229,6 +243,7 @@ public class CSpawnManager : MonoBehaviour
 public class CEnemyPoolConfig
 {
     [SerializeField] public string     _poolKey;
-    [SerializeField] public GameObject _prefab;  // CEnemyBase 컴포넌트 필수 (CBoomerController 등)
+    [SerializeField] public GameObject _prefab;       // CEnemyBase 컴포넌트 필수 (CBoomerController 등)
     [SerializeField] public int        _poolSize;
+    [SerializeField] public float      _spawnWeight = 1f; // 스폰 비율 가중치 (높을수록 자주 등장)
 }

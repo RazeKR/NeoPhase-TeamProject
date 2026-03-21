@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _enemyName: Character Name
   _description: Character Description
-  _baseHealth: 50
+  _baseHealth: 1
   _baseDamage: 10
   _attackCooltime: 1.5
   _moveSpeed: 3

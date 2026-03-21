@@ -64,11 +64,12 @@ public class CBossManager : MonoBehaviour
         // 보스도 동일한 stageIndex 기반으로 자동 계승 스케일링이 적용된다
         currentBoss.Initialize(
             CGameManager.Instance.GetBossHpMultiplier(),
-            CGameManager.Instance.GetBossAtkMultiplier()
+            CGameManager.Instance.GetBossAtkMultiplier(),
+            _player
         );
 
         // 보스 결과 이벤트 구독
-        currentBoss.OnDefeated    += HandleBossDefeated;
+        currentBoss.OnDefeated     += HandleBossDefeated;
         currentBoss.OnPlayerKilled += HandlePlayerDefeated;
     }
 
@@ -88,7 +89,6 @@ public class CBossManager : MonoBehaviour
 
     /// <summary>
     /// 플레이어 사망 이벤트를 수신하여 정리 후 CStageManager로 전달한다
-    /// 보스를 먼저 제거하여 씬 리로드 중 이벤트가 재발행되는 상황을 방지한다
     /// </summary>
     private void HandlePlayerDefeated()
     {
@@ -118,7 +118,7 @@ public class CBossManager : MonoBehaviour
     {
         if (currentBoss == null) return;
 
-        currentBoss.OnDefeated    -= HandleBossDefeated;
+        currentBoss.OnDefeated     -= HandleBossDefeated;
         currentBoss.OnPlayerKilled -= HandlePlayerDefeated;
         Destroy(currentBoss.gameObject);
         currentBoss = null;

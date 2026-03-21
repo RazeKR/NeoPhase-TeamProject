@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1943488007768041461}
   - component: {fileID: 8455791801145939656}
   - component: {fileID: 8507734062405770101}
-  m_Layer: 0
+  - component: {fileID: 7107573775470316582}
+  m_Layer: 6
   m_Name: P_Boomer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +97,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 50
   m_Sprite: {fileID: 21300000, guid: cddff62aff377de40bf1b5d2d52b81f7, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -122,21 +123,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _maxHealth: 0
   _currentHealth: 0
-  _moveSpeed: 5
+  _moveSpeed: 3
   _scanRadius: 10
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 16384
+    m_Bits: 8
   _scanInterval: 0.2
   _entityName: 
   _description: 
   _defaultGravityScale: 0
   _enemyData: {fileID: 11400000, guid: 03e210c9ffa8da34fb949ff0f100a8cb, type: 2}
-  _explosionEffectPrefab: {fileID: 0}
-  _explosionRadius: 0
+  _explosionEffectPrefab: {fileID: 1272640065766086230, guid: d84c12be6b14f9144a323ebcbeae67e4,
+    type: 3}
+  _explosionRadius: 3
   _explosionLayer:
     serializedVersion: 2
-    m_Bits: 24576
+    m_Bits: 72
 --- !u!50 &8507734062405770101
 Rigidbody2D:
   serializedVersion: 4
@@ -164,3 +166,38 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!58 &7107573775470316582
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1394497009925343553}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.015625, y: 0.014637381}
+  serializedVersion: 2
+  m_Radius: 0.45173386

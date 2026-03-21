@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6631375704956956956}
   - component: {fileID: 6584507635242647340}
   - component: {fileID: 4365328048943841700}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WeaponTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 7351052588678962930}
   - component: {fileID: 7185440666562565157}
   - component: {fileID: 2160385164997705626}
-  m_Layer: 14
+  m_Layer: 3
   m_Name: P_Dasher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -205,7 +205,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 781155d94b599b64d96f0293c6ab858b, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -268,9 +268,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22130bdc1f2be0442a69bf0f53864bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 0
-  _currentHealth: 0
-  _moveSpeed: 0
+  _maxHealth: 500
+  _currentHealth: 500
+  _moveSpeed: 3
   _scanRadius: 5
   _targetLayer:
     serializedVersion: 2
@@ -288,6 +288,7 @@ MonoBehaviour:
   _autoModeDelay: 3
   _paramSpeed: aSpeed
   _defaultAttackRange: 1.5
+  _bulletSpeed: 10
 --- !u!70 &2160385164997705626
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -332,7 +333,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1559090879101133906}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WeaponPoint
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
