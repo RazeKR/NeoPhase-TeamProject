@@ -702,7 +702,7 @@ GameObject:
   - component: {fileID: 5303930548651009132}
   - component: {fileID: 5958923231641949175}
   m_Layer: 0
-  m_Name: InventoryManager
+  m_Name: InventoryManagerJHW
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
