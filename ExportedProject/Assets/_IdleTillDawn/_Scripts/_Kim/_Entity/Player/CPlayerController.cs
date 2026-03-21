@@ -201,10 +201,9 @@ public class CPlayerController : CEntityBase
 
         _lastAttackTime = Time.time;
 
-        // 타겟 방향으로 투사체 생성
-        Vector2 dir = (_currentTarget.position - transform.position).normalized;
+        Vector2    dir       = (_currentTarget.position - transform.position).normalized;
         GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.identity);
-        CBullet bullet = bulletObj.GetComponent<CBullet>();
+        CBullet    bullet    = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
             bullet.Init(dir, weaponData.WeaponDamage, _bulletSpeed, weaponData.LifeTime);
     }

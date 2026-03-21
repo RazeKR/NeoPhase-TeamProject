@@ -16,8 +16,9 @@ MonoBehaviour:
   _itemName: Blade
   _type: 0
   _sprite: {fileID: 21300000, guid: e9a8fcc231ada564bab64125aa56fc86, type: 3}
-  _weaponDamage: 20
-  _weaponFireRate: 4
+  _weaponDamage: 100
+  _weaponFireRate: 10
+  _weaponRange: 20
   _bulletPrefab: {fileID: 4376937155057529381, guid: b5810cbe1d2ac234190c0a35ac18699b,
     type: 3}
   _lifeTime: 1

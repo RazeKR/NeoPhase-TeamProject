@@ -122,6 +122,12 @@ public class CGameManager : MonoBehaviour
     /// </summary>
     private void OnApplicationQuit() => SaveProgress(); // 종료 시점 저장
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P))
+            ResetToFirstStage();
+    }
+
     #endregion
 
     #region Public Methods
@@ -153,6 +159,17 @@ public class CGameManager : MonoBehaviour
     /// </summary>
     public void RespawnCurrentStage() =>
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 동일 스테이지 재시작
+
+    /// <summary>
+    /// 스테이지를 1-1로 초기화하고 씬을 리로드한다 (P키 디버그용)
+    /// </summary>
+    public void ResetToFirstStage()
+    {
+        currentStageIndex = 0;
+        PlayerPrefs.SetInt("StageIndex", 0);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
     /// <summary>
     /// 현재 진행 데이터를 PlayerPrefs에 저장한다

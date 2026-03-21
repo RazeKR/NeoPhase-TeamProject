@@ -77,7 +77,8 @@ public class CStageManager : MonoBehaviour
     /// <summary>씬 언로드 시 이벤트 구독을 해제하여 메모리 누수를 방지한다</summary>
     private void OnDestroy()
     {
-        _bossManager.OnBossDefeated  -= HandleBossDefeated;
+        _bossManager.OnBossDefeated   -= HandleBossDefeated;
+        _bossManager.OnPlayerDefeated -= HandlePlayerDefeated;
         _bossManager.OnPlayerDefeated -= HandlePlayerDefeated;
     }
 
@@ -121,7 +122,7 @@ public class CStageManager : MonoBehaviour
     private void SubscribeToBossEvents()
     {
         _bossManager.OnBossDefeated   += HandleBossDefeated;
-        _bossManager.OnPlayerDefeated += HandlePlayerDefeated;
+        _bossManager.OnPlayerDefeated  += HandlePlayerDefeated;
     }
 
     /// <summary>
@@ -135,8 +136,7 @@ public class CStageManager : MonoBehaviour
     /// </summary>
     private void HandlePlayerDefeated()
     {
-        OnPlayerDied?.Invoke();                          // 사망 UI 이벤트
-        CGameManager.Instance.RespawnCurrentStage();     // 씬 리로드 위임
+        OnPlayerDied?.Invoke(); // 사망 UI 이벤트 (리스폰은 CPlayerController.Die()가 처리)
     }
 
     /// <summary>

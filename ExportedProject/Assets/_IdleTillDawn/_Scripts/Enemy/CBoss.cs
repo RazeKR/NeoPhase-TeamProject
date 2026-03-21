@@ -6,7 +6,7 @@ using UnityEngine;
 /// 일반 몬스터(CEnemy)와 달리 공격력 스케일링이 적용되며 플레이어에게 직접 데미지를 입힌다
 /// CBossManager가 생명주기를 관리하고 이 클래스는 순수하게 보스의 행동 로직에만 집중한다
 /// </summary>
-public class CBoss : MonoBehaviour
+public class CBoss : MonoBehaviour, IDamageable
 {
     #region Events
 
@@ -24,20 +24,18 @@ public class CBoss : MonoBehaviour
     [SerializeField] private float _attackRange;   // 공격 가능 거리 (단위: Unity 유닛)
     [SerializeField] private float _attackInterval; // 공격 쿨타임 (초)
 
-    [Header("플레이어 체력 참조")]
-    [SerializeField] private CPlayerHealth _playerHealth; // 플레이어 체력 컴포넌트 (씬에서 자동 탐색)
-
     #endregion
 
     #region Private Variables
 
-    private Rigidbody2D rb;          // 물리 이동 컴포넌트
-    private Transform   target;      // 추적 대상 (플레이어)
-    private float       currentHp;   // 현재 체력
-    private float       maxHp;       // 최대 체력 (배율 적용 후)
-    private float       atk;         // 최종 공격력 (배율 적용 후)
-    private float       attackTimer; // 마지막 공격 이후 경과 시간
-    private bool        isDead;      // 사망 여부 플래그 (중복 사망 방지용)
+    private Rigidbody2D  rb;               // 물리 이동 컴포넌트
+    private Transform    target;           // 추적 대상 (플레이어)
+    private IDamageable  _playerDamageable; // 플레이어 피격 인터페이스
+    private float        currentHp;        // 현재 체력
+    private float        maxHp;            // 최대 체력 (배율 적용 후)
+    private float        atk;              // 최종 공격력 (배율 적용 후)
+    private float        attackTimer;      // 마지막 공격 이후 경과 시간
+    private bool         isDead;           // 사망 여부 플래그 (중복 사망 방지용)
 
     #endregion
 
@@ -78,17 +76,17 @@ public class CBoss : MonoBehaviour
     /// </summary>
     /// <param name="hpMultiplier">보스 체력 배율 (CStageData._bossHpMultiplier)</param>
     /// <param name="atkMultiplier">보스 공격력 배율 (CStageData._bossAtkMultiplier)</param>
-    public void Initialize(float hpMultiplier, float atkMultiplier)
+    /// <param name="playerTransform">플레이어 Transform — CBossManager에서 직접 주입</param>
+    public void Initialize(float hpMultiplier, float atkMultiplier, Transform playerTransform)
     {
         maxHp     = _baseHp  * hpMultiplier;  // 스테이지 배율 적용 체력
         atk       = _baseAtk * atkMultiplier; // 스테이지 배율 적용 공격력
         currentHp = maxHp;
 
-        GameObject playerObj = GameObject.FindWithTag("Player"); // 플레이어 탐색
-        if (playerObj != null)
+        if (playerTransform != null)
         {
-            target        = playerObj.transform;
-            _playerHealth = playerObj.GetComponent<CPlayerHealth>(); // 체력 컴포넌트 자동 연결
+            target             = playerTransform;
+            _playerDamageable  = playerTransform.GetComponent<IDamageable>();
         }
     }
 
@@ -133,11 +131,12 @@ public class CBoss : MonoBehaviour
 
         attackTimer = 0f;
 
-        if (_playerHealth == null) return;
+        _playerDamageable?.TakeDamage(atk);
 
-        _playerHealth.TakeDamage(atk); // 플레이어에게 데미지 전달
-
-        if (_playerHealth.IsDead) OnPlayerKilled?.Invoke(); // 플레이어 사망 시 이벤트 발행
+        // 플레이어 사망 시 이벤트 발행 — CStageManager가 사망 UI 표시 후 리스폰 처리
+        CEntityBase playerEntity = target.GetComponent<CEntityBase>();
+        if (playerEntity != null && playerEntity.CurrentHealth <= 0f)
+            OnPlayerKilled?.Invoke();
     }
 
     /// <summary>
@@ -145,7 +144,7 @@ public class CBoss : MonoBehaviour
     /// 이동을 정지하고 isDead 플래그를 세운 뒤 OnDefeated 이벤트를 발행한다
     /// 실제 오브젝트 파괴는 CBossManager.CleanUpBoss에서 처리한다
     /// </summary>
-    private void Die()
+    public void Die()
     {
         isDead      = true;
         rb.velocity = Vector2.zero;

@@ -18,12 +18,12 @@ MonoBehaviour:
     \uC0C1\uD0DC\uC5D0\uC11C\uB294 \uBB34\uC801 \uC0C1\uD0DC\uAC00 \uB418\uC5B4 \uC801\uC5D0\uAC8C
     100\uC758 \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
   _characterPortrait: {fileID: 21300000, guid: c3cc952831c78b948b7603ae1593f3b7, type: 3}
-  _maxHealth: 50
-  _maxMana: 20
-  _defaultDamage: 10
-  _attackSpeed: 1.5
-  _healthRegen: 2
-  _manaRegen: 5
-  _moveSpeed: 3
-  _expMultiplier: 1
+  _baseHealth: 10000
+  _baseMana: 20
+  _baseDamage: 10
+  _baseAttackSpeed: 1.5
+  _baseHealthRegen: 1
+  _baseManaRegen: 4
+  _baseMoveSpeed: 3
+  _baseExpMultiplier: 1
   _prefab: {fileID: 3993902716402548796, guid: 4a3c73950f13c67498f51cb36d31a8e3, type: 3}
