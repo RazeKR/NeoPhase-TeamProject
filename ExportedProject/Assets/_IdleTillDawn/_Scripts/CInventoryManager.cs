@@ -4,6 +4,8 @@ using UnityEngine;
 using System.Linq;
 using System;
 
+// mvc 패턴 위배
+
 /*
 ㆍCInventorySaveManager
 - 인벤토리 데이터 세이브/로드 담당 매니저 (json 사용)
