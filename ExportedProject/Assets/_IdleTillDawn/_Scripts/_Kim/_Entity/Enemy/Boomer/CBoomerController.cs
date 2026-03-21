@@ -1,12 +1,12 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class CBoomerController : CEnemyBase
 {
     #region 인스펙터
     [Header("자폭 옵션")]
     [SerializeField] private GameObject _explosionEffectPrefab;
-    [SerializeField] private float _explosionRadius;
-    [SerializeField] private LayerMask _explosionLayer;
+    [SerializeField] private float      _explosionRadius;
+    [SerializeField] private LayerMask  _explosionLayer;
     #endregion
 
     #region 내부 변수
@@ -16,35 +16,37 @@ public class CBoomerController : CEnemyBase
     protected override void Start()
     {
         base.Start();
-
         _explosionRadius = _attackRange;
     }
 
     public override void Die()
     {
         Explode();
-
-        base.Die();
+        base.Die(); // OnDied 이벤트 발행 → CSpawnManager가 풀 반환
     }
-    
+
+    public override void ResetForPool()
+    {
+        base.ResetForPool();
+        _hasExploded     = false;
+        _explosionRadius = 0f; // InitEnemy 후 Start에서 _attackRange로 재설정됨
+    }
+
     protected override void ExecuteAttack()
     {
         Explode();
     }
 
     /// <summary>
-    /// 자폭 시 실행
+    /// 자폭 — 범위 내 IDamageable에 데미지 후 풀 반환 위임
     /// </summary>
     private void Explode()
     {
         if (_hasExploded) return;
-
         _hasExploded = true;
 
         if (_explosionEffectPrefab != null)
-        {
             Instantiate(_explosionEffectPrefab, transform.position, Quaternion.identity);
-        }
 
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _explosionRadius, _explosionLayer);
 
@@ -53,12 +55,9 @@ public class CBoomerController : CEnemyBase
             if (col.gameObject == this.gameObject) continue;
 
             IDamageable damageable = col.GetComponent<IDamageable>();
-            if (damageable != null)
-            {
-                damageable.TakeDamage(_attackDamage);
-            }
+            damageable?.TakeDamage(_attackDamage);
         }
 
-        Destroy(gameObject);
+        // Destroy 제거 — Die() → base.Die() → OnDied → CSpawnManager.ReturnToPool 로 처리
     }
 }
