@@ -50,6 +50,14 @@
 *.unitypackage binary
 *.spriteAtlas  binary
 
+# ── Packages ───────────────────────────────────────────────
+Packages/manifest.json       text eol=lf merge=ours
+Packages/packages-lock.json  text eol=lf merge=ours
+
+# ── ProjectSettings ─────────────────────────────────────────
+ProjectSettings/*.asset      merge=unityyamlmerge eol=lf
+ProjectSettings/*.json       text eol=lf
+
 # ── 텍스트 파일 ────────────────────────────────────────────
 *.cs           text eol=lf
 *.js           text eol=lf
