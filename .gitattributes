@@ -1,0 +1,90 @@
+# ============================================================
+# Unity .gitattributes - Smart Merge (UnityYAMLMerge) 설정
+# ============================================================
+
+# 기본 줄바꿈 정규화 (Windows/Mac 혼용 환경 대비)
+* text=auto eol=lf
+
+# ── Unity YAML 파일 (Smart Merge 대상) ──────────────────────
+# merge=unityyamlmerge 를 사용하려면 아래 git config 설정 필요
+# (설정 방법은 TEAM_SETUP.md 참고)
+*.unity        merge=unityyamlmerge eol=lf
+*.prefab       merge=unityyamlmerge eol=lf
+*.asset        merge=unityyamlmerge eol=lf
+*.meta         merge=unityyamlmerge eol=lf
+*.controller   merge=unityyamlmerge eol=lf  
+*.anim         merge=unityyamlmerge eol=lf
+*.playable     merge=unityyamlmerge eol=lf
+*.overrideController merge=unityyamlmerge eol=lf
+*.physicsMaterial2D  merge=unityyamlmerge eol=lf
+*.lighting     merge=unityyamlmerge eol=lf
+*.mat          merge=unityyamlmerge eol=lf
+*.cubemap      merge=unityyamlmerge eol=lf
+*.flare        merge=unityyamlmerge eol=lf
+*.renderTexture merge=unityyamlmerge eol=lf
+*.fontsettings  merge=unityyamlmerge eol=lf
+
+# ── 이진(Binary) 파일 ──────────────────────────────────────
+# diff/merge 하지 않음 - 바이너리 그대로 보존
+*.png          binary
+*.jpg          binary
+*.jpeg         binary
+*.gif          binary
+*.bmp          binary
+*.tga          binary
+*.tif          binary
+*.tiff         binary
+*.psd          binary
+*.exr          binary
+*.hdr          binary
+*.mp3          binary
+*.wav          binary
+*.ogg          binary
+*.aif          binary
+*.aiff         binary
+*.mp4          binary
+*.mov          binary
+*.avi          binary
+*.fbx          binary
+*.obj          binary
+*.blend        binary
+*.dll          binary
+*.so           binary
+*.dylib        binary
+*.exe          binary
+*.apk          binary
+*.aab          binary
+*.zip          binary
+*.unitypackage binary
+*.spriteAtlas  binary
+
+# ── Packages (JSON) ────────────────────────────────────────
+# manifest.json: 버전 관리 대상 (수동 또는 theirs 채택)
+ExportedProject/Packages/manifest.json       text eol=lf merge=ours
+# packages-lock.json: 자동 생성 파일 - conflict 시 theirs 채택
+ExportedProject/Packages/packages-lock.json  text eol=lf merge=ours
+
+# ── ProjectSettings ─────────────────────────────────────────
+ExportedProject/ProjectSettings/*.asset      merge=unityyamlmerge eol=lf
+ExportedProject/ProjectSettings/*.json       text eol=lf
+
+# ── 텍스트 파일 줄바꿈 강제 정규화 ────────────────────────
+*.cs           text eol=lf
+*.js           text eol=lf
+*.ts           text eol=lf
+*.json         text eol=lf
+*.xml          text eol=lf
+*.yaml         text eol=lf
+*.yml          text eol=lf
+*.txt          text eol=lf
+*.md           text eol=lf
+*.shader       text eol=lf
+*.cginc        text eol=lf
+*.hlsl         text eol=lf
+*.glsl         text eol=lf
+*.compute      text eol=lf
+*.inputactions text eol=lf
+*.uss          text eol=lf
+*.uxml         text eol=lf
+*.asmdef       text eol=lf
+*.asmref       text eol=lf
