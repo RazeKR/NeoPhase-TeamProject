@@ -60,7 +60,12 @@ public class CBossManager : MonoBehaviour
         Vector3 spawnPos   = GetRandomSpawnPosition();                              // 플레이어 주변 랜덤 위치 계산
         GameObject bossObj = Instantiate(stageData._bossPrefab, spawnPos, Quaternion.identity);
         currentBoss = bossObj.GetComponent<CBoss>();
-        currentBoss.Initialize(stageData._bossHpMultiplier, stageData._bossAtkMultiplier);
+        // StageData SO 배율 대신 CGameManager 누적 공식으로 계산
+        // 보스도 동일한 stageIndex 기반으로 자동 계승 스케일링이 적용된다
+        currentBoss.Initialize(
+            CGameManager.Instance.GetBossHpMultiplier(),
+            CGameManager.Instance.GetBossAtkMultiplier()
+        );
 
         // 보스 결과 이벤트 구독
         currentBoss.OnDefeated    += HandleBossDefeated;

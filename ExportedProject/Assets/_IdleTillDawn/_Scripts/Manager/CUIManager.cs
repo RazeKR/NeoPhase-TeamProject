@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
 /// 스테이지 진행 UI의 갱신을 전담하는 매니저
@@ -10,8 +11,8 @@ public class CUIManager : MonoBehaviour
 {
     #region Inspector Variables
 
-    [Header("킬 카운트 UI")]
-    [SerializeField] private Text _killCountText; // "처치: 0 / 30" 형식으로 표시
+    [Header("킬 카운트 게이지")]
+    [SerializeField] private CGaugeBar _killGaugeBar; // 킬카운트 진행도를 표시하는 게이지 바 컴포넌트
 
     [Header("보스 도전 버튼")]
     [SerializeField] private Button _bossChallengeButton; // 목표 달성 시 활성화되는 보스 도전 버튼
@@ -87,7 +88,8 @@ public class CUIManager : MonoBehaviour
         _bossChallengeButton.gameObject.SetActive(false); // 보스 버튼 초기 숨김
         _deathPanel.SetActive(false);                     // 사망 패널 초기 숨김
         _clearPanel.SetActive(false);                     // 클리어 패널 초기 숨김
-        UpdateKillCount(0, CGameManager.Instance.CurrentStageData._killGoal); // 초기 킬카운트 표시
+        // 씬 시작 시 게이지를 0으로 즉시 초기화 (Lerp 연출 없이 깔끔하게 시작)
+        _killGaugeBar.SetValueImmediate(0, CGameManager.Instance.CurrentStageData._killGoal);
     }
 
     /// <summary>
@@ -110,13 +112,14 @@ public class CUIManager : MonoBehaviour
         _stageInfoText.text = $"World {newStageData._world} - Stage {newStageData._stage}"; // 즉시 반영
 
     /// <summary>
-    /// 킬카운트 텍스트를 갱신한다
-    /// CStageManager.OnKillCountChanged 이벤트에서 (현재킬, 목표킬)을 전달받아 출력한다
+    /// 킬카운트 게이지를 갱신한다
+    /// CStageManager.OnKillCountChanged 이벤트에서 (현재킬, 목표킬)을 전달받아 CGaugeBar에 위임한다
+    /// CGaugeBar 내부에서 fillAmount Lerp 연출과 텍스트 갱신을 처리하므로 이 메서드는 전달만 담당한다
     /// </summary>
     /// <param name="current">현재 처치 수</param>
     /// <param name="goal">목표 처치 수</param>
     private void UpdateKillCount(int current, int goal) =>
-        _killCountText.text = $"처치: {current} / {goal}"; // 처치 수 실시간 갱신
+        _killGaugeBar.SetValue(current, goal); // CGaugeBar에 위임 — Lerp 연출 포함
 
     /// <summary>
     /// 보스 도전 버튼을 활성화한다

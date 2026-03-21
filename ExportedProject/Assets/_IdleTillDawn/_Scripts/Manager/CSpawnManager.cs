@@ -217,7 +217,9 @@ public class CSpawnManager : MonoBehaviour
 
         CEnemy enemy = pool.Dequeue();
         enemy.transform.position = GetRandomSpawnPosition();
-        enemy.Initialize(_player, currentStageData._hpMultiplier); // 스테이지 배율 주입
+        // StageData SO 배율 대신 CGameManager 누적 공식으로 계산
+        // currentStageIndex가 씬 전환 후에도 유지되므로 스테이지가 오를수록 자동 계승된다
+        enemy.Initialize(_player, CGameManager.Instance.GetEnemyHpMultiplier());
         enemy.gameObject.SetActive(true);
         activeEnemies.Add(enemy);
 
