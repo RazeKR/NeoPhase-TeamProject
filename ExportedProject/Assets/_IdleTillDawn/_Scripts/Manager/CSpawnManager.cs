@@ -167,6 +167,7 @@ public class CSpawnManager : MonoBehaviour
         // 현재 스테이지 기반 스탯 초기화 (1-based)
         int stageNumber = currentStageData.StageIndex + 1;
         enemy.InitEnemy(stageNumber);
+        enemy.SetTarget(_player); // 플레이어 직접 주입 (스캔 없음)
 
         enemy.gameObject.SetActive(true);
         activeEnemies.Add(enemy);

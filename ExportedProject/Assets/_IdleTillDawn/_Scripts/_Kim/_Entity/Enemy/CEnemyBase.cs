@@ -20,12 +20,32 @@ public abstract class CEnemyBase : CEntityBase
     protected float _attackCooltime;
     protected float _attackRange;
 
-    protected float _lastAttackTime = 0f;
+    protected float    _lastAttackTime = 0f;
+    private   Transform _playerTransform;   // 스폰 시 주입된 플레이어 Transform
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
+    }
+
+    /// <summary>
+    /// 스캔 없이 플레이어를 직접 타겟으로 설정 — CSpawnManager가 스폰 시 호출
+    /// </summary>
+    public void SetTarget(Transform player)
+    {
+        _playerTransform = player;
+        _currentTarget   = player;
+    }
+
+    /// <summary>
+    /// 스캔 방식 대신 주입된 플레이어 Transform을 항상 타겟으로 사용
+    /// </summary>
+    protected override void FixedUpdate()
+    {
+        _currentTarget = _playerTransform; // 스캔 없이 직접 추적
+        HandleMovement();
+        HandleAttack();
     }
 
     protected virtual void Start()
