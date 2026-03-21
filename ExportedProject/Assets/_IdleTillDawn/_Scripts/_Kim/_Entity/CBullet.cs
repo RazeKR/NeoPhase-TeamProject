@@ -51,22 +51,12 @@ public class CBullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 구 풀 시스템 적 (CEnemy) — IDamageable 미구현이므로 직접 처리
-        CEnemy pooledEnemy = other.GetComponent<CEnemy>();
-        if (pooledEnemy != null)
-        {
-            pooledEnemy.TakeDamage(_damage);
-            Destroy(gameObject);
-            return;
-        }
+        // 플레이어 자신에게는 피격하지 않음
+        if (other.GetComponent<CPlayerController>() != null) return;
 
-        // Kim 신 시스템 적 (CEnemyBase → IDamageable)
         IDamageable damageable = other.GetComponent<IDamageable>();
         if (damageable != null)
         {
-            // 플레이어 자신에게는 피격하지 않음
-            if (other.GetComponent<CPlayerController>() != null) return;
-
             damageable.TakeDamage(_damage);
             Destroy(gameObject);
         }
