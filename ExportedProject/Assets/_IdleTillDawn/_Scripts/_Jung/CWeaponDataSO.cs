@@ -9,7 +9,7 @@ public class CWeaponDataSO : CItemDataSO
     [SerializeField] private float _weaponRange = 5.0f;
     [SerializeField] private GameObject _bulletPrefab = null;
     [SerializeField] private float _lifeTime = 1.0f;
-    [SerializeField] private float _damagePerRank = 1.5f;
+    [SerializeField] private float _damagePerRank = 1.1f;
 
     public int WeaponDamage => _weaponDamage;           // 무기 데미지 (이후 투사체에서 접근)
     public float WeaponFireRate => _weaponFireRate;     // 무기 연사속도 (이후 플레이어 공격과 연동)

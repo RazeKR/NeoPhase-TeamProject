@@ -4,6 +4,7 @@ public enum EItemType
 {
     Weapon,
     Potion,
+    Scroll
 }
 
 public class CItemDataSO : ScriptableObject
