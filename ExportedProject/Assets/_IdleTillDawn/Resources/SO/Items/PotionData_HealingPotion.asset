@@ -15,7 +15,7 @@ MonoBehaviour:
   _itemId: potion_01
   _itemName: Healing Potion
   _type: 1
-  _sprite: {fileID: 21300000, guid: d7ae807886514644287f5e1d37dd5c14, type: 2}
+  _sprite: {fileID: 21300000, guid: 2c43266e36dcfa34a90c8532cd729709, type: 2}
   _healAmount: 10
   _statUpAmount: 0
   _statType: 0
