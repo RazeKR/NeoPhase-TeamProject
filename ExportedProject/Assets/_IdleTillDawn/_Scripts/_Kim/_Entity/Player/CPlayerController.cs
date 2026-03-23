@@ -47,7 +47,8 @@ public class CPlayerController : CEntityBase
     private bool _isApproaching = false;
     private Transform _lastTarget;
 
-    private bool _isPreventDamage = false;
+    private bool       _isPreventDamage    = false;
+    private Coroutine  _preventCoroutine   = null; // 코루틴 참조 — 중단/재시작 안전 관리용
     private SpriteRenderer _spriteRenderer;
     private WaitForSeconds _blinkWait;
     #endregion
@@ -104,6 +105,12 @@ public class CPlayerController : CEntityBase
 
     private void OnEnable()
     {
+        // 재활성화 시 무적 상태 강제 초기화
+        // 코루틴이 외부 요인(씬 이벤트, OnDisable 등)으로 중단되면
+        // _isPreventDamage = false 가 실행되지 않아 영구 고착될 수 있으므로 여기서 보장한다
+        _isPreventDamage  = false;
+        _preventCoroutine = null;
+
         if (_inputHandler != null)
         {
             _inputHandler.OnSkillInput += ExecuteManualSkill;
@@ -355,10 +362,13 @@ public class CPlayerController : CEntityBase
 
         base.TakeDamage(damage);
 
-        if (CurrentHealth > 0)
-        {
-            StartCoroutine(CoPreventDamage());
-        }
+        if (CurrentHealth <= 0) return; // 사망 처리는 Die()에 위임, 코루틴 불필요
+
+        // 혹시 이전 코루틴이 살아있으면 중단 후 새로 시작
+        // 정상 흐름에서는 _isPreventDamage 가드가 이중 실행을 막지만
+        // 비정상 종료로 참조가 남은 경우를 방어한다
+        if (_preventCoroutine != null) StopCoroutine(_preventCoroutine);
+        _preventCoroutine = StartCoroutine(CoPreventDamage());
     }
 
     private IEnumerator CoPreventDamage()
@@ -380,6 +390,7 @@ public class CPlayerController : CEntityBase
         }
 
         _spriteRenderer.color = originColor;
-        _isPreventDamage = false;
+        _isPreventDamage  = false;
+        _preventCoroutine = null; // 정상 종료 시 참조 해제
     }
 }
