@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 2418774645116342916}
   - component: {fileID: 6496769439980313935}
   - component: {fileID: 1863410779067418201}
+  - component: {fileID: 9184456887053811030}
+  - component: {fileID: 3523627307637977451}
   m_Layer: 6
   m_Name: P_Melee_Type1
   m_TagString: Untagged
@@ -136,9 +138,63 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.01, y: -0.10860366}
   m_Size: {x: 0.54, y: 1.17}
   m_Direction: 0
+--- !u!50 &9184456887053811030
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869001611694354567}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &3523627307637977451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869001611694354567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8080da9d20651644b8631cf757d7d1d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHealth: 0
+  _currentHealth: 0
+  _moveSpeed: 0
+  _scanRadius: 10
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _scanInterval: 0.2
+  _entityName: 
+  _description: 
+  _defaultGravityScale: 0
+  _enemyData: {fileID: 11400000, guid: 7805d754418d9f8449b1257261bd81bd, type: 2}
+  _knockBackForce: 5
+  _knockBackTime: 0.2
+  _knockBackLayer: Enemy_KnockBack

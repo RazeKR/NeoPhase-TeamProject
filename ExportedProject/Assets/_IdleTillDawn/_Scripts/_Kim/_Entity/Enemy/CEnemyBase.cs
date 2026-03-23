@@ -26,6 +26,7 @@ public abstract class CEnemyBase : CEntityBase
     protected float AttackDamage { get; private set; }
     protected float AttackCooltime { get; private set; }
     protected float AttackRange { get; private set; }
+    protected bool IsKnockBacked { get; set; } = false;
     #endregion
 
     protected override void Awake()
@@ -106,6 +107,8 @@ public abstract class CEnemyBase : CEntityBase
 
     protected override void HandleMovement()
     {
+        if (IsKnockBacked) return;
+
         if (CurrentTarget == null)
         {
             Rb.velocity = Vector2.zero;
