@@ -215,5 +215,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _outerRadius: 2
-  _innerRatio: 0.355
-  _intensity: 0.472
+  _innerRatio: 0.3
+  _intensity: 0.3
