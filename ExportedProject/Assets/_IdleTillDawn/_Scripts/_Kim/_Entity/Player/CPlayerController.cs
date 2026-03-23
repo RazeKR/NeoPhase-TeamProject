@@ -255,6 +255,8 @@ public class CPlayerController : CEntityBase
 
         if (Time.time < _lastAttackTime + fireInterval) return;
 
+        CWeaponEquip.Instance.WeaponRebound();
+
         _lastAttackTime = Time.time;
 
         Vector2    dir       = (CurrentTarget.position - transform.position).normalized;
