@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// 게임 저장 시 데이터를 담고 있는 임시 클래스, 추후에 병합 시 삭제
@@ -27,9 +29,13 @@ public class CPlayerController : CEntityBase
     [Header("애니메이터 파라미터")]
     [SerializeField] private string _paramSpeed = "aSpeed";
 
-    [Header("공격 기본 설정")]
+    [Header("공격 기본 옵션")]
     [SerializeField] private float _defaultAttackRange = 1.5f;
     [SerializeField] private float _bulletSpeed = 10f;
+
+    [Header("피격 연출 옵션")]
+    [SerializeField] private float _preventTime = 1.5f;
+    [SerializeField] private float _blinkInterval = 0.1f;
     #endregion
 
     #region 내부 변수
@@ -37,6 +43,13 @@ public class CPlayerController : CEntityBase
     private float _lastInputTime  = 0f;
     private float _lastAttackTime = 0f;
     private int   _hashSpeed;
+
+    private bool _isApproaching = false;
+    private Transform _lastTarget;
+
+    private bool _isPreventDamage = false;
+    private SpriteRenderer _spriteRenderer;
+    private WaitForSeconds _blinkWait;
     #endregion
 
     /// <summary>
@@ -48,6 +61,24 @@ public class CPlayerController : CEntityBase
         {
             CWeaponDataSO data = GetEquippedWeaponData();
             return data != null ? data.WeaponRange : _defaultAttackRange;
+        }
+    }
+
+    /// <summary>
+    /// 최종 공격 속도 (플레이어 기본 공격속도 * 무기 공격 속도)
+    /// </summary>
+    public float CurrentAttackSpeed
+    {
+        get
+        {
+            // 플레이어의 베이스 공격 속도 (없으면 기본값 1.0f)
+            float playerAttackSpeed = _characterData != null ? _characterData.BaseAttackSpeed : 1.0f;
+
+            // 장착한 무기의 연사 속도
+            CWeaponDataSO weaponDataSO = GetEquippedWeaponData();
+            float weaponFireRate = weaponDataSO != null ? weaponDataSO.WeaponFireRate : 1.0f;
+
+            return playerAttackSpeed * weaponFireRate;
         }
     }
 
@@ -65,6 +96,10 @@ public class CPlayerController : CEntityBase
         _animator = GetComponent<Animator>();
 
         _hashSpeed = Animator.StringToHash(_paramSpeed);
+
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        
+        _blinkWait = new WaitForSeconds(_blinkInterval);
     }
 
     private void OnEnable()
@@ -100,8 +135,19 @@ public class CPlayerController : CEntityBase
         #endregion
     }
 
+    private void Update()
+    {
+        // 테스트용 피격
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            TakeDamage(1);
+        }
+    }
+
     protected override void FixedUpdate()
     {
+        FindNearestTarget();
+
         base.FixedUpdate();
     }
 
@@ -118,9 +164,9 @@ public class CPlayerController : CEntityBase
         if (saveData == null)
         {
             Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
-            _maxHealth = _characterData.BaseHealth;
-            _moveSpeed = _characterData.BaseMoveSpeed;
-            _currentHealth = _maxHealth;
+            MaxHealth = _characterData.BaseHealth;
+            MoveSpeed = _characterData.BaseMoveSpeed;
+            CurrentHealth = MaxHealth;
             return;
         }
 
@@ -130,20 +176,20 @@ public class CPlayerController : CEntityBase
         // 각종 수치 계산
 
         // 스탯 적용
-        _maxHealth = baseHealth;
-        _moveSpeed = baseSpeed;
+        MaxHealth = baseHealth;
+        MoveSpeed = baseSpeed;
 
         // 게임 데이터 불러오기
         if (saveData.isNewGame)
         {
-            _currentHealth = _maxHealth;
+            CurrentHealth = MaxHealth;
         }
         else
         {
-            _currentHealth = saveData.savedCurrentHealth;
+            CurrentHealth = saveData.savedCurrentHealth;
         }
 
-        Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {_currentHealth}");
+        Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}");
     }
 
     /// <summary>
@@ -155,7 +201,7 @@ public class CPlayerController : CEntityBase
 
         if (_inputHandler.IsManualMove)
         {
-            currentVelocity = _inputHandler.MoveInput * _moveSpeed;
+            currentVelocity = _inputHandler.MoveInput * MoveSpeed;
 
             _lastInputTime = 0f;
         }
@@ -177,7 +223,7 @@ public class CPlayerController : CEntityBase
 
         _animator.SetFloat(_hashSpeed, speed);
 
-        _rb.velocity = currentVelocity;
+        Rb.velocity = currentVelocity;
 
         FlipCharacter(currentVelocity.x);
     }
@@ -188,20 +234,23 @@ public class CPlayerController : CEntityBase
     /// </summary>
     protected override void HandleAttack()
     {
-        if (_currentTarget == null) return;
+        if (CurrentTarget == null) return;
 
-        float distance = Vector2.Distance(transform.position, _currentTarget.position);
+        float distance = Vector2.Distance(transform.position, CurrentTarget.position);
         if (distance > CurrentAttackRange) return;
 
         CWeaponDataSO weaponData = GetEquippedWeaponData();
         if (weaponData == null || weaponData.BulletPrefab == null) return;
 
-        float fireInterval = 1f / Mathf.Max(0.01f, weaponData.WeaponFireRate);
+        float finalAttackSpeed = CurrentAttackSpeed;
+
+        float fireInterval = 1f / Mathf.Max(0.01f, finalAttackSpeed);
+
         if (Time.time < _lastAttackTime + fireInterval) return;
 
         _lastAttackTime = Time.time;
 
-        Vector2    dir       = (_currentTarget.position - transform.position).normalized;
+        Vector2    dir       = (CurrentTarget.position - transform.position).normalized;
         GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.identity);
         CBullet    bullet    = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
@@ -213,18 +262,44 @@ public class CPlayerController : CEntityBase
     /// </summary>
     private Vector2 AutoMove()
     {
-        if (_currentTarget == null)
+        if (CurrentTarget == null)
         {
+            _isApproaching = false;
+            _lastTarget = null;
             return Vector2.zero;
         }
 
-        float distance = Vector2.Distance(transform.position, _currentTarget.position);
-        Vector2 dirToTarget = (_currentTarget.position - transform.position).normalized;
+        float distance = Vector2.Distance(transform.position, CurrentTarget.position);
+        Vector2 dirToTarget = (CurrentTarget.position - transform.position).normalized;
 
-        // 타겟과의 거리가 장착한 무기의 사거리 보다 멀면 타겟을 향해 이동
-        if (distance > CurrentAttackRange)
+        float maxAttackRange = CurrentAttackRange;
+        float stopApproachRange = CurrentAttackRange * 0.7f;
+
+        if (CurrentTarget != _lastTarget)
         {
-            return dirToTarget * _moveSpeed;
+            if (distance <= maxAttackRange)
+            {
+                _isApproaching = false;
+            }
+
+            _lastTarget = CurrentTarget;
+        }
+
+        // 타겟과의 거리가 무기 사거리 밖으로 벗어나면 타겟을 향해 접근
+        if (distance > maxAttackRange)
+        {
+            _isApproaching = true;
+        }
+
+        // 타겟과의 거리가 무기 사거리의 0.7배 이내로 들어오면 이동 중지
+        if (distance <= stopApproachRange)
+        {
+            _isApproaching= false;
+        }
+
+        if (_isApproaching)
+        {
+            return dirToTarget * MoveSpeed;
         }
         else
         {
@@ -272,5 +347,39 @@ public class CPlayerController : CEntityBase
         {
             Debug.Log($"{index + 1} 번 슬롯 비어있음");
         }
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        if (_isPreventDamage) return;
+
+        base.TakeDamage(damage);
+
+        if (CurrentHealth > 0)
+        {
+            StartCoroutine(CoPreventDamage());
+        }
+    }
+
+    private IEnumerator CoPreventDamage()
+    {
+        _isPreventDamage = true;
+
+        int blinkCount = Mathf.RoundToInt(_preventTime / (_blinkInterval * 2f));
+
+        Color originColor = _spriteRenderer.color;
+        Color invisibleTransparent = new Color(originColor.r, originColor.g, originColor.b, 0f);
+
+        for (int i = 0; i < blinkCount; i++)
+        {
+            _spriteRenderer.color = invisibleTransparent;
+            yield return _blinkWait;
+
+            _spriteRenderer.color = originColor;
+            yield return _blinkWait;
+        }
+
+        _spriteRenderer.color = originColor;
+        _isPreventDamage = false;
     }
 }

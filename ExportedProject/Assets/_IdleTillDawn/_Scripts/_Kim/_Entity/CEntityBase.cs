@@ -1,34 +1,72 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public abstract class CEntityBase : MonoBehaviour, IDamageable
 {
     #region 인스펙터
     [Header("공통 스탯")]
-    [SerializeField] protected float _maxHealth;
-    [SerializeField] protected float _currentHealth;
-    [SerializeField] protected float _moveSpeed;
+    [SerializeField] private float _maxHealth;
+    [SerializeField] private float _currentHealth;
+    [SerializeField] private float _moveSpeed;
 
     [Header("타겟 탐지 설정")]
-    [SerializeField] protected float _scanRadius = 10f;
-    [SerializeField] protected LayerMask _targetLayer;
-    [SerializeField] protected float _scanInterval = 0.2f;
+    [SerializeField] private float _scanRadius = 10f;
+    [SerializeField] private LayerMask _targetLayer;
+    [SerializeField] private float _scanInterval = 0.2f;
 
     [Header("엔티티 정보")]
-    [SerializeField] protected string _entityName;
-    [SerializeField] protected string _description;
+    [SerializeField] private string _entityName;
+    [SerializeField] private string _description;
 
     [Header("물리 설정")]
-    [SerializeField] protected float _defaultGravityScale = 0f;
+    [SerializeField] private float _defaultGravityScale = 0f;
     #endregion
 
     #region 내부 변수
-    public float CurrentHealth => _currentHealth;
-    public string EntityName => _entityName;
+    public event Action<float, float> OnHealthChanged;
 
-    protected Rigidbody2D _rb;
-    protected Transform _currentTarget;
-    protected float _scanTimer = 0f;
+    private Rigidbody2D _rb;
+    private Transform _currentTarget;
+    private float _scanTimer = 0f;
+    private Collider2D[] _targetColliders = new Collider2D[50];
+    #endregion
+
+    #region 프로퍼티
+    public float MaxHealth
+    {
+        get => _maxHealth;
+        protected set => _maxHealth = value;
+    }
+    public float MoveSpeed
+    {
+        get => _moveSpeed;
+        protected set => _moveSpeed = value;
+    }
+    public float CurrentHealth
+    {
+        get => _currentHealth;
+        protected set
+        {
+            _currentHealth = Mathf.Clamp(value, 0f, _maxHealth);
+            OnHealthChanged?.Invoke(_currentHealth, _maxHealth);
+        }
+    }
+    public string EntityName => _entityName;
+    public string Description => _description;
+    public float DefaultGravityScale
+    {
+        get => _defaultGravityScale;
+        protected set => _defaultGravityScale = value;
+    }
+
+
+    protected Rigidbody2D Rb => _rb;
+    protected Transform CurrentTarget
+    {
+        get => _currentTarget;
+        set => _currentTarget = value;
+    }
     #endregion
 
     protected virtual void Awake()
@@ -41,8 +79,6 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
 
     protected virtual void FixedUpdate()
     {
-        FindNearestTarget();
-
         HandleMovement();
         HandleAttack();
     }
@@ -64,10 +100,10 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(float damage)
     {
-        _currentHealth -= damage;
-        Debug.Log($"[{gameObject.name}] [데미지 : {damage}, 현재 체력 : {_currentHealth}]");
+        CurrentHealth -= damage;
+        Debug.Log($"[{gameObject.name}] [데미지 : {damage}, 현재 체력 : {CurrentHealth}]");
 
-        if (_currentHealth <= 0)
+        if (CurrentHealth <= 0)
         {
             Die();
         }
@@ -89,23 +125,26 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
         if (_scanTimer < _scanInterval) return;
         _scanTimer = 0f;
 
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, _scanRadius, _targetLayer);
+        int count = Physics2D.OverlapCircleNonAlloc(transform.position, _scanRadius, _targetColliders, _targetLayer);
 
-        float shortestDistance = Mathf.Infinity;
-        Transform nearestEnemy = null;
+        float shortestDistanceSqr = Mathf.Infinity;
+        Transform nearestTarget = null;
 
-        foreach (Collider2D collider in colliders)
+        for (int i = 0; i < count; i++)
         {
-            float distance = Vector2.Distance(transform.position, collider.transform.position);
+            Collider2D targetCollider = _targetColliders[i];
 
-            if (distance < shortestDistance)
+            Vector2 offset = targetCollider.transform.position - transform.position;
+            float sqrDistance = offset.sqrMagnitude;
+
+            if (sqrDistance < shortestDistanceSqr)
             {
-                shortestDistance = distance;
-                nearestEnemy = collider.transform;
+                shortestDistanceSqr = sqrDistance;
+                nearestTarget = targetCollider.transform;
             }
         }
 
-        _currentTarget = nearestEnemy;
+        _currentTarget = nearestTarget;
     }
 
     /// <summary>

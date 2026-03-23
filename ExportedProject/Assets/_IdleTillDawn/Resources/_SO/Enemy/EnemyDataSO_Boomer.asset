@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b17ef902cf4aaf04aaf3b8b75cd90461, type: 3}
   m_Name: EnemyDataSO_Boomer
   m_EditorClassIdentifier: 
-  _enemyName: Character Name
-  _description: Character Description
+  _enemyName: Boomer
+  _description: "\uC8FD\uC73C\uBA74 \uC8FC\uBCC0 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C
+    \uC900\uB2E4."
   _baseHealth: 1
   _baseDamage: 10
   _attackCooltime: 1.5
