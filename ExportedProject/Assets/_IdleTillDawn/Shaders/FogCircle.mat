@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mat_Overlay
-  m_Shader: {fileID: 4800000, guid: 5c161e321d799b84cbe52b191b70f62c, type: 3}
+  m_Name: FogCircle
+  m_Shader: {fileID: 4800000, guid: e253e45afbab7284388355963e1fc2bc, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -22,22 +22,8 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _FogTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _FogDensity: 0.9
-    - _NoiseAmount: 0.03
-    - _NoiseScale: 4
-    - _PulseAmount: 0.025
-    - _PulseSpeed: 1.1
-    m_Colors:
-    - _FogColor: {r: 0.04, g: 0, b: 0.08, a: 1}
+    m_Floats: []
+    m_Colors: []
   m_BuildTextureStacks: []
