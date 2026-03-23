@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6841944988717735367}
   - component: {fileID: -5334931207687245922}
   - component: {fileID: -7461798480339104622}
+  - component: {fileID: -1597245547901397762}
   m_Layer: 0
   m_Name: Bullet(Temp)JHW
   m_TagString: Untagged
@@ -161,3 +162,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.21875
+--- !u!114 &-1597245547901397762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4376937155057529381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bc10e54e46b9043a4dbbbc24159ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outerRadius: 1
+  _innerRatio: 0.3
+  _intensity: 0.6
