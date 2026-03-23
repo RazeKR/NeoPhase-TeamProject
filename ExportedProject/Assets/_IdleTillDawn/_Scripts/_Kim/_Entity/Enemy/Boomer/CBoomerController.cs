@@ -10,13 +10,14 @@ public class CBoomerController : CEnemyBase
     #endregion
 
     #region 내부 변수
-    private bool _hasExploded = false;
+    private bool  _hasExploded          = false;
+    private float _defaultExplosionRadius;  // Awake 시 인스펙터 값을 캐싱 — 풀 반환 시 복원 기준
     #endregion
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
-        _explosionRadius = AttackRange;
+        base.Awake();
+        _defaultExplosionRadius = _explosionRadius; // 인스펙터 설정값 보존
     }
 
     public override void Die()
@@ -29,7 +30,7 @@ public class CBoomerController : CEnemyBase
     {
         base.ResetForPool();
         _hasExploded     = false;
-        _explosionRadius = 0f; // InitEnemy 후 Start에서 _attackRange로 재설정됨
+        _explosionRadius = _defaultExplosionRadius; // 인스펙터 원본값으로 복원
     }
 
     protected override void ExecuteAttack()
