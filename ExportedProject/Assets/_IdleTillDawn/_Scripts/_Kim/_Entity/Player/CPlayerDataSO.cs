@@ -13,7 +13,7 @@ public class CPlayerDataSO : ScriptableObject
 	[SerializeField] private float _baseHealth = 50f;
 	[SerializeField] private float _baseMana = 20f;
 	[SerializeField] private float _baseDamage = 10f;
-	[SerializeField] private float _baseAttackSpeed = 1.5f;
+	[SerializeField] private float _baseAttackSpeed = 1f;
 	[SerializeField] private float _baseHealthRegen = 1f;
 	[SerializeField] private float _baseManaRegen = 4f;
 	[SerializeField] private float _baseMoveSpeed = 3f;

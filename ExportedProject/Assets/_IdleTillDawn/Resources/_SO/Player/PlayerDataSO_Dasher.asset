@@ -21,7 +21,7 @@ MonoBehaviour:
   _baseHealth: 10000
   _baseMana: 20
   _baseDamage: 10
-  _baseAttackSpeed: 1.5
+  _baseAttackSpeed: 1
   _baseHealthRegen: 1
   _baseManaRegen: 4
   _baseMoveSpeed: 3

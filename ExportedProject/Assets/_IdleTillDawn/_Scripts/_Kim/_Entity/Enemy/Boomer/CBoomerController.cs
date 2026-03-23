@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CBoomerController : CEnemyBase
 {
@@ -16,7 +16,7 @@ public class CBoomerController : CEnemyBase
     protected override void Start()
     {
         base.Start();
-        _explosionRadius = _attackRange;
+        _explosionRadius = AttackRange;
     }
 
     public override void Die()
@@ -34,7 +34,7 @@ public class CBoomerController : CEnemyBase
 
     protected override void ExecuteAttack()
     {
-        Explode();
+        Die();
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public class CBoomerController : CEnemyBase
             if (col.gameObject == this.gameObject) continue;
 
             IDamageable damageable = col.GetComponent<IDamageable>();
-            damageable?.TakeDamage(_attackDamage);
+            damageable?.TakeDamage(AttackDamage);
         }
 
         // Destroy 제거 — Die() → base.Die() → OnDied → CSpawnManager.ReturnToPool 로 처리

@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public abstract class CEnemyBase : CEntityBase
 {
     #region 인스펙터
     [Header("적 데이터")]
-    [SerializeField] protected CEnemyDataSO _enemyData;
+    [SerializeField] private CEnemyDataSO _enemyData;
     #endregion
 
     #region 이벤트
@@ -16,12 +16,16 @@ public abstract class CEnemyBase : CEntityBase
     #endregion
 
     #region 내부 변수
-    protected float _attackDamage;
-    protected float _attackCooltime;
-    protected float _attackRange;
-
-    protected float    _lastAttackTime = 0f;
+    private float    _lastAttackTime = 0f;
     private   Transform _playerTransform;   // 스폰 시 주입된 플레이어 Transform
+    #endregion
+
+    #region 프로퍼티
+    protected CEnemyDataSO EnemyData => _enemyData;
+    protected IDamageable TargetDamageable { get; private set; }
+    protected float AttackDamage { get; private set; }
+    protected float AttackCooltime { get; private set; }
+    protected float AttackRange { get; private set; }
     #endregion
 
     protected override void Awake()
@@ -35,7 +39,12 @@ public abstract class CEnemyBase : CEntityBase
     public void SetTarget(Transform player)
     {
         _playerTransform = player;
-        _currentTarget   = player;
+        CurrentTarget   = player;
+
+        if (player != null)
+        {
+            TargetDamageable = player.GetComponent<IDamageable>();
+        }
     }
 
     /// <summary>
@@ -43,7 +52,7 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     protected override void FixedUpdate()
     {
-        _currentTarget = _playerTransform; // 스캔 없이 직접 추적
+        CurrentTarget = _playerTransform; // 스캔 없이 직접 추적
         HandleMovement();
         HandleAttack();
     }
@@ -62,17 +71,17 @@ public abstract class CEnemyBase : CEntityBase
     {
         if (_enemyData == null) return;
 
-        _moveSpeed      = _enemyData.MoveSpeed;
-        _attackRange    = _enemyData.AttackRange;
-        _attackCooltime = _enemyData.AttackCooltime;
+        MoveSpeed      = _enemyData.MoveSpeed;
+        AttackRange    = _enemyData.AttackRange;
+        AttackCooltime = _enemyData.AttackCooltime;
 
         int growthMultiplier = Mathf.Max(1, currentStage) - 1;
 
         float scaledHealth = _enemyData.BaseHealth + (_enemyData.HealthGrowthPerStage * growthMultiplier);
-        _maxHealth    = scaledHealth;
-        _currentHealth = scaledHealth;
+        MaxHealth    = scaledHealth;
+        CurrentHealth = scaledHealth;
 
-        _attackDamage = _enemyData.BaseDamage + (_enemyData.DamageGrowthPerStage * growthMultiplier);
+        AttackDamage = _enemyData.BaseDamage + (_enemyData.DamageGrowthPerStage * growthMultiplier);
     }
 
     /// <summary>
@@ -80,11 +89,10 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     public virtual void ResetForPool()
     {
-        _currentTarget  = null;
-        _scanTimer      = 0f;
+        CurrentTarget  = null;
         _lastAttackTime = 0f;
-        _rb.velocity    = Vector2.zero;
-        _currentHealth  = _maxHealth;
+        Rb.velocity    = Vector2.zero;
+        CurrentHealth  = MaxHealth;
     }
 
     /// <summary>
@@ -92,36 +100,36 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     public override void Die()
     {
-        _rb.velocity = Vector2.zero;
+        Rb.velocity = Vector2.zero;
         OnDied?.Invoke(this);
     }
 
     protected override void HandleMovement()
     {
-        if (_currentTarget == null)
+        if (CurrentTarget == null)
         {
-            _rb.velocity = Vector2.zero;
+            Rb.velocity = Vector2.zero;
             return;
         }
 
-        float distance    = Vector2.Distance(transform.position, _currentTarget.position);
-        Vector2 dirToPlayer = (_currentTarget.position - transform.position).normalized;
+        float distance    = Vector2.Distance(transform.position, CurrentTarget.position);
+        Vector2 dirToPlayer = (CurrentTarget.position - transform.position).normalized;
 
         FlipCharacter(dirToPlayer.x);
 
-        if (distance > _attackRange)
-            _rb.velocity = dirToPlayer * _moveSpeed;
+        if (distance > AttackRange * 0.8f)
+            Rb.velocity = dirToPlayer * MoveSpeed;
         else
-            _rb.velocity = Vector2.zero;
+            Rb.velocity = Vector2.zero;
     }
 
     protected override void HandleAttack()
     {
-        if (_currentTarget == null) return;
+        if (CurrentTarget == null) return;
 
-        float distance = Vector2.Distance(transform.position, _currentTarget.position);
+        float distance = Vector2.Distance(transform.position, CurrentTarget.position);
 
-        if (distance <= _attackRange && Time.time >= _lastAttackTime + _attackCooltime)
+        if (distance <= AttackRange && Time.time >= _lastAttackTime + AttackCooltime)
         {
             _lastAttackTime = Time.time;
             ExecuteAttack();
