@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 /*
 ㆍCInventorySlot
@@ -39,7 +40,9 @@ public class CInventorySlot : MonoBehaviour
                    )
                     return;
 
-                CloseAllPopups();
+                CInventoryUI.Instance.Item = null;
+                CInventoryUI.Instance.IsChoiceUpgrade = false;
+                //CloseAllPopups();
             }
         }
     }
@@ -74,11 +77,24 @@ public class CInventorySlot : MonoBehaviour
         // 포션 수량 표시
         else if (item is CPotionInstance potion)
         {
+            _itemRank.sprite = _itemRanksSprite[0];
+            _itemRank.gameObject.SetActive(true);
+
             _itemAmountTMP.text = potion._amount.ToString();
-            _itemRank.gameObject.SetActive(false);
             _itemAmountTMP.gameObject.SetActive(true);
             _itemEquipMark.gameObject.SetActive(false);
         }
+
+        else if (item is CScrollInstance scroll)
+        {
+            _itemRank.sprite = _itemRanksSprite[0];
+            _itemRank.gameObject.SetActive(true);
+
+            _itemAmountTMP.text = scroll._amount.ToString();
+            _itemAmountTMP.gameObject.SetActive(true);
+            _itemEquipMark.gameObject.SetActive(false);
+        }
+
 
         else
         {
@@ -93,9 +109,17 @@ public class CInventorySlot : MonoBehaviour
     // 클릭 시 선택 / 삭제 버튼 활성화
     public void OnSlotClick()
     {
-        _potionAmountUI.SetActive(false);
-        _desiredAmount = 0;
-        _selectButtonUI.SetActive(true);
+        if (CInventoryUI.Instance.IsChoiceUpgrade)
+        {
+            CInventoryManager.Instance.UseScroll(_item._instanceID);            
+
+            CInventoryUI.Instance.IsChoiceUpgrade = false;
+
+            return;
+        }
+
+        Debug.Log("슬롯에 저장된 정보 전송");
+        CInventoryUI.Instance.Item = _item;       
     }
 
 
@@ -116,7 +140,7 @@ public class CInventorySlot : MonoBehaviour
 
         _selectButtonUI.SetActive(false);
 
-        CInventoryManager.Instance.RefreshUI();
+        CInventoryUI.Instance.RefreshUI();
     }
 
 
@@ -129,7 +153,7 @@ public class CInventorySlot : MonoBehaviour
         {
             CInventoryManager.Instance.RemoveItem(weapon._instanceID);
 
-            CInventoryManager.Instance.RefreshUI();
+            CInventoryUI.Instance.RefreshUI();
         }
 
         else if (_item is CPotionInstance potion)
@@ -169,7 +193,7 @@ public class CInventorySlot : MonoBehaviour
 
         CInventoryManager.Instance.SaveInventory(CInventoryManager.Instance.Inventory);
 
-        CInventoryManager.Instance.RefreshUI();
+        CInventoryUI.Instance.RefreshUI();
     }
 
 

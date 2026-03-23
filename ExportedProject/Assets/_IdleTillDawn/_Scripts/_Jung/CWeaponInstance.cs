@@ -10,6 +10,7 @@ public class CWeaponInstance : CItemInstance
 {    
     public int _rank;
     public bool _isEquipped;
+    public int _upgrade;
     public CWeaponDataSO _data => _itemData as CWeaponDataSO;
 
     // 새로운 무기 생성 호출하는 생성자 함수

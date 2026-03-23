@@ -4,20 +4,15 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-// mvc 패턴 위배
 
 /*
-ㆍCInventorySaveManager
+ㆍCInventoryManager
 - 인벤토리 데이터 세이브/로드 담당 매니저 (json 사용)
 - 무기 정보 저장용으로 일단 뼈대만 잡아둠
 */
 
 public class CInventoryManager : MonoBehaviour
 {
-    [SerializeField] private Transform _slotParent = null;      // 인벤토리 슬롯이 들어갈 부모 객체
-    [SerializeField] private GameObject _slotPrefab = null;     // 인벤토리 슬롯 프리팹
-    [SerializeField] private GameObject _inventoryUI = null;    // 인벤토리 UI (창 On/Off 조절)
-
     public static CInventoryManager Instance {  get; private set; }
 
     public List <CItemInstance> Inventory = new List<CItemInstance>(); // 접근 가능한 현재 인벤토리 정보
@@ -80,13 +75,7 @@ public class CInventoryManager : MonoBehaviour
         if (_equippedWeapon == null && Inventory.Count > 0)
         {
             AutoEquipWeapon();
-        }
-
-
-        if (_inventoryUI != null)
-        {
-            _inventoryUI.SetActive(false);
-        }
+        }       
     }
 
 
@@ -101,13 +90,8 @@ public class CInventoryManager : MonoBehaviour
 
     // 테스트용 업데이트
     private void Update()
-    {
+    {        
         if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            AddItem("weapon_03");
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             AddItem("potion_01", 100);
         }
@@ -183,6 +167,11 @@ public class CInventoryManager : MonoBehaviour
                 data.amount = potion._amount;
                 data.type = EItemType.Potion;
             }
+            else if (item is CScrollInstance scroll)
+            {
+                data.amount = scroll._amount;
+                data.type = EItemType.Scroll;
+            }
 
             saveData.items.Add(data);
         }
@@ -190,7 +179,7 @@ public class CInventoryManager : MonoBehaviour
         string json = JsonUtility.ToJson(saveData, true);
         File.WriteAllText(SavePath, json);
 
-        RefreshUI();
+        CInventoryUI.Instance.RefreshUI();
 
         Debug.Log($"저장 완료 (저장 경로: {SavePath})");
     }
@@ -214,6 +203,10 @@ public class CInventoryManager : MonoBehaviour
                 if (data.type == EItemType.Potion)
                 {
                     newItem = new CPotionInstance(originSO as CPotionDataSO, data.amount);
+                }
+                else if (data.type == EItemType.Scroll)
+                {
+                    newItem = new CScrollInstance(originSO as CScrollDataSO, data.amount);
                 }
                 else if (data.type == EItemType.Weapon)
                 {
@@ -261,7 +254,7 @@ public class CInventoryManager : MonoBehaviour
 
         SortInventory();
         SaveInventory(Inventory);
-        RefreshUI();
+        CInventoryUI.Instance.RefreshUI();
     }
 
 
@@ -273,28 +266,20 @@ public class CInventoryManager : MonoBehaviour
     }
 
 
-    // UI 슬롯 최신화
-    //  ㄴ 최신화 후 유니티 UI 컴포넌트로 별도 정렬함
-    public void RefreshUI()
+    // 스크롤 사용
+    // 스크롤 스택 반영 (0개가 되면 삭제 처리)
+    public void UseScroll(string targetInstanceID)
     {
-        // 자식 슬롯을 순회하며 리셋
-        foreach (Transform child in _slotParent)
-        {
-            Destroy(child.gameObject);
-        }
+        var target = Inventory.Find(i => i._instanceID == targetInstanceID) as CWeaponInstance;
 
-        // 인벤토리를 순회하며 생성
-        foreach (var item in Inventory)
-        {
-            GameObject go = Instantiate(_slotPrefab, _slotParent);
-            CInventorySlot slot = go.GetComponent<CInventorySlot>();
+        target._upgrade += 1;
 
-            slot.SetSlot(item);
-        }
+        var scroll = Inventory.Find(s => s._itemData.ItemType == EItemType.Scroll) as CItemInstance;
 
-        Debug.Log("UI 최신화 완료");
+        //
+
+        Debug.Log("스크롤사용 임시 로그");
     }
-
 
 
     // 아이템 획득 함수
@@ -366,6 +351,28 @@ public class CInventoryManager : MonoBehaviour
             }
         }
 
+        else if (originSO.ItemType == EItemType.Scroll)
+        {
+            var existScroll = Inventory.Find(s => s._itemData.ItemId == itemID) as CScrollInstance;
+
+            if (existScroll != null)
+            {
+                existScroll._amount += count;
+
+                if (existScroll._amount + count > existScroll._maxAmount)
+                {
+                    existScroll._amount = existScroll._maxAmount;
+                    Debug.Log("스크롤 최대치 = 999");
+                }
+
+                Debug.Log($"{originSO.ItemName} : {count}개 획득, 수량 : {existScroll._amount}");
+            }
+            else
+            {
+                Inventory.Add(new CScrollInstance(originSO as CScrollDataSO, count));
+            }
+        }
+
         SaveInventory(Inventory);
     }
 
@@ -389,7 +396,7 @@ public class CInventoryManager : MonoBehaviour
         }
 
 
-        RefreshUI();
+        CInventoryUI.Instance.RefreshUI();
     }
 
 
@@ -410,35 +417,15 @@ public class CInventoryManager : MonoBehaviour
 
         SaveInventory(Inventory);
 
-        RefreshUI();
+        CInventoryUI.Instance.RefreshUI();
     }
-
-
-    // 인벤토리 창 열고 닫는 기능 (버튼이나 키 할당해서 사용)
-    public void OnOffInventoryUI()
-    {
-        if (_inventoryUI == null) return;
-
-        if (_inventoryUI.activeInHierarchy)
-        {
-            _inventoryUI.SetActive(false);
-        }
-
-        else
-        {
-            _inventoryUI.SetActive(true);
-            RefreshUI();
-        }
-    }
-
-
 
     // 인벤토리 데이터 정렬 함수
     private void SortInventory()
     {
         Inventory = Inventory
             .OrderByDescending(i => (i as CWeaponInstance)?._isEquipped ?? false)   // 1. 장착 중인 무기 최우선 정렬
-            .ThenBy(i => i._itemData.ItemType)                                      // 2. 무기군 -> 포션군
+            .ThenBy(i => i._itemData.ItemType)                                      // 2. 무기군 -> 포션군 -> 스크롤
             .ThenByDescending(i => (i as CWeaponInstance)?._rank ?? 0)              // 3. 무기 내 등급순
             .ThenBy(i => i._itemData.ItemId)                                        // 4. 이름별 (오름차순)
             .ToList();

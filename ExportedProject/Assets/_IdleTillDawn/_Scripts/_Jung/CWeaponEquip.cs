@@ -76,15 +76,6 @@ public class CWeaponEquip : MonoBehaviour
 
             Debug.Log("무기 SO 변경 감지 : 무기 정보 업데이트");
         }
-
-        
-
-        // 확인용, 차후 인풋으로 변경
-        if (Input.GetMouseButtonDown(0))
-        {
-            GenerateBullet();
-            WeaponRebound();
-        }
     }
 
 

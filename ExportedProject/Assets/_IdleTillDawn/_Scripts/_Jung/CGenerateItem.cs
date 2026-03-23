@@ -19,7 +19,7 @@ public class CGenerateItem : MonoBehaviour
 
     public void GenerateRandomRankItem()
     {
-        int  r = Random.Range(0, _commonRate + _rareRate + _epicRate + _legendaryRate);
+        int  r = Random.Range(0, _commonRate + _rareRate + _epicRate + _legendaryRate + 1);
 
         int desiredRank = 0;
 
