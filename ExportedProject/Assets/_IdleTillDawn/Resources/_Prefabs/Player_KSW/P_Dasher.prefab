@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -269,27 +269,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22130bdc1f2be0442a69bf0f53864bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxHealth: 500
-  _currentHealth: 500
+  _maxHealth: 0
+  _currentHealth: 0
   _moveSpeed: 3
-  _scanRadius: 5
+  _scanRadius: 15
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   _scanInterval: 0.2
   _entityName: 
   _description: 
   _defaultGravityScale: 0
   _characterData: {fileID: 11400000, guid: c2e332dd47076fd4dad21a792296cd12, type: 2}
-  _animator: {fileID: 0}
+  _animator: {fileID: 3722675710176299580}
   _equippedSkills:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   _autoModeDelay: 3
   _paramSpeed: aSpeed
-  _defaultAttackRange: 1.5
-  _bulletSpeed: 10
+  _defaultAttackRange: 20
+  _bulletSpeed: 20
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!70 &2160385164997705626
@@ -321,7 +321,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.03, y: 0.01}

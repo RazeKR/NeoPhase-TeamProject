@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -62,6 +62,12 @@ public class CGameManager : MonoBehaviour
     [SerializeField] private float _hpGrowthRate     = 0.1f; // 스테이지당 HP 증가율 (기본 10%)
     [SerializeField] private float _bossHpGrowthRate = 0.2f; // 스테이지당 보스 HP 증가율 (기본 20%)
     [SerializeField] private float _bossAtkGrowthRate= 0.15f;// 스테이지당 보스 공격력 증가율 (기본 15%)
+
+    // 김승원 추가
+    [Header("드롭 옵션")]
+    [Range(0f, 100f)][SerializeField] private float _baseDropChance = 5f;
+    [Range(0f, 100f)][SerializeField] private float _maxDropChance = 25f;
+    [Range(0f, 1f)][SerializeField] private float _growthRate = 0.005f;
 
     #endregion
 
@@ -227,6 +233,17 @@ public class CGameManager : MonoBehaviour
     /// </summary>
     public float GetBossAtkMultiplier() =>
         1f + (_bossAtkGrowthRate * currentStageIndex); // 보스 ATK 누적 스케일링
+
+    /// <summary>
+    /// 현재 스테이지 인덱스에 따라 아이템 드롭 확률 계산
+    /// </summary>
+    /// <returns></returns>
+    public float GetCurrentDropChance()
+    {
+        float failReduction = Mathf.Pow(1f - _growthRate, currentStageIndex);
+
+        return _maxDropChance - (_maxDropChance - _baseDropChance) * failReduction;
+    }
 
     #endregion
 

@@ -23,7 +23,7 @@ public class CEnemyDataSO : ScriptableObject
     [SerializeField] GameObject _prefab;
     #endregion
 
-    #region 내부 변수
+    #region 프로퍼티
     public string EnemyName => _enemyName;
     public string Description => _description;
 

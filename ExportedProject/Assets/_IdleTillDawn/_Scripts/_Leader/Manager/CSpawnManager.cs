@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -171,6 +171,12 @@ public class CSpawnManager : MonoBehaviour
 
         enemy.gameObject.SetActive(true);
         activeEnemies.Add(enemy);
+
+        // 스폰한 적의 사망이벤트에 아이템 드롭 매니저 구독
+        if (CItemDropManager.Instance != null)
+        {
+            CItemDropManager.Instance.RegisterEnemy(enemy);
+        }
 
         // 사망 이벤트 구독 (중복 방지)
         enemy.OnDied -= OnEnemyDied;

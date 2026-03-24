@@ -23,10 +23,11 @@ public abstract class CEnemyBase : CEntityBase
     #region 프로퍼티
     protected CEnemyDataSO EnemyData => _enemyData;
     protected IDamageable TargetDamageable { get; private set; }
-    protected float AttackDamage { get; private set; }
-    protected float AttackCooltime { get; private set; }
-    protected float AttackRange { get; private set; }
+    protected float AttackDamage { get; set; }
+    protected float AttackCooltime { get; set; }
+    protected float AttackRange { get; set; }
     protected bool IsKnockBacked { get; set; } = false;
+    protected float LastAttackTime { get; set; }
     #endregion
 
     protected override void Awake()

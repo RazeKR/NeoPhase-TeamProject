@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 /// <summary>
@@ -29,7 +29,7 @@ public class CBossManager : MonoBehaviour
 
     #region Private Variables
 
-    private CBoss currentBoss; // 현재 활성 보스 인스턴스 (null이면 전투 중 아님)
+    private CBossBase currentBoss; // 현재 활성 보스 인스턴스 (null이면 전투 중 아님)
 
     #endregion
 
@@ -40,7 +40,7 @@ public class CBossManager : MonoBehaviour
     /// CPlayerController의 킬존 검사가 보스 존재 여부 및 거리 계산에 활용한다
     /// 보스가 없거나 전투 중이 아니면 null을 반환한다
     /// </summary>
-    public CBoss CurrentBoss => currentBoss; // 킬존 참조용 읽기 전용 노출
+    public CBossBase CurrentBoss => currentBoss; // 킬존 참조용 읽기 전용 노출
 
     #endregion
 
@@ -59,7 +59,7 @@ public class CBossManager : MonoBehaviour
 
         Vector3 spawnPos   = GetRandomSpawnPosition();                              // 플레이어 주변 랜덤 위치 계산
         GameObject bossObj = Instantiate(stageData._bossPrefab, spawnPos, Quaternion.identity);
-        currentBoss = bossObj.GetComponent<CBoss>();
+        currentBoss = bossObj.GetComponent<CBossBase>();
         // StageData SO 배율 대신 CGameManager 누적 공식으로 계산
         // 보스도 동일한 stageIndex 기반으로 자동 계승 스케일링이 적용된다
         currentBoss.Initialize(
