@@ -13,12 +13,25 @@ public class CMeleeController : CEnemyBase
 
     #region 내부 변수
     private WaitForSeconds _knockBackWait;
+    private float _defaultKnockBackForce;
+    private float _defaultKnockBackTime;
     #endregion
 
     protected override void Awake()
     {
         base.Awake();
         _knockBackWait = new WaitForSeconds(_knockBackTime);
+
+        _defaultKnockBackForce = _knockBackForce;
+        _defaultKnockBackTime = _knockBackTime;
+    }
+
+    public override void ResetForPool()
+    {
+        base.ResetForPool();
+
+        _knockBackForce = _defaultKnockBackForce;
+        _knockBackTime = _defaultKnockBackTime;
     }
 
     protected override void Start()

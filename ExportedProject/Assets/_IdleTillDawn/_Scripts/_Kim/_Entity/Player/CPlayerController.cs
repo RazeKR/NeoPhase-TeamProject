@@ -93,13 +93,22 @@ public class CPlayerController : CEntityBase
             return;
         }
 
-        _inputHandler = GetComponent<CPlayerInputHandler>();
-        _animator = GetComponent<Animator>();
+        if (_inputHandler == null)
+        {
+            _inputHandler = GetComponent<CPlayerInputHandler>();
+        }
 
-        _hashSpeed = Animator.StringToHash(_paramSpeed);
+        if (_animator == null)
+        {
+            _animator = GetComponent<Animator>();
+        }
 
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        
+        if (_spriteRenderer == null)
+        {
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+        }
+
+        _hashSpeed = Animator.StringToHash(_paramSpeed);        
         _blinkWait = new WaitForSeconds(_blinkInterval);
     }
 
