@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17ef902cf4aaf04aaf3b8b75cd90461, type: 3}
+  m_Name: EnemyDataSO_Ranged
+  m_EditorClassIdentifier: 
+  _enemyName: EyeMonster
+  _description: Character Description
+  _baseHealth: 50
+  _baseDamage: 10
+  _attackCooltime: 1.5
+  _moveSpeed: 3
+  _attackRange: 5
+  _healthGrowthPerStage: 10
+  _damageGrowthPerStage: 1
+  _prefab: {fileID: 8450485299668139288, guid: 5ef52a10bbae3a341a3e51f81f0a5433, type: 3}
