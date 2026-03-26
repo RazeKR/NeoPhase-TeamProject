@@ -4,5 +4,5 @@
 public class CSkillInstance
 {
     public string skillName;
-    public int level;
+    public int level;    
 }

@@ -12,7 +12,7 @@ public class CSkillNode : MonoBehaviour
     [SerializeField] private Image _iconImage;
     [SerializeField] private Text _levelText;
     [SerializeField] private Button _upgradeButton;
-    [SerializeField] private GameObject _lockOverlay;
+    [SerializeField] public GameObject _lockOverlay;
 
     private int _currentLevel = 0;
 
@@ -30,7 +30,19 @@ public class CSkillNode : MonoBehaviour
         _currentLevel = CSkillManager.Instance.GetSkillLevel(_skillData.skillName);
 
         _iconImage.sprite = _skillData.icon;
-        _levelText.text = $"{_currentLevel} / {_skillData.maxLevel}";
+
+        if (_currentLevel == _skillData.maxLevel)
+        {
+            _levelText.text = "MAX";
+            _levelText.color = Color.yellow;
+        }
+
+        else
+        {
+            _levelText.text = $"{_currentLevel} / {_skillData.maxLevel}";
+            _levelText.color = Color.white;
+
+        }
 
         bool isUnlockable = CSkillManager.Instance.CanUnlock(this);
         _lockOverlay.SetActive(!isUnlockable && _currentLevel == 0);

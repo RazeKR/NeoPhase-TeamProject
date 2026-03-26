@@ -10,21 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
-  m_Name: SkillData_FireBall
+  m_Name: SkillData_WindBorne
   m_EditorClassIdentifier: 
-  skillName: "\uD30C\uC774\uC5B4\uBCFC"
+  skillName: "\uC708\uB4DC\uBCF8"
   skillType: 1
-  icon: {fileID: 21300000, guid: b1250bbd53b03584e9ab22fc787950d8, type: 2}
-  maxLevel: 5
-  requiredPoints: 2
-  damage: 50
-  prerequisiteSkills:
-  - {fileID: 11400000, guid: a7af05fc9b1429d4c9c2f0c607ba7a8e, type: 2}
+  icon: {fileID: 21300000, guid: 8755a4ebc99191d41bc2ea8a074f16a3, type: 2}
+  maxLevel: 10
+  requiredPoints: 1
+  damage: 10
+  prerequisiteSkills: []
   statUp: 0
-  actionName: FireBall
-  coolDown: 15
-  requiredMana: 20
-  skillEffects:
-  - type: 2
-    value: 5
-    chance: 0.15
+  actionName: WindBorne
+  coolDown: 7
+  requiredMana: 10
+  skillEffects: []

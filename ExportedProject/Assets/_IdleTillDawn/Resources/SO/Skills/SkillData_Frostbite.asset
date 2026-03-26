@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
-  m_Name: SkillData_FireBall
+  m_Name: SkillData_Frostbite
   m_EditorClassIdentifier: 
-  skillName: "\uD30C\uC774\uC5B4\uBCFC"
+  skillName: "\uB3D9\uC0C1"
   skillType: 1
-  icon: {fileID: 21300000, guid: b1250bbd53b03584e9ab22fc787950d8, type: 2}
-  maxLevel: 5
-  requiredPoints: 2
-  damage: 50
+  icon: {fileID: 21300000, guid: a9a711d04b8ab4b479181ca8762231c0, type: 2}
+  maxLevel: 10
+  requiredPoints: 1
+  damage: 20
   prerequisiteSkills:
-  - {fileID: 11400000, guid: a7af05fc9b1429d4c9c2f0c607ba7a8e, type: 2}
+  - {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
   statUp: 0
-  actionName: FireBall
-  coolDown: 15
-  requiredMana: 20
+  actionName: Frostbite
+  coolDown: 8
+  requiredMana: 10
   skillEffects:
-  - type: 2
-    value: 5
-    chance: 0.15
+  - type: 1
+    value: 1
+    chance: 1

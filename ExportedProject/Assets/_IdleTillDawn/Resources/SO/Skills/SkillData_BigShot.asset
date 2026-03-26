@@ -10,21 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
-  m_Name: SkillData_BlazingSpeed
+  m_Name: SkillData_BigShot
   m_EditorClassIdentifier: 
-  skillName: "\uBD88\uC758 \uC9C8\uC8FC"
-  skillType: 1
-  icon: {fileID: 21300000, guid: 122b6fa5b389978449cf06af1af45d07, type: 2}
+  skillName: "\uBE45 \uC0F7"
+  skillType: 0
+  icon: {fileID: 21300000, guid: a9e5123b8b7b98141a445b08568d2dfa, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 5
+  damage: 0
   prerequisiteSkills:
-  - {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
-  statUp: 0
-  actionName: BlazingSpeed
-  coolDown: 8
-  requiredMana: 10
-  skillEffects:
-  - type: 2
-    value: 5
-    chance: 0.1
+  - {fileID: 11400000, guid: 88f1c8eb8ebdcaf43bf72ef8bdfec4fb, type: 2}
+  statUp: 10
+  actionName: 
+  coolDown: 0
+  requiredMana: 0
+  skillEffects: []
