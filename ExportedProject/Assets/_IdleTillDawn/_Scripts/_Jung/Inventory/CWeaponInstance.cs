@@ -18,6 +18,7 @@ public class CWeaponInstance : CItemInstance
     {
         this._rank = 0;
         this._isEquipped = false;
+        this._upgrade = 0;
     }
 
 

@@ -29,7 +29,7 @@ public class CSkillUI : MonoBehaviour
     {
         CSkillManager.Instance.RefreshAllNodes();
 
-        _pointsText.text = CSkillManager.Instance._currentSkillPoints.ToString();
+        _pointsText.text = CSkillManager.Instance.currentSkillPoints.ToString();
     }
 
     private void OnDestroy()
