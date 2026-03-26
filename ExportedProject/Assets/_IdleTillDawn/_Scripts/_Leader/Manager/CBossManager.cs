@@ -21,6 +21,9 @@ public class CBossManager : MonoBehaviour
     [Header("플레이어 참조")]
     [SerializeField] private Transform _player; // 보스 스폰 반경의 기준이 되는 플레이어 Transform
 
+    [Header("전기벽")]
+    [SerializeField] private CElectircWall _electricWall; // 보스 소환 시 활성화할 전기벽
+
     [Header("보스 스폰 반경")]
     [SerializeField] private float _spawnMinRadius = 8f;  // 보스 스폰 최소 반경 (플레이어 발 밑 방지)
     [SerializeField] private float _spawnMaxRadius = 12f; // 보스 스폰 최대 반경 (화면 밖 등장 연출)
@@ -60,6 +63,14 @@ public class CBossManager : MonoBehaviour
         Vector3 spawnPos   = GetRandomSpawnPosition();                              // 플레이어 주변 랜덤 위치 계산
         GameObject bossObj = Instantiate(stageData._bossPrefab, spawnPos, Quaternion.identity);
         currentBoss = bossObj.GetComponent<CBossBase>();
+
+        if (currentBoss == null)
+        {
+            Debug.LogError($"[CBossManager] {stageData._bossPrefab.name} 프리팹 루트에 CBossBase 컴포넌트가 없음");
+            Destroy(bossObj);
+            return;
+        }
+
         // StageData SO 배율 대신 CGameManager 누적 공식으로 계산
         // 보스도 동일한 stageIndex 기반으로 자동 계승 스케일링이 적용된다
         currentBoss.Initialize(
@@ -71,6 +82,10 @@ public class CBossManager : MonoBehaviour
         // 보스 결과 이벤트 구독
         currentBoss.OnDefeated     += HandleBossDefeated;
         currentBoss.OnPlayerKilled += HandlePlayerDefeated;
+
+        // 전기벽 활성화 — 플레이어 위치를 봉쇄 중심으로 사용
+        if (_electricWall != null)
+            _electricWall.Activate(_player.position);
     }
 
     #endregion
@@ -83,6 +98,7 @@ public class CBossManager : MonoBehaviour
     /// </summary>
     private void HandleBossDefeated()
     {
+        _electricWall?.Deactivate();
         CleanUpBoss();
         OnBossDefeated?.Invoke();
     }
@@ -92,6 +108,7 @@ public class CBossManager : MonoBehaviour
     /// </summary>
     private void HandlePlayerDefeated()
     {
+        _electricWall?.Deactivate();
         CleanUpBoss();
         OnPlayerDefeated?.Invoke();
     }
