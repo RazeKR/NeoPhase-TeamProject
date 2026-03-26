@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 게임 저장 시 데이터를 담고 있는 임시 클래스, 추후에 병합 시 삭제
@@ -80,6 +81,14 @@ public class CPlayerController : CEntityBase
             float weaponFireRate = weaponDataSO != null ? weaponDataSO.WeaponFireRate : 1.0f;
 
             return playerAttackSpeed * weaponFireRate;
+        }
+    }
+
+    public Vector3 PlayerLocalScale
+    {
+        get
+        {
+            return transform.localScale;
         }
     }
 
