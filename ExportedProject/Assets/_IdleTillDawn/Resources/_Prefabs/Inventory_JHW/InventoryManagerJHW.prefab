@@ -681,10 +681,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a03d25befe6c3f341ba38b3d0ef15bfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotParent: {fileID: 3213854245443295239}
-  _slotPrefab: {fileID: 7648000188606504486, guid: 396725fbcb0130f449f466bb1b1921fe,
-    type: 3}
-  _inventoryUI: {fileID: 6889937316066082630}
+  _upgradeSO: {fileID: 0}
   Inventory:
   - _instanceID: First_Item
     _itemData: {fileID: 11400000, guid: aef908ab333a0954ab49189d04b946b8, type: 2}
