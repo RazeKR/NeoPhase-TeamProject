@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
+// TODO : 플레이어 스탯 조절용 스크립트 추가
+
 /// <summary>
 /// 게임 저장 시 데이터를 담고 있는 임시 클래스, 추후에 병합 시 삭제
 /// </summary>
