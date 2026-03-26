@@ -39,6 +39,15 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Projectile
+    uniqueID: 1694221861
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Wall
+    uniqueID: 2617974573
+    locked: 0
+  - name: Pillar
+    uniqueID: 4249085671
     locked: 0

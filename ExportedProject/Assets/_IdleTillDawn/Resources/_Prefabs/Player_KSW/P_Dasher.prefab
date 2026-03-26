@@ -275,7 +275,7 @@ MonoBehaviour:
   _scanRadius: 15
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 64
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -321,7 +321,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.03, y: 0.01}
