@@ -9,7 +9,49 @@ public class CWorldBossType1Controller : CBossBase
     [SerializeField] private float _dashForce = 10f;
     [SerializeField] private float _slidingTime = 1.5f;
     [SerializeField] private string _dashLayer = "Dash_Layer";
+
+    [Header("촉수 소환 설정")]
+    [SerializeField] string _tentaclePoolKey = "Tentacle";
+    [SerializeField] int _maxTentacleCount = 15;
+    [SerializeField] float _spawnInterval = 5f;
+    [SerializeField] float _spawnRadiusMin = 3f;
+    [SerializeField] float _spawnRadiusMax = 6f;
     #endregion
+
+    #region 내부 변수
+    private int _currentTentacleCount = 0;
+    private Coroutine _spawnLoopTentacle;
+    #endregion
+
+    #region 이벤트
+    public static event System.Action<string, Vector2> OnRequestSpawn;
+    #endregion
+
+    protected override void Awake()
+    {
+        base.Awake();
+        CTentacleController.OnTentacleDestroyed += () => _currentTentacleCount--;
+    }
+
+    private void OnDestroy()
+    {
+        CTentacleController.OnTentacleDestroyed -= () => _currentTentacleCount--;
+    }
+
+    protected override void HandleAttack()
+    {
+        base.HandleAttack();
+
+        if (_spawnLoopTentacle == null && _currentTentacleCount < _maxTentacleCount)
+        {
+            _spawnLoopTentacle = StartCoroutine(CoTentacleSpawnLoop());
+        }
+        else if (_spawnLoopTentacle != null && _currentTentacleCount >= _maxTentacleCount)
+        {
+            StopCoroutine(_spawnLoopTentacle);
+            _spawnLoopTentacle = null;
+        }
+    }
 
     protected override IEnumerator CoAttackSequence()
     {
@@ -58,5 +100,30 @@ public class CWorldBossType1Controller : CBossBase
         {
             SetLayerRecursively(child.gameObject, newLayer);
         }
+    }
+
+    private IEnumerator CoTentacleSpawnLoop()
+    {
+        while (true)
+        {
+            if (_currentTentacleCount < _maxTentacleCount)
+            {
+                Vector2 spawnPos = GetRandomSpawnPos();
+
+                OnRequestSpawn?.Invoke(_tentaclePoolKey, spawnPos);
+                _currentTentacleCount++;
+            }
+
+            yield return new WaitForSeconds(_spawnInterval);
+        }
+    }
+
+    private Vector2 GetRandomSpawnPos()
+    {
+        float angle = Random.Range(0f, Mathf.PI * 2f);
+        float distance = Random.Range(_spawnRadiusMin, _spawnRadiusMax);
+
+        Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
+        return (Vector2)transform.position + offset;
     }
 }

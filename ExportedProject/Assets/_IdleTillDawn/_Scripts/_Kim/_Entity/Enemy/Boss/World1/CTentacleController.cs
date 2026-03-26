@@ -6,7 +6,7 @@ public class CTentacleController : CEnemyBase
 {
     #region 인스펙터
     [Header("촉수 설정")]
-    [SerializeField] private float _orbitDistance = 1.5f;
+    [SerializeField] private float _orbitDistance = 1f;
     [SerializeField] private float _chargeTime = 1f;
 
     [Header("참조")]
@@ -18,14 +18,21 @@ public class CTentacleController : CEnemyBase
     [Header("에니메이터 관련 설정")]
     [SerializeField] private string _paramAttack = "tAttack";
     [SerializeField] private string _indicatorAnimation = "A_Tentacle_Indicator";
+
+    [Header("테스트 용 설정")]
+    [SerializeField] private bool _isPersonalScene = true;
     #endregion
 
     #region 내부 변수
-    private Transform _playerTr;
     private bool _isActivated = false;
+    private Coroutine _attackCoroutine;
 
     private int _hashAttack;
     private bool _hasAttackParam;
+    #endregion
+
+    #region 이벤트
+    public static event System.Action OnTentacleDestroyed;
     #endregion
 
     protected override void Awake()
@@ -45,11 +52,69 @@ public class CTentacleController : CEnemyBase
         }
     }
 
-    public void InitTentacle(Transform playerTr)
+    private void OnEnable()
     {
-        _playerTr = playerTr;
+        InitTentacle();
+    }
+
+    protected override void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, AttackRange);
+    }
+
+    public override void Die()
+    {
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
+        }
+
+        if (_indicatorObj != null)
+        {
+            _indicatorObj.SetActive(false);
+        }
+
+        OnTentacleDestroyed?.Invoke();
+        
+        if (_isPersonalScene)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            base.Die();
+        }
+    }
+
+    public void InitTentacle()
+    {
+        _isActivated = false;
 
         if (_indicatorObj != null) _indicatorObj.SetActive(false);
+    }
+
+    /// <summary>
+    /// CEnemyBase의 ResetForPool을 오버라이드하여 촉수 전용 상태 초기화
+    /// </summary>
+    public override void ResetForPool()
+    {
+        base.ResetForPool(); //
+
+        if (_attackCoroutine != null)
+        {
+            StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
+        }
+
+        _isActivated = false;
+        if (_indicatorObj != null) _indicatorObj.SetActive(false);
+    }
+
+    protected override void HandleMovement()
+    {
+        
     }
 
     protected override void HandleAttack()
@@ -59,11 +124,19 @@ public class CTentacleController : CEnemyBase
         float distance = Vector2.Distance(transform.position, CurrentTarget.position);
         if (distance <= AttackRange)
         {
-            StartCoroutine(CoActivatePattern());
+            if (_attackCoroutine != null)
+            {
+                StopCoroutine(_attackCoroutine);
+            }
+
+            _attackCoroutine = StartCoroutine(CoActivatePattern());
         }
     }
 
-    protected override void ExecuteAttack() { }
+    protected override void ExecuteAttack()
+    {
+
+    }
 
     private IEnumerator CoActivatePattern()
     {
@@ -88,16 +161,28 @@ public class CTentacleController : CEnemyBase
         ApplyDamage();
 
         yield return new WaitForSeconds(2f / 7f);
+
+        _indicatorObj.SetActive(false);
+
+        yield return new WaitForSeconds(0.5f);
+
+        LastAttackTime = Time.time;
+        _isActivated = false;
     }
 
     private void SetIndicatorOrbit()
     {
-        Vector2 dir = (_playerTr.position - transform.position).normalized;
+        if (CurrentTarget == null) return;
 
-        _indicatorObj.transform.position = (Vector2)transform.position + (dir * _orbitDistance);
+        float heightOffset = 0.5f;
+        Vector2 bottomPos = (Vector2)transform.position + Vector2.down * heightOffset;
+
+        Vector2 dir = ((Vector2)CurrentTarget.position - bottomPos).normalized;
+
+        _indicatorObj.transform.position = bottomPos + (dir * _orbitDistance);
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        _indicatorObj.transform.rotation = Quaternion.AngleAxis(angle - 90f, Vector3.forward);
+        _indicatorObj.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     private void ApplyDamage()
