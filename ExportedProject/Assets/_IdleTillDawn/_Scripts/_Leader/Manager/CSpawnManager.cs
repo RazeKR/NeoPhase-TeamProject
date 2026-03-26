@@ -61,6 +61,16 @@ public class CSpawnManager : MonoBehaviour
         InitializePools();
     }
 
+    private void OnEnable()
+    {
+        CWorldBossType1Controller.OnRequestSpawn += HandleManualSpawn;
+    }
+
+    private void OnDisable()
+    {
+        CWorldBossType1Controller.OnRequestSpawn -= HandleManualSpawn;
+    }
+
     #endregion
 
     #region Public Methods
@@ -224,6 +234,46 @@ public class CSpawnManager : MonoBehaviour
         float   radius = UnityEngine.Random.Range(_spawnMinRadius, _spawnMaxRadius);
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
         return _player.position + (Vector3)offset;
+    }
+
+    /// <summary>
+    /// 수동 스폰 이벤트 핸들러
+    /// </summary>
+    /// <param name="poolKey"></param>
+    /// <param name="position"></param>
+    private void HandleManualSpawn(string poolKey, Vector2 position)
+    {
+        SpawnManual(poolKey, position);
+    }
+
+    /// <summary>
+    /// 특정 풀 키를 지정하여 원하는 위치에 수동으로 스폰한다.
+    /// </summary>
+    /// <param name="poolKey"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
+    private CEnemyBase SpawnManual(string poolKey, Vector2 position)
+    {
+        if (!pools.TryGetValue(poolKey, out Queue<CEnemyBase> pool) || pool.Count == 0)
+        {
+            Debug.LogWarning($"{poolKey} 풀이 비었거나 존재하지 않음");
+            return null;
+        }
+
+        CEnemyBase enemy = pool.Dequeue();
+        enemy.transform.position = position;
+
+        int stageNumber = currentStageData != null ? currentStageData.StageIndex + 1 : 1;
+        enemy.InitEnemy(stageNumber);
+        enemy.SetTarget(_player);
+
+        enemy.gameObject.SetActive(true);
+        activeEnemies.Add(enemy);
+
+        enemy.OnDied -= OnEnemyDied;
+        enemy.OnDied += OnEnemyDied;
+
+        return enemy;
     }
 
     #endregion

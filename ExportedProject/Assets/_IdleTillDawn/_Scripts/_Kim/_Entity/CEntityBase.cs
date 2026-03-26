@@ -1,6 +1,8 @@
 ﻿using System;
 using UnityEngine;
 
+// TODO : 빙결, 화상, 넉백 상태 플래그
+
 [RequireComponent(typeof(Rigidbody2D))]
 public abstract class CEntityBase : MonoBehaviour, IDamageable
 {
