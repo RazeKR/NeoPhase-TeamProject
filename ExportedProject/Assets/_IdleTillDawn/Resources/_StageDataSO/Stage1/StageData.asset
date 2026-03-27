@@ -17,8 +17,5 @@ MonoBehaviour:
   _killGoal: 100
   _spawnInterval: 0
   _maxActiveCount: 10000
-  _bossPrefab: {fileID: 6720663510833868207, guid: 01cec2fd69675074680fd1766041e1aa,
+  _bossPrefab: {fileID: 4372230758617115628, guid: b4f9240c6f7375947afec7ecc2963589,
     type: 3}
-  _hpMultiplier: 0.1
-  _bossHpMultiplier: 0.1
-  _bossAtkMultiplier: 0.1

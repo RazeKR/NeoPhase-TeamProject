@@ -123,58 +123,33 @@ public class CElectircWall : MonoBehaviour
             Debug.LogWarning("[CElectircWall] AnimFrames가 비어있음");
             yield break;
         }
-
         _tileSize = _animFrames[0].bounds.size * _tileScale;
-
         BuildWalls();
         PlaceWallsOutsideCamera();
-
         StartCoroutine(Co_Animate());
         StartCoroutine(Co_DamageLoop());
-
         yield return Co_SlideIn();
     }
 
     private void BuildWalls()
     {
-        // 기존 자식 제거
         for (int i = transform.childCount - 1; i >= 0; i--)
             Destroy(transform.GetChild(i).gameObject);
 
         float halfW  = _areaSize.x * 0.5f;
         float halfH  = _areaSize.y * 0.5f;
-        float tileH  = _tileSize.y; // 벽 두께 (스프라이트 세로 크기)
+        float tileH  = _tileSize.y;
+        float innerW = _areaSize.x - tileH * 2f + _cornerOverlap * 2f;
+        float insetH = halfH - tileH * 0.5f;
+        float insetW = halfW - tileH * 0.5f;
 
-        // ── 코너 완전 접합 구조 ────────────────────────────────────────────
-        // 수직벽(좌우)이 코너를 포함한 전체 높이를 담당
-        //   → 바깥 면 = ±halfW  →  중심 X = ±(halfW - tileH/2)
-        //   → 높이 = areaSize.y (전체)
-        //
-        // 수평벽(상하)은 수직벽 안쪽 사이만 채움
-        //   → 바깥 면 = ±halfH  →  중심 Y = ±(halfH - tileH/2)
-        //   → 너비 = areaSize.x - tileH*2 (수직벽 두께 양쪽 제외)
-        //
-        // 검증:
-        //   수평벽 왼쪽 edge = center.x - (areaSize.x - tileH*2)/2
-        //                    = center.x - halfW + tileH
-        //   수직벽 안쪽 edge = (center.x - halfW + tileH/2) + tileH/2
-        //                    = center.x - halfW + tileH  ✓ 완전 접합
-        // ─────────────────────────────────────────────────────────────────
-
-        float innerW = _areaSize.x - tileH * 2f + _cornerOverlap * 2f; // 수평벽 너비 (코너 겹침 포함)
-        float insetH = halfH - tileH * 0.5f;      // 수평벽 중심 Y
-        float insetW = halfW - tileH * 0.5f;      // 수직벽 중심 X
-
-        // 수직벽 먼저 (코너 포함 전체 높이)
-        _leftWall  = CreateVerticalWall  ("LeftWall",  _activeCenter + new Vector2(-insetW, 0f),     _areaSize.y, Vector2.right);
-        _rightWall = CreateVerticalWall  ("RightWall", _activeCenter + new Vector2( insetW, 0f),     _areaSize.y, Vector2.left);
-        // 수평벽 (수직벽 사이만)
-        _topWall   = CreateHorizontalWall("TopWall",   _activeCenter + new Vector2(0f,  insetH),     innerW,      Vector2.down);
-        _botWall   = CreateHorizontalWall("BotWall",   _activeCenter + new Vector2(0f, -insetH),     innerW,      Vector2.up);
+        _leftWall  = CreateVerticalWall("LeftWall",   _activeCenter + new Vector2(-insetW,  0f), _areaSize.y, Vector2.right);
+        _rightWall = CreateVerticalWall("RightWall",  _activeCenter + new Vector2( insetW,  0f), _areaSize.y, Vector2.left);
+        _topWall   = CreateHorizontalWall("TopWall",  _activeCenter + new Vector2(0f,  insetH),  innerW,      Vector2.down);
+        _botWall   = CreateHorizontalWall("BotWall",  _activeCenter + new Vector2(0f, -insetH),  innerW,      Vector2.up);
 
         _allWalls = new WallSide[] { _topWall, _botWall, _leftWall, _rightWall };
 
-        // SpriteRenderer 전체 수집
         var list = new List<SpriteRenderer>();
         foreach (WallSide w in _allWalls)
             list.AddRange(w.Root.GetComponentsInChildren<SpriteRenderer>());
@@ -188,19 +163,13 @@ public class CElectircWall : MonoBehaviour
         obj.transform.position = pos;
         obj.layer = gameObject.layer;
 
-        Rigidbody2D rb  = obj.AddComponent<Rigidbody2D>();
+        Rigidbody2D rb = obj.AddComponent<Rigidbody2D>();
         rb.bodyType = RigidbodyType2D.Static;
 
         BoxCollider2D col = obj.AddComponent<BoxCollider2D>();
         col.size = new Vector2(length, _tileSize.y);
 
-        // 타일 배치 (X축 타일링) — 벽 경계 안에서만 배치, 오버플로우 없음
-        int count = Mathf.CeilToInt(length / _tileSize.x);
-        for (int i = 0; i < count; i++)
-        {
-            float lx = -length * 0.5f + _tileSize.x * (i + 0.5f);
-            SpawnTile(obj.transform, new Vector2(lx, 0f), Quaternion.identity);
-        }
+        SpawnTilesAlongWall(obj.transform, length, false);
 
         return new WallSide
         {
@@ -224,17 +193,9 @@ public class CElectircWall : MonoBehaviour
             rb.bodyType = RigidbodyType2D.Static;
 
             BoxCollider2D col = obj.AddComponent<BoxCollider2D>();
-            // 스프라이트 90도 회전 → 원래 x길이가 높이 방향이 됨
             col.size = new Vector2(_tileSize.y, length);
 
-            // 타일 배치 (Y축 타일링, 스프라이트 90도 회전) — 오버플로우 없음
-            int count = Mathf.CeilToInt(length / _tileSize.x);
-            Quaternion rot90 = Quaternion.Euler(0f, 0f, 90f);
-            for (int i = 0; i < count; i++)
-            {
-                float ly = -length * 0.5f + _tileSize.x * (i + 0.5f);
-                SpawnTile(obj.transform, new Vector2(0f, ly), rot90);
-            }
+            SpawnTilesAlongWall(obj.transform, length, true);
         }
 
         return new WallSide
@@ -246,13 +207,37 @@ public class CElectircWall : MonoBehaviour
         };
     }
 
-    private void SpawnTile(Transform parent, Vector2 localPos, Quaternion rotation)
+    // FloorToInt 개의 완전한 타일 + 나머지는 마지막 타일 scaleX로 정확히 채움
+    // fullCount * tileSize.x + remaining == length (항등) → 틈 없음
+    private void SpawnTilesAlongWall(Transform parent, float wallLength, bool vertical)
+    {
+        int   full      = Mathf.FloorToInt(wallLength / _tileSize.x);
+        float remainder = wallLength - full * _tileSize.x;
+        Quaternion rot  = vertical ? Quaternion.Euler(0f, 0f, 90f) : Quaternion.identity;
+
+        for (int i = 0; i < full; i++)
+        {
+            float   t   = -wallLength * 0.5f + _tileSize.x * (i + 0.5f);
+            Vector2 lp  = vertical ? new Vector2(0f, t) : new Vector2(t, 0f);
+            SpawnOneTile(parent, lp, rot, Vector3.one * _tileScale);
+        }
+
+        if (remainder > 0.001f)
+        {
+            float   t      = wallLength * 0.5f - remainder * 0.5f;
+            Vector2 lp     = vertical ? new Vector2(0f, t) : new Vector2(t, 0f);
+            float   sxLast = (remainder / _tileSize.x) * _tileScale;
+            SpawnOneTile(parent, lp, rot, new Vector3(sxLast, _tileScale, 1f));
+        }
+    }
+
+    private void SpawnOneTile(Transform parent, Vector2 localPos, Quaternion rotation, Vector3 scale)
     {
         GameObject tile = new GameObject("Tile");
         tile.transform.SetParent(parent);
         tile.transform.localPosition = localPos;
         tile.transform.localRotation = rotation;
-        tile.transform.localScale    = Vector3.one * _tileScale;
+        tile.transform.localScale    = scale;
 
         SpriteRenderer sr = tile.AddComponent<SpriteRenderer>();
         sr.sprite       = _animFrames[0];
@@ -383,10 +368,10 @@ public class CElectircWall : MonoBehaviour
             IDamageable damageable = hit.GetComponent<IDamageable>();
             damageable?.TakeDamage(_damage);
 
-            // 넉백: 해당 벽의 안쪽 방향으로 밀어냄
-            Rigidbody2D rb = hit.GetComponent<Rigidbody2D>();
-            if (rb != null)
-                rb.velocity = wall.KnockDir * _knockbackForce;
+            // 넉백: 플레이어 컨트롤러에 위임하여 이동 override 없이 적용
+            CPlayerController player = hit.GetComponent<CPlayerController>();
+            if (player != null)
+                player.ApplyKnockback(wall.KnockDir * _knockbackForce, _damageInterval * 0.6f);
         }
     }
 
