@@ -1,16 +1,114 @@
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CPlayerStatManager : MonoBehaviour
 {
-    void Start()
+    #region 인스펙터
+    [Header("데이터 참조")]
+    [SerializeField] private CPlayerDataSO _baseData;
+    #endregion
+
+    #region 내부 변수
+    // 레벨업 모디파이어
+    private float[] _levelModifiers = new float[(int)EPlayerStatType.Count];
+    // 추가 스탯 모디파이어
+    private float[] _bonusModifiers = new float[(int)EPlayerStatType.Count];
+    #endregion
+
+    #region 프로퍼티
+    public int CurrentLevel { get; private set; } = 1;
+    public float CurrentExp { get; private set; } = 0f;
+
+    public float[] BonusModifiers => _bonusModifiers;
+    #endregion
+
+    #region 이벤트
+    public event Action<int> OnLevelUp;
+    public event Action OnStatUpgraded;
+    #endregion
+
+    /// <summary>
+    /// 세이브 데이터를 기반으로 현재 레벨과 경험치를 동기화하고 모디파이어를 계산
+    /// </summary>
+    /// <param name="data"></param>
+    public void SyncWithSaveData(CPlayerSaveData data)
     {
-        
+        CurrentLevel = data.Level;
+        CurrentExp = data.CurrentExp;
+
+        if (data.BonusStats != null && data.BonusStats.Length == (int)EPlayerStatType.Count)
+        {
+            data.BonusStats.CopyTo(_bonusModifiers, 0);
+        }
+
+        SetModifier(CurrentLevel);
     }
 
-    void Update()
+    /// <summary>
+    /// 상점이나 이벤트에서 스탯을 증가시킬 때 호출하는 API
+    /// </summary>
+    /// <param name="statType"></param>
+    /// <param name="amount"></param>
+    public void PurchaseStatUpgrade(EPlayerStatType statType, float amount)
     {
-        
+        _bonusModifiers[(int)statType] += amount;
+
+        OnStatUpgraded?.Invoke();
+    }
+    /// <summary>
+    /// 최종 스탯을 계산한 후 반환하는 메서드
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns>float 최종 스탯</returns>
+    public float GetFinalStat(EPlayerStatType type)
+    {
+        int index = (int)type;
+        float baseValue = _baseData.GetStatInfo(type).BaseValue;
+
+        return baseValue + _levelModifiers[index] + _bonusModifiers[index];
+    }
+
+    public void AddExp(float amount)
+    {
+        float finalExp = amount * GetFinalStat(EPlayerStatType.ExpMultiplier);
+        CurrentExp += finalExp;
+
+        float requiredExp = GetRequiredExp(CurrentLevel);
+
+        while (CurrentExp >= requiredExp)
+        {
+            CurrentExp -= requiredExp;
+            CurrentLevel++;
+
+            SetModifier(CurrentLevel);
+            OnLevelUp?.Invoke(CurrentLevel);
+
+            requiredExp = GetRequiredExp(CurrentLevel);
+        }
+    }
+
+    public float GetRequiredExp(int currentLevel)
+    {
+        return 100f + (currentLevel * 100f);
+    }
+
+    /// <summary>
+    /// 플레이어 레벨을 받아 모디파이어 세팅
+    /// </summary>
+    /// <param name="currentLevel">플레이어 레벨</param>
+    private void SetModifier(int currentLevel)
+    {
+        float growthCount = currentLevel - 1;
+
+        for (int i = 0; i < (int)EPlayerStatType.Count; i++)
+        {
+            EPlayerStatType type = (EPlayerStatType)i;
+            float growthValue = _baseData.GetStatInfo(type).GrowthPerLevel;
+
+            _levelModifiers[i] = growthCount * growthValue;
+        }
     }
 }
