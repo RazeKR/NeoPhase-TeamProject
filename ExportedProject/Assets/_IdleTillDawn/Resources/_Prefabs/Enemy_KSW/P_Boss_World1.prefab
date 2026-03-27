@@ -215,6 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea38277837b4a7a42a8a986513e4e03b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 1
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 0
@@ -233,3 +234,8 @@ MonoBehaviour:
   _dashForce: 10
   _slidingTime: 1
   _dashLayer: Dash_Layer
+  _tentaclePoolKey: Tentacle
+  _maxTentacleCount: 15
+  _spawnInterval: 1
+  _spawnRadiusMin: 1
+  _spawnRadiusMax: 2
