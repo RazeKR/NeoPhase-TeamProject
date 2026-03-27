@@ -124,6 +124,6 @@ public class CWorldBossType1Controller : CBossBase
         float distance = Random.Range(_spawnRadiusMin, _spawnRadiusMax);
 
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
-        return (Vector2)transform.position + offset;
+        return (Vector2)CurrentTarget.position + offset;
     }
 }
