@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 365689358192965440}
   - component: {fileID: 5587351113032838901}
   m_Layer: 5
-  m_Name: LinePrefab
+  m_Name: LinePrefab_JHW
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

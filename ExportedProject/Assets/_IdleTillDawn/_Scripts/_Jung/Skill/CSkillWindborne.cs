@@ -44,8 +44,15 @@ public class CSkillWindborne : MonoBehaviour
     {
         if (_so == null) { enabled = false; return; }
 
-        _level  = CSkillManager.Instance.GetSkillLevel(_so.name);
-        _damage = _so.damage * (1f + (_level * 0.1f));
+        _level  = CSkillManager.Instance.GetSkillLevel(_so.skillName);
+
+        float lvMagnifcation = 1f + _level * 0.1f;
+
+        _damage = _so.damage * lvMagnifcation;
+
+        Debug.Log(_level);
+
+        gameObject.transform.localScale = Vector3.one * lvMagnifcation;
     }
 
     /// <summary>
