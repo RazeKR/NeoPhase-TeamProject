@@ -14,6 +14,7 @@ using System;
 public class CInventoryManager : MonoBehaviour
 {
     [SerializeField] private CUpgradeSO _upgradeSO = null;
+    [SerializeField] private bool _showDebug = false;
 
     public static CInventoryManager Instance {  get; private set; }
 
@@ -53,7 +54,8 @@ public class CInventoryManager : MonoBehaviour
             if (string.IsNullOrEmpty(item._instanceID))
             {
                 item._instanceID = Guid.NewGuid().ToString();
-                Debug.Log($"{item._itemData.ItemName}의 누락된 InstanceID 자동 생성 : {item._itemData.ItemId}");
+
+                if (_showDebug) Debug.Log($"{item._itemData.ItemName}의 누락된 InstanceID 자동 생성 : {item._itemData.ItemId}");
             }
         }
 
@@ -82,7 +84,7 @@ public class CInventoryManager : MonoBehaviour
 
         if (_upgradeSO == null)
         {
-            Debug.LogWarning("인벤토리 매니저 : UpgradeSO 필요");
+            if (_showDebug) Debug.LogWarning("인벤토리 매니저 : UpgradeSO 필요");
         }
     }
 
@@ -134,13 +136,13 @@ public class CInventoryManager : MonoBehaviour
             .ThenBy(w => w._data.ItemId)
             .FirstOrDefault();
 
-        Debug.Log($"무기군 중 최고 등급으로 필터링 : {bestWeapon._itemData.ItemName}, {bestWeapon._rank}, {bestWeapon._instanceID}");
+        if (_showDebug) Debug.Log($"무기군 중 최고 등급으로 필터링 : {bestWeapon._itemData.ItemName}, {bestWeapon._rank}, {bestWeapon._instanceID}");
 
         if (bestWeapon != null)
         {
             bestWeapon._isEquipped = true;
             _equippedWeapon = bestWeapon;
-            Debug.Log("무기 자동 장착");
+            if (_showDebug) Debug.Log("무기 자동 장착");
         }
 
         SaveInventory(Inventory);
@@ -155,7 +157,7 @@ public class CInventoryManager : MonoBehaviour
         foreach (var item in allItems)
         {
             _itemDataCache[item.ItemId] = item;
-            Debug.Log($"{item.ItemId} 캐시");
+            if (_showDebug) Debug.Log($"{item.ItemId} 캐시");
         }
     }
 
@@ -203,7 +205,7 @@ public class CInventoryManager : MonoBehaviour
 
         CInventoryUI.Instance.RefreshUI();
 
-        Debug.Log($"저장 완료 (저장 경로: {SavePath})");
+        if (_showDebug) Debug.Log($"저장 완료 (저장 경로: {SavePath})");
     }
 
 
@@ -288,7 +290,7 @@ public class CInventoryManager : MonoBehaviour
 
         if (potion == null)
         {
-            Debug.Log("강화 실패 : 포션이 존재하지 않음");
+            if (_showDebug) Debug.Log("강화 실패 : 포션이 존재하지 않음");
             return;
         }
 
@@ -305,7 +307,7 @@ public class CInventoryManager : MonoBehaviour
 
         if (scroll == null)
         {
-            Debug.Log("강화 실패 : 스크롤이 존재하지 않음");
+            if (_showDebug) Debug.Log("강화 실패 : 스크롤이 존재하지 않음");
             return;
         }
 
@@ -315,12 +317,12 @@ public class CInventoryManager : MonoBehaviour
 
         if (_upgradeSO.GetUpgradeResult(target._upgrade))
         {
-            target._upgrade += 1; 
-            Debug.Log("강화 성공");
+            target._upgrade += 1;
+            if (_showDebug) Debug.Log("강화 성공");
         }
         else
         {
-            Debug.Log("강화 실패");
+            if (_showDebug) Debug.Log("강화 실패");
         }
 
 
@@ -333,7 +335,7 @@ public class CInventoryManager : MonoBehaviour
     { 
         if (!_itemDataCache.TryGetValue(itemID, out var originSO))
         {
-            Debug.Log($"{itemID}의 SO를 캐시에서 찾을 수 없음");
+            if (_showDebug) Debug.Log($"{itemID}의 SO를 캐시에서 찾을 수 없음");
             return;
         }
 
@@ -347,7 +349,7 @@ public class CInventoryManager : MonoBehaviour
 
                 Inventory.Add(w);
             }
-            Debug.Log($"{originSO.ItemName} : {count}개 획득");
+            if (_showDebug) Debug.Log($"{originSO.ItemName} : {count}개 획득");
         }
 
         else if (originSO.ItemType == EItemType.Potion)
@@ -386,10 +388,10 @@ public class CInventoryManager : MonoBehaviour
                 if (existPotion._amount + count > existPotion._maxAmount)
                 {
                     existPotion._amount = existPotion._maxAmount;
-                    Debug.Log("포션 최대치 = 999");
+                    if (_showDebug) Debug.Log("포션 최대치 = 999");
                 }
 
-                Debug.Log($"{originSO.ItemName} : {count}개 획득, 수량 : {existPotion._amount}");
+                if (_showDebug) Debug.Log($"{originSO.ItemName} : {count}개 획득, 수량 : {existPotion._amount}");
             }
             else
             {
@@ -408,10 +410,10 @@ public class CInventoryManager : MonoBehaviour
                 if (existScroll._amount + count > existScroll._maxAmount)
                 {
                     existScroll._amount = existScroll._maxAmount;
-                    Debug.Log("스크롤 최대치 = 999");
+                    if (_showDebug) Debug.Log("스크롤 최대치 = 999");
                 }
 
-                Debug.Log($"{originSO.ItemName} : {count}개 획득, 수량 : {existScroll._amount}");
+                if (_showDebug) Debug.Log($"{originSO.ItemName} : {count}개 획득, 수량 : {existScroll._amount}");
             }
             else
             {
@@ -433,12 +435,12 @@ public class CInventoryManager : MonoBehaviour
         if (backupEquipped != null)
         {
             Inventory.Add(_equippedWeapon);
-            Debug.Log("장착중인 무기를 제외한 모든 무기 제거");
+            if (_showDebug) Debug.Log("장착중인 무기를 제외한 모든 무기 제거");
         }
         else
         {
             // 이 상황은 생기지 않도록 방어 필요하지만, 일단 예외처리함
-            Debug.Log("장착중인 무기가 없어 인벤토리 완전 초기화");
+            if (_showDebug) Debug.Log("장착중인 무기가 없어 인벤토리 완전 초기화");
         }
 
 
@@ -454,12 +456,12 @@ public class CInventoryManager : MonoBehaviour
         
         if (target != null && target == _equippedWeapon)
         {
-            Debug.Log("장착중인 무기는 버릴 수 없음");
+            if (_showDebug) Debug.Log("장착중인 무기는 버릴 수 없음");
             return;
         }
 
         Inventory.Remove(target);
-        Debug.Log($"{target._itemData.ItemName} 삭제 완료");
+        if (_showDebug) Debug.Log($"{target._itemData.ItemName} 삭제 완료");
 
         SaveInventory(Inventory);
 
