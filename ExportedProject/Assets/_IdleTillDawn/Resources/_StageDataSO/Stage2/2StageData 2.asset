@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _world: 2
   _stage: 3
-  _killGoal: 100
+  _killGoal: 300
   _spawnInterval: 0
   _maxActiveCount: 10000
   _bossPrefab: {fileID: 4372230758617115628, guid: b4f9240c6f7375947afec7ecc2963589,
