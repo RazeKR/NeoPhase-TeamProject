@@ -1,5 +1,26 @@
 ﻿using UnityEngine;
 
+public enum EPlayerStatType
+{
+    Health,
+    Mana,
+    Damage,
+    AttackSpeed,
+    HealthRegen,
+    ManaRegen,
+    MoveSpeed,
+    ExpMultiplier,
+    Count // 배열 크기용
+}
+
+[System.Serializable]
+public struct PlayerStatInfo
+{
+    public EPlayerStatType StatType;
+    public float BaseValue;      // 기본 1레벨 수치
+    public float GrowthPerLevel; // 레벨당 오르는 수치
+}
+
 [CreateAssetMenu(menuName = "2D(SO)/Data/Player Data", fileName = "PlayerDataSO_")]
 public class CPlayerDataSO : ScriptableObject
 {
@@ -9,17 +30,10 @@ public class CPlayerDataSO : ScriptableObject
 	[SerializeField] private string _description = "Character Description";
 	[SerializeField] private Sprite _characterPortrait = null;
 
-	[Header("캐릭터 스탯")]
-	[SerializeField] private float _baseHealth = 50f;
-	[SerializeField] private float _baseMana = 20f;
-	[SerializeField] private float _baseDamage = 10f;
-	[SerializeField] private float _baseAttackSpeed = 1f;
-	[SerializeField] private float _baseHealthRegen = 1f;
-	[SerializeField] private float _baseManaRegen = 4f;
-	[SerializeField] private float _baseMoveSpeed = 3f;
-	[SerializeField] private float _baseExpMultiplier = 1f;
+    [Header("캐릭터 스탯 설정")]
+    [SerializeField] private PlayerStatInfo[] _statSettings;
 
-	[Header("소환할 오브젝트")]
+    [Header("소환할 오브젝트")]
 	[SerializeField] GameObject _prefab;
 	#endregion
 
@@ -28,15 +42,18 @@ public class CPlayerDataSO : ScriptableObject
 	public string Description => _description;
 	public Sprite CharacterPortrait => _characterPortrait;
 
-	public float BaseHealth => _baseHealth;
-	public float BaseMana => _baseMana;
-	public float BaseDamage => _baseDamage;
-	public float BaseAttackSpeed => _baseAttackSpeed;
-	public float BaseHealthRegen => _baseHealthRegen;
-	public float BaseManaRegen => _baseManaRegen;
-	public float BaseMoveSpeed => _baseMoveSpeed;
-	public float BaseExpMultiplier => _baseExpMultiplier;
+    public GameObject Prefab => _prefab;
+    #endregion
 
-	public GameObject Prefab => _prefab;
-	#endregion
+    public PlayerStatInfo GetStatInfo(EPlayerStatType type)
+    {
+        if (_statSettings == null) return new PlayerStatInfo();
+
+        for (int i = 0; i < _statSettings.Length; i++)
+        {
+            if (_statSettings[i].StatType == type) return _statSettings[i];
+        }
+
+        return new PlayerStatInfo();
+    }
 }

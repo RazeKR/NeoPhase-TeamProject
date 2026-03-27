@@ -5,15 +5,6 @@ using UnityEngine.UIElements;
 
 // TODO : 플레이어 스탯 조절용 스크립트 추가
 
-/// <summary>
-/// 게임 저장 시 데이터를 담고 있는 임시 클래스, 추후에 병합 시 삭제
-/// </summary>
-public class PlayerSavedData
-{
-    public bool isNewGame;
-    public float savedCurrentHealth;
-}
-
 [RequireComponent(typeof(CPlayerInputHandler))]
 public class CPlayerController : CEntityBase
 {
@@ -47,6 +38,8 @@ public class CPlayerController : CEntityBase
     private float _lastAttackTime = 0f;
     private int   _hashSpeed;
 
+    private CPlayerStatManager _statManager;
+
     private bool _isApproaching = false;
     private Transform _lastTarget;
 
@@ -79,7 +72,8 @@ public class CPlayerController : CEntityBase
         get
         {
             // 플레이어의 베이스 공격 속도 (없으면 기본값 1.0f)
-            float playerAttackSpeed = _characterData != null ? _characterData.BaseAttackSpeed : 1.0f;
+            CPlayerStatManager statManager = GetComponent<CPlayerStatManager>();
+            float playerAttackSpeed = statManager != null ? statManager.GetFinalStat(EPlayerStatType.AttackSpeed) : 1.0f;
 
             // 장착한 무기의 연사 속도
             CWeaponDataSO weaponDataSO = GetEquippedWeaponData();
@@ -128,6 +122,11 @@ public class CPlayerController : CEntityBase
             _animator = GetComponent<Animator>();
         }
 
+        if (_statManager == null)
+        {
+            _statManager = GetComponent<CPlayerStatManager>();
+        }
+
         if (_spriteRenderer == null)
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -149,6 +148,12 @@ public class CPlayerController : CEntityBase
         {
             _inputHandler.OnSkillInput += ExecuteManualSkill;
         }
+
+        if (_statManager != null)
+        {
+            _statManager.OnLevelUp += HandleLevelUp;
+            _statManager.OnStatUpgraded += RefreshStats;
+        }
     }
 
     private void OnDisable()
@@ -156,6 +161,12 @@ public class CPlayerController : CEntityBase
         if (_inputHandler != null)
         {
             _inputHandler.OnSkillInput -= ExecuteManualSkill;
+        }
+
+        if (_statManager != null)
+        {
+            _statManager.OnLevelUp -= HandleLevelUp;
+            _statManager.OnStatUpgraded -= RefreshStats;
         }
     }
 
@@ -169,11 +180,14 @@ public class CPlayerController : CEntityBase
 
     private void Start()
     {
-        #region 임시, 추후에 삭제
-        PlayerSavedData savedData = new PlayerSavedData();
-        savedData.isNewGame = true;
-        InitPlayer(savedData);
-        #endregion
+        if (CPlayerDataManager.Instance != null)
+        {
+            InitPlayer(CPlayerDataManager.Instance.CurrentData);
+        }
+        else
+        {
+            InitPlayer(null);
+        }
     }
 
     private void Update()
@@ -196,39 +210,27 @@ public class CPlayerController : CEntityBase
     /// 세이브 데이터와 SO 데이터를 조합해 캐릭터 초기화
     /// </summary>
     /// <param name="saveData">세이브 데이터 (나중에 병합 시 맞는 타입으로 변경)</param>
-    public void InitPlayer(PlayerSavedData saveData)
+    public void InitPlayer(CPlayerSaveData saveData)
     {
         // TODO : 병합 후 추가 내용 작성
 
         if (_characterData == null) return;
 
-        if (saveData == null)
+        if (saveData == null || string.IsNullOrEmpty(saveData.Uid))
         {
             Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
-            MaxHealth = _characterData.BaseHealth;
-            MoveSpeed = _characterData.BaseMoveSpeed;
+            MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
+            MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
             CurrentHealth = MaxHealth;
             return;
         }
 
-        float baseHealth = _characterData.BaseHealth;
-        float baseSpeed = _characterData.BaseMoveSpeed;
+        _statManager.SyncWithSaveData(saveData);
 
-        // 각종 수치 계산
+        MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
 
-        // 스탯 적용
-        MaxHealth = baseHealth;
-        MoveSpeed = baseSpeed;
-
-        // 게임 데이터 불러오기
-        if (saveData.isNewGame)
-        {
-            CurrentHealth = MaxHealth;
-        }
-        else
-        {
-            CurrentHealth = saveData.savedCurrentHealth;
-        }
+        CurrentHealth = saveData.SavedHealth;
 
         Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}");
     }
@@ -303,7 +305,10 @@ public class CPlayerController : CEntityBase
         GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.identity);
         CBullet    bullet    = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
+        {
+            float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage);
             bullet.Init(dir, weaponData.WeaponDamage, _bulletSpeed, weaponData.LifeTime);
+        }
     }
 
     /// <summary>
@@ -322,38 +327,26 @@ public class CPlayerController : CEntityBase
         Vector2 dirToTarget = (CurrentTarget.position - transform.position).normalized;
 
         float maxAttackRange = CurrentAttackRange;
-        float stopApproachRange = CurrentAttackRange * 0.7f;
+        float stopApproachRange = maxAttackRange * 0.7f;
 
         if (CurrentTarget != _lastTarget)
         {
-            if (distance <= maxAttackRange)
-            {
-                _isApproaching = false;
-            }
-
+            _isApproaching = distance > maxAttackRange;
             _lastTarget = CurrentTarget;
-        }
-
-        // 타겟과의 거리가 무기 사거리 밖으로 벗어나면 타겟을 향해 접근
-        if (distance > maxAttackRange)
-        {
-            _isApproaching = true;
-        }
-
-        // 타겟과의 거리가 무기 사거리의 0.7배 이내로 들어오면 이동 중지
-        if (distance <= stopApproachRange)
-        {
-            _isApproaching= false;
-        }
-
-        if (_isApproaching)
-        {
-            return dirToTarget * MoveSpeed;
         }
         else
         {
-            return Vector2.zero;
+            if (distance > maxAttackRange)
+            {
+                _isApproaching = true;
+            }
+            else if (distance <= stopApproachRange)
+            {
+                _isApproaching = false;
+            }
         }
+
+        return _isApproaching ? (dirToTarget * MoveSpeed) : Vector2.zero;
     }
 
     /// <summary>
@@ -361,8 +354,25 @@ public class CPlayerController : CEntityBase
     /// </summary>
     public override void Die()
     {
-        CGameManager.Instance.RespawnCurrentStage();
+        if (CPlayerDataManager.Instance != null && CPlayerDataManager.Instance.CurrentData != null && CGameManager.Instance != null)
+        {
+            int savedStage = CPlayerDataManager.Instance.CurrentData.FinalStage;
+            int currentStage = CGameManager.Instance.CurrentStageData.StageIndex;
+
+            CPlayerDataManager.Instance.CurrentData.UpdateProgress
+            (
+                _statManager.CurrentLevel,
+                savedStage >= currentStage ? savedStage : currentStage,
+                _statManager.CurrentExp,
+                MaxHealth,
+                _statManager.BonusModifiers
+            );
+
+            CPlayerDataManager.Instance.SavePlayerData(CPlayerDataManager.Instance.CurrentData);
+        }
+
         base.Die();
+        CGameManager.Instance.RespawnCurrentStage();
     }
 
     /// <summary>
@@ -434,5 +444,23 @@ public class CPlayerController : CEntityBase
         _spriteRenderer.color = originColor;
         _isPreventDamage  = false;
         _preventCoroutine = null; // 정상 종료 시 참조 해제
+    }
+
+    private void HandleLevelUp(int newLevel)
+    {
+        RefreshStats();
+    }
+
+    private void RefreshStats()
+    {
+        float previousMaxHealth = MaxHealth;
+
+        MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
+
+        if (MaxHealth > previousMaxHealth)
+        {
+            CurrentHealth += (MaxHealth - previousMaxHealth);
+        }
     }
 }

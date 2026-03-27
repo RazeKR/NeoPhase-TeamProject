@@ -74,10 +74,10 @@ public class CTentacleController : CEnemyBase
             _indicatorObj.SetActive(false);
         }
 
-        OnTentacleDestroyed?.Invoke();
         
         if (IsPersonalScene)
         {
+            OnTentacleDestroyed?.Invoke();
             Destroy(gameObject);
         }
         else
@@ -98,7 +98,9 @@ public class CTentacleController : CEnemyBase
     /// </summary>
     public override void ResetForPool()
     {
-        base.ResetForPool(); //
+        base.ResetForPool();
+
+        OnTentacleDestroyed?.Invoke();
 
         if (_attackCoroutine != null)
         {

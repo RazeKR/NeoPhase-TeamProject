@@ -114,6 +114,8 @@ public class CWorldBossType1Controller : CBossBase
                 OnRequestSpawn?.Invoke(_tentaclePoolKey, spawnPos);
                 _currentTentacleCount++;
 
+                Debug.Log($"현재 촉수 갯수 :{_currentTentacleCount}, 최대 촉수 갯수 {_maxTentacleCount}");
+
                 yield return new WaitForSeconds(_spawnInterval);
             }
             else
@@ -125,7 +127,7 @@ public class CWorldBossType1Controller : CBossBase
 
     private void HandleTentacleDestroyed()
     {
-        _currentTentacleCount--;
+        _currentTentacleCount = Mathf.Max(0, _currentTentacleCount -1);
     }
 
     private Vector2 GetRandomSpawnPos()

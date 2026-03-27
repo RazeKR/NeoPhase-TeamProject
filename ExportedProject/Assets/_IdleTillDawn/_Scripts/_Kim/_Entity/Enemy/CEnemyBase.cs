@@ -102,7 +102,11 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     public override void Die()
     {
-        Rb.velocity = Vector2.zero;
+        if (Rb != null && Rb.bodyType != RigidbodyType2D.Static)
+        {
+            Rb.velocity = Vector2.zero;
+        }
+
         OnDied?.Invoke(this);
     }
 
