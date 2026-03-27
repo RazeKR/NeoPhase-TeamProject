@@ -20,6 +20,7 @@ public enum EStatus
 public class CSkillDataSO : ScriptableObject
 {
     public string skillName;        // 스킬명
+    public string flavourText;      // 스킬 설명
     public ESkillType skillType;    // 스킬 타입
     public Sprite icon;             // 스킬 아이콘
     public int maxLevel;            // 마스터 레벨

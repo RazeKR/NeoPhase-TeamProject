@@ -9,25 +9,28 @@ public class CSkillManager : MonoBehaviour
 
     public static CSkillManager Instance;
 
-    // 스킬 레벨 가져오기
-    public int GetSkillLevel(string skillName) => _acquiredSkills.ContainsKey(skillName) ? _acquiredSkills[skillName] : 0;
-    // 스킬 레벨 저장
-    private void SetSkillLevel(string skillName, int level) => _acquiredSkills[skillName] = level;
-
     // 스킬 포인트, 외부에서 자유롭게 접근하여 수정
     public int currentSkillPoints = 10;
 
     // 노드 커넥터에서 확인하는 라인 부모
     public RectTransform lineParent;
 
+    public CSkillDataSO CurrentlyDraggingSkill; // 드래그 도중 저장 SO
+    public GameObject DragIconVisual;           // 드래그 아이콘
 
+
+    // 스킬 레벨 가져오기
+    public int GetSkillLevel(string skillName) => _acquiredSkills.ContainsKey(skillName) ? _acquiredSkills[skillName] : 0;
+    // 스킬 레벨 저장
+    private void SetSkillLevel(string skillName, int level) => _acquiredSkills[skillName] = level;
+        
     public List<CSkillDataSO> allSkillDataCache;
 
     // 습득 스킬 레벨 정보 저장
     private Dictionary<string, int> _acquiredSkills = new Dictionary<string, int>();
 
     // 장착 스킬 정보 저장
-    private CSkillDataSO[] _equippedSkills;
+    public CSkillDataSO[] _equippedSkills;
 
     // Application.persistentDataPath : OS별로 데이터 저장이 허용된 안전 경로 탐색. 게임 삭제해도 데이터 유지
     private string SavePath => Path.Combine(Application.persistentDataPath, "skillSave.json");
@@ -112,9 +115,18 @@ public class CSkillManager : MonoBehaviour
         {
             save.skillList.Add(new CSkillInstance { skillName = s.Key, level = s.Value });
 
-            string json = JsonUtility.ToJson(save, true);
-            File.WriteAllText(SavePath, json);            
+            
+                 
         }
+
+        //foreach (var s in _equippedSkills)
+        //{
+        //    save.equippedSkillName.Add(CSkillDataSO != null ? CSkillDataSO.skillName : "");
+        //}
+
+
+
+        //File.WriteAllText(SavePath, json);
 
         if (_showDebug) Debug.Log($"스킬 저장 완료, 저장 경로 : {SavePath}");
     }
@@ -158,6 +170,7 @@ public class CSkillManager : MonoBehaviour
             {
                 _equippedSkills[i] = allSkillDataCache.Find(s => s.skillName == saveName);
             }
+            else _equippedSkills[i] = null;
         }
         
         RefreshAllNodes();

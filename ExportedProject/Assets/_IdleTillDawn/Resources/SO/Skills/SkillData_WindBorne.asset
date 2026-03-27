@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SkillData_WindBorne
   m_EditorClassIdentifier: 
   skillName: "\uC708\uB4DC\uBCF8"
+  flavourText: 
   skillType: 1
   icon: {fileID: 21300000, guid: 8755a4ebc99191d41bc2ea8a074f16a3, type: 2}
   maxLevel: 10
