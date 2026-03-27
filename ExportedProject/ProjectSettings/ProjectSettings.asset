@@ -12,8 +12,8 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Flanne
-  productName: MinutesTillDawn
+  companyName: NEO PHASE
+  productName: IdleTillDawn
   defaultCursor: {fileID: 2800000, guid: 525055c2a1ced3f43999dae495bfaa6e, type: 3}
   cursorHotspot: {x: 8, y: 8}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -141,7 +141,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.6.6
+  bundleVersion: 0.1
   preloadedAssets:
   - {fileID: 0}
   - {fileID: 0}
@@ -299,7 +299,14 @@ PlayerSettings:
   AndroidMinifyDebug: 0
   AndroidValidateAppBundleSize: 0
   AndroidAppBundleSizeToValidate: 0
-  m_BuildTargetIcons: []
+  m_BuildTargetIcons:
+  - m_BuildTarget: 
+    m_Icons:
+    - serializedVersion: 2
+      m_Icon: {fileID: 2800000, guid: c3cc952831c78b948b7603ae1593f3b7, type: 3}
+      m_Width: 128
+      m_Height: 128
+      m_Kind: 0
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
     m_Icons:
@@ -783,11 +790,11 @@ PlayerSettings:
   apiCompatibilityLevel: 3
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: bb3ce459-8a28-41a1-a1da-d05291af9a77
+  cloudProjectId: 99270be8-7fc1-4317-85e1-202f9ace0a45
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: MinutesTillDawn
-  organizationId: flanne
+  projectName: IdleTillDawn
+  organizationId: tlgus3305
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

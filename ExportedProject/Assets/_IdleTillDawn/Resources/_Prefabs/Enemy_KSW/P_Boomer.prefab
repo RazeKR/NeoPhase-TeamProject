@@ -122,13 +122,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8666cf950d952aa418a34d851bf53be8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 0
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 3
   _scanRadius: 10
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -196,7 +197,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.015625, y: 0.014637381}

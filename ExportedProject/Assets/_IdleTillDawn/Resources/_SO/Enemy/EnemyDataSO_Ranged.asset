@@ -16,9 +16,9 @@ MonoBehaviour:
   _description: Character Description
   _baseHealth: 50
   _baseDamage: 10
-  _attackCooltime: 1.5
+  _attackCooltime: 3
   _moveSpeed: 3
-  _attackRange: 5
+  _attackRange: 12
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 8450485299668139288, guid: 5ef52a10bbae3a341a3e51f81f0a5433, type: 3}

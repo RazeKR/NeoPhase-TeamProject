@@ -32,6 +32,27 @@ public class CRangedController : CEnemyBase
         }
     }
 
+    protected override void HandleMovement()
+    {
+        if (IsKnockBacked) return;
+
+        if (CurrentTarget == null)
+        {
+            Rb.velocity = Vector2.zero;
+            return;
+        }
+
+        float distance      = Vector2.Distance(transform.position, CurrentTarget.position);
+        Vector2 dirToPlayer = (CurrentTarget.position - transform.position).normalized;
+
+        FlipCharacter(dirToPlayer.x);
+
+        if (distance > AttackRange)
+            Rb.velocity = dirToPlayer * MoveSpeed;  // 사거리 밖 → 접근
+        else
+            Rb.velocity = Vector2.zero;              // 사거리 안 → 정지 후 공격
+    }
+
     protected override void ExecuteAttack()
     {
         if (_projectilePrefab == null || CurrentTarget == null) return;
@@ -41,7 +62,8 @@ public class CRangedController : CEnemyBase
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        GameObject obj = Instantiate(_projectilePrefab, _firePoint.position, rotation);
+        Vector3 spawnPos = _firePoint != null ? _firePoint.position : transform.position;
+        GameObject obj = Instantiate(_projectilePrefab, spawnPos, rotation);
 
         CProjectileTest projectile = obj.GetComponent<CProjectileTest>();
 

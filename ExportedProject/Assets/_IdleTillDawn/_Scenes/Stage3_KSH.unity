@@ -7532,7 +7532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyPoolConfigs:
-  - _poolKey: normal
+  - _poolKey: normal1
     _prefab: {fileID: 1394497009925343553, guid: 6f33b9f5b1fd64442b07a142159c9b8c,
       type: 3}
     _poolSize: 50
@@ -7542,7 +7542,7 @@ MonoBehaviour:
       type: 3}
     _poolSize: 15
     _spawnWeight: 0
-  - _poolKey: normal
+  - _poolKey: normal2
     _prefab: {fileID: 5783598445379814239, guid: 42099371a0da45043b1b7b8bbe8b3ea2,
       type: 3}
     _poolSize: 100
@@ -12641,7 +12641,7 @@ PrefabInstance:
     - target: {fileID: 2006921249512957054, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 269.99985
+      value: 270.00003
       objectReference: {fileID: 0}
     - target: {fileID: 2045833833162962790, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
