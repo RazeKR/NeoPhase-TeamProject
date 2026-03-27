@@ -30,26 +30,27 @@ public class CWorldBossType1Controller : CBossBase
     protected override void Awake()
     {
         base.Awake();
-        CTentacleController.OnTentacleDestroyed += () => _currentTentacleCount--;
+        CTentacleController.OnTentacleDestroyed += HandleTentacleDestroyed;
     }
 
     private void OnDestroy()
     {
-        CTentacleController.OnTentacleDestroyed -= () => _currentTentacleCount--;
+        CTentacleController.OnTentacleDestroyed -= HandleTentacleDestroyed;
+
+        if (_spawnLoopTentacle != null)
+        {
+            StopCoroutine(_spawnLoopTentacle);
+            _spawnLoopTentacle = null;
+        }
     }
 
     protected override void HandleAttack()
     {
         base.HandleAttack();
 
-        if (_spawnLoopTentacle == null && _currentTentacleCount < _maxTentacleCount)
+        if (_spawnLoopTentacle == null)
         {
             _spawnLoopTentacle = StartCoroutine(CoTentacleSpawnLoop());
-        }
-        else if (_spawnLoopTentacle != null && _currentTentacleCount >= _maxTentacleCount)
-        {
-            StopCoroutine(_spawnLoopTentacle);
-            _spawnLoopTentacle = null;
         }
     }
 
@@ -112,10 +113,19 @@ public class CWorldBossType1Controller : CBossBase
 
                 OnRequestSpawn?.Invoke(_tentaclePoolKey, spawnPos);
                 _currentTentacleCount++;
-            }
 
-            yield return new WaitForSeconds(_spawnInterval);
+                yield return new WaitForSeconds(_spawnInterval);
+            }
+            else
+            {
+                yield return null;
+            }
         }
+    }
+
+    private void HandleTentacleDestroyed()
+    {
+        _currentTentacleCount--;
     }
 
     private Vector2 GetRandomSpawnPos()
