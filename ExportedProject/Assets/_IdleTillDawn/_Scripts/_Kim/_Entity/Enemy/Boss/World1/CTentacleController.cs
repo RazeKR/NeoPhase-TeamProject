@@ -19,8 +19,6 @@ public class CTentacleController : CEnemyBase
     [SerializeField] private string _paramAttack = "tAttack";
     [SerializeField] private string _indicatorAnimation = "A_Tentacle_Indicator";
 
-    [Header("테스트 용 설정")]
-    [SerializeField] private bool _isPersonalScene = true;
     #endregion
 
     #region 내부 변수
@@ -78,7 +76,7 @@ public class CTentacleController : CEnemyBase
 
         OnTentacleDestroyed?.Invoke();
         
-        if (_isPersonalScene)
+        if (IsPersonalScene)
         {
             Destroy(gameObject);
         }

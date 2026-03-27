@@ -34,16 +34,19 @@ public abstract class CBossBase : CEnemyBase
     {
         base.Start();
 
-        CPlayerController player = FindFirstObjectByType<CPlayerController>();
+        if (IsPersonalScene)
+        {
+            CPlayerController player = FindFirstObjectByType<CPlayerController>();
 
-        if (player != null)
-        {
-            Debug.Log($"타겟 : {player.name}");
-            Initialize(1, 1, player.transform);
-        }
-        else
-        {
-            Debug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
+            if (player != null)
+            {
+                Debug.Log($"타겟 : {player.name}");
+                Initialize(1, 1, player.transform);
+            }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
+            }
         }
 
     }
