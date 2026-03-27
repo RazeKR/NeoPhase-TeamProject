@@ -14,19 +14,22 @@ public class CRangedController : CEnemyBase
     {
         base.Start();
 
-        CPlayerController player = FindFirstObjectByType<CPlayerController>();
-
-        if (player != null)
+        if (IsPersonalScene)
         {
-            SetTarget(player.transform);
-            Debug.Log($"타겟 : {player.name}");
-        }
-        else
-        {
-            Debug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
-        }
+            CPlayerController player = FindFirstObjectByType<CPlayerController>();
 
-        InitEnemy(1);
+            if (player != null)
+            {
+                SetTarget(player.transform);
+                Debug.Log($"타겟 : {player.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
+            }
+
+            InitEnemy(1);
+        }
     }
 
     protected override void ExecuteAttack()

@@ -7,6 +7,9 @@ using UnityEngine;
 public abstract class CEntityBase : MonoBehaviour, IDamageable
 {
     #region 인스펙터
+    [Header("테스트 용 설정")]
+    [SerializeField] private bool _isPersonalScene = true;
+
     [Header("공통 스탯")]
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _currentHealth;
@@ -62,13 +65,15 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
         protected set => _defaultGravityScale = value;
     }
 
-
     protected Rigidbody2D Rb => _rb;
     protected Transform CurrentTarget
     {
         get => _currentTarget;
         set => _currentTarget = value;
     }
+
+    protected bool IsPersonalScene => _isPersonalScene;
+
     #endregion
 
     protected virtual void Awake()
