@@ -13,6 +13,7 @@ public class CWeaponEquip : MonoBehaviour
     public static CWeaponEquip Instance { get; private set; }
 
     [SerializeField] private GameObject _targetObject = null;
+    [SerializeField] private bool _showDebug = false;
 
     private string _currentInstanceID;              // 현재 장착중인 무기의 인스턴스ID
     private SpriteRenderer _targetSpriteRdr;        // 무기 종류에 따라 바꿔줄 대상 스프라이트
@@ -30,7 +31,7 @@ public class CWeaponEquip : MonoBehaviour
 
         if (_targetObject == null)
         {
-            Debug.Log("_targetObject 인스펙터 비어있음");
+            if (_showDebug) Debug.Log("_targetObject 인스펙터 비어있음");
             enabled = false;
         }
 
@@ -38,7 +39,7 @@ public class CWeaponEquip : MonoBehaviour
 
         if (!getSpriteRenderer)
         {
-            Debug.Log("_targetObject가 SpriteRenderer를 포함하고 있지 않음");
+            if (_showDebug) Debug.Log("_targetObject가 SpriteRenderer를 포함하고 있지 않음");
             enabled = false;
         }
     }
@@ -66,7 +67,7 @@ public class CWeaponEquip : MonoBehaviour
             _itemDataSO = CInventoryManager.Instance.EquippedWeapon._itemData as CWeaponDataSO;
             LoadEquippedWeapon();
 
-            Debug.Log("무기 InstanceID 변경 감지 : 무기 정보 업데이트");
+            if (_showDebug) Debug.Log("무기 InstanceID 변경 감지 : 무기 정보 업데이트");
         }
 
         // 현재 장착한 무기의 SO가 달라지면 업데이트 (인스펙터 등으로 강제 변환되는 경우에 대한 예외코드)
@@ -74,7 +75,7 @@ public class CWeaponEquip : MonoBehaviour
         {
             LoadEquippedWeapon();
 
-            Debug.Log("무기 SO 변경 감지 : 무기 정보 업데이트");
+            if (_showDebug) Debug.Log("무기 SO 변경 감지 : 무기 정보 업데이트");
         }
     }
 

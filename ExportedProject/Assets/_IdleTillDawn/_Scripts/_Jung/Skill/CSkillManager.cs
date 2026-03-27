@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CSkillManager : MonoBehaviour
 {
+    [SerializeField] private bool _showDebug = false;
+
     public static CSkillManager Instance;
 
     // 스킬 레벨 가져오기
@@ -94,7 +96,7 @@ public class CSkillManager : MonoBehaviour
         }
 
         _equippedSkills[slotIndex] = data;
-        Debug.Log($"{slotIndex}번 슬롯 : {data.skillName} 장착");
+        if (_showDebug) Debug.Log($"{slotIndex}번 슬롯 : {data.skillName} 장착");
 
         return true;
     }
@@ -114,7 +116,7 @@ public class CSkillManager : MonoBehaviour
             File.WriteAllText(SavePath, json);            
         }
 
-        Debug.Log($"스킬 저장 완료, 저장 경로 : {SavePath}");
+        if (_showDebug) Debug.Log($"스킬 저장 완료, 저장 경로 : {SavePath}");
     }
 
 
@@ -127,7 +129,7 @@ public class CSkillManager : MonoBehaviour
         {
             allSkillDataCache.Add(item);
         }
-        Debug.Log("스킬 캐시 완료");
+        if (_showDebug) Debug.Log("스킬 캐시 완료");
     }
 
 
@@ -159,7 +161,7 @@ public class CSkillManager : MonoBehaviour
         }
         
         RefreshAllNodes();
-        Debug.Log("스킬 불러오기 완료");
+        if (_showDebug) Debug.Log("스킬 불러오기 완료");
     }
 
     // 스킬 업그레이드 시도
@@ -173,7 +175,7 @@ public class CSkillManager : MonoBehaviour
         currentSkillPoints -= data.requiredPoints;
         SetSkillLevel(data.skillName, currentLevel + 1);
 
-        Debug.Log($"{data.skillName} 레벨 상승, 남은 포인트 : {currentSkillPoints}");
+        if (_showDebug) Debug.Log($"{data.skillName} 레벨 상승, 남은 포인트 : {currentSkillPoints}");
 
         CSkillUI.Instance.TextSet(currentSkillPoints);
 
@@ -249,6 +251,6 @@ public class CSkillManager : MonoBehaviour
         CSkillUI.Instance.TextSet(currentSkillPoints);
         SaveSkill();
 
-        Debug.Log("스킬 정보 초기화");
+        if (_showDebug) Debug.Log("스킬 정보 초기화");
     }
 }
