@@ -44046,12 +44046,12 @@ MonoBehaviour:
       type: 3}
     _poolSize: 15
     _spawnWeight: 0
-  - _poolKey: Tentacle
+  - _poolKey: normal1
     _prefab: {fileID: 1869001611694354567, guid: ec5a7bc9575adcb438f64f57528f9f70,
       type: 3}
     _poolSize: 50
     _spawnWeight: 0.2
-  - _poolKey: Tentacle
+  - _poolKey: normal2
     _prefab: {fileID: 7039098912928153757, guid: ca4a145ac56391846ae81c6c47aa8af6,
       type: 3}
     _poolSize: 50
@@ -47780,7 +47780,7 @@ PrefabInstance:
     - target: {fileID: 2006921249512957054, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 269.9999
+      value: 270
       objectReference: {fileID: 0}
     - target: {fileID: 2045833833162962790, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}

@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8080da9d20651644b8631cf757d7d1d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 0
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 0
