@@ -82,6 +82,13 @@ public abstract class CBossBase : CEnemyBase
         Gizmos.DrawWireSphere(transform.position, AttackRange); // 공격 범위 시각화
     }
 
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        Debug.Log($"{gameObject.name} : {damage} 데미지를 입음. 현재 체력 {CurrentHealth}");
+    }
+
     /// <summary>
     /// CBossManager가 스폰 직후 호출하는 초기화 메서드
     /// 체력과 공격력에 스테이지 배율을 적용하고 플레이어 Transform을 탐색한다
@@ -115,14 +122,15 @@ public abstract class CBossBase : CEnemyBase
     {
         base.ResetForPool();
 
-        OnDefeated?.Invoke();
-
         StopAttack();
     }
 
     public override void Die()
     {
         StopAttack();
+
+        OnDefeated?.Invoke();
+
         base.Die();
     }
 
