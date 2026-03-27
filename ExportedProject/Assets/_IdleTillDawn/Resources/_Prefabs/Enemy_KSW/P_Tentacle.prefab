@@ -301,6 +301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e973f7e5f2d31e647976560dedaea23f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 0
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 0
@@ -321,7 +322,6 @@ MonoBehaviour:
   _indicatorAnimator: {fileID: 1268945947166024977}
   _paramAttack: tAttack
   _indicatorAnimation: A_Tentacle_Indicator
-  _isPersonalScene: 1
 --- !u!61 &1334217442741157645
 BoxCollider2D:
   m_ObjectHideFlags: 0

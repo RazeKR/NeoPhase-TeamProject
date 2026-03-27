@@ -54,6 +54,9 @@ public class CPlayerController : CEntityBase
     private Coroutine  _preventCoroutine   = null; // 코루틴 참조 — 중단/재시작 안전 관리용
     private SpriteRenderer _spriteRenderer;
     private WaitForSeconds _blinkWait;
+
+    private bool  _isKnockedBack    = false;
+    private float _knockbackEndTime = 0f;
     #endregion
 
     /// <summary>
@@ -92,6 +95,17 @@ public class CPlayerController : CEntityBase
         {
             return transform.localScale;
         }
+    }
+
+    /// <summary>
+    /// 외부에서 넉백을 가하는 메서드 (전기벽 등)
+    /// duration 동안 플레이어 이동 입력을 무시하고 velocity를 유지한다
+    /// </summary>
+    public void ApplyKnockback(Vector2 force, float duration)
+    {
+        Rb.velocity       = force;
+        _isKnockedBack    = true;
+        _knockbackEndTime = Time.fixedTime + duration;
     }
 
     protected override void Awake()
@@ -224,6 +238,12 @@ public class CPlayerController : CEntityBase
     /// </summary>
     protected override void HandleMovement()
     {
+        if (_isKnockedBack)
+        {
+            if (Time.fixedTime < _knockbackEndTime) return;
+            _isKnockedBack = false;
+        }
+
         Vector2 currentVelocity = Vector2.zero;
 
         if (_inputHandler.IsManualMove)

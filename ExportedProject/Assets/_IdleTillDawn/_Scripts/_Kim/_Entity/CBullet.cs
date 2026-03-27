@@ -47,7 +47,7 @@ public class CBullet : MonoBehaviour
     {
         if (other.GetComponent<CPlayerController>() != null) return;
 
-        IDamageable damageable = other.GetComponent<IDamageable>();
+        IDamageable damageable = other.GetComponentInParent<IDamageable>();
         if (damageable != null)
         {
             damageable.TakeDamage(_damage);
