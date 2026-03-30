@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Glare
   m_EditorClassIdentifier: 
+  _id: 11
   skillName: "\uC12C\uAD11"
+  flavourText: 
   skillType: 0
   icon: {fileID: 21300000, guid: 6d4dcfd3b4d6eae40a590edf89b21cc5, type: 2}
   maxLevel: 10
@@ -24,3 +26,5 @@ MonoBehaviour:
   coolDown: 2
   requiredMana: 0
   skillEffects: []
+  effectPrefab: {fileID: 0}
+  _levelData: []

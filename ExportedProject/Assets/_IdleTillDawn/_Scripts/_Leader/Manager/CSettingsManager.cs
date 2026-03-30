@@ -6,6 +6,7 @@ using UnityEngine;
 ///
 /// [관리 항목]
 /// - 음악 볼륨 / SFX 볼륨 (0, 25, 50, 75, 100 %)
+///   → 0% = 완전 음소거. 실제 AudioSource 볼륨 적용은 CAudioManager 담당
 /// - 전체화면 / 창모드
 /// - 해상도 (800x450 / 1200x675 / 1600x900 / 1920x1080)
 ///
@@ -37,6 +38,7 @@ public class CSettingsManager : MonoBehaviour
     private const string KEY_RESOLUTION = "ResolutionIdx";
 
     // 볼륨 단계: 0 → 25 → 50 → 75 → 100 → 0 ...
+    // 0% = 완전 음소거 (CAudioManager에서 AudioSource.volume = 0 처리)
     private static readonly int[] VolumeSteps = { 0, 25, 50, 75, 100 };
 
     // 지원 해상도 목록 (창모드 전용)
@@ -61,10 +63,16 @@ public class CSettingsManager : MonoBehaviour
 
     #region Properties
 
-    public int  MusicVolume    { get; private set; } = 100;
-    public int  SFXVolume      { get; private set; } = 100;
-    public bool IsFullscreen   { get; private set; } = true;
-    public int  ResolutionIndex{ get; private set; } = 3; // 기본 1920x1080
+    public int  MusicVolume     { get; private set; } = 100;
+    public int  SFXVolume       { get; private set; } = 100;
+    public bool IsFullscreen    { get; private set; } = true;
+    public int  ResolutionIndex { get; private set; } = 3; // 기본 1920x1080
+
+    /// <summary>음악이 완전 음소거 상태인지 여부</summary>
+    public bool IsMusicMuted => MusicVolume == 0;
+
+    /// <summary>SFX가 완전 음소거 상태인지 여부</summary>
+    public bool IsSFXMuted => SFXVolume == 0;
 
     /// <summary>인덱스에 해당하는 해상도 텍스트 "1920x1080" 형식</summary>
     public static string ResolutionLabel(int index) =>
@@ -74,7 +82,7 @@ public class CSettingsManager : MonoBehaviour
 
     #region Public API
 
-    /// <summary>음악 볼륨 한 단계 증가 (100 다음은 0)</summary>
+    /// <summary>음악 볼륨 한 단계 순환 (0 → 25 → 50 → 75 → 100 → 0 → ...)</summary>
     public void CycleMusicVolume()
     {
         int next = GetNextVolumeStep(MusicVolume);
@@ -83,7 +91,7 @@ public class CSettingsManager : MonoBehaviour
         OnMusicVolumeChanged?.Invoke(next);
     }
 
-    /// <summary>SFX 볼륨 한 단계 증가 (100 다음은 0)</summary>
+    /// <summary>SFX 볼륨 한 단계 순환 (0 → 25 → 50 → 75 → 100 → 0 → ...)</summary>
     public void CycleSFXVolume()
     {
         int next = GetNextVolumeStep(SFXVolume);
@@ -99,18 +107,14 @@ public class CSettingsManager : MonoBehaviour
         PlayerPrefs.SetInt(KEY_FULLSCREEN, IsFullscreen ? 1 : 0);
 
         if (IsFullscreen)
-        {
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-        }
         else
-        {
             ApplyResolution(ResolutionIndex);
-        }
 
         OnFullscreenChanged?.Invoke(IsFullscreen);
     }
 
-    /// <summary>해상도 한 단계 증가 (마지막 다음은 처음) — 창모드일 때만 실제 적용</summary>
+    /// <summary>해상도 한 단계 순환 (마지막 → 처음) — 창모드일 때만 실제 적용</summary>
     public void CycleResolution()
     {
         int next = (ResolutionIndex + 1) % Resolutions.Length;
@@ -129,16 +133,19 @@ public class CSettingsManager : MonoBehaviour
 
     private void LoadAll()
     {
-        MusicVolume     = PlayerPrefs.GetInt(KEY_MUSIC,      100);
-        SFXVolume       = PlayerPrefs.GetInt(KEY_SFX,        100);
-        IsFullscreen    = PlayerPrefs.GetInt(KEY_FULLSCREEN,  1) == 1;
-        ResolutionIndex = PlayerPrefs.GetInt(KEY_RESOLUTION,  3);
+        MusicVolume     = ClampToValidStep(PlayerPrefs.GetInt(KEY_MUSIC,      100));
+        SFXVolume       = ClampToValidStep(PlayerPrefs.GetInt(KEY_SFX,        100));
+        IsFullscreen    = PlayerPrefs.GetInt(KEY_FULLSCREEN, 1) == 1;
+        ResolutionIndex = Mathf.Clamp(PlayerPrefs.GetInt(KEY_RESOLUTION, 3), 0, Resolutions.Length - 1);
 
-        // 저장된 설정 즉시 적용
         if (IsFullscreen)
             Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
         else
             ApplyResolution(ResolutionIndex);
+
+        // 로드 직후 이벤트 발송 → CAudioManager 등 구독자에게 초기값 전달
+        OnMusicVolumeChanged?.Invoke(MusicVolume);
+        OnSFXVolumeChanged?.Invoke(SFXVolume);
     }
 
     private void ApplyResolution(int index)
@@ -154,7 +161,15 @@ public class CSettingsManager : MonoBehaviour
             if (VolumeSteps[i] == current)
                 return VolumeSteps[(i + 1) % VolumeSteps.Length];
         }
-        return 100; // fallback
+        return VolumeSteps[0]; // 유효하지 않은 저장값 → 최솟값(0)으로
+    }
+
+    /// <summary>저장된 볼륨 값이 유효한 단계인지 검증 — 손상된 PlayerPrefs 방어</summary>
+    private static int ClampToValidStep(int value)
+    {
+        foreach (int step in VolumeSteps)
+            if (step == value) return value;
+        return 100; // 유효하지 않으면 기본값 100
     }
 
     #endregion

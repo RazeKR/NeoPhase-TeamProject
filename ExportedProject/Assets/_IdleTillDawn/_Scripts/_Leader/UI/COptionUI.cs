@@ -3,69 +3,103 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 옵션 UI 컨트롤러 — 어느 씬에서도 재사용 가능한 독립 컴포넌트
+/// 옵션 UI 컨트롤러 — enum 기반 상태 머신 + 단일 MainMenuRoot 관리
 ///
-/// [메인 메뉴]
-///   옵션 버튼 클릭 → 메인메뉴 CanvasGroup 페이드 아웃 + 옵션 패널 페이드 인
-///   Back 버튼      → 옵션 패널 페이드 아웃 + 메인메뉴 CanvasGroup 페이드 인
+/// ══════════════════════════════════════════════════════════════
+/// [Unity 계층 구조 권장]
 ///
-/// [인게임]
-///   ESC 키 → Show() 자동 호출 (Update에서 처리)
-///   Back 버튼 → Hide()
+///   MainMenuCanvas  (Canvas, Sort Order 0)
+///   └── MainMenuRoot  ← _mainMenuRoot 연결 (CanvasGroup 자동 추가)
+///       ├── GameStart_Panel
+///       ├── Option_Panel
+///       └── GameQuit_Panel
 ///
-/// [텍스트 연결 방식]
-///   각 버튼 GameObject 자식에 레거시 Text 컴포넌트를 달아두면
-///   Awake에서 자동으로 가져옴 — 인스펙터에서 텍스트를 따로 연결할 필요 없음
+///   OptionCanvas  (Canvas, Sort Order 10) ← 독립 레이어
+///   └── OptionRoot  ← _optionPanel 연결 (CanvasGroup 자동 추가)
+///       ├── [볼륨/해상도/전체화면 버튼]
+///       └── [Back 버튼]
+///
+/// ══════════════════════════════════════════════════════════════
+/// [UI 상태 전환]
+///
+///   MainMenu ──[옵션 버튼]──→ Option
+///   Option   ──[Back 버튼]──→ MainMenu
+///   InGame   ──[ESC]────────→ InGameOption  (timeScale = 0)
+///   InGameOption ──[ESC/Back]→ InGame       (timeScale 복구)
+///
+/// ══════════════════════════════════════════════════════════════
+/// [페이드 처리]
+///   - Time.unscaledDeltaTime 사용 → timeScale=0 상태에서도 동작
+///   - 페이드 중 interactable/blocksRaycasts 차단 → 입력 충돌 방지
+///   - 페이드 완료 후에만 interactable 복구
 /// </summary>
 public class COptionUI : MonoBehaviour
 {
+    // ──────────────────────────────────────────────────────────
+    // UI 상태 열거형
+    // ──────────────────────────────────────────────────────────
+    public enum UIState
+    {
+        MainMenu,       // 메인메뉴 활성 (옵션 닫힘)
+        Option,         // 메인메뉴 → 옵션 열림
+        InGame,         // 인게임 (옵션 닫힘)
+        InGameOption,   // 인게임 → 옵션 열림 (timeScale = 0)
+    }
+
     #region Inspector
 
-    [Header("패널 루트 (Show/Hide 대상)")]
-    [Tooltip("옵션 UI 전체를 감싸는 루트 GameObject — Option_Panel 연결")]
+    [Header("씬 초기 상태 — 메인메뉴 씬: MainMenu / 게임 씬: InGame")]
+    [SerializeField] private UIState _initialState = UIState.MainMenu;
+
+    [Header("메인메뉴 루트 (모든 메인메뉴 요소를 하나로 묶은 부모 GameObject)")]
+    [Tooltip("이 오브젝트 하나의 CanvasGroup으로 메인메뉴 전체 입력/페이드 통합 제어.\n" +
+             "CanvasGroup이 없으면 Awake에서 자동 추가됩니다.")]
+    [SerializeField] private GameObject _mainMenuRoot;
+
+    [Header("옵션 패널 (독립 Canvas 위에 배치, Sort Order 높게 설정 권장)")]
+    [Tooltip("Option UI 루트 GameObject — CanvasGroup 없으면 자동 추가")]
     [SerializeField] private GameObject _optionPanel;
 
-    [Header("메인메뉴 페이드 대상 (옵션 열릴 때 숨길 CanvasGroup 배열)")]
-    [Tooltip("GameStart_Text, Option_Text, GameQuit_Text 등 숨길 오브젝트의 CanvasGroup 배열")]
-    [SerializeField] private CanvasGroup[] _mainMenuCGs;
+    [Header("페이드 시간 (초)")]
+    [SerializeField] private float _fadeDuration = 0.3f;
 
-    [Header("페이드 설정")]
-    [Tooltip("페이드 인/아웃에 걸리는 시간 (초)")]
-    [SerializeField] private float _fadeDuration = 0.4f;
-
-    [Header("해상도 행 (창모드일 때만 표시)")]
-    [Tooltip("해상도 버튼을 감싸는 GameObject — 전체화면일 때 숨김")]
+    [Header("해상도 행 (전체화면 시 비활성화 표시)")]
+    [Tooltip("해상도 버튼을 감싸는 부모 GameObject — CanvasGroup 없으면 자동 추가")]
     [SerializeField] private GameObject _resolutionRow;
 
-    [Header("옵션 패널 열기 버튼 (메인메뉴에 있는 '옵션' 버튼)")]
-    [Tooltip("클릭 시 옵션 패널을 열어주는 버튼 — 인게임 모드에서는 ESC로 열리므로 비워둬도 됨")]
-    [SerializeField] private Button _openButton;
+    [Range(0.1f, 0.6f)]
+    [Tooltip("전체화면 ON 시 해상도 행의 alpha 값 (어두운 정도)")]
+    [SerializeField] private float _disabledAlpha = 0.35f;
 
-    [Header("옵션 패널 내부 버튼 (각 버튼 자식에 레거시 Text 컴포넌트를 달아두세요)")]
+    [Header("버튼 참조")]
+    [Tooltip("메인메뉴 화면의 '옵션' 버튼 — 인게임 모드면 비워둬도 됨 (ESC로 열림)")]
+    [SerializeField] private Button _openButton;
     [SerializeField] private Button _musicVolumeButton;
     [SerializeField] private Button _sfxVolumeButton;
     [SerializeField] private Button _fullscreenButton;
     [SerializeField] private Button _resolutionButton;
     [SerializeField] private Button _backButton;
 
-    [Header("모드 설정")]
-    [Tooltip("true = 인게임 (ESC로 열림 / 닫힘). false = 메인메뉴 (페이드 연출 적용)")]
-    [SerializeField] private bool _isInGameMode = false;
-
     #endregion
 
     #region Private
 
+    private UIState _state;
+    private float   _prevTimeScale = 1f;
+
+    private CanvasGroup _mainMenuCG;
+    private CanvasGroup _optionCG;
+    private CanvasGroup _resolutionRowCG;
+
+    private Coroutine     _fadeCoroutine;
     private System.Action _onBackAction;
 
-    private CanvasGroup _optionPanelCG; // Option_Panel 의 CanvasGroup (코드로 자동 추가)
-    private Coroutine   _fadeCoroutine;
+    #endregion
 
-    // 버튼 GameObject 자식에서 자동으로 가져오는 레거시 Text 참조
-    private Text _musicVolumeText;
-    private Text _sfxVolumeText;
-    private Text _fullscreenText;
-    private Text _resolutionText;
+    #region Properties
+
+    public UIState CurrentState  => _state;
+    public bool    IsOptionOpen  => _state == UIState.Option || _state == UIState.InGameOption;
 
     #endregion
 
@@ -73,30 +107,45 @@ public class COptionUI : MonoBehaviour
 
     private void Awake()
     {
-        // Option_Panel 에 CanvasGroup 이 없으면 자동으로 추가
-        if (_optionPanel != null)
-        {
-            _optionPanelCG = _optionPanel.GetComponent<CanvasGroup>();
-            if (_optionPanelCG == null)
-                _optionPanelCG = _optionPanel.AddComponent<CanvasGroup>();
+        _state = _initialState;
 
-            // 시작 시 옵션 패널 숨김
-            _optionPanel.SetActive(false);
-            _optionPanelCG.alpha = 0f;
+        // MainMenuRoot CanvasGroup
+        if (_mainMenuRoot != null)
+        {
+            _mainMenuCG = _mainMenuRoot.GetComponent<CanvasGroup>();
+            if (_mainMenuCG == null) _mainMenuCG = _mainMenuRoot.AddComponent<CanvasGroup>();
+            // 초기 상태: 메인메뉴는 완전 표시
+            _mainMenuCG.alpha          = 1f;
+            _mainMenuCG.interactable   = true;
+            _mainMenuCG.blocksRaycasts = true;
         }
 
-        // 버튼 자식의 레거시 Text 자동 취득
-        if (_musicVolumeButton != null) _musicVolumeText = _musicVolumeButton.GetComponentInChildren<Text>();
-        if (_sfxVolumeButton   != null) _sfxVolumeText   = _sfxVolumeButton.GetComponentInChildren<Text>();
-        if (_fullscreenButton  != null) _fullscreenText  = _fullscreenButton.GetComponentInChildren<Text>();
-        if (_resolutionButton  != null) _resolutionText  = _resolutionButton.GetComponentInChildren<Text>();
+        // OptionPanel CanvasGroup — 시작 시 숨김
+        if (_optionPanel != null)
+        {
+            _optionCG = _optionPanel.GetComponent<CanvasGroup>();
+            if (_optionCG == null) _optionCG = _optionPanel.AddComponent<CanvasGroup>();
+            _optionPanel.SetActive(false);
+            _optionCG.alpha          = 0f;
+            _optionCG.interactable   = false;
+            _optionCG.blocksRaycasts = false;
+        }
 
+        // 해상도 행 CanvasGroup — 항상 활성화, alpha/interactable로만 제어
+        if (_resolutionRow != null)
+        {
+            _resolutionRow.SetActive(true);
+            _resolutionRowCG = _resolutionRow.GetComponent<CanvasGroup>();
+            if (_resolutionRowCG == null) _resolutionRowCG = _resolutionRow.AddComponent<CanvasGroup>();
+        }
+
+        // 버튼 이벤트 등록
         _openButton?.onClick.AddListener(Show);
-        _musicVolumeButton?.onClick.AddListener(OnClickMusicVolume);
-        _sfxVolumeButton?.onClick.AddListener(OnClickSFXVolume);
-        _fullscreenButton?.onClick.AddListener(OnClickFullscreen);
+        _musicVolumeButton?.onClick.AddListener(() => CSettingsManager.Instance?.CycleMusicVolume());
+        _sfxVolumeButton?.onClick.AddListener(() => CSettingsManager.Instance?.CycleSFXVolume());
+        _fullscreenButton?.onClick.AddListener(() => CSettingsManager.Instance?.ToggleFullscreen());
         _resolutionButton?.onClick.AddListener(OnClickResolution);
-        _backButton?.onClick.AddListener(OnClickBack);
+        _backButton?.onClick.AddListener(Hide);
     }
 
     private void OnEnable()
@@ -123,10 +172,12 @@ public class COptionUI : MonoBehaviour
 
     private void Update()
     {
-        if (_isInGameMode && Input.GetKeyDown(KeyCode.Escape))
+        // 인게임 모드에서만 ESC 처리
+        bool isInGame = _state == UIState.InGame || _state == UIState.InGameOption;
+        if (isInGame && Input.GetKeyDown(KeyCode.Escape))
         {
-            if (_optionPanel.activeSelf) Hide();
-            else                         Show();
+            if (IsOptionOpen) Hide();
+            else               Show();
         }
     }
 
@@ -134,138 +185,152 @@ public class COptionUI : MonoBehaviour
 
     #region Public API
 
-    /// <summary>옵션 패널 열기 — 메인메뉴 페이드 아웃 + 옵션 패널 페이드 인</summary>
+    /// <summary>옵션 패널 열기</summary>
     public void Show()
     {
+        if (IsOptionOpen) return;
         if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
 
         RefreshAll();
 
-        if (_isInGameMode)
+        switch (_state)
         {
-            // 인게임은 페이드 없이 즉시 표시
-            _optionPanel.SetActive(true);
-            if (_optionPanelCG != null) _optionPanelCG.alpha = 1f;
-        }
-        else
-        {
-            _fadeCoroutine = StartCoroutine(Co_ShowWithFade());
+            case UIState.MainMenu:
+                _state = UIState.Option;
+                _fadeCoroutine = StartCoroutine(Co_FadeToOption());
+                break;
+
+            case UIState.InGame:
+                // 인게임: 시간 정지 후 즉시 표시
+                _prevTimeScale = Time.timeScale;
+                Time.timeScale = 0f;
+                _state         = UIState.InGameOption;
+                _fadeCoroutine = StartCoroutine(Co_ShowOptionInstant());
+                break;
         }
     }
 
-    /// <summary>옵션 패널 닫기 — 옵션 패널 페이드 아웃 + 메인메뉴 페이드 인</summary>
+    /// <summary>옵션 패널 닫기</summary>
     public void Hide()
     {
+        if (!IsOptionOpen) return;
         if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
 
-        if (_isInGameMode)
+        switch (_state)
         {
-            _optionPanel.SetActive(false);
-            if (_optionPanelCG != null) _optionPanelCG.alpha = 0f;
-        }
-        else
-        {
-            _fadeCoroutine = StartCoroutine(Co_HideWithFade());
+            case UIState.Option:
+                _state = UIState.MainMenu;
+                _fadeCoroutine = StartCoroutine(Co_FadeToMainMenu());
+                break;
+
+            case UIState.InGameOption:
+                _state = UIState.InGame;
+                _fadeCoroutine = StartCoroutine(Co_HideOptionInstant());
+                break;
         }
     }
 
-    /// <summary>
-    /// 메인메뉴에서 Back 버튼 동작을 외부에서 주입
-    /// </summary>
+    /// <summary>Back 버튼 완료 후 호출할 콜백 등록 (메인메뉴 전용)</summary>
     public void SetBackAction(System.Action action) => _onBackAction = action;
+
+    /// <summary>씬 전환 시 상태 외부에서 설정 (예: 게임 씬 로드 완료 후 InGame으로 전환)</summary>
+    public void SetState(UIState newState) => _state = newState;
 
     #endregion
 
-    #region Fade Coroutines
+    #region Coroutines
 
-    private IEnumerator Co_ShowWithFade()
+    // 메인메뉴 → 옵션
+    private IEnumerator Co_FadeToOption()
     {
-        // 메인메뉴 버튼 페이드 아웃
-        yield return Co_FadeMainMenu(1f, 0f);
+        // 1. 메인메뉴 루트 페이드 아웃 + 입력 즉시 차단
+        yield return Co_Fade(_mainMenuCG, 1f, 0f, false);
 
-        // 메인메뉴 버튼 입력 차단
-        SetMainMenuInteractable(false);
-
-        // 옵션 패널 활성화 후 페이드 인
+        // 2. 옵션 패널 활성화 후 페이드 인
         _optionPanel.SetActive(true);
-        yield return Co_FadePanel(0f, 1f);
+        yield return Co_Fade(_optionCG, 0f, 1f, true);
     }
 
-    private IEnumerator Co_HideWithFade()
+    // 옵션 → 메인메뉴
+    private IEnumerator Co_FadeToMainMenu()
     {
-        // 옵션 패널 페이드 아웃
-        yield return Co_FadePanel(1f, 0f);
+        // 1. 옵션 패널 페이드 아웃 + 입력 차단
+        yield return Co_Fade(_optionCG, 1f, 0f, false);
         _optionPanel.SetActive(false);
 
-        // 메인메뉴 버튼 페이드 인
-        SetMainMenuInteractable(true);
-        yield return Co_FadeMainMenu(0f, 1f);
+        // 2. 메인메뉴 루트 페이드 인 + 입력 복구
+        yield return Co_Fade(_mainMenuCG, 0f, 1f, true);
 
         _onBackAction?.Invoke();
     }
 
-    private IEnumerator Co_FadePanel(float from, float to)
+    // 인게임 옵션: 즉시 표시 (timeScale=0이므로 페이드 없음)
+    private IEnumerator Co_ShowOptionInstant()
     {
-        if (_optionPanelCG == null) yield break;
-
-        _optionPanelCG.alpha = from;
-        float t = 0f;
-        while (t < _fadeDuration)
+        _optionPanel.SetActive(true);
+        if (_optionCG != null)
         {
-            t += Time.deltaTime;
-            _optionPanelCG.alpha = Mathf.Lerp(from, to, t / _fadeDuration);
-            yield return null;
+            _optionCG.alpha          = 1f;
+            _optionCG.interactable   = true;
+            _optionCG.blocksRaycasts = true;
         }
-        _optionPanelCG.alpha = to;
+        yield break;
     }
 
-    private IEnumerator Co_FadeMainMenu(float from, float to)
+    // 인게임 옵션: 즉시 닫기 + timeScale 복구
+    private IEnumerator Co_HideOptionInstant()
     {
-        if (_mainMenuCGs == null || _mainMenuCGs.Length == 0) yield break;
-
-        float t = 0f;
-        while (t < _fadeDuration)
+        if (_optionCG != null)
         {
-            t += Time.deltaTime;
-            float alpha = Mathf.Lerp(from, to, t / _fadeDuration);
-            foreach (CanvasGroup cg in _mainMenuCGs)
-                if (cg != null) cg.alpha = alpha;
+            _optionCG.alpha          = 0f;
+            _optionCG.interactable   = false;
+            _optionCG.blocksRaycasts = false;
+        }
+        _optionPanel.SetActive(false);
+        Time.timeScale = _prevTimeScale;
+        yield break;
+    }
+
+    /// <summary>
+    /// CanvasGroup 페이드 코루틴
+    /// - 페이드 시작 즉시 입력 차단 (interactable/blocksRaycasts = false)
+    /// - 페이드 완료 후 endInteractable 값으로 입력 상태 설정
+    /// - Time.unscaledDeltaTime 사용 → timeScale = 0 상태에서도 동작
+    /// </summary>
+    private IEnumerator Co_Fade(CanvasGroup cg, float from, float to, bool endInteractable)
+    {
+        if (cg == null) yield break;
+
+        // 페이드 시작: 입력 즉시 차단
+        cg.interactable   = false;
+        cg.blocksRaycasts = false;
+        cg.alpha          = from;
+
+        float elapsed = 0f;
+        while (elapsed < _fadeDuration)
+        {
+            elapsed  += Time.unscaledDeltaTime;
+            cg.alpha  = Mathf.Lerp(from, to, elapsed / _fadeDuration);
             yield return null;
         }
 
-        foreach (CanvasGroup cg in _mainMenuCGs)
-            if (cg != null) cg.alpha = to;
-    }
+        cg.alpha = to;
 
-    private void SetMainMenuInteractable(bool interactable)
-    {
-        foreach (CanvasGroup cg in _mainMenuCGs)
-        {
-            if (cg == null) continue;
-            cg.interactable    = interactable;
-            cg.blocksRaycasts  = interactable;
-        }
+        // 페이드 완료: 최종 입력 상태 반영
+        cg.interactable   = endInteractable;
+        cg.blocksRaycasts = endInteractable;
     }
 
     #endregion
 
     #region Button Handlers
 
-    private void OnClickMusicVolume() => CSettingsManager.Instance?.CycleMusicVolume();
-    private void OnClickSFXVolume()   => CSettingsManager.Instance?.CycleSFXVolume();
-    private void OnClickFullscreen()  => CSettingsManager.Instance?.ToggleFullscreen();
-    private void OnClickResolution()  => CSettingsManager.Instance?.CycleResolution();
-
-    private void OnClickBack()
+    private void OnClickResolution()
     {
-        if (_isInGameMode)
-        {
-            Hide();
-        }
-        else
-        {
-            Hide(); // Co_HideWithFade 안에서 _onBackAction 호출
-        }
+        if (CSettingsManager.Instance == null) return;
+        // 전체화면 모드에서는 클릭 무시 (_resolutionRowCG.blocksRaycasts=false로 원래 막히지만 이중 방어)
+        if (!CSettingsManager.Instance.IsFullscreen)
+            CSettingsManager.Instance.CycleResolution();
     }
 
     #endregion
@@ -283,30 +348,53 @@ public class COptionUI : MonoBehaviour
     }
 
     private void RefreshMusicText(int percent)
-    {
-        if (_musicVolumeText != null)
-            _musicVolumeText.text = $"음악 볼륨 : {percent}%";
-    }
+        => SetButtonLabel(_musicVolumeButton, $"음악 볼륨 : {percent}%");
 
     private void RefreshSFXText(int percent)
-    {
-        if (_sfxVolumeText != null)
-            _sfxVolumeText.text = $"SFX 볼륨 : {percent}%";
-    }
+        => SetButtonLabel(_sfxVolumeButton, $"SFX 볼륨 : {percent}%");
 
     private void RefreshFullscreenUI(bool isFullscreen)
     {
-        if (_fullscreenText != null)
-            _fullscreenText.text = $"전체화면 모드 : {(isFullscreen ? "켜기" : "끄기")}";
+        SetButtonLabel(_fullscreenButton, $"전체화면 모드 : {(isFullscreen ? "켜기" : "끄기")}");
 
-        if (_resolutionRow != null)
-            _resolutionRow.SetActive(!isFullscreen);
+        if (_resolutionRowCG != null)
+        {
+            _resolutionRowCG.alpha          = isFullscreen ? _disabledAlpha : 1f;
+            _resolutionRowCG.interactable   = !isFullscreen;
+            _resolutionRowCG.blocksRaycasts = !isFullscreen;
+        }
+
+        if (isFullscreen)
+            SetButtonLabel(_resolutionButton, "해상도 : -");
+        else
+            RefreshResolutionText(CSettingsManager.Instance?.ResolutionIndex ?? 3);
     }
 
     private void RefreshResolutionText(int index)
     {
-        if (_resolutionText != null)
-            _resolutionText.text = $"해상도 : {CSettingsManager.ResolutionLabel(index)}";
+        if (CSettingsManager.Instance != null && CSettingsManager.Instance.IsFullscreen)
+            return; // 전체화면 중 "-" 유지
+
+        SetButtonLabel(_resolutionButton, $"해상도 : {CSettingsManager.ResolutionLabel(index)}");
+    }
+
+    #endregion
+
+    #region Helpers
+
+    /// <summary>
+    /// 버튼 자식 텍스트 설정 — TextMeshProUGUI 우선, 레거시 Text 폴백
+    /// 비활성 자식 포함 검색 (true)
+    /// </summary>
+    private static void SetButtonLabel(Button btn, string label)
+    {
+        if (btn == null) return;
+
+        var tmp = btn.GetComponentInChildren<TMPro.TextMeshProUGUI>(true);
+        if (tmp != null) { tmp.text = label; return; }
+
+        var text = btn.GetComponentInChildren<Text>(true);
+        if (text != null) text.text = label;
     }
 
     #endregion

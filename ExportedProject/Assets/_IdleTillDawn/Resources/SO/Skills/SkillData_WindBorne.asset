@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_WindBorne
   m_EditorClassIdentifier: 
+  _id: 15
   skillName: "\uC708\uB4DC\uBCF8"
   flavourText: 
   skillType: 1
@@ -25,3 +26,5 @@ MonoBehaviour:
   coolDown: 7
   requiredMana: 10
   skillEffects: []
+  effectPrefab: {fileID: 0}
+  _levelData: []

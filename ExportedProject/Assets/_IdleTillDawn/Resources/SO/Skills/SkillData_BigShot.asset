@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_BigShot
   m_EditorClassIdentifier: 
+  _id: 2
   skillName: "\uBE45 \uC0F7"
+  flavourText: 
   skillType: 0
   icon: {fileID: 21300000, guid: a9e5123b8b7b98141a445b08568d2dfa, type: 2}
   maxLevel: 10
@@ -25,3 +27,5 @@ MonoBehaviour:
   coolDown: 0
   requiredMana: 0
   skillEffects: []
+  effectPrefab: {fileID: 0}
+  _levelData: []

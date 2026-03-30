@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87f8d3a85b7c5c44a8a288e4b74da4e0, type: 3}
   m_Name: ScrollData_UpgradeScroll
   m_EditorClassIdentifier: 
+  _id: 1
   _itemId: scroll_01
   _itemName: Upgrade Scroll
   _type: 2

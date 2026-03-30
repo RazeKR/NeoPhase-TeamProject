@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Cadence
   m_EditorClassIdentifier: 
+  _id: 4
   skillName: "\uC885\uC9C0\uBD80"
+  flavourText: 
   skillType: 1
   icon: {fileID: 21300000, guid: f40ef85e60069664db4c0eb51c777b9c, type: 2}
   maxLevel: 5
@@ -25,3 +27,5 @@ MonoBehaviour:
   coolDown: 16
   requiredMana: 30
   skillEffects: []
+  effectPrefab: {fileID: 0}
+  _levelData: []
