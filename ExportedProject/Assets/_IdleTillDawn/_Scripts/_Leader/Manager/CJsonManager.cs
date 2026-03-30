@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 /// <summary>
@@ -13,7 +14,7 @@ public class CJsonManager : MonoBehaviour
     #region InspectorVariables
 
     [Header("저장 설정")]
-    [SerializeField] private string _saveFileName = "save_data.json"; // 세이브 파일 이름
+    [SerializeField] private string _saveFileName = "save_data.dat"; // 세이브 파일 이름 , 보안성을 위해 확장자를 .dat으로 변경
     [SerializeField] private bool _prettyPrint = false;                // 개발 중 true로 설정 시 가독성 좋은 JSON 출력
 
     #endregion
@@ -34,6 +35,8 @@ public class CJsonManager : MonoBehaviour
     #region PrivateVariables
 
     private string _savePath; // 전체 저장 경로 캐시
+
+    private const string EncryptionKey = "ITD_Encryption_Key"; // 암호화 키
 
     #endregion
 
@@ -90,7 +93,10 @@ public class CJsonManager : MonoBehaviour
         {
             saveData.lastSavedTime = DateTime.UtcNow.ToString("o"); // ISO 8601 형식
             string json = JsonUtility.ToJson(saveData, _prettyPrint);
-            File.WriteAllText(_savePath, json);
+
+            string encryptedData = EncryptDecrypt(json);
+            File.WriteAllText(_savePath, encryptedData);
+
             CurrentSaveData = saveData;
             OnSaveCompleted?.Invoke();
             Debug.Log($"[CJsonManager] 저장 완료 → {_savePath}");
@@ -120,7 +126,9 @@ public class CJsonManager : MonoBehaviour
 
         try
         {
-            string json = File.ReadAllText(_savePath);
+            string encryptedData = File.ReadAllText(_savePath);
+
+            string json = EncryptDecrypt(encryptedData);
             CSaveData loaded = JsonUtility.FromJson<CSaveData>(json);
 
             if (loaded == null)
@@ -235,6 +243,26 @@ public class CJsonManager : MonoBehaviour
         Save(CurrentSaveData);
     }
 
+    /// <summary>
+    /// 유저의 닉네임과 캐릭터 종류를 설정하고 즉시 저장
+    /// </summary>
+    /// <param name="nickname"></param>
+    /// <param name="type"></param>
+    public void SavePlayerProfile(string nickname, EPlayerType type)
+    {
+        EnsureSaveDataLoaded();
+        CurrentSaveData.nickname = nickname;
+        CurrentSaveData.characterType = type;
+        Save(CurrentSaveData);
+    }
+
+    /// <summary>누적 처치 수를 메모리상에서 증가시킨다.</summary>
+    public void AddTotalKillCount(int amount = 1)
+    {
+        EnsureSaveDataLoaded();
+        CurrentSaveData.totalKills += amount;
+    }
+
     #endregion
 
     #region PrivateMethods
@@ -250,6 +278,11 @@ public class CJsonManager : MonoBehaviour
     {
         return new CSaveData
         {
+            // 고유 식별 데이터 초기화 추가
+            uid = GenerateNumericUID(),
+            nickname = "이름 없는 플레이어",
+            characterType = EPlayerType.Dasher,
+
             playerStatId     = 1,
             playerLevel      = 1,
             playerExp        = 0f,
@@ -264,6 +297,29 @@ public class CJsonManager : MonoBehaviour
             saveVersion      = 1,
         };
     }
+
+    /// <summary>
+    /// EncryptionKey를 기준으로 XOR 암호환
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    private string EncryptDecrypt(string text)
+    {
+        StringBuilder res = new StringBuilder();
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            res.Append((char)(text[i] ^ EncryptionKey[i % EncryptionKey.Length]));
+        }
+
+        return res.ToString();
+    }
+
+    /// <summary>
+    /// 숫자 기반 UID 생성
+    /// </summary>
+    /// <returns>8 + 날짜 기반 6자리 + 랜덤 3자리</returns>
+    private string GenerateNumericUID() => $"8{DateTime.Now:yyMMdd}{UnityEngine.Random.Range(100, 1000)}";
 
     #endregion
 }

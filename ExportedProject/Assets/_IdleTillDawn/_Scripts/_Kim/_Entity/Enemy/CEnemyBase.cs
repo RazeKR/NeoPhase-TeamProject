@@ -102,6 +102,11 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     public override void Die()
     {
+        if (CJsonManager.Instance != null)
+        {
+            CJsonManager.Instance.AddTotalKillCount(1);
+        }
+
         if (Rb != null && Rb.bodyType != RigidbodyType2D.Static)
         {
             Rb.velocity = Vector2.zero;

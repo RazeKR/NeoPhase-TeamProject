@@ -180,9 +180,11 @@ public class CPlayerController : CEntityBase
 
     private void Start()
     {
-        if (CPlayerDataManager.Instance != null)
+        if (CJsonManager.Instance != null)
         {
-            InitPlayer(CPlayerDataManager.Instance.CurrentData);
+            CSaveData loadedData = CJsonManager.Instance.GetOrCreateSaveData();
+
+            InitPlayer(loadedData);
         }
         else
         {
@@ -210,13 +212,13 @@ public class CPlayerController : CEntityBase
     /// 세이브 데이터와 SO 데이터를 조합해 캐릭터 초기화
     /// </summary>
     /// <param name="saveData">세이브 데이터 (나중에 병합 시 맞는 타입으로 변경)</param>
-    public void InitPlayer(CPlayerSaveData saveData)
+    public void InitPlayer(CSaveData saveData)
     {
         // TODO : 병합 후 추가 내용 작성
 
         if (_characterData == null) return;
 
-        if (saveData == null || string.IsNullOrEmpty(saveData.Uid))
+        if (saveData == null || string.IsNullOrEmpty(saveData.uid))
         {
             Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
             MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
@@ -230,7 +232,7 @@ public class CPlayerController : CEntityBase
         MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
         MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
 
-        CurrentHealth = saveData.SavedHealth;
+        CurrentHealth = saveData.currentHp;
 
         Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}");
     }
@@ -354,25 +356,41 @@ public class CPlayerController : CEntityBase
     /// </summary>
     public override void Die()
     {
-        if (CPlayerDataManager.Instance != null && CPlayerDataManager.Instance.CurrentData != null && CGameManager.Instance != null)
+        if (CJsonManager.Instance != null)
         {
-            int savedStage = CPlayerDataManager.Instance.CurrentData.FinalStage;
-            int currentStage = CGameManager.Instance.CurrentStageData.StageIndex;
+            CSaveData currentData = CJsonManager.Instance.GetOrCreateSaveData();
 
-            CPlayerDataManager.Instance.CurrentData.UpdateProgress
+            for (int i = 0; i < (int)EPlayerStatType.Count; i++)
+            {
+                float bonusValue = _statManager.BonusModifiers[i];
+                if (bonusValue > 0)
+                {
+                    currentData.SetStatBonus(i, bonusValue);
+                }
+            }
+
+            int currentStage = CGameManager.Instance != null ? CGameManager.Instance.CurrentStageIndex : 1;
+
+
+            currentData.UpdateProgress
             (
                 _statManager.CurrentLevel,
-                savedStage >= currentStage ? savedStage : currentStage,
                 _statManager.CurrentExp,
                 MaxHealth,
-                _statManager.BonusModifiers
+                _statManager.GetFinalStat(EPlayerStatType.Mana),
+                currentStage
             );
 
-            CPlayerDataManager.Instance.SavePlayerData(CPlayerDataManager.Instance.CurrentData);
+            CJsonManager.Instance.Save(currentData);
         }
 
         base.Die();
-        CGameManager.Instance.RespawnCurrentStage();
+
+        if (CGameManager.Instance != null)
+        {
+            CGameManager.Instance.RespawnCurrentStage();
+        }
+
     }
 
     /// <summary>

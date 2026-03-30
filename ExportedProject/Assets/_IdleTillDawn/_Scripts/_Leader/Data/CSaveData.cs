@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -9,6 +9,11 @@ using System.Collections.Generic;
 [Serializable]
 public class CSaveData
 {
+    // ── 유저 고유 정보 ────────────────────────────────────────────────────
+    public string uid = "";
+    public string nickname = "";
+    public EPlayerType characterType;
+
     // ── 플레이어 기본 ─────────────────────────────────────────────────────
     public int   playerStatId    = 1;     // 사용 중인 CPlayerStatDataSO ID
     public int   playerLevel     = 1;     // 현재 플레이어 레벨
@@ -21,6 +26,7 @@ public class CSaveData
     public int currentStageId   = 1;  // 현재 스테이지 ID (CStageDataSO.Id 기준)
     public int highestStageId   = 1;  // 도달한 최고 스테이지 ID
     public int currentKillCount = 0;  // 현재 스테이지 처치 수 (세션 내 진행도)
+    public int totalKills       = 0;  // 누적 킬 수
 
     // ── 장비 ──────────────────────────────────────────────────────────────
     public int equippedWeaponId = 0;  // 장착 무기 ID (0 = 없음)
@@ -116,5 +122,23 @@ public class CSaveData
 
         statTypeIds.Add(statTypeId);
         statBonuses.Add(bonus);
+    }
+
+    /// <summary>
+    /// 디스크 저장 없이 메모리상의 진행도 데이터만 한 번에 갱신합니다.
+    /// (마지막에 CJsonManager.Save()를 한 번만 호출하기 위한 최적화 용도)
+    /// </summary>
+    public void UpdateProgress(int level, float exp, float hp, float mana, int stageId)
+    {
+        playerLevel = level;
+        playerExp = exp;
+        currentHp = hp;
+        currentMana = mana;
+        currentStageId = stageId;
+
+        if (stageId > highestStageId)
+        {
+            highestStageId = stageId;
+        }
     }
 }

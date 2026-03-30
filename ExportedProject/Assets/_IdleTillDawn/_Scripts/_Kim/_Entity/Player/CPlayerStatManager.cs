@@ -34,14 +34,14 @@ public class CPlayerStatManager : MonoBehaviour
     /// 세이브 데이터를 기반으로 현재 레벨과 경험치를 동기화하고 모디파이어를 계산
     /// </summary>
     /// <param name="data"></param>
-    public void SyncWithSaveData(CPlayerSaveData data)
+    public void SyncWithSaveData(CSaveData data)
     {
-        CurrentLevel = data.Level;
-        CurrentExp = data.CurrentExp;
+        CurrentLevel = data.playerLevel;
+        CurrentExp = data.playerExp;
 
-        if (data.BonusStats != null && data.BonusStats.Length == (int)EPlayerStatType.Count)
+        for (int i = 0; i < (int)EPlayerStatType.Count; i++)
         {
-            data.BonusStats.CopyTo(_bonusModifiers, 0);
+            _bonusModifiers[i] = data.GetStatBonus(i);
         }
 
         SetModifier(CurrentLevel);
