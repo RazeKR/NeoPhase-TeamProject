@@ -219,8 +219,8 @@ public class CPlayerController : CEntityBase
         if (saveData == null || string.IsNullOrEmpty(saveData.Uid))
         {
             Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
-            MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
-            MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
+            MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+            MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
             CurrentHealth = MaxHealth;
             return;
         }
@@ -306,8 +306,8 @@ public class CPlayerController : CEntityBase
         CBullet    bullet    = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
         {
-            float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage);
-            bullet.Init(dir, weaponData.WeaponDamage, _bulletSpeed, weaponData.LifeTime);
+            float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage;
+            bullet.Init(dir, finalDamage, _bulletSpeed, weaponData.LifeTime);
         }
     }
 

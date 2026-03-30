@@ -86,7 +86,7 @@ public abstract class CBossBase : CEnemyBase
     {
         base.TakeDamage(damage);
 
-        Debug.Log($"{gameObject.name} : {damage} 데미지를 입음. 현재 체력 {CurrentHealth}");
+        //Debug.Log($"{gameObject.name} : {damage} 데미지를 입음. 현재 체력 {CurrentHealth}");
     }
 
     /// <summary>
