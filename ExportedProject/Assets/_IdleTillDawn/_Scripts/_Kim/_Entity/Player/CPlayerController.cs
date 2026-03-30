@@ -20,6 +20,10 @@ public class CPlayerController : CEntityBase
     [Header("자동 이동 딜레이")]
     [SerializeField] private float _autoModeDelay = 3.0f;
 
+    [Header("자동 회피 옵션")]
+    [SerializeField] private float _evadeRadius = 4.5f;
+    [SerializeField] private LayerMask _hazardLayer;
+
     [Header("애니메이터 파라미터")]
     [SerializeField] private string _paramSpeed = "aSpeed";
 
@@ -47,9 +51,22 @@ public class CPlayerController : CEntityBase
     private Coroutine  _preventCoroutine   = null; // 코루틴 참조 — 중단/재시작 안전 관리용
     private SpriteRenderer _spriteRenderer;
     private WaitForSeconds _blinkWait;
-
     private bool  _isKnockedBack    = false;
     private float _knockbackEndTime = 0f;
+
+    #endregion
+
+    #region 프로퍼티
+    public float EvadeRadius => _evadeRadius;
+    public LayerMask HazardLayer => _hazardLayer;
+    public float AutoModeDelay => _autoModeDelay;
+    public CPlayerInputHandler InputHandler => _inputHandler;
+
+    // FSM 관련 변수
+    public CPlayerStateMachine StateMachine { get; private set; }
+    public CStateManual StateManual { get; private set; }
+    public CStateAutoChase StateAutoChase { get; private set; }
+    public CStateAutoEvade StateAutoEvade { get; private set; }
     #endregion
 
     /// <summary>
@@ -134,6 +151,13 @@ public class CPlayerController : CEntityBase
 
         _hashSpeed = Animator.StringToHash(_paramSpeed);        
         _blinkWait = new WaitForSeconds(_blinkInterval);
+
+        StateMachine = new CPlayerStateMachine();
+        StateManual = new CStateManual(this);
+        StateAutoChase = new CStateAutoChase(this);
+        StateAutoEvade = new CStateAutoEvade(this);
+
+        StateMachine.Initialize(StateManual);
     }
 
     private void OnEnable()
@@ -198,6 +222,11 @@ public class CPlayerController : CEntityBase
         if (Input.GetKeyDown(KeyCode.O))
         {
             TakeDamage(1);
+        }
+
+        if (StateMachine != null)
+        {
+            StateMachine.Update();
         }
     }
 
@@ -265,35 +294,11 @@ public class CPlayerController : CEntityBase
             _isKnockedBack = false;
         }
 
-        Vector2 currentVelocity = Vector2.zero;
+        StateMachine.FixedUpdate();
 
-        if (_inputHandler.IsManualMove)
-        {
-            currentVelocity = _inputHandler.MoveInput * MoveSpeed;
-
-            _lastInputTime = 0f;
-        }
-        else
-        {
-            _lastInputTime += Time.fixedDeltaTime;
-
-            if (_lastInputTime < _autoModeDelay)
-            {
-                currentVelocity = Vector2.zero;
-            }
-            else
-            {
-                currentVelocity = AutoMove();
-            }
-        }
-
-        float speed = currentVelocity.magnitude;
-
+        float speed = Rb.velocity.magnitude;
         _animator.SetFloat(_hashSpeed, speed);
-
-        Rb.velocity = currentVelocity;
-
-        FlipCharacter(currentVelocity.x);
+        FlipCharacter(Rb.velocity.x);
     }
 
     /// <summary>
@@ -328,44 +333,6 @@ public class CPlayerController : CEntityBase
             float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage;
             bullet.Init(dir, finalDamage, _bulletSpeed, weaponData.LifeTime);
         }
-    }
-
-    /// <summary>
-    /// 자동 이동 로직
-    /// </summary>
-    private Vector2 AutoMove()
-    {
-        if (CurrentTarget == null)
-        {
-            _isApproaching = false;
-            _lastTarget = null;
-            return Vector2.zero;
-        }
-
-        float distance = Vector2.Distance(transform.position, CurrentTarget.position);
-        Vector2 dirToTarget = (CurrentTarget.position - transform.position).normalized;
-
-        float maxAttackRange = CurrentAttackRange;
-        float stopApproachRange = maxAttackRange * 0.7f;
-
-        if (CurrentTarget != _lastTarget)
-        {
-            _isApproaching = distance > maxAttackRange;
-            _lastTarget = CurrentTarget;
-        }
-        else
-        {
-            if (distance > maxAttackRange)
-            {
-                _isApproaching = true;
-            }
-            else if (distance <= stopApproachRange)
-            {
-                _isApproaching = false;
-            }
-        }
-
-        return _isApproaching ? (dirToTarget * MoveSpeed) : Vector2.zero;
     }
 
     /// <summary>
