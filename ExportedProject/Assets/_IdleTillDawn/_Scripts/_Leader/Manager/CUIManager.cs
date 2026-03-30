@@ -89,7 +89,7 @@ public class CUIManager : MonoBehaviour
         _deathPanel.SetActive(false);                     // 사망 패널 초기 숨김
         _clearPanel.SetActive(false);                     // 클리어 패널 초기 숨김
         // 씬 시작 시 게이지를 0으로 즉시 초기화 (Lerp 연출 없이 깔끔하게 시작)
-        _killGaugeBar.SetValueImmediate(0, CGameManager.Instance.CurrentStageData._killGoal);
+        _killGaugeBar.SetValueImmediate(0, CGameManager.Instance.CurrentStageData.KillGoal);
     }
 
     /// <summary>
@@ -98,8 +98,8 @@ public class CUIManager : MonoBehaviour
     /// </summary>
     private void UpdateStageInfo()
     {
-        CStageData data = CGameManager.Instance.CurrentStageData;
-        _stageInfoText.text = $"World {data._world} - Stage {data._stage}"; // 스테이지 번호 텍스트
+        CStageDataSO data = CGameManager.Instance.CurrentStageData;
+        _stageInfoText.text = $"World {data.World} - Stage {data.StageNumber}"; // 스테이지 번호 텍스트
     }
 
     /// <summary>
@@ -108,8 +108,8 @@ public class CUIManager : MonoBehaviour
     /// 씬 리로드 후 Start에서 UpdateStageInfo가 다시 호출되므로 이중 보호 구조를 갖는다
     /// </summary>
     /// <param name="newStageData">증가된 인덱스 기준의 새 스테이지 데이터</param>
-    private void UpdateStageInfoFromData(CStageData newStageData) =>
-        _stageInfoText.text = $"World {newStageData._world} - Stage {newStageData._stage}"; // 즉시 반영
+    private void UpdateStageInfoFromData(CStageDataSO newStageData) =>
+        _stageInfoText.text = $"World {newStageData.World} - Stage {newStageData.StageNumber}"; // 즉시 반영
 
     /// <summary>
     /// 킬카운트 게이지를 갱신한다

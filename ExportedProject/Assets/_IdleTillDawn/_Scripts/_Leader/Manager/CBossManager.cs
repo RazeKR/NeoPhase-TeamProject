@@ -55,18 +55,31 @@ public class CBossManager : MonoBehaviour
     /// 중복 스폰 방지를 위해 currentBoss가 이미 존재하면 즉시 반환한다
     /// 플레이어 주변 링 영역에 무작위 각도로 등장시켜 항상 다른 방향에서 접근하도록 한다
     /// </summary>
-    /// <param name="stageData">보스 프리팹 및 배율 정보를 담은 스테이지 데이터</param>
-    public void SpawnBoss(CStageData stageData)
+    /// <param name="stageData">보스 ID 및 배율 정보를 담은 스테이지 데이터</param>
+    public void SpawnBoss(CStageDataSO stageData)
     {
         if (currentBoss != null) return; // 중복 스폰 방지
 
+        if (!stageData.HasBoss)
+        {
+            Debug.LogWarning("[CBossManager] 이 스테이지에는 보스가 없습니다.");
+            return;
+        }
+
+        CBossDataSO bossData = CDataManager.Instance.GetBoss(stageData.BossId);
+        if (bossData == null || bossData.Prefab == null)
+        {
+            Debug.LogError($"[CBossManager] BossId {stageData.BossId}에 해당하는 보스 데이터 또는 프리팹이 없음");
+            return;
+        }
+
         Vector3 spawnPos   = GetRandomSpawnPosition();                              // 플레이어 주변 랜덤 위치 계산
-        GameObject bossObj = Instantiate(stageData._bossPrefab, spawnPos, Quaternion.identity);
+        GameObject bossObj = Instantiate(bossData.Prefab, spawnPos, Quaternion.identity);
         currentBoss = bossObj.GetComponent<CBossBase>();
 
         if (currentBoss == null)
         {
-            Debug.LogError($"[CBossManager] {stageData._bossPrefab.name} 프리팹 루트에 CBossBase 컴포넌트가 없음");
+            Debug.LogError($"[CBossManager] {bossData.Prefab.name} 프리팹 루트에 CBossBase 컴포넌트가 없음");
             Destroy(bossObj);
             return;
         }
