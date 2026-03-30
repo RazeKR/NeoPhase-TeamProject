@@ -94,9 +94,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7942928349249613665}
   - component: {fileID: 6841944988717735367}
-  - component: {fileID: -5334931207687245922}
   - component: {fileID: -7461798480339104622}
-  - component: {fileID: 1058433711194144336}
+  - component: {fileID: 5831265263869950818}
   m_Layer: 0
   m_Name: Bullet(Temp)JHW
   m_TagString: Untagged
@@ -149,18 +148,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-5334931207687245922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4376937155057529381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cad75694d4de1854b9e36f36fe8a5b39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &-7461798480339104622
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -196,7 +183,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.21875
---- !u!114 &1058433711194144336
+--- !u!114 &5831265263869950818
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -205,22 +192,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4376937155057529381}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fa358834891d5e4fad81976478c5191, type: 3}
+  m_Script: {fileID: 11500000, guid: cad75694d4de1854b9e36f36fe8a5b39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _srFar: {fileID: 5056677083576213017}
-  _srNear: {fileID: 8629519479354788173}
-  _srHead: {fileID: 8666773443787939974}
-  _farLength: 1.8
-  _farWidth: 0.55
-  _farColor: {r: 1, g: 0.92, b: 0.75, a: 0.5}
-  _nearLength: 0.9
-  _nearWidth: 0.3
-  _nearColor: {r: 1, g: 0.96, b: 0.85, a: 0.8}
-  _headSize: 11.13
-  _headColor: {r: 1, g: 1, b: 1, a: 1}
-  _sortingLayerName: Projectile
-  _sortingOrder: 5
+  _stretchX: 5
 --- !u!1 &8479412165804215595
 GameObject:
   m_ObjectHideFlags: 0
