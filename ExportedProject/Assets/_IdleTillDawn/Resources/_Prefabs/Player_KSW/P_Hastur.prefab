@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: -314052960544737019}
   - component: {fileID: -397225668994705964}
   - component: {fileID: 3844336600422313753}
+  - component: {fileID: 8780424355032175541}
   - component: {fileID: 3649854704783532146}
   m_Layer: 0
   m_Name: P_Hastur
@@ -184,12 +185,25 @@ MonoBehaviour:
   _evadeRadius: 2.5
   _hazardLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1984
   _paramSpeed: aSpeed
   _defaultAttackRange: 1.5
   _bulletSpeed: 10
   _preventTime: 1.5
   _blinkInterval: 0.1
+--- !u!114 &8780424355032175541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5717717816164410344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980395e424067841ab536ac4a158a02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseData: {fileID: 0}
 --- !u!70 &3649854704783532146
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

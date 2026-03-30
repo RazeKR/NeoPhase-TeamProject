@@ -38,14 +38,10 @@ public class CPlayerController : CEntityBase
 
     #region 내부 변수
     private CPlayerInputHandler _inputHandler;
-    private float _lastInputTime  = 0f;
     private float _lastAttackTime = 0f;
     private int   _hashSpeed;
 
     private CPlayerStatManager _statManager;
-
-    private bool _isApproaching = false;
-    private Transform _lastTarget;
 
     private bool       _isPreventDamage    = false;
     private Coroutine  _preventCoroutine   = null; // 코루틴 참조 — 중단/재시작 안전 관리용

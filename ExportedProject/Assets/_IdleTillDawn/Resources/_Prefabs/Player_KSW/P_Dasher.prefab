@@ -277,7 +277,7 @@ MonoBehaviour:
   _scanRadius: 15
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 448
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -292,9 +292,9 @@ MonoBehaviour:
   _evadeRadius: 2.5
   _hazardLayer:
     serializedVersion: 2
-    m_Bits: 1984
+    m_Bits: 1472
   _paramSpeed: aSpeed
-  _defaultAttackRange: 20
+  _defaultAttackRange: 5
   _bulletSpeed: 20
   _preventTime: 1.5
   _blinkInterval: 0.1
