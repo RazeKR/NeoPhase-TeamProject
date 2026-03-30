@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_WindBorne
   m_EditorClassIdentifier: 
-  _id: 15
+  _id: 16
   skillName: "\uC708\uB4DC\uBCF8"
   flavourText: 
   skillType: 1

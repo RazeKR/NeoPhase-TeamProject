@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_BlazingSpeed
   m_EditorClassIdentifier: 
-  _id: 3
+  _id: 4
   skillName: "\uBD88\uC758 \uC9C8\uC8FC"
   flavourText: 
   skillType: 1

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Courage
   m_EditorClassIdentifier: 
-  _id: 5
+  _id: 6
   skillName: "\uC6A9\uAE30"
   flavourText: 
   skillType: 1

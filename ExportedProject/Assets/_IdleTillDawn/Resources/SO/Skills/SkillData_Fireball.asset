@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Fireball
   m_EditorClassIdentifier: 
-  _id: 8
+  _id: 9
   skillName: "\uD30C\uC774\uC5B4\uBCFC"
   flavourText: 
   skillType: 1

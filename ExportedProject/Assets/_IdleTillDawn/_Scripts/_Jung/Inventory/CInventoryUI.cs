@@ -149,7 +149,7 @@ public class CInventoryUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
-        var inventory = CInventoryManager.Instance.Inventory;
+        var inventory = CInventorySystemJ.Instance.Inventory;
 
         // 인벤토리를 순회하며 생성
         foreach (var item in inventory)
@@ -281,12 +281,13 @@ public class CInventoryUI : MonoBehaviour
 
         if (Item is CWeaponInstance weapon)
         {
-            CInventoryManager.Instance.SwapWeapon(weapon._instanceID);
+            CInventorySystemJ.Instance.EquipWeapon(weapon._instanceID);
         }
 
         else if (Item is CPotionInstance potion)
         {
-            CInventoryManager.Instance.UsePotion(potion._instanceID);
+            // 포션 사용 로직 구현 필요
+            CInventorySystemJ.Instance.RemoveItem(potion._instanceID, 1);
         }
 
         else if (Item is CScrollInstance scroll)
@@ -294,7 +295,6 @@ public class CInventoryUI : MonoBehaviour
             IsChoiceUpgrade = true;
             _upgradeUI.SetActive(true);
             _itemUI.SetActive(false);
-            Debug.Log("Click Use로 스크롤 선택 : " + IsChoiceUpgrade);
         }
 
         Item = null;
@@ -306,21 +306,12 @@ public class CInventoryUI : MonoBehaviour
     {
         if (Item == null) return;
 
-        if (Item is CWeaponInstance weapon)
-        {
-            CInventoryManager.Instance.RemoveItem(Item._instanceID);            
-        }
-
-        else
-        {
-            CInventoryManager.Instance.ReduceItemAmount(Item._instanceID, _desiredAmount);
-        }
+        CInventorySystemJ.Instance.RemoveItem(Item._instanceID, _desiredAmount == 0 ? 1 : _desiredAmount);
 
         _desiredAmount = 0;
-        Item = null;
-        RefreshUI();
-
+        Item = null;        
         _itemInfoUI.SetActive(false);
+        RefreshUI();
     }
 
 

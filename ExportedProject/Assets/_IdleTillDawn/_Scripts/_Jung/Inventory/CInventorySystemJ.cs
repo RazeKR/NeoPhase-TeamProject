@@ -37,8 +37,7 @@ public class CInventorySystemJ : MonoBehaviour
 
     #region PrivateVariables
 
-    //private Dictionary<int, int> _inventory = new(); // <아이템 ID, 수량>
-    private int _equippedWeaponId = 0;                // 현재 장착 무기 ID (0 = 없음)
+    private int _equippedWeaponId = 0;       // 현재 장착 무기 ID (0 = 없음)
     private CWeaponInstance _equippedWeapon; // 현재 장비 중인 무기 정보
     private List<CItemInstance> _inventory = new List<CItemInstance>(); // 접근 가능한 현재 인벤토리 정보
 
@@ -49,14 +48,11 @@ public class CInventorySystemJ : MonoBehaviour
     /// <summary>싱글톤 인스턴스.</summary>
     public static CInventorySystemJ Instance { get; private set; }
 
-    /// <summary>현재 장착 무기 ID. 0이면 장착 없음.</summary>
-    public int EquippedWeaponId => _equippedWeaponId;
-
-    /// <summary>장착 무기의 SO. 미장착이거나 ID가 없으면 null을 반환합니다.</summary>
-    public CWeaponDataSO EquippedWeapon =>
-        _equippedWeaponId > 0 ? CDataManager.Instance.GetWeapon(_equippedWeaponId) : null;
-
+    /// <summary>현재 인벤토리 정보를 가져옵니다.</summary>
     public List<CItemInstance> Inventory => _inventory;
+
+    /// <summary>현재 장착 무기 ID. 0이면 장착 없음.</summary>
+    public int EquippedWeaponId => _equippedWeaponId;    
 
     #endregion
 
@@ -98,61 +94,32 @@ public class CInventorySystemJ : MonoBehaviour
     public void AddItem(int itemId, int count = 1 , int rank = 0)
     {
         if (count <= 0) return;
-        if (CDataManager.Instance.GetItem(itemId) == null) return; // 유효하지 않은 ID 방어
-
         CItemDataSO so = CDataManager.Instance.GetItem(itemId);
+        if (so == null) return;
 
         if (so.ItemType == EItemType.Weapon)
         {
             for (int i = 0; i < count; i++)
             {
                 CWeaponInstance w = new CWeaponInstance(so as CWeaponDataSO);
-
                 w._rank = rank;
-
-                Inventory.Add(w);
+                _inventory.Add(w);
             }
         }
-
         else if (so.ItemType == EItemType.Potion)
         {
-            var existPotion = Inventory.Find(i => i._itemData.Id == itemId) as CPotionInstance;
-
-            if (existPotion != null)
-            {
-                existPotion._amount += count;
-
-                if (existPotion._amount + count > existPotion._maxAmount)
-                {
-                    existPotion._amount = existPotion._maxAmount;
-                }
-            }
-            else
-            {
-                Inventory.Add(new CPotionInstance(so as CPotionDataSO, count));
-            }
+            var exist = _inventory.Find(i => i._itemData.Id == itemId) as CPotionInstance;
+            if (exist != null) exist._amount = (byte)Mathf.Min(exist._amount + count, exist._maxAmount);
+            else _inventory.Add(new CPotionInstance(so as CPotionDataSO, count));
         }
-
         else if (so.ItemType == EItemType.Scroll)
         {
-            var existScroll = Inventory.Find(s => s._itemData.Id == itemId) as CScrollInstance;
-
-            if (existScroll != null)
-            {
-                existScroll._amount += count;
-
-                if (existScroll._amount + count > existScroll._maxAmount)
-                {
-                    existScroll._amount = existScroll._maxAmount;
-                }
-            }
-            else
-            {
-                Inventory.Add(new CScrollInstance(so as CScrollDataSO, count));
-            }
+            var exist = _inventory.Find(i => i._itemData.Id == itemId) as CScrollInstance;
+            if (exist != null) exist._amount = (byte)Mathf.Min(exist._amount + count, exist._maxAmount);
+            else _inventory.Add(new CScrollInstance(so as CScrollDataSO, count));
         }
 
-        CJsonManager.Instance.SaveItemChange(itemId, count);
+        SyncAndSave();
         OnInventoryChanged?.Invoke();
     }
 
@@ -160,106 +127,81 @@ public class CInventorySystemJ : MonoBehaviour
     /// 아이템을 인벤토리에서 제거합니다.
     /// count가 현재 수량 이상이면 해당 아이템 항목 자체가 제거됩니다.
     /// </summary>
-    public bool RemoveItem(string targetInstanceID, int amount)
+    public bool RemoveItem(string targetInstanceID, int amount = 1)
     {
-        var target = Inventory.Find(i => i._instanceID == targetInstanceID);
-
-        if (target ==  null) return false;
-
-
-        if (target is CPotionInstance potion)
-        {
-            potion._amount -= amount;
-
-            if (potion._amount <= 0)
-            {
-                RemoveItem(targetInstanceID);
-            }
-        }
-
-        else if (target != null && (target is CScrollInstance scroll))
-        {
-            scroll._amount -= amount;
-
-            if (scroll._amount <= 0)
-            {
-                RemoveItem(targetInstanceID);
-            }
-        }
-
-        else return false;
-
-        Inventory.Remove(target);
-
-        OnInventoryChanged?.Invoke();
-        return true;
-    }
-
-    /// <summary>
-    /// 아이템 제거 함수 오버로딩
-    /// 수량 상관없이 제거되는 처리를 수행합니다.
-    /// </summary>
-    public bool RemoveItem(string targetInstanceID)
-    {
-        var target = Inventory.Find(i => i._instanceID == targetInstanceID);
-
+        var target = _inventory.Find(i => i._instanceID == targetInstanceID);
         if (target == null) return false;
 
-        if (target == _equippedWeapon)
-        {            
-            return false;
-        }              
-        
-        Inventory.Remove(target);
+        // 타입별 수량 차감 및 삭제 처리
+        if (target is CPotionInstance p)
+        {
+            p._amount -= amount;
+            if (p._amount <= 0) _inventory.Remove(target);
+        }
+        else if (target is CScrollInstance s)
+        {
+            s._amount -= amount;
+            if (s._amount <= 0) _inventory.Remove(target);
+        }
+        else // 무기 등 수량 없는 아이템
+        {
+            if (target == _equippedWeapon) return false;
+            _inventory.Remove(target);
+        }
 
-        //SaveInventory(Inventory);
-
-        Inventory.Remove(target);
-
+        SyncAndSave();
         OnInventoryChanged?.Invoke();
         return true;
     }
 
-
-    /// <summary>특정 아이템의 보유 수량을 반환합니다. 없으면 0을 반환합니다.</summary>
-    //public int GetItemCount(int itemId)
-    //{
-    //    _inventory.TryGetValue(itemId, out int count);
-    //    return count;
-    //}
-
-    /// <summary>특정 아이템을 1개 이상 보유하고 있는지 여부를 반환합니다.</summary>
-    //public bool HasItem(int itemId, int requiredCount = 1) => GetItemCount(itemId) >= requiredCount;
-
-    /// <summary>인벤토리에 있는 모든 아이템 ID 목록을 반환합니다.</summary>
-    //public IEnumerable<int> GetAllItemIds() => _inventory.Keys;
 
     /// <summary>
     /// 무기를 장착합니다. 인벤토리에 없는 무기는 장착할 수 없습니다.
     /// 장착 성공 시 OnWeaponEquipped 이벤트가 발생합니다.
     /// </summary>
-    public bool EquipWeapon(int weaponId)
+    public bool EquipWeapon(string instanceID)
     {
-        //if (!HasItem(weaponId))
-        //{
-        //    Debug.LogWarning($"[CInventorySystem] 인벤토리에 없는 무기를 장착하려 했습니다. ID: {weaponId}");
-        //    return false;
-        //}
+        var weapon = _inventory.Find(i => i._instanceID == instanceID) as CWeaponInstance;
+        if (weapon == null) return false;
 
-        if (CDataManager.Instance.GetWeapon(weaponId) == null) return false;
+        _equippedWeapon = weapon;
+        _equippedWeaponId = weapon._itemData.Id;
 
-        _equippedWeaponId = weaponId;
-        CJsonManager.Instance.SaveEquippedWeapon(weaponId);
-        OnWeaponEquipped?.Invoke(weaponId);
+        SyncAndSave();
+        OnWeaponEquipped?.Invoke(_equippedWeaponId);
         return true;
     }
 
-    /// <summary>장착 무기를 해제합니다.</summary>
-    public void UnequipWeapon()
+
+    /// <summary>
+    /// 현재 인벤토리 리스트를 CSaveData 구조로 변환하여 물리 저장합니다.
+    /// </summary>
+    public void SyncAndSave()
     {
-        _equippedWeaponId = 0;
-        CJsonManager.Instance.SaveEquippedWeapon(0);
-        OnWeaponEquipped?.Invoke(0);
+        if (CJsonManager.Instance == null) return;
+        CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+
+        data.inventorySaveData.items.Clear();
+        foreach (var item in _inventory)
+        {
+            CItemSaveData sData = new CItemSaveData
+            {
+                itemID = item._itemData.Id,
+                instanceID = item._instanceID,
+                type = item._itemData.ItemType,
+                rank = (item is CWeaponInstance w) ? w._rank : 0
+            };
+
+            // 수량 정보 개별 할당
+            if (item is CPotionInstance p) sData.amount = p._amount;
+            else if (item is CScrollInstance s) sData.amount = s._amount;
+            else sData.amount = 1;
+
+            data.inventorySaveData.items.Add(sData);
+        }
+
+        data.equippedWeaponId = _equippedWeaponId;
+        CJsonManager.Instance.Save(data);
     }
 
     /// <summary>
@@ -281,53 +223,32 @@ public class CInventorySystemJ : MonoBehaviour
     /// <summary>CSaveData에서 인벤토리 상태를 복원합니다. CJsonManager.OnLoadCompleted에 구독됩니다.</summary>
     private void RestoreFromSaveData(CSaveData saveData)
     {
-        if (saveData == null) return;
+        if (saveData == null || saveData.inventorySaveData == null) return;
 
         _inventory.Clear();
-        
-        CInventorySaveData save = saveData.inventorySaveData;
-        List<CItemInstance> loadedInventory = new List<CItemInstance>();
-
-        foreach (var data in save.items)
+        foreach (var sData in saveData.inventorySaveData.items)
         {
-            CItemDataSO so = CDataManager.Instance.GetItem(data.itemID);
+            CItemDataSO so = CDataManager.Instance.GetItem(sData.itemID);
+            if (so == null) continue;
 
-            if (so != null)
+            if (so is CWeaponDataSO wSo)
             {
-                CItemInstance newItem = null;
-
-                if (data.type == EItemType.Potion)
-                {
-                    newItem = new CPotionInstance(so as CPotionDataSO, data.amount);
-                }
-                else if (data.type == EItemType.Scroll)
-                {
-                    newItem = new CScrollInstance(so as CScrollDataSO, data.amount);
-                }
-                else if (data.type == EItemType.Weapon)
-                {
-                    var weapon = new CWeaponInstance(so as CWeaponDataSO);
-                    weapon._rank = data.rank;
-                    weapon._upgrade = data.upgrade;
-                    weapon._isEquipped = data.isEquipped;
-                    newItem = weapon;
-                }
-
-                newItem._instanceID = data.instanceID;
-                loadedInventory.Add(newItem);
+                var w = new CWeaponInstance(wSo);
+                w._rank = sData.rank;
+                w._instanceID = sData.instanceID;
+                _inventory.Add(w);
             }
+            else if (so is CPotionDataSO pSo) _inventory.Add(new CPotionInstance(pSo, sData.amount));
+            else if (so is CScrollDataSO sSo) _inventory.Add(new CScrollInstance(sSo, sData.amount));
         }
 
-        // 로드된 리스트의 장착 무기 정보 캐싱
-        _equippedWeapon = loadedInventory
-            .OfType<CWeaponInstance>()
-            .FirstOrDefault(w => w._isEquipped);
-
-        _equippedWeaponId = _equippedWeapon._itemData.Id;
+        _equippedWeaponId = saveData.equippedWeaponId;
+        if (_equippedWeaponId != 0)
+            _equippedWeapon = _inventory.Find(i => i._itemData.Id == _equippedWeaponId) as CWeaponInstance;
 
         OnInventoryChanged?.Invoke();
     }
-
+        
     #endregion
 }
 

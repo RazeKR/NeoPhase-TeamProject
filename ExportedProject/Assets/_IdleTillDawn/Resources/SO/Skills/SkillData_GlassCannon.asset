@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_GlassCannon
   m_EditorClassIdentifier: 
-  _id: 12
+  _id: 13
   skillName: "\uC720\uB9AC\uB300\uD3EC"
   flavourText: 
   skillType: 1

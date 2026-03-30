@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_IceShard
   m_EditorClassIdentifier: 
-  _id: 13
+  _id: 14
   skillName: "\uC544\uC774\uC2A4 \uC0E4\uB4DC"
   flavourText: 
   skillType: 1

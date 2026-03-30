@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Frostbite
   m_EditorClassIdentifier: 
-  _id: 9
+  _id: 10
   skillName: "\uB3D9\uC0C1"
   flavourText: 
   skillType: 1

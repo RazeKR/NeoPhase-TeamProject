@@ -46,6 +46,6 @@ public class CGenerateItem : MonoBehaviour
 
         desiredWeaponID = so.Id;
 
-        CInventoryManager.Instance.AddItem(desiredWeaponID, 1, desiredRank);
+        CInventorySystemJ.Instance.AddItem(desiredWeaponID, 1, desiredRank);
     }
 }

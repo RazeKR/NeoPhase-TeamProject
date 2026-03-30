@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Aftershock
   m_EditorClassIdentifier: 
-  _id: 0
+  _id: 1
   skillName: "\uC5EC\uC9C4"
   flavourText: "\uADFC\uCC98\uC758 \uC801\uC5D0\uAC8C \uD53C\uD574\uB97C \uC90D\uB2C8\uB2E4."
   skillType: 1
