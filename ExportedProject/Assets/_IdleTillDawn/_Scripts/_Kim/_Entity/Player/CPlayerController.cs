@@ -306,8 +306,10 @@ public class CPlayerController : CEntityBase
         CBullet    bullet    = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
         {
-            float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage);
-            bullet.Init(dir, weaponData.WeaponDamage, _bulletSpeed, weaponData.LifeTime);
+            float finalDamage = _statManager != null
+                ? _statManager.GetFinalStat(EPlayerStatType.Damage)
+                : weaponData.WeaponDamage;
+            bullet.Init(dir, finalDamage, _bulletSpeed, weaponData.LifeTime);
         }
     }
 

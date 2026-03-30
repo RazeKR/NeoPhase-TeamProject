@@ -256,8 +256,8 @@ public class CJsonManager : MonoBehaviour
             currentHp        = 100f,
             currentMana      = 100f,
             gold             = 0,
-            currentStageId   = 1,
-            highestStageId   = 1,
+            currentStageId   = 0,  // StageIndex 0 = World 1, Stage 1
+            highestStageId   = 0,
             currentKillCount = 0,
             equippedWeaponId = 0,
             skillPoints      = 0,

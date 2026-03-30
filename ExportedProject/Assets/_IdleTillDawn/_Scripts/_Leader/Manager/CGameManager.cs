@@ -88,7 +88,20 @@ public class CGameManager : MonoBehaviour
                 Debug.LogError("[CGameManager] CDataManager가 아직 초기화되지 않았습니다.");
                 return null;
             }
-            return CDataManager.Instance.GetStageByIndex(_currentStageIndex);
+
+            CStageDataSO data = CDataManager.Instance.GetStageByIndex(_currentStageIndex);
+
+            // 저장된 인덱스에 해당하는 SO가 없으면 0으로 리셋 (손상된 세이브 데이터 방어)
+            if (data == null && _currentStageIndex != 0)
+            {
+                Debug.LogWarning($"[CGameManager] StageIndex {_currentStageIndex}에 해당하는 SO가 없습니다. " +
+                                 $"StageIndex를 0으로 리셋합니다. (세이브 데이터 손상 또는 SO 미등록)");
+                _currentStageIndex = 0;
+                SaveProgress();
+                data = CDataManager.Instance.GetStageByIndex(0);
+            }
+
+            return data;
         }
     }
 
@@ -103,6 +116,38 @@ public class CGameManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         LoadProgress();
+    }
+
+    private void Start()
+    {
+        // CDataManager가 이미 초기화돼 있으면 즉시 검증,
+        // 아직 초기화 전이면 OnDataInitialized 이벤트 구독 후 대기
+        if (CDataManager.Instance != null && CDataManager.Instance.IsInitialized)
+            ValidateStageIndex();
+        else if (CDataManager.Instance != null)
+            CDataManager.Instance.OnDataInitialized += ValidateStageIndex;
+    }
+
+    private void OnDestroy()
+    {
+        if (CDataManager.Instance != null)
+            CDataManager.Instance.OnDataInitialized -= ValidateStageIndex;
+    }
+
+    /// <summary>
+    /// 로드된 StageIndex에 해당하는 SO가 실제로 존재하는지 확인합니다.
+    /// SO가 없으면 0으로 리셋합니다. (세이브 데이터 손상 또는 미등록 SO 방어)
+    /// </summary>
+    private void ValidateStageIndex()
+    {
+        if (CDataManager.Instance == null) return;
+
+        if (!CDataManager.Instance.TryGetStageByIndex(_currentStageIndex, out _))
+        {
+            Debug.LogWarning($"[CGameManager] StageIndex {_currentStageIndex}에 해당하는 SO가 없어 0으로 리셋합니다.");
+            _currentStageIndex = 0;
+            SaveProgress();
+        }
     }
 
     /// <summary>앱 종료 시 현재 스테이지 인덱스를 저장합니다.</summary>

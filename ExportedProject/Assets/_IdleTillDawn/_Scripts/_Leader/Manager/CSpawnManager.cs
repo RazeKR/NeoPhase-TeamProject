@@ -155,6 +155,13 @@ public class CSpawnManager : MonoBehaviour
     /// <summary>스폰 주기마다 최대 활성 수까지 적을 추가 스폰하는 루프 코루틴</summary>
     private IEnumerator Co_SpawnLoop()
     {
+        if (currentStageData == null)
+        {
+            Debug.LogError("[CSpawnManager] currentStageData가 null입니다. StartSpawning에 null이 전달됐습니다.\n" +
+                           "CStageManager.Start()에서 CGameManager.CurrentStageData가 null을 반환했는지 확인하세요.", this);
+            yield break;
+        }
+
         while (true)
         {
             yield return new WaitForSeconds(currentStageData.SpawnInterval);
