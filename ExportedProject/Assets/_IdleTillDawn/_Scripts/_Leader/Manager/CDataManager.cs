@@ -42,7 +42,8 @@ public class CDataManager : MonoBehaviour
     #region PrivateVariables
 
     /// <summary>Resources.LoadAll로 자동 로드하는 Player SO 경로. Assets/Resources 하위 상대 경로입니다.</summary>
-    private const string PlayerSOPath = "_SO/Player"; // 플레이어 SO 자동 로드 경로
+    private const string PlayerSOPath = "_SO/Player";         // 플레이어 SO 자동 로드 경로
+    private const string StageSOPath  = "_StageDataSO";       // 스테이지 SO 자동 로드 경로 (하위 폴더 포함)
 
     private Dictionary<int, CPlayerDataSO> _playerDict   = new(); // 플레이어 데이터 캐시
     private Dictionary<int, CEnemyDataSO>  _monsterDict  = new(); // 일반 몬스터 캐시
@@ -176,6 +177,24 @@ public class CDataManager : MonoBehaviour
     }
 
     /// <summary>
+    /// StageIndex 기준으로 스테이지 데이터를 조회합니다.
+    /// 없으면 에러 로그 없이 false를 반환합니다. (ValidateStageIndex 등 유효성 검사용)
+    /// </summary>
+    public bool TryGetStageByIndex(int stageIndex, out CStageDataSO result)
+    {
+        foreach (CStageDataSO stage in _stageDict.Values)
+        {
+            if (stage.StageIndex == stageIndex)
+            {
+                result = stage;
+                return true;
+            }
+        }
+        result = null;
+        return false;
+    }
+
+    /// <summary>
     /// 모든 Dictionary를 강제 재초기화합니다.
     /// 런타임 중 SO 목록이 변경되었을 때 호출합니다.
     /// </summary>
@@ -194,9 +213,12 @@ public class CDataManager : MonoBehaviour
     private void InitAllDictionaries()
     {
         LoadPlayerDataFromResources();
+        // 1차: Inspector _stageList에 직접 연결된 SO 등록 (DataManager 프리팹 Inspector)
+        RegisterList(_stageList, _stageDict, "Stage");
+        // 2차: Resources/_StageDataSO 하위 전체 자동 로드 (파일만 있으면 자동 인식, 중복 시 경고 후 스킵)
+        LoadStageDataFromResources();
         RegisterList(_monsterList, _monsterDict, "Monster");
         RegisterList(_bossList,    _bossDict,    "Boss");
-        RegisterList(_stageList,   _stageDict,   "Stage");
         RegisterList(_itemList,    _itemDict,    "Item");
         RegisterList(_skillList,   _skillDict,   "Skill");
         RegisterWeaponList();
@@ -205,6 +227,37 @@ public class CDataManager : MonoBehaviour
         OnDataInitialized?.Invoke();
         Debug.Log($"[CDataManager] 초기화 완료 - Player:{_playerDict.Count} Monster:{_monsterDict.Count} " +
                   $"Boss:{_bossDict.Count} Stage:{_stageDict.Count} Item:{_allItemDict.Count} Skill:{_skillDict.Count}");
+    }
+
+    /// <summary>
+    /// Resources/_StageDataSO 하위의 모든 CStageDataSO를 자동 로드합니다.
+    /// Stage1, Stage2 등 하위 폴더 구조와 관계없이 전부 스캔합니다.
+    /// Inspector _stageList에 별도 등록 없이 파일 배치만으로 동작합니다.
+    /// </summary>
+    private void LoadStageDataFromResources()
+    {
+        CStageDataSO[] loaded = Resources.LoadAll<CStageDataSO>(StageSOPath);
+
+        if (loaded == null || loaded.Length == 0)
+        {
+            Debug.LogWarning($"[CDataManager] Resources/{StageSOPath} 경로에서 CStageDataSO를 찾을 수 없습니다.");
+            return;
+        }
+
+        foreach (CStageDataSO stage in loaded)
+        {
+            if (stage == null) continue;
+
+            if (_stageDict.ContainsKey(stage.Id))
+            {
+                Debug.LogWarning($"[CDataManager] StageData 중복 ID 발견: {stage.Id} ({stage.name}). 건너뜁니다.");
+                continue;
+            }
+
+            _stageDict.Add(stage.Id, stage);
+        }
+
+        Debug.Log($"[CDataManager] StageData 자동 로드 완료 - {_stageDict.Count}개 (경로: Resources/{StageSOPath})");
     }
 
     /// <summary>

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157a6f1bb6ecd894ebf5c23d9bf4d332, type: 3}
   m_Name: BossDataSO_World1
   m_EditorClassIdentifier: 
+  _id: 1
   _enemyName: BossHastur
   _description: Character Description
   _baseHealth: 2000
@@ -22,5 +23,15 @@ MonoBehaviour:
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 2902471189535920714, guid: df0dc33df636ece4a8255dae971a5fb2, type: 3}
+  _dropItemId: 0
+  _dropChance: 0.1
+  _expReward: 10
   _specialAttackCooldown: 5
   _specialAttackEffect: {fileID: 0}
+  _telegraphDuration: 1
+  _maxActivePatternCount: 3
+  _phase2Threshold: 0.5
+  _phase3Threshold: 0.25
+  _rewardItemIds: 
+  _bossExpReward: 500
+  _bossGoldReward: 1000

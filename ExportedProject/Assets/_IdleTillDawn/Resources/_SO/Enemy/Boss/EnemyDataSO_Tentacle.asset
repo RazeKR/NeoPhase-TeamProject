@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b17ef902cf4aaf04aaf3b8b75cd90461, type: 3}
   m_Name: EnemyDataSO_Tentacle
   m_EditorClassIdentifier: 
+  _id: 5
   _enemyName: Tentacle
   _description: Character Description
   _baseHealth: 2000
@@ -22,3 +23,6 @@ MonoBehaviour:
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 4917472704930818003, guid: 68a0e7d8cb8e1794b8a6846a8f41b124, type: 3}
+  _dropItemId: 0
+  _dropChance: 0.1
+  _expReward: 10

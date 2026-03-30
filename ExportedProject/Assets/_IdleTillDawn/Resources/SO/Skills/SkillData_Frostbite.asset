@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Frostbite
   m_EditorClassIdentifier: 
+  _id: 9
   skillName: "\uB3D9\uC0C1"
+  flavourText: 
   skillType: 1
   icon: {fileID: 21300000, guid: a9a711d04b8ab4b479181ca8762231c0, type: 2}
   maxLevel: 10
@@ -28,3 +30,5 @@ MonoBehaviour:
   - type: 1
     value: 1
     chance: 1
+  effectPrefab: {fileID: 0}
+  _levelData: []

@@ -193,13 +193,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22130bdc1f2be0442a69bf0f53864bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 1
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 0
   _scanRadius: 5
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 8192
+    m_Bits: 0
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -213,6 +214,9 @@ MonoBehaviour:
   _autoModeDelay: 3
   _paramSpeed: aSpeed
   _defaultAttackRange: 1.5
+  _bulletSpeed: 10
+  _preventTime: 1.5
+  _blinkInterval: 0.1
 --- !u!70 &1473068902611465577
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b17ef902cf4aaf04aaf3b8b75cd90461, type: 3}
   m_Name: EnemyDataSO_Melee_Type3
   m_EditorClassIdentifier: 
+  _id: 3
   _enemyName: PumpkinMonster
   _description: Character Description
   _baseHealth: 50
@@ -22,3 +23,6 @@ MonoBehaviour:
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 5783598445379814239, guid: 42099371a0da45043b1b7b8bbe8b3ea2, type: 3}
+  _dropItemId: 0
+  _dropChance: 0.1
+  _expReward: 10

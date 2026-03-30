@@ -70,6 +70,20 @@ public class CStageManager : MonoBehaviour
     private void Start()
     {
         stageData = CGameManager.Instance.CurrentStageData;
+
+        if (stageData == null)
+        {
+            Debug.LogError(
+                "[CStageManager] CurrentStageData가 null입니다.\n" +
+                "체크리스트:\n" +
+                "  1) CDataManager가 씬에 존재하는지 확인\n" +
+                "  2) CDataManager Inspector의 _stageList에 CStageDataSO가 등록됐는지 확인\n" +
+                "  3) 현재 StageIndex(" + CGameManager.Instance.CurrentStageIndex +
+                ")와 일치하는 StageDataSO의 StageIndex 값이 설정됐는지 확인",
+                this);
+            return; // 이하 초기화 중단
+        }
+
         SubscribeToBossEvents();
         TransitionTo(EStageState.Farming); // 씬 시작 즉시 파밍 루프 시작
     }

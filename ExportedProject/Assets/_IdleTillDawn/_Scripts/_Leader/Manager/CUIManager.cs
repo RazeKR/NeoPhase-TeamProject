@@ -88,8 +88,22 @@ public class CUIManager : MonoBehaviour
         _bossChallengeButton.gameObject.SetActive(false); // 보스 버튼 초기 숨김
         _deathPanel.SetActive(false);                     // 사망 패널 초기 숨김
         _clearPanel.SetActive(false);                     // 클리어 패널 초기 숨김
+
         // 씬 시작 시 게이지를 0으로 즉시 초기화 (Lerp 연출 없이 깔끔하게 시작)
-        _killGaugeBar.SetValueImmediate(0, CGameManager.Instance.CurrentStageData.KillGoal);
+        CStageDataSO stageData = CGameManager.Instance.CurrentStageData;
+        if (stageData == null)
+        {
+            Debug.LogError(
+                "[CUIManager] CurrentStageData가 null입니다. KillGoal을 읽을 수 없어 게이지 초기화를 건너뜁니다.\n" +
+                "체크리스트:\n" +
+                "  1) CDataManager가 씬에 존재하는지 확인\n" +
+                "  2) CDataManager Inspector의 _stageList에 CStageDataSO가 등록됐는지 확인\n" +
+                "  3) 현재 StageIndex(" + CGameManager.Instance.CurrentStageIndex +
+                ")와 일치하는 StageDataSO의 StageIndex 값이 설정됐는지 확인",
+                this);
+            return;
+        }
+        _killGaugeBar.SetValueImmediate(0, stageData.KillGoal);
     }
 
     /// <summary>
@@ -99,7 +113,8 @@ public class CUIManager : MonoBehaviour
     private void UpdateStageInfo()
     {
         CStageDataSO data = CGameManager.Instance.CurrentStageData;
-        _stageInfoText.text = $"World {data.World} - Stage {data.StageNumber}"; // 스테이지 번호 텍스트
+        if (data == null) return;
+        _stageInfoText.text = $"World {data.World} - Stage {data.StageNumber}";
     }
 
     /// <summary>

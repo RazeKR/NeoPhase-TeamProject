@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f72444c1edb11488f1cdebd7176b80, type: 3}
   m_Name: SkillData_Courage
   m_EditorClassIdentifier: 
+  _id: 5
   skillName: "\uC6A9\uAE30"
+  flavourText: 
   skillType: 1
   icon: {fileID: 21300000, guid: 325bf823ce3c93d4da3f5b6c7a29d4f8, type: 2}
   maxLevel: 10
@@ -27,3 +29,5 @@ MonoBehaviour:
   - type: 0
     value: 5
     chance: 1
+  effectPrefab: {fileID: 0}
+  _levelData: []
