@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 /// <summary>
 /// JSON으로 직렬화되는 플레이어의 모든 동적 진행 데이터를 담는 클래스입니다.
@@ -32,14 +33,23 @@ public class CSaveData
     public int equippedWeaponId = 0;  // 장착 무기 ID (0 = 없음)
 
     // ── 인벤토리 (ID-Count 쌍, JsonUtility Dictionary 미지원으로 List 사용) ──
+    
     public List<int> inventoryIds    = new(); // 인벤토리 아이템 ID 목록
     public List<int> inventoryCounts = new(); // 각 아이템 수량 (inventoryIds와 1:1 대응)
+    /// <summary>
+    /// 보유한 각 아이템의 세이브 데이터 묶음
+    /// CInventorySaveData는 CItemSaveData의 묶음 리스트
+    /// CItemSaveData는 SO 식별자, 인스턴스Id(무기 고유 Id), 등급, 장착여부, 강화, 수량, 종류 정보를 가짐
+    /// → 각 아이템이 가지는 고유 정보가 다르기 때문에 구분을 위해서 별도로 데이터화
+    /// </summary>
+    public CInventorySaveData inventorySaveData = new();
 
     // ── 스킬 ──────────────────────────────────────────────────────────────
     public int       skillPoints          = 0;              // 보유 스킬 포인트
     public List<int> skillIds             = new();          // 해금된 스킬 ID 목록
     public List<int> skillLevelValues     = new();          // 각 스킬 레벨 (skillIds와 1:1 대응)
     public List<int> equippedSkillIds     = new() { 0, 0, 0 }; // 장착 스킬 슬롯 ID (3칸, 0 = 비어있음)
+
 
     // ── 스탯 업그레이드 (상점 구매 보너스) ────────────────────────────────
     public List<int>   statTypeIds   = new(); // EPlayerStatType을 int로 저장
@@ -71,6 +81,25 @@ public class CSaveData
 
         skillIds.Add(skillId);
         skillLevelValues.Add(level);
+    }
+
+    /// <summary>인덱스로 해당 인덱스에 저장된 id를 가져옵니다. 인덱스 범위 밖이면 0을 반환합니다./// </summary>
+    public int GetEquippedSkill(int Index)
+    {
+        if (Index < 0 || Index >= 3) return 0;
+
+        return equippedSkillIds[Index];
+    }
+
+    /// <summary>장착 스킬 리스트를 저장합니다. 길이가 다를 경우 취소합니다./// </summary>
+    public void SetEquippedSkill(List<int> skillIds)
+    {
+        if (skillIds.Count != equippedSkillIds.Count) return;
+
+        for (int i = 0; i < skillIds.Count; i++)
+        {
+            equippedSkillIds[i] = skillIds[i];
+        }        
     }
 
     /// <summary>아이템 ID로 현재 보유 수량을 반환합니다. 없으면 0을 반환합니다.</summary>

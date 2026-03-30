@@ -14,8 +14,8 @@ public class CNodeConnector : MonoBehaviour
     {
         if (_parentNode == null) return;
 
-
-        GameObject line = Instantiate(_line, CSkillManager.Instance.lineParent);
+        RectTransform parent = (GameObject.Find("LinesParent")).GetComponent<RectTransform>();
+        GameObject line = Instantiate(_line, parent);
         
         _lineRect = line.GetComponent<RectTransform>();
         _lineImage = line.GetComponent<Image>();

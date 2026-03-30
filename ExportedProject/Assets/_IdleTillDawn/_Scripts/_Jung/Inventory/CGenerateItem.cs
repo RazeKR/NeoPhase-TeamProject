@@ -30,7 +30,7 @@ public class CGenerateItem : MonoBehaviour
 
         int desiredRank = 0;
 
-        string desiredWeaponID = "weapon_01";
+        int desiredWeaponID = 5;
 
         if (r > _commonRate + _rareRate + _epicRate) desiredRank = 3;
 
@@ -44,7 +44,7 @@ public class CGenerateItem : MonoBehaviour
 
         CWeaponDataSO so = _weaponDataBaseSO.GetWeaponDataByIndex(rIndex);
 
-        desiredWeaponID = so.ItemId;
+        desiredWeaponID = so.Id;
 
         CInventoryManager.Instance.AddItem(desiredWeaponID, 1, desiredRank);
     }

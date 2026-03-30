@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -211,6 +212,14 @@ public class CJsonManager : MonoBehaviour
         Save(CurrentSaveData);
     }
 
+    /// <summary>스킬 장착을 업데이트하고 즉시 저장합니다.</summary>
+    public void SaveEquippedSkill(List<int> skillIds)
+    {
+        EnsureSaveDataLoaded();
+        CurrentSaveData.SetEquippedSkill(skillIds);
+        Save(CurrentSaveData);
+    }
+
     /// <summary>장착 무기 ID를 업데이트하고 즉시 저장합니다.</summary>
     public void SaveEquippedWeapon(int weaponId)
     {
@@ -293,6 +302,7 @@ public class CJsonManager : MonoBehaviour
             highestStageId   = 0,
             currentKillCount = 0,
             equippedWeaponId = 0,
+            inventorySaveData = null,
             skillPoints      = 0,
             saveVersion      = 1,
         };

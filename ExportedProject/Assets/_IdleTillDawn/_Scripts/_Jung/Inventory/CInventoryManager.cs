@@ -23,10 +23,10 @@ public class CInventoryManager : MonoBehaviour
     private CWeaponInstance _equippedWeapon; // 현재 장비 중인 무기 정보
 
     // 아이템 SO 정보 저장 딕셔너리
-    private Dictionary<string, CItemDataSO> _itemDataCache = new Dictionary<string, CItemDataSO>();
+    private Dictionary<int, CItemDataSO> _itemDataCache = new Dictionary<int, CItemDataSO>();
 
     // Application.persistentDataPath : OS별로 데이터 저장이 허용된 안전 경로 탐색. 게임 삭제해도 데이터 유지
-    private string SavePath => Path.Combine(Application.persistentDataPath, "inventory.json");
+    private string SavePath => Path.Combine(Application.persistentDataPath, "save_data.json");
 
     // 현재 장비 중인 무기 정보 공유 용도
     public CWeaponInstance EquippedWeapon => _equippedWeapon;
@@ -103,12 +103,12 @@ public class CInventoryManager : MonoBehaviour
     {        
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            AddItem("potion_01", 100);
+            AddItem(0, 100);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            AddItem("scroll_01", 1);
+            AddItem(1, 1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha0))
@@ -126,7 +126,7 @@ public class CInventoryManager : MonoBehaviour
         {
             var weapon = _itemDataCache.First();
 
-            AddItem(weapon.Value.ItemId);
+            AddItem(weapon.Value.Id);
         }
 
         // 무기군 중 최고 등급으로 필터링
@@ -156,7 +156,7 @@ public class CInventoryManager : MonoBehaviour
 
         foreach (var item in allItems)
         {
-            _itemDataCache[item.ItemId] = item;
+            _itemDataCache[item.Id] = item;
             if (_showDebug) Debug.Log($"{item.ItemId} 캐시");
         }
     }
@@ -175,7 +175,7 @@ public class CInventoryManager : MonoBehaviour
         {
             CItemSaveData data = new CItemSaveData
             {
-                itemID = item._itemData.ItemId,
+                itemID = item._itemData.Id,
                 instanceID = item._instanceID
             };
 
@@ -331,7 +331,7 @@ public class CInventoryManager : MonoBehaviour
 
 
     // 아이템 획득 함수
-    public void AddItem(string itemID, int count = 1, int rank = 0)
+    public void AddItem(int itemID, int count = 1, int rank = 0)
     { 
         if (!_itemDataCache.TryGetValue(itemID, out var originSO))
         {
@@ -354,7 +354,7 @@ public class CInventoryManager : MonoBehaviour
 
         else if (originSO.ItemType == EItemType.Potion)
         {
-            var existPotion = Inventory.Find(i => i._itemData.ItemId == itemID) as CPotionInstance;
+            var existPotion = Inventory.Find(i => i._itemData.Id == itemID) as CPotionInstance;
 
             if (existPotion != null)
             {
@@ -401,7 +401,7 @@ public class CInventoryManager : MonoBehaviour
 
         else if (originSO.ItemType == EItemType.Scroll)
         {
-            var existScroll = Inventory.Find(s => s._itemData.ItemId == itemID) as CScrollInstance;
+            var existScroll = Inventory.Find(s => s._itemData.Id == itemID) as CScrollInstance;
 
             if (existScroll != null)
             {
@@ -505,10 +505,10 @@ public class CInventoryManager : MonoBehaviour
     {
         Inventory = Inventory
             .OrderByDescending(i => (i as CWeaponInstance)?._isEquipped ?? false)   // 1. 장착 중인 무기 최우선 정렬
-            .ThenBy(i => i._itemData.ItemType)                                      // 2. 무기군 -> 포션군 -> 스크롤
+            //.ThenBy(i => (i as CItemInstance)._itemData.ItemType)                   // 2. 무기군 -> 포션군 -> 스크롤
             .ThenByDescending(i => (i as CWeaponInstance)?._rank ?? 0)              // 3. 무기 내 등급순
             .ThenByDescending(i => (i as CWeaponInstance)?._upgrade ?? 0)           // 4. 무기 내 강화 순
-            .ThenBy(i => i._itemData.ItemId)                                        // 5. 이름별 (오름차순)
+            //.ThenBy(i => i._itemData.Id)                                        // 5. 이름별 (오름차순)
             .ToList();
     }
 }

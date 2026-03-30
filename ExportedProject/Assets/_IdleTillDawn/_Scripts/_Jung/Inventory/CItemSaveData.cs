@@ -8,7 +8,7 @@ using UnityEngine;
 [System.Serializable]
 public class CItemSaveData
 {
-    public string itemID;     // SO 식별자
+    public int itemID;        // SO 식별자
     public string instanceID; // 개별 식별자 (무기)
     public int rank;          // 등급 정보 (무기)
     public bool isEquipped;   // 장착 여부 (무기)
