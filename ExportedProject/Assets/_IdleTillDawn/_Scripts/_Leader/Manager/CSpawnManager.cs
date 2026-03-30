@@ -32,7 +32,7 @@ public class CSpawnManager : MonoBehaviour
     private HashSet<CEnemyBase>                   activeEnemies;
     private List<CEnemyBase>                      killBuffer;
     private Coroutine                             spawnCoroutine;
-    private CStageData                            currentStageData;
+    private CStageDataSO                          currentStageData;
 
     #endregion
 
@@ -78,7 +78,7 @@ public class CSpawnManager : MonoBehaviour
     /// <summary>
     /// 스테이지 데이터를 주입받아 스폰 코루틴을 시작한다
     /// </summary>
-    public void StartSpawning(CStageData stageData)
+    public void StartSpawning(CStageDataSO stageData)
     {
         currentStageData = stageData;
         spawnCoroutine   = StartCoroutine(Co_SpawnLoop());
@@ -157,9 +157,9 @@ public class CSpawnManager : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(currentStageData._spawnInterval);
+            yield return new WaitForSeconds(currentStageData.SpawnInterval);
 
-            int spawnCount = currentStageData._maxActiveCount - activeEnemies.Count;
+            int spawnCount = currentStageData.MaxActiveCount - activeEnemies.Count;
             for (int i = 0; i < spawnCount; i++) SpawnOne();
         }
     }

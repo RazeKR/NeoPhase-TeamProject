@@ -161,6 +161,21 @@ public class CDataManager : MonoBehaviour
     public IReadOnlyDictionary<int, CItemDataSO> GetAllItems() => _allItemDict;
 
     /// <summary>
+    /// StageIndex((월드-1)×10+(스테이지-1)) 기준으로 스테이지 데이터를 반환합니다.
+    /// CGameManager의 currentStageIndex와 CStageDataSO.StageIndex가 일치하는 항목을 찾습니다.
+    /// 없으면 null을 반환합니다.
+    /// </summary>
+    public CStageDataSO GetStageByIndex(int stageIndex)
+    {
+        foreach (CStageDataSO stage in _stageDict.Values)
+        {
+            if (stage.StageIndex == stageIndex) return stage;
+        }
+        Debug.LogError($"[CDataManager] StageIndex {stageIndex}에 해당하는 StageData가 없습니다.");
+        return null;
+    }
+
+    /// <summary>
     /// 모든 Dictionary를 강제 재초기화합니다.
     /// 런타임 중 SO 목록이 변경되었을 때 호출합니다.
     /// </summary>

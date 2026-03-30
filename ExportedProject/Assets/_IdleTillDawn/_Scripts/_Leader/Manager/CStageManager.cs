@@ -49,7 +49,7 @@ public class CStageManager : MonoBehaviour
 
     private EStageState currentState;   // 현재 상태 (외부에서 직접 변경 불가)
     private int         currentKillCount; // 이번 스테이지 누적 처치 수
-    private CStageData  stageData;       // 현재 스테이지 데이터 캐시 (GameManager에서 수신)
+    private CStageDataSO stageData;       // 현재 스테이지 데이터 캐시 (GameManager에서 수신)
 
     #endregion
 
@@ -96,9 +96,9 @@ public class CStageManager : MonoBehaviour
         if (currentState != EStageState.Farming) return; // Farming 외 상태의 킬은 무시
 
         currentKillCount++;
-        OnKillCountChanged?.Invoke(currentKillCount, stageData._killGoal); // UI 갱신 이벤트
+        OnKillCountChanged?.Invoke(currentKillCount, stageData.KillGoal); // UI 갱신 이벤트
 
-        if (currentKillCount >= stageData._killGoal) TransitionTo(EStageState.BossReady);
+        if (currentKillCount >= stageData.KillGoal) TransitionTo(EStageState.BossReady);
     }
 
     /// <summary>

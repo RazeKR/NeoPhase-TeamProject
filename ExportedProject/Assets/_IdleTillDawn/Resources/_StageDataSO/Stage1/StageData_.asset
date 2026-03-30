@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: StageData_
   m_EditorClassIdentifier: 
   _id: 0
-  _world: 0
-  _stageNumber: 0
-  _stageName: 
+  _world: 1
+  _stageNumber: 1
+  _stageName: "\uC554\uD751\uC758 \uC232"
   _spawnMonsterIds: 00000000
-  _killGoal: 30
+  _killGoal: 100
   _maxActiveCount: 10
   _spawnInterval: 2
   _bossId: 0
