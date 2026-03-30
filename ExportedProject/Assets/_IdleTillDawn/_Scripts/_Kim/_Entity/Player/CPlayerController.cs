@@ -21,7 +21,7 @@ public class CPlayerController : CEntityBase
     [SerializeField] private float _autoModeDelay = 3.0f;
 
     [Header("자동 회피 옵션")]
-    [SerializeField] private float _evadeRadius = 4.5f;
+    [SerializeField] private float _evadeRadius = 2.5f;
     [SerializeField] private LayerMask _hazardLayer;
 
     [Header("애니메이터 파라미터")]
