@@ -35,9 +35,32 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         UpdateUI();
     }
 
+    private void OnEnable()
+    {
+        if (CSkillManager.Instance != null)
+        {
+            UpdateUI();
+        }
+        else
+        {
+            StartCoroutine(WaitAndUpdateUI());
+        }
+    }
+    private IEnumerator WaitAndUpdateUI()
+    {
+        while (CSkillManager.Instance == null)
+        {
+            yield return null;
+        }
+        UpdateUI();
+    }
+
+
     public void UpdateUI()
     {
-        _currentLevel = CSkillManager.Instance.GetSkillLevel(_skillData.skillName);
+        if (CSkillManager.Instance == null) return;
+
+        _currentLevel = CSkillManager.Instance.GetSkillLevel(_skillData.Id);
 
         _iconImage.sprite = _skillData.icon;
 
@@ -73,7 +96,7 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (CSkillManager.Instance.GetSkillLevel(SkillData.skillName) <= 0) return;
+        if (CSkillManager.Instance.GetSkillLevel(SkillData.Id) <= 0) return;
         if (SkillData.skillType == ESkillType.Passive) return;
 
         _dragIcon = CSkillManager.Instance.DragIconVisual;

@@ -20,11 +20,11 @@ public class CSkillManager : MonoBehaviour
 
     #region PrivateVariables
 
-    
+    private CSaveData _saveData;    // 세이브 데이터
 
     // 습득 스킬 레벨 정보 저장
     private Dictionary<string, int> _acquiredSkills = new Dictionary<string, int>();
-        
+
 
     #endregion
 
@@ -33,15 +33,25 @@ public class CSkillManager : MonoBehaviour
     public int currentSkillPoints;
     public CSkillDataSO CurrentlyDraggingSkill; // 드래그 도중 저장 SO
     public GameObject DragIconVisual;           // 드래그 아이콘    
-    public CSkillDataSO[] _equippedSkills;      // 장착 스킬 정보 저장
+    public List<int> _equippedSkills = new List<int> { 0, 0, 0 };      // 장착 스킬 정보 저장
 
     #endregion
 
     #region Properties
 
-    public int GetSkillLevel(string skillName) => _acquiredSkills.ContainsKey(skillName) ? _acquiredSkills[skillName] : 0; // 스킬 레벨 가져오기
 
-    private void SetSkillLevel(string skillName, int level) => _acquiredSkills[skillName] = level; // 스킬 레벨 저장
+    public int GetSkillLevel(int id)
+    {
+        if (_saveData == null)
+        {
+            if (CJsonManager.Instance.CurrentSaveData != null)
+                return CJsonManager.Instance.CurrentSaveData.GetSkillLevel(id);
+
+            return 0;
+        }            
+
+        return _saveData.GetSkillLevel(id);
+    }
 
     #endregion
 
@@ -55,18 +65,21 @@ public class CSkillManager : MonoBehaviour
             return;
         }
 
-        Instance = this;
-
-        _equippedSkills = new CSkillDataSO[3];
-                
+        Instance = this;          
     }
 
     private void Start()
     {
         if (CJsonManager.Instance != null)
+        {
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
 
-        RefreshAllNodes();
+            if (CJsonManager.Instance.CurrentSaveData != null)
+            {
+                Debug.Log("[CSkillManager] 이미 로드된 데이터를 발견하여 즉시 복구합니다.");
+                RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
+            }
+        }
     }
 
     private void OnDestroy()
@@ -96,76 +109,97 @@ public class CSkillManager : MonoBehaviour
     public void AddSkillPoint(int amount)
     {
         currentSkillPoints += amount;
-        CSkillUI.Instance.TextSet(currentSkillPoints);
+
+        var save = CJsonManager.Instance.CurrentSaveData;
+        if (save != null)
+        {
+            save.skillPoints = currentSkillPoints;
+            CJsonManager.Instance.Save(save);
+        }
+
+        if (CSkillUI.Instance != null)
+        {
+            CSkillUI.Instance.TextSet(currentSkillPoints);
+        }
+
         RefreshAllNodes();
     }
 
-    // 스킬 장착
+    // 스킬 장착 후 JsonManager로 저장
     public bool EquipSkill(CSkillDataSO data, int slotIndex)
     {
-        if (GetSkillLevel(data.skillName) <= 0) return false;   // 레벨이 없을 시 false 반환
+        if (GetSkillLevel(data.Id) <= 0) return false;   // 레벨이 없을 시 false 반환
 
         if (data.skillType != ESkillType.Active) return false;  // 액티브가 아닐 시 false 반환
 
-        for (int i = 0; i < _equippedSkills.Length; i++)        // 중복 방지
+        while (_equippedSkills.Count <= slotIndex)
         {
-            if (_equippedSkills[i] == data) _equippedSkills[i] = null;
+            _equippedSkills.Add(0);
         }
 
-        _equippedSkills[slotIndex] = data;
+        for (int i = 0; i < _equippedSkills.Count; i++)         // 중복 방지
+        {
+            if (_equippedSkills[i] == data.Id)
+            {
+                _equippedSkills[i] = 0;
+            }
+        }
 
+        _equippedSkills[slotIndex] = data.Id;
 
+        CJsonManager.Instance.SaveEquippedSkill(_equippedSkills);
 
+        OnSkillEquipped?.Invoke();
         return true;
     }
 
 
     private void RestoreFromSaveData(CSaveData save)
     {
+        _saveData = save;
         currentSkillPoints = save.skillPoints;
 
-        _acquiredSkills.Clear();
+        // [핵심] 리스트가 어떤 이유로든 줄어들지 않도록 강제로 3칸을 보장합니다.
+        if (_equippedSkills == null) _equippedSkills = new List<int> { 0, 0, 0 };
 
-
-        for (int i = 0; i < save.skillIds.Count; i++)
+        // 리스트의 내용물을 하나씩 안전하게 옮깁니다.
+        for (int i = 0; i < 3; i++)
         {
-            int id = save.skillIds[i];
-            int level = save.GetSkillLevel(id);
+            // _equippedSkills.Count보다 i가 크면 Add하고, 아니면 덮어씁니다.
+            int skillId = save.GetEquippedSkill(i); // 헬퍼 메서드 사용 (인덱스 안전)
 
-            CSkillDataSO so = CDataManager.Instance.GetSkill(id);
-            
-            if (so != null)
-            {
-                _acquiredSkills.Add(so.skillName, level);
-            }
+            if (i < _equippedSkills.Count)
+                _equippedSkills[i] = skillId;
+            else
+                _equippedSkills.Add(skillId);
         }
 
-        for (int i = 0; i < save.equippedSkillIds.Count; i++)
-        {
-            int eqId = save.equippedSkillIds[i];
+        // 데이터 복구 후 강제 로그 확인 (여기서 Count가 무조건 3이어야 합니다)
+        Debug.Log($"[복구확인] 포인트: {currentSkillPoints}, 슬롯크기: {_equippedSkills.Count}");
 
-            if (eqId == 0) _equippedSkills[i] = null;
-
-            else _equippedSkills[i] = CDataManager.Instance.GetSkill(eqId);
-        }
-        
+        OnSkillEquipped?.Invoke();
         RefreshAllNodes();
+
+        if (CSkillUI.Instance != null) CSkillUI.Instance.UpdateUIState();
     }
 
     // 스킬 업그레이드 시도
     public bool TryUpgradeSkill(CSkillNode node)
     {
         CSkillDataSO data = node.SkillData;
-        int currentLevel = GetSkillLevel(data.skillName);
+        int currentLevel = GetSkillLevel(data.Id);
 
         if (!CanUnlock(node)) return false;
 
         currentSkillPoints -= data.requiredPoints;
-        SetSkillLevel(data.skillName, currentLevel + 1);
+        CJsonManager.Instance.CurrentSaveData.skillPoints = currentSkillPoints;
 
-        Debug.Log($"{data.skillName} 레벨 상승, 남은 포인트 : {currentSkillPoints}");
+        CJsonManager.Instance.SaveSkillLevel(data.Id, currentLevel + 1);
 
         CSkillUI.Instance.TextSet(currentSkillPoints);
+        RefreshAllNodes();
+
+        Debug.Log($"{data.skillName} 레벨 상승, 남은 포인트 : {currentSkillPoints}");
 
         return true;
     }
@@ -180,7 +214,7 @@ public class CSkillManager : MonoBehaviour
         // 선행 스킬 리스트 순회 후 미충족 시 false 반환
         foreach (var p in data.prerequisiteSkills)
         {
-            if (GetSkillLevel(p.skillName) <= 0) return false;
+            if (GetSkillLevel(p.Id) <= 0) return false;
         }
 
         return true;
@@ -211,7 +245,7 @@ public class CSkillManager : MonoBehaviour
     public bool CanUnlock(CSkillNode node)
     {
         CSkillDataSO data = node.SkillData;
-        int currentLevel = GetSkillLevel(data.skillName);
+        int currentLevel = GetSkillLevel(data.Id);
 
         if (currentSkillPoints < data.requiredPoints) return false;    // 포인트 부족
         if (currentLevel >= data.maxLevel) return false;                // 만렙

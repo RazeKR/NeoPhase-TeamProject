@@ -56,14 +56,23 @@ public class CSkillUI : MonoBehaviour
     {
         if (_skillWindowUI == null) return;
 
-        if (_skillWindowUI.activeInHierarchy)
-        {
-            _skillWindowUI.SetActive(false);
-        }
+        bool willBeActive = !_skillWindowUI.activeSelf;
+        _skillWindowUI.SetActive(willBeActive);
 
-        else if (!_skillWindowUI.activeInHierarchy)
+        if (willBeActive)
         {
-            _skillWindowUI.SetActive(true);
+            UpdateUIState();
         }
+    }
+
+    public void UpdateUIState()
+    {
+        if (CSkillManager.Instance == null) return;
+
+        TextSet(CSkillManager.Instance.currentSkillPoints);
+
+        CSkillManager.Instance.RefreshAllNodes();
+
+
     }
 }

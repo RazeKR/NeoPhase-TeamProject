@@ -145,7 +145,7 @@ public class CDataManager : MonoBehaviour
     public CSkillDataSO GetSkill(int id)
     {
         if (TryGetData(_skillDict, id, out CSkillDataSO data)) return data;
-        Debug.LogError($"[CDataManager] SkillData 없음 - ID: {id}");
+        Debug.Log($"[CDataManager] SkillData 없음 - ID: {id}");
         return null;
     }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 
 /// <summary>
 /// JSON으로 직렬화되는 플레이어의 모든 동적 진행 데이터를 담는 클래스입니다.
@@ -86,7 +87,8 @@ public class CSaveData
     /// <summary>인덱스로 해당 인덱스에 저장된 id를 가져옵니다. 인덱스 범위 밖이면 0을 반환합니다./// </summary>
     public int GetEquippedSkill(int Index)
     {
-        if (Index < 0 || Index >= 3) return 0;
+        if (equippedSkillIds == null || Index < 0 || Index >= equippedSkillIds.Count)
+            return 0;
 
         return equippedSkillIds[Index];
     }
