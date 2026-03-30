@@ -221,8 +221,25 @@ public class CPlayerController : CEntityBase
         if (saveData == null || string.IsNullOrEmpty(saveData.uid))
         {
             Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
-            MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
-            MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
+            if (_statManager != null)
+            {
+                MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+                MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
+            }
+            else
+            {
+                MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
+                MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
+            }
+            CurrentHealth = MaxHealth;
+            return;
+        }
+
+        if (_statManager == null)
+        {
+            Debug.LogWarning("_statManager가 null입니다. 기본 데이터로 초기화합니다.");
+            MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
+            MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
             CurrentHealth = MaxHealth;
             return;
         }

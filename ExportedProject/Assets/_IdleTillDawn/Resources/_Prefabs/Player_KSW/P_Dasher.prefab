@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 7185440666562565157}
   - component: {fileID: 2160385164997705626}
   - component: {fileID: -4221088072868245136}
+  - component: {fileID: 7560496786862968432}
   m_Layer: 3
   m_Name: P_Dasher
   m_TagString: Untagged
@@ -269,13 +270,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22130bdc1f2be0442a69bf0f53864bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 1
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 3
   _scanRadius: 15
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 320
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -342,6 +344,19 @@ MonoBehaviour:
   _outerRadius: 5
   _innerRatio: 0.5
   _intensity: 1
+--- !u!114 &7560496786862968432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993902716402548796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f980395e424067841ab536ac4a158a02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _baseData: {fileID: 11400000, guid: c2e332dd47076fd4dad21a792296cd12, type: 2}
 --- !u!1 &4525051250244295124
 GameObject:
   m_ObjectHideFlags: 0
