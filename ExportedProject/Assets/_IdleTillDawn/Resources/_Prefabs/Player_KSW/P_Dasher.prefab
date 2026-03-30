@@ -289,6 +289,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _autoModeDelay: 3
+  _evadeRadius: 2.5
+  _hazardLayer:
+    serializedVersion: 2
+    m_Bits: 1984
   _paramSpeed: aSpeed
   _defaultAttackRange: 20
   _bulletSpeed: 20

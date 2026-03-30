@@ -81,5 +81,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fc5c15c87aefa44ea6f30ef5ecbafec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _saveFileName: save_data.json
+  _saveFileName: save_data.dat
   _prettyPrint: 0

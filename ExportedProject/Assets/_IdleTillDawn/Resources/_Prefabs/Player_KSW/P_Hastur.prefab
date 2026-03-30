@@ -162,6 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22130bdc1f2be0442a69bf0f53864bf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isPersonalScene: 1
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 0
@@ -180,6 +181,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   _autoModeDelay: 3
+  _evadeRadius: 2.5
+  _hazardLayer:
+    serializedVersion: 2
+    m_Bits: 0
   _paramSpeed: aSpeed
   _defaultAttackRange: 1.5
   _bulletSpeed: 10

@@ -65,14 +65,14 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
         protected set => _defaultGravityScale = value;
     }
 
-    protected Rigidbody2D Rb => _rb;
-    protected Transform CurrentTarget
+    public Rigidbody2D Rb => _rb;
+    public Transform CurrentTarget
     {
         get => _currentTarget;
         set => _currentTarget = value;
     }
 
-    protected bool IsPersonalScene => _isPersonalScene;
+    public bool IsPersonalScene => _isPersonalScene;
 
     #endregion
 
