@@ -39,6 +39,7 @@ public class CWeaponEquip : MonoBehaviour
         if (_targetObject == null)
         {
             enabled = false;
+            return;
         }
 
         bool getSpriteRenderer = _targetObject.TryGetComponent<SpriteRenderer>(out _targetSpriteRdr);
@@ -102,6 +103,29 @@ public class CWeaponEquip : MonoBehaviour
     #endregion
 
     #region PublicMethods
+
+    /// <summary>
+    /// 스폰 후 무기 스프라이트를 표시할 대상 오브젝트를 런타임에 설정합니다.
+    /// </summary>
+    public void SetTargetObject(GameObject targetObject)
+    {
+        _targetObject = targetObject;
+
+        if (_targetObject == null)
+        {
+            enabled = false;
+            return;
+        }
+
+        if (!_targetObject.TryGetComponent<SpriteRenderer>(out _targetSpriteRdr))
+        {
+            enabled = false;
+            return;
+        }
+
+        enabled = true;
+        LoadEquippedWeapon();
+    }
 
     /// <summary>
     /// 무기의 반동 모션 혹은 휘두르기 모션을 재생합니다.

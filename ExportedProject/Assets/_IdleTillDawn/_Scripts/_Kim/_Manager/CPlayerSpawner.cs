@@ -10,6 +10,11 @@ public class CPlayerSpawner : MonoBehaviour
     [SerializeField] private _CPlayerCameraController _cameraController;
     [SerializeField] private CSpawnManager            _spawnManager;
     [SerializeField] private CWorldShift              _worldShift;
+    [SerializeField] private CWeaponEquip             _weaponEquip;
+
+    [Header("무기 오브젝트 설정")]
+    [Tooltip("플레이어 프리팹 내 무기 스프라이트 자식 오브젝트 이름")]
+    [SerializeField] private string _weaponChildName = "Weapon";
 
     #endregion
 
@@ -57,5 +62,18 @@ public class CPlayerSpawner : MonoBehaviour
             _worldShift.SetPlayerTarget(playerTransform);
         else
             Debug.LogWarning("CPlayerSpawner : WorldShift 미연결");
+
+        if (_weaponEquip != null)
+        {
+            Transform weaponChild = playerTransform.Find(_weaponChildName);
+            if (weaponChild != null)
+                _weaponEquip.SetTargetObject(weaponChild.gameObject);
+            else
+                Debug.LogWarning($"CPlayerSpawner : 플레이어 자식에서 '{_weaponChildName}' 오브젝트를 찾을 수 없음");
+        }
+        else
+        {
+            Debug.LogWarning("CPlayerSpawner : WeaponEquip 미연결");
+        }
     }
 }
