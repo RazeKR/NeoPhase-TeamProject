@@ -14,7 +14,7 @@ public class CPlayerSpawner : MonoBehaviour
 
     [Header("무기 오브젝트 설정")]
     [Tooltip("플레이어 프리팹 내 무기 스프라이트 자식 오브젝트 이름")]
-    [SerializeField] private string _weaponChildName = "Weapon";
+    [SerializeField] private string _weaponChildName = "WeaponTarget";
 
     #endregion
 
@@ -65,15 +65,29 @@ public class CPlayerSpawner : MonoBehaviour
 
         if (_weaponEquip != null)
         {
-            Transform weaponChild = playerTransform.Find(_weaponChildName);
+            Transform weaponChild = FindDeepChild(playerTransform, _weaponChildName);
             if (weaponChild != null)
                 _weaponEquip.SetTargetObject(weaponChild.gameObject);
             else
-                Debug.LogWarning($"CPlayerSpawner : 플레이어 자식에서 '{_weaponChildName}' 오브젝트를 찾을 수 없음");
+                Debug.LogWarning($"CPlayerSpawner : 플레이어 하위에서 '{_weaponChildName}' 오브젝트를 찾을 수 없음");
         }
         else
         {
             Debug.LogWarning("CPlayerSpawner : WeaponEquip 미연결");
         }
+    }
+
+    /// <summary>
+    /// 이름으로 자식 Transform을 재귀적으로 탐색합니다.
+    /// </summary>
+    private Transform FindDeepChild(Transform parent, string childName)
+    {
+        foreach (Transform child in parent)
+        {
+            if (child.name == childName) return child;
+            Transform found = FindDeepChild(child, childName);
+            if (found != null) return found;
+        }
+        return null;
     }
 }

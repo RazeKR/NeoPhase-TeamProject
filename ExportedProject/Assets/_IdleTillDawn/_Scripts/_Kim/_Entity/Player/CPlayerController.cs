@@ -323,11 +323,24 @@ public class CPlayerController : CEntityBase
 
         Vector2    dir       = (CurrentTarget.position - transform.position).normalized;
         GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.identity);
-        CBullet    bullet    = bulletObj.GetComponent<CBullet>();
+        float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage;
+
+        CBullet bullet = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
         {
-            float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage;
             bullet.Init(dir, finalDamage, _bulletSpeed, weaponData.LifeTime);
+        }
+        else
+        {
+            // flanne.Projectile 기반 투사체 (PF_RevolverProjectile 등)
+            flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
+            if (proj != null)
+            {
+                proj.damage = finalDamage;
+                proj.vector = dir * _bulletSpeed;
+                proj.owner  = gameObject;
+                proj.angle  = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            }
         }
     }
 
