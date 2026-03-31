@@ -27,9 +27,9 @@ public class CSkillUI : MonoBehaviour
 
     private void Start()
     {
-        CSkillManager.Instance.RefreshAllNodes();
+        CSkillSystem.Instance.RefreshAllNodes();
 
-        _pointsText.text = CSkillManager.Instance.currentSkillPoints.ToString();
+        _pointsText.text = CSkillSystem.Instance.currentSkillPoints.ToString();
     }
 
     private void OnDestroy()
@@ -67,11 +67,11 @@ public class CSkillUI : MonoBehaviour
 
     public void UpdateUIState()
     {
-        if (CSkillManager.Instance == null) return;
+        if (CSkillSystem.Instance == null) return;
 
-        TextSet(CSkillManager.Instance.currentSkillPoints);
+        TextSet(CSkillSystem.Instance.currentSkillPoints);
 
-        CSkillManager.Instance.RefreshAllNodes();
+        CSkillSystem.Instance.RefreshAllNodes();
 
 
     }

@@ -44,7 +44,7 @@ public class CSkillWindborne : MonoBehaviour
     {
         if (_so == null) { enabled = false; return; }
 
-        _level  = CSkillManager.Instance.GetSkillLevel(_so.Id);
+        _level  = CSkillSystem.Instance.GetSkillLevel(_so.Id);
 
         float lvMagnifcation = 1f + _level * 0.1f;
 

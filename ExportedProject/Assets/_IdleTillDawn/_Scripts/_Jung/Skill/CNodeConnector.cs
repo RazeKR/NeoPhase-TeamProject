@@ -30,7 +30,7 @@ public class CNodeConnector : MonoBehaviour
     {
         if (_parentNode == null || _lineImage == null) return;
 
-        int parentLevel = CSkillManager.Instance.GetSkillLevel(_parentNode.SkillData.Id);
+        int parentLevel = CSkillSystem.Instance.GetSkillLevel(_parentNode.SkillData.Id);
 
         if (parentLevel <= 0)
         {

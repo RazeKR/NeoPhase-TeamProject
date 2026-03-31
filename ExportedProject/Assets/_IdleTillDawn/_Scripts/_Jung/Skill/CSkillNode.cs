@@ -37,7 +37,7 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     private void OnEnable()
     {
-        if (CSkillManager.Instance != null)
+        if (CSkillSystem.Instance != null)
         {
             UpdateUI();
         }
@@ -48,7 +48,7 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     }
     private IEnumerator WaitAndUpdateUI()
     {
-        while (CSkillManager.Instance == null)
+        while (CSkillSystem.Instance == null)
         {
             yield return null;
         }
@@ -58,9 +58,9 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void UpdateUI()
     {
-        if (CSkillManager.Instance == null) return;
+        if (CSkillSystem.Instance == null) return;
 
-        _currentLevel = CSkillManager.Instance.GetSkillLevel(_skillData.Id);
+        _currentLevel = CSkillSystem.Instance.GetSkillLevel(_skillData.Id);
 
         _iconImage.sprite = _skillData.icon;
 
@@ -77,34 +77,34 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
         }
 
-        bool isUnlockable = CSkillManager.Instance.CanUnlock(this);
+        bool isUnlockable = CSkillSystem.Instance.CanUnlock(this);
         _lockOverlay.SetActive(!isUnlockable && _currentLevel == 0);
         _upgradeButton.interactable = isUnlockable || _currentLevel > 0;
     }
 
     public void ClickUpgrade()
     {
-        if (CSkillManager.Instance.TryUpgradeSkill(this))
+        if (CSkillSystem.Instance.TryUpgradeSkill(this))
         {
             _currentLevel++;
             UpdateUI();
         
-            CSkillManager.Instance.RefreshAllNodes();
+            CSkillSystem.Instance.RefreshAllNodes();
         }
     }
 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (CSkillManager.Instance.GetSkillLevel(SkillData.Id) <= 0) return;
+        if (CSkillSystem.Instance.GetSkillLevel(SkillData.Id) <= 0) return;
         if (SkillData.skillType == ESkillType.Passive) return;
 
-        _dragIcon = CSkillManager.Instance.DragIconVisual;
+        _dragIcon = CSkillSystem.Instance.DragIconVisual;
         _dragIcon.SetActive(true);
         _dragIcon.GetComponent<Image>().sprite = _skillData.icon;
         _dragIcon.GetComponent<CanvasGroup>().blocksRaycasts = false;
         
-        CSkillManager.Instance.CurrentlyDraggingSkill = _skillData;
+        CSkillSystem.Instance.CurrentlyDraggingSkill = _skillData;
     }
 
 
