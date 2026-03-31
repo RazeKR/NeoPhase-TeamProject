@@ -25,7 +25,6 @@ public class CWorldBossType1Controller : CBossBase
 
     private int _currentTentacleCount = 0;
     private float _lastTentacleSpawnTime = 0f;
-    private Coroutine _spawnLoopTentacle;
     #endregion
 
     #region 이벤트
@@ -73,11 +72,6 @@ public class CWorldBossType1Controller : CBossBase
         CSequence dashSequece = new CSequence(new List<CNode> { checkDash, dashAction });
 
         _rootNode = new CSelector(new List<CNode> { tentacleSequence, dashSequece, chaseAction });
-    }
-
-    protected override void HandleAttack()
-    {
-
     }
 
     protected override void HandleMovement()

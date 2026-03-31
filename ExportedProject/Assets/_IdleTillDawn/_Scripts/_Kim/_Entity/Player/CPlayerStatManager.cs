@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class CPlayerStatManager : MonoBehaviour
+public class CPlayerStatManager : MonoBehaviour, IManaUser
 {
     #region 내부 변수
     private CPlayerDataSO _baseData;
@@ -16,6 +16,10 @@ public class CPlayerStatManager : MonoBehaviour
     public float CurrentExp { get; private set; } = 0f;
 
     public float[] BonusModifiers => _bonusModifiers;
+
+    public float CurrentMana { get; private set; }
+    public float MaxHealth => GetFinalStat(EPlayerStatType.Health);
+    public float MaxMana => GetFinalStat(EPlayerStatType.Mana);
     #endregion
 
     #region 이벤트
@@ -31,6 +35,8 @@ public class CPlayerStatManager : MonoBehaviour
     {
         _baseData = baseData;
         SetModifier(CurrentLevel);
+
+        CurrentMana = MaxMana;
     }
 
     /// <summary>
@@ -116,4 +122,20 @@ public class CPlayerStatManager : MonoBehaviour
             _levelModifiers[i] = growthCount * growthValue;
         }
     }
+
+    #region 인터페이스 구현부
+    public void RestoreMana(float amount)
+    {
+        CurrentMana = Mathf.Min(MaxMana, CurrentMana + amount);
+        Debug.Log($"CPlayerStatManager : 마나 회복 (현재 : {CurrentMana}/{MaxMana}");
+    }
+
+    public void ConsumeMana(float amount)
+    {
+        if (CurrentMana - amount < 0) return;
+
+        CurrentMana -= amount;
+        Debug.Log($"CPlayerStatManager : 마나 사용 (사용량 : {amount}");
+    }
+    #endregion
 }

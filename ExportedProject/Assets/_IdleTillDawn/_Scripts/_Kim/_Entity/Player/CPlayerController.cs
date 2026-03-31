@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CPlayerInputHandler))]
-public class CPlayerController : CEntityBase
+public class CPlayerController : CEntityBase, IHealable
 {
     #region 인스펙터
     [Header("캐릭터 참조")]
@@ -474,4 +474,14 @@ public class CPlayerController : CEntityBase
             CurrentHealth += (MaxHealth - previousMaxHealth);
         }
     }
+
+    #region 인터페이스 구현부
+    public void Heal(float amount)
+    {
+        if (CurrentHealth <= 0) return;
+
+        CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
+        Debug.Log($"CPlayerController : 체력 회복 (현재 체력 : {CurrentHealth}/{MaxHealth})");
+    }
+    #endregion
 }

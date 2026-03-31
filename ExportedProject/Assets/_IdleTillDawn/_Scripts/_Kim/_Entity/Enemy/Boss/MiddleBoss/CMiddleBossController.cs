@@ -69,11 +69,6 @@ public class CMiddleBossController : CBossBase
         FlipCharacter(Rb.velocity.x);
     }
 
-    protected override void HandleAttack()
-    {
-
-    }
-
     protected override IEnumerator CoProcessPattern()
     {
         yield break;

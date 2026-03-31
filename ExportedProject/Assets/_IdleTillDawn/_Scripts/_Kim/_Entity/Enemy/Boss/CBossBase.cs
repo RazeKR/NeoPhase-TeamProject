@@ -149,8 +149,6 @@ public abstract class CBossBase : CEnemyBase
 
     protected override void HandleAttack()
     {
-        base.HandleAttack();
-
         CheckPlayerKilled();
     }
 
