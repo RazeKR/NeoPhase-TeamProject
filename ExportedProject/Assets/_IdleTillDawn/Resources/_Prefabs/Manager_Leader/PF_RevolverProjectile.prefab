@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4959533745637266}
   - component: {fileID: 212945151898775274}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 114943608188986817}
   - component: {fileID: 114287441773404540}
   - component: {fileID: 114863579359868585}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PF_RevolverProjectile
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ TrailRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 200
   m_Time: 0.1
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -362,7 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72ff053923cabb541960cd47e5b5539c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitTag: 
+  hitTag: Enemy
   objPoolTag: 
 --- !u!114 &114287441773404540
 MonoBehaviour:

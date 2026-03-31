@@ -20,7 +20,7 @@ MonoBehaviour:
   _weaponDamage: 20
   _weaponFireRate: 4
   _weaponRange: 5
-  _bulletPrefab: {fileID: 4376937155057529381, guid: b5810cbe1d2ac234190c0a35ac18699b,
+  _bulletPrefab: {fileID: 1848884527762117, guid: caee3bafe8ddac549ae04810beeff6ac,
     type: 3}
   _lifeTime: 1
   _damagePerRank: 0
