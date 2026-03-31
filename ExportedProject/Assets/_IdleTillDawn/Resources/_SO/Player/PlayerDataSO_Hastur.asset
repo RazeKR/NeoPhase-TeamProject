@@ -27,9 +27,6 @@ MonoBehaviour:
   - StatType: 2
     BaseValue: 10
     GrowthPerLevel: 0
-  - StatType: 3
-    BaseValue: 20
-    GrowthPerLevel: 0
   - StatType: 4
     BaseValue: 0
     GrowthPerLevel: 0
@@ -41,5 +38,8 @@ MonoBehaviour:
     GrowthPerLevel: 0
   - StatType: 7
     BaseValue: 0
+    GrowthPerLevel: 0
+  - StatType: 3
+    BaseValue: 20
     GrowthPerLevel: 0
   _prefab: {fileID: 5717717816164410344, guid: d4447a631e0a30c48a0aba016693818b, type: 3}
