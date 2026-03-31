@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 
 [CreateAssetMenu(menuName = "SO/Data/WeaponData", fileName = "WeaponData_")]
@@ -18,7 +18,7 @@ public class CWeaponDataSO : CItemDataSO
     public GameObject BulletPrefab => _bulletPrefab;    // �߻�ü ������
     public float WeaponRange => _weaponRange;           // ���� ��Ÿ�
     public float LifeTime => _lifeTime;                 // �߻�ü �ܷ��ð� (�ʿ� �� ����ϰ�, �̻�� �� ����)
-    public float DamagePerRank => _damagePerRank;       // ��ũ�� ���� ������ ����
+    public float DamagePerRank => _damagePerRank;       // ��ũ�� ���� ������ ����   
 
 
     // ������ Ȯ��

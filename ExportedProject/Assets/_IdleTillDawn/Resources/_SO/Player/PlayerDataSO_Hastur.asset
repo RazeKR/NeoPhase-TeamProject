@@ -25,10 +25,10 @@ MonoBehaviour:
     BaseValue: 0
     GrowthPerLevel: 0
   - StatType: 2
-    BaseValue: 50
+    BaseValue: 10
     GrowthPerLevel: 0
   - StatType: 3
-    BaseValue: 1
+    BaseValue: 20
     GrowthPerLevel: 0
   - StatType: 4
     BaseValue: 0
