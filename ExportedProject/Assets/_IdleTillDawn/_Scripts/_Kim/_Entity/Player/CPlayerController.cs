@@ -26,6 +26,11 @@ public class CPlayerController : CEntityBase, IHealable
     [SerializeField] private float _defaultAttackRange = 1.5f;
     [SerializeField] private float _bulletSpeed = 10f;
 
+    [Header("테스트용 무기 직접 참조")]
+    [Tooltip("true로 켜면 CInventoryManager를 무시하고 아래 SO를 직접 사용합니다.\n인스펙터에서 FireRate 등을 바로 조정할 때 사용하세요.")]
+    [SerializeField] private bool _useTestWeaponOverride = false;
+    [SerializeField] private CWeaponDataSO _testWeaponData = null;
+
     [Header("피격 연출 옵션")]
     [SerializeField] private float _preventTime = 1.5f;
     [SerializeField] private float _blinkInterval = 0.1f;
@@ -74,24 +79,22 @@ public class CPlayerController : CEntityBase, IHealable
         }
     }
 
-    /// <summary>
-    /// 최종 공격 속도 (플레이어 기본 공격속도 * 무기 공격 속도)
-    /// </summary>
+    // CurrentAttackSpeed는 외부 참조용으로 유지 (weaponData를 이미 가진 HandleAttack 내부에서는 사용 안 함)
     public float CurrentAttackSpeed
     {
         get
         {
-            // 플레이어의 베이스 공격 속도 (없으면 기본값 1.0f)
-            CPlayerStatManager statManager = GetComponent<CPlayerStatManager>();
-            float playerAttackSpeed = statManager != null ? statManager.GetFinalStat(EPlayerStatType.AttackSpeed) : 1.0f;
-
-            // 장착한 무기의 연사 속도
-            CWeaponDataSO weaponDataSO = GetEquippedWeaponData();
-            float weaponFireRate = weaponDataSO != null ? weaponDataSO.WeaponFireRate : 1.0f;
-
-            return playerAttackSpeed * weaponFireRate;
+            CWeaponDataSO data = GetEquippedWeaponData();
+            return BaseAttackSpeed * (data != null ? data.WeaponFireRate : 1.0f);
         }
     }
+
+    /// <summary>
+    /// 플레이어 기본 공격 속도 (스탯 매니저 기준, 없으면 1.0).
+    /// HandleAttack()에서 WeaponFireRate와 곱해 최종 발사 간격을 계산한다.
+    /// </summary>
+    private float BaseAttackSpeed =>
+        _statManager != null ? _statManager.GetFinalStat(EPlayerStatType.AttackSpeed) : 1.0f;
 
     public Vector3 PlayerLocalScale
     {
@@ -298,49 +301,68 @@ public class CPlayerController : CEntityBase, IHealable
     }
 
     /// <summary>
-    /// 플레이어 공격 메서드
-    /// 가장 가까운 적(_currentTarget)이 사거리 안에 있을 때 무기 발사 속도(FireRate)에 맞춰 투사체를 발사한다
+    /// 플레이어 공격 메서드.
+    /// 가장 가까운 적이 사거리 안에 있을 때 CWeaponDataSO.WeaponFireRate(초당 발사 횟수)에 따라 투사체를 발사한다.
+    /// ※ FireRate 설정 위치: CWeaponDataSO 에셋의 WeaponFireRate 필드
+    ///   - 1.0 = 초당 1발 / 3.0 = 초당 3발 / 0.5 = 2초에 1발
+    /// ※ 테스트 씬에서 CInventoryManager 없이 테스트하려면
+    ///   P_Hastur 프리팹의 CPlayerController > _testWeaponData 에 SO를 직접 연결하세요.
     /// </summary>
     protected override void HandleAttack()
     {
         if (CurrentTarget == null) return;
 
-        float distance = Vector2.Distance(transform.position, CurrentTarget.position);
-        if (distance > CurrentAttackRange) return;
-
+        // 무기 데이터를 한 번만 가져온다 (이후 재호출 없음)
         CWeaponDataSO weaponData = GetEquippedWeaponData();
         if (weaponData == null || weaponData.BulletPrefab == null) return;
 
-        float finalAttackSpeed = CurrentAttackSpeed;
+        float distance = Vector2.Distance(transform.position, CurrentTarget.position);
+        if (distance > CurrentAttackRange) return;
 
-        float fireInterval = 1f / Mathf.Max(0.01f, finalAttackSpeed);
+        // fireInterval: 최소 1 FixedUpdate 주기 보장 (interval < fixedDeltaTime이면 매 프레임 연사됨)
+        float fireInterval = Mathf.Max(
+            Time.fixedDeltaTime,
+            1f / Mathf.Max(0.01f, BaseAttackSpeed * weaponData.WeaponFireRate)
+        );
+        // FixedUpdate에서는 Time.fixedTime 사용 (Time.time은 렌더 프레임 기준이라 오차 발생)
+        if (Time.fixedTime < _lastAttackTime + fireInterval) return;
 
-        if (Time.time < _lastAttackTime + fireInterval) return;
+        _lastAttackTime = Time.fixedTime;
 
-        CWeaponEquip.Instance.WeaponRebound();
+#if UNITY_EDITOR
+        Debug.Log($"[Attack] SO: {weaponData.name} | FireRate: {weaponData.WeaponFireRate} | Interval: {fireInterval:F3}s | Override: {_useTestWeaponOverride}");
+#endif
 
-        _lastAttackTime = Time.time;
+        if (CWeaponEquip.Instance != null)
+            CWeaponEquip.Instance.WeaponRebound();
 
-        Vector2    dir       = (CurrentTarget.position - transform.position).normalized;
-        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.identity);
-        float finalDamage = _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage;
+        Vector2    dir        = (CurrentTarget.position - transform.position).normalized;
+        float      rotZ       = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        GameObject bulletObj  = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.Euler(0f, 0f, rotZ));
+        float      finalDamage = _statManager != null
+                                    ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
+                                    : weaponData.WeaponDamage;
 
+        // CBullet 계열 투사체
         CBullet bullet = bulletObj.GetComponent<CBullet>();
         if (bullet != null)
         {
             bullet.Init(dir, finalDamage, _bulletSpeed, weaponData.LifeTime);
+            return;
         }
-        else
+
+        // flanne.Projectile 계열 투사체 (PF_RevolverProjectile 등)
+        flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
+        if (proj != null)
         {
-            // flanne.Projectile 기반 투사체 (PF_RevolverProjectile 등)
-            flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
-            if (proj != null)
-            {
-                proj.damage = finalDamage;
-                proj.vector = dir * _bulletSpeed;
-                proj.owner  = gameObject;
-                proj.angle  = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            }
+            proj.damage = finalDamage;
+            proj.vector = dir * _bulletSpeed;
+            proj.owner  = gameObject;
+
+            // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
+            flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();
+            if (ttl != null)
+                ttl.SetLifetime(weaponData.LifeTime);
         }
     }
 
@@ -387,15 +409,23 @@ public class CPlayerController : CEntityBase, IHealable
     }
 
     /// <summary>
-    /// 현재 장착된 무기 SO를 반환한다
-    /// CInventoryManager 미연결 또는 무기 미장착 시 null 반환
+    /// 현재 장착된 무기 SO를 반환한다.
+    /// _useTestWeaponOverride가 true이면 인벤토리를 무시하고 _testWeaponData를 반환한다.
     /// </summary>
     private CWeaponDataSO GetEquippedWeaponData()
     {
-        if (CInventoryManager.Instance == null) return null;
-        CWeaponInstance weapon = CInventoryManager.Instance.EquippedWeapon;
-        if (weapon == null) return null;
-        return weapon._itemData as CWeaponDataSO;
+        // 테스트 오버라이드가 켜져 있으면 인벤토리 완전 무시
+        if (_useTestWeaponOverride)
+            return _testWeaponData;
+
+        if (CInventoryManager.Instance != null)
+        {
+            CWeaponInstance weapon = CInventoryManager.Instance.EquippedWeapon;
+            if (weapon != null)
+                return weapon._itemData as CWeaponDataSO;
+        }
+
+        return _testWeaponData;
     }
 
     /// <summary>

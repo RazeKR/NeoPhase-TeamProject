@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c9c7b6e216136241a6d3a8d76cade9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 0}
+  rb: {fileID: 50681549671693459}
   kb: {fileID: 114323477868669540}
   move: {fileID: 114933314071086218}
   trail: {fileID: 96931448710444449}

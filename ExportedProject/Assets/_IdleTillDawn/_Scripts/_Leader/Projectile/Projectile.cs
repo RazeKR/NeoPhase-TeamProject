@@ -55,7 +55,10 @@ namespace flanne
         {
             set
             {
-                rb.rotation = value;
+                if (rb != null)
+                    rb.rotation = value;
+                else
+                    transform.rotation = Quaternion.Euler(0f, 0f, value);
             }
         }
 
@@ -81,18 +84,18 @@ namespace flanne
 
         protected virtual void OnCollisionEnter2D(Collision2D other)
         {
-            // 플레이어 자신은 무시
+            // 발사자 자신은 무시
             if (owner != null && other.gameObject == owner) return;
 
+            // 데미지는 IDamageable에만 적용
             IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
-            if (damageable == null) return;
+            if (damageable != null)
+            {
+                damageable.TakeDamage(_damage);
+            }
 
-            damageable.TakeDamage(_damage);
-
-            // 사망 여부 확인
-            CEntityBase entity = other.gameObject.GetComponent<CEntityBase>();
-            bool isDead = entity != null && entity.CurrentHealth <= 0;
-
+            // 소멸/관통/반사는 IDamageable 여부와 무관하게 처리
+            // (적이든 벽이든 pierce=0, bounce=0이면 총알 소멸)
             if (piercing == 0)
             {
                 if (bounce == 0)
@@ -101,13 +104,17 @@ namespace flanne
                     return;
                 }
 
-                bounce--;
+                // 적에게 맞았을 때만 반사 횟수 차감 (벽은 횟수 유지)
+                if (damageable != null)
+                {
+                    bounce--;
+                }
 
-                // 충돌 법선 기준 단순 반사
+                // 충돌 법선 기준 반사
                 if (other.contactCount > 0)
                 {
-                    Vector2 normal = other.contacts[0].normal;
-                    float magnitude = move.vector.magnitude;
+                    Vector2 normal   = other.contacts[0].normal;
+                    float   magnitude = move.vector.magnitude;
                     Vector2 reflected = Vector2.Reflect(move.vector.normalized, normal) * magnitude;
                     move.vector = reflected;
                     if (!dontRotateOnBounce)
@@ -116,7 +123,11 @@ namespace flanne
             }
             else
             {
-                piercing--;
+                // 관통은 적에게 맞았을 때만 차감
+                if (damageable != null)
+                {
+                    piercing--;
+                }
             }
         }
 
