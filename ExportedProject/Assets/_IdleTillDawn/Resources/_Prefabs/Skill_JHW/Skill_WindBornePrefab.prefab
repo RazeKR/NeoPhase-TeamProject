@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5186448400411981548}
   - component: {fileID: 27130975136273745}
   - component: {fileID: 8008338727944915770}
+  - component: {fileID: -4099264492174989860}
   m_Layer: 0
   m_Name: Skill_WindBornePrefab
   m_TagString: Untagged
@@ -168,3 +169,30 @@ MonoBehaviour:
   _so: {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
   _lifetime: 500
   _damageInterval: 1
+--- !u!50 &-4099264492174989860
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967118725219851522}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

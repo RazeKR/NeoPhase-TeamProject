@@ -178,7 +178,7 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Standalone: com.Flanne.MinutesTillDawn
+    Standalone: com.NEO-PHASE.IdleTillDawn
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -787,7 +787,7 @@ PlayerSettings:
   embeddedLinuxEnableGamepadInput: 1
   hmiLogStartupTiming: 0
   hmiCpuConfiguration: 
-  apiCompatibilityLevel: 3
+  apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 99270be8-7fc1-4317-85e1-202f9ace0a45

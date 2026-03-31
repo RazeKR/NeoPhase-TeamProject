@@ -3,7 +3,9 @@ using UnityEngine;
 
 
 /// <summary>
-/// 스킬 사용,
+/// 스킬과 관련된 정보를 제어합니다.
+/// JsonManager와 교류하며 스킬포인트 추가, 스킬 장착, 스킬 강화, 스킬 사용을 수행합니다.
+/// UseBindSkill(int slotIndex)를 불러와 스킬을 사용할 수 있습니다.
 /// </summary>
 
 
@@ -28,6 +30,8 @@ public class CSkillSystem : MonoBehaviour
     // 습득 스킬 레벨 정보 저장
     private Dictionary<string, int> _acquiredSkills = new Dictionary<string, int>();
 
+    // 쿨타임 관리 딕셔너리
+    private Dictionary<int, float> _cooldownDict = new Dictionary<int, float>();
 
     #endregion
 
@@ -53,6 +57,12 @@ public class CSkillSystem : MonoBehaviour
         }            
 
         return _saveData.GetSkillLevel(id);
+    }
+
+    /// <summary>스킬 사용 가능 상태 반환</summary>
+    public bool IsSkillReady(int skillId)
+    {
+        return !_cooldownDict.ContainsKey(skillId);
     }
 
     #endregion
@@ -101,11 +111,76 @@ public class CSkillSystem : MonoBehaviour
         {
             AddSkillPoint(5);
         }
+
+        UpdateCooldowns();
     }
 
     #endregion
 
     #region PublicMethods
+
+    /// <summary>
+    /// 스킬 사용, 바인드된 스킬 SO 내부에 저장된 내용 수행
+    /// </summary>
+    public void UseBindSkill(int slotIndex)
+    {
+        // 슬롯 유효성 검사
+        if (slotIndex < 0 || slotIndex >= _equippedSkills.Count) return;
+        int skillId = _equippedSkills[slotIndex];
+        if (skillId == 0) return;
+
+        // 데이터 체크
+        CSkillDataSO data = CDataManager.Instance.GetSkill(skillId);
+        if (data == null || !IsSkillReady(skillId)) return;
+        if (!IsSkillReady(skillId)) return;
+
+        Transform target = GetNearestEnemy();
+
+        GameObject go = Instantiate(data.effectPrefab, transform.position, Quaternion.identity);
+
+        // 근접한 타겟이 있다면 그 방향으로 회전
+        if (target != null)
+        {
+            Vector2 dir = (target.position - transform.position).normalized;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            go.transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+        
+        // ISkill 상속한 모든 스킬 컴포넌트 Init
+        ISkill[] effects = go.GetComponents<ISkill>();
+
+        foreach (var effect in effects)
+        {
+            effect.Init(CDataManager.Instance.GetSkill(skillId).damage, GetSkillLevel(skillId));
+        }
+
+        // 쿨타임
+        StartCooldown(skillId, data.coolDown);
+
+        OnSkillEquipped?.Invoke();
+    }
+
+    /// <summary>쿨타임 시작 (스킬 사용 시 호출)</summary>
+    public void StartCooldown(int skillId, float dur)
+    {
+        if (dur <= 0) return;
+
+        if (_cooldownDict.ContainsKey(skillId))
+            _cooldownDict[skillId] = dur;
+
+        else _cooldownDict.Add(skillId, dur);
+    }
+
+    /// <summary>남아있는 쿨타임 비율 반환 (UI에서 참조)</summary>
+    public float GetCooldownNormalized(int skillId)
+    {
+        if (!_cooldownDict.ContainsKey(skillId)) return 0f;
+
+        CSkillDataSO data = CDataManager.Instance.GetSkill(skillId);
+        if (data == null) return 0f;
+
+        return _cooldownDict[skillId] / data.coolDown;
+    }
 
     /// <summary>스킬포인트 추가</summary>
     public void AddSkillPoint(int amount)
@@ -231,20 +306,67 @@ public class CSkillSystem : MonoBehaviour
 
     #region PrivateMethods
 
+    /// <summary>스킬 쿨타임 업데이트</summary>
+    private void UpdateCooldowns()
+    {
+        if (_cooldownDict.Count == 0) return;
+
+        // 키 리스트
+        List<int> keys = new List<int>(_cooldownDict.Keys);
+
+        foreach (int id in keys)
+        {
+            _cooldownDict[id] -= Time.deltaTime;
+
+            if (_cooldownDict[id] <= 0f)
+            {
+                _cooldownDict.Remove(id);
+
+                OnSkillEquipped?.Invoke();
+            }
+        }
+    }
+
+    /// <summary>가장 가까운 적을 탐색하여 Transform 반환/// </summary>
+    private Transform GetNearestEnemy()
+    {             
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player ==  null) return null;
+
+        Vector3 currentPos = player.transform.position;
+
+        Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(currentPos, 10f);
+
+        Transform nearest = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (Collider2D col in enemyColliders)
+        {
+            if (col.CompareTag("Enemy"))
+            {
+                float dist = Vector2.Distance(currentPos, col.transform.position);
+                if (dist < minDistance)
+                {
+                    nearest = col.transform;
+                    minDistance = dist;
+                }
+            }
+        }
+        return nearest;
+    }
+
     /// <summary>세이브 정보 복구</summary>
     private void RestoreFromSaveData(CSaveData save)
     {
         _saveData = save;
         currentSkillPoints = save.skillPoints;
 
-        // [핵심] 리스트가 어떤 이유로든 줄어들지 않도록 강제로 3칸을 보장합니다.
         if (_equippedSkills == null) _equippedSkills = new List<int> { 0, 0, 0 };
 
-        // 리스트의 내용물을 하나씩 안전하게 옮깁니다.
         for (int i = 0; i < 3; i++)
         {
             // _equippedSkills.Count보다 i가 크면 Add하고, 아니면 덮어씁니다.
-            int skillId = save.GetEquippedSkill(i); // 헬퍼 메서드 사용 (인덱스 안전)
+            int skillId = save.GetEquippedSkill(i);
 
             if (i < _equippedSkills.Count)
                 _equippedSkills[i] = skillId;
@@ -252,8 +374,6 @@ public class CSkillSystem : MonoBehaviour
                 _equippedSkills.Add(skillId);
         }
 
-        // 데이터 복구 후 강제 로그 확인 (여기서 Count가 무조건 3이어야 합니다)
-        Debug.Log($"[복구확인] 포인트: {currentSkillPoints}, 슬롯크기: {_equippedSkills.Count}");
 
         OnSkillEquipped?.Invoke();
         RefreshAllNodes();
