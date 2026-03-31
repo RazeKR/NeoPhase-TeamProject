@@ -14,6 +14,13 @@ public class _CPlayerCameraController : MonoBehaviour
 
     #endregion
 
+    #region Public Methods
+
+    /// <summary>카메라 추적 대상을 런타임에 설정합니다.</summary>
+    public void SetTarget(Transform target) => _target = target;
+
+    #endregion
+
     #region Unity Methods
 
     /// <summary>
