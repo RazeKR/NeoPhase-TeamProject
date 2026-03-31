@@ -187,8 +187,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1984
   _paramSpeed: aSpeed
-  _defaultAttackRange: 1.5
+  _defaultAttackRange: 2
   _bulletSpeed: 10
+  _useTestWeaponOverride: 1
+  _testWeaponData: {fileID: 11400000, guid: aef908ab333a0954ab49189d04b946b8, type: 2}
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!114 &8780424355032175541
@@ -293,6 +295,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9141945918906234050}
     m_Modifications:
+    - target: {fileID: 1717170004236854790, guid: 5027dceae8de9744d9abc2622a1d88c6,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 201
+      objectReference: {fileID: 0}
     - target: {fileID: 3098061790733595749, guid: 5027dceae8de9744d9abc2622a1d88c6,
         type: 3}
       propertyPath: m_LocalPosition.x
