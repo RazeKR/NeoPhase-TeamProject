@@ -200,7 +200,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 2045833833162962790}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.99990165
+  m_Size: 0.99456483
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -786,7 +786,6 @@ GameObject:
   - component: {fileID: 6016747534673660718}
   - component: {fileID: 5949827192923943503}
   - component: {fileID: 6350659489637860409}
-  - component: {fileID: 4693315272126647162}
   m_Layer: 5
   m_Name: Canvas_Inventory_JHW
   m_TagString: Untagged
@@ -880,18 +879,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &4693315272126647162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3307863992020510760}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6176c477d75a9294d93c0560f341fe3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3372123865623990444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1124,7 +1111,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 269.99988}
+  m_AnchoredPosition: {x: 0, y: 269.99997}
   m_SizeDelta: {x: 540, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8153266925892935243
@@ -2110,8 +2097,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7018140669548545048}
   - component: {fileID: 3961029876468109220}
+  - component: {fileID: 1905103867562953380}
+  - component: {fileID: 336243399009858868}
   m_Layer: 0
-  m_Name: InventoryUIManager
+  m_Name: InventoryUISystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2168,10 +2157,33 @@ MonoBehaviour:
   _amountText: {fileID: 1662134353126803291}
   _deleteButton: {fileID: 1277205980772435340}
   _upgradeUI: {fileID: 5935669279809963278}
-  Item:
-    _instanceID: 
-    _itemData: {fileID: 0}
-  IsChoiceUpgrade: 0
+--- !u!114 &1905103867562953380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6613183271311674520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6176c477d75a9294d93c0560f341fe3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inventory: []
+--- !u!114 &336243399009858868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6613183271311674520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e9370f45c759847a73ad0ab7daeddc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _upgradeRate: 0.8
+  _debugLog: 1
 --- !u!1 &6651854996979714049
 GameObject:
   m_ObjectHideFlags: 0

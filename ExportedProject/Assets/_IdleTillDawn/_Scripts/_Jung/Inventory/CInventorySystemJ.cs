@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
-using static UnityEngine.UI.Image;
 
 /// <summary>
 /// ID 기반 인벤토리 시스템입니다.
@@ -39,7 +37,7 @@ public class CInventorySystemJ : MonoBehaviour
 
     private int _equippedWeaponId = 0;       // 현재 장착 무기 ID (0 = 없음)
     private CWeaponInstance _equippedWeapon; // 현재 장비 중인 무기 정보
-    private List<CItemInstance> _inventory = new List<CItemInstance>(); // 접근 가능한 현재 인벤토리 정보
+    public List<CItemInstance> _inventory = new List<CItemInstance>(); // 접근 가능한 현재 인벤토리 정보
 
     #endregion
 
@@ -49,10 +47,13 @@ public class CInventorySystemJ : MonoBehaviour
     public static CInventorySystemJ Instance { get; private set; }
 
     /// <summary>현재 인벤토리 정보를 가져옵니다.</summary>
-    public List<CItemInstance> Inventory => _inventory;
+    public List<CItemInstance> Inventory { get { return _inventory; } set { _inventory = value; } }
 
     /// <summary>현재 장착 무기 ID. 0이면 장착 없음.</summary>
     public int EquippedWeaponId => _equippedWeaponId;    
+
+    /// <summary>현재 장착 무기 인스턴스/// </summary>
+    public CWeaponInstance EquippedWeapon { get { return _equippedWeapon; } set { _equippedWeapon = value; } }
 
     #endregion
 
@@ -75,22 +76,30 @@ public class CInventorySystemJ : MonoBehaviour
         // CJsonManager 로드 이벤트 구독 - 씬 로드 후 자동 복원
         if (CJsonManager.Instance != null)
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
+
+        OnInventoryChanged += SortInventory;
     }
 
     private void OnDestroy()
     {
         if (CJsonManager.Instance != null)
             CJsonManager.Instance.OnLoadCompleted -= RestoreFromSaveData;
+
+        OnInventoryChanged -= SortInventory;
     }
 
     #endregion
 
     #region PublicMethods
 
-    /// <summary>
-    /// 아이템을 인벤토리에 추가합니다.
-    /// count만큼 수량을 증가시키고 즉시 저장합니다.
-    /// </summary>
+    /// <summary>버튼 할당하여 테스트 하는 용도</summary>
+    public void AddPotionScroll()
+    {
+        AddItem(1, 1);
+        AddItem(2, 100);
+    }
+
+    /// <summary>아이템을 인벤토리에 추가합니다.count만큼 수량을 증가시키고 즉시 저장합니다.</summary>
     public void AddItem(int itemId, int count = 1 , int rank = 0)
     {
         if (count <= 0) return;
@@ -123,10 +132,7 @@ public class CInventorySystemJ : MonoBehaviour
         OnInventoryChanged?.Invoke();
     }
 
-    /// <summary>
-    /// 아이템을 인벤토리에서 제거합니다.
-    /// count가 현재 수량 이상이면 해당 아이템 항목 자체가 제거됩니다.
-    /// </summary>
+    /// <summary>아이템을 인벤토리에서 제거합니다. count가 현재 수량 이상이면 해당 아이템 항목 자체가 제거됩니다.</summary>
     public bool RemoveItem(string targetInstanceID, int amount = 1)
     {
         var target = _inventory.Find(i => i._instanceID == targetInstanceID);
@@ -154,6 +160,36 @@ public class CInventorySystemJ : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 무기를 강화합니다. 스크롤을 하나 소모합니다.
+    /// </summary>
+    public void UseScroll(string targetInstanceID)
+    {
+        var weapon = _inventory.Find(i => i._instanceID == targetInstanceID) as CWeaponInstance;
+
+        if (weapon == null)
+        {
+            Debug.Log("강화할 무기를 찾을 수 없습니다.");
+            return;
+        }
+
+        var scroll = _inventory.Find(i => i is CScrollInstance) as CScrollInstance;
+
+        if (scroll != null)
+        {
+            CWeaponUpgrade.Instance.TryUpgrade(weapon);
+
+            RemoveItem(scroll._instanceID, 1);            
+        }
+        else
+        {
+            Debug.Log("소모할 스크롤이 인벤토리에 없습니다.");
+        }
+
+        SyncAndSave();
+        OnInventoryChanged?.Invoke();
+    }
+
 
     /// <summary>
     /// 무기를 장착합니다. 인벤토리에 없는 무기는 장착할 수 없습니다.
@@ -163,19 +199,20 @@ public class CInventorySystemJ : MonoBehaviour
     {
         var weapon = _inventory.Find(i => i._instanceID == instanceID) as CWeaponInstance;
         if (weapon == null) return false;
+        if (weapon._isEquipped == true) return false;
 
+        weapon._isEquipped = true;
+        _equippedWeapon._isEquipped = false;
         _equippedWeapon = weapon;
         _equippedWeaponId = weapon._itemData.Id;
 
         SyncAndSave();
+        OnInventoryChanged?.Invoke();
         OnWeaponEquipped?.Invoke(_equippedWeaponId);
         return true;
     }
 
-
-    /// <summary>
-    /// 현재 인벤토리 리스트를 CSaveData 구조로 변환하여 물리 저장합니다.
-    /// </summary>
+    /// <summary>현재 인벤토리 리스트를 CSaveData 구조로 변환하여 물리 저장합니다.</summary>
     public void SyncAndSave()
     {
         if (CJsonManager.Instance == null) return;
@@ -189,7 +226,9 @@ public class CInventorySystemJ : MonoBehaviour
                 itemID = item._itemData.Id,
                 instanceID = item._instanceID,
                 type = item._itemData.ItemType,
-                rank = (item is CWeaponInstance w) ? w._rank : 0
+                rank = (item is CWeaponInstance r) ? r._rank : 0,
+                isEquipped = (item is CWeaponInstance e) ? e._isEquipped : false,
+                upgrade = (item is CWeaponInstance u) ? u._upgrade : 0,
             };
 
             // 수량 정보 개별 할당
@@ -204,16 +243,10 @@ public class CInventorySystemJ : MonoBehaviour
         CJsonManager.Instance.Save(data);
     }
 
-    /// <summary>
-    /// 아이템 ID에 해당하는 SO를 CDataManager를 통해 반환합니다.
-    /// 인벤토리 내 아이템 ID를 UI에서 표시할 때 사용합니다.
-    /// </summary>
+    /// <summary>아이템 ID에 해당하는 SO를 CDataManager를 통해 반환합니다. 인벤토리 내 아이템 ID를 UI에서 표시할 때 사용합니다.</summary>
     public CItemDataSO GetItemData(int itemId) => CDataManager.Instance.GetItem(itemId);
 
-    /// <summary>
-    /// 무기 ID에 해당하는 CWeaponDataSO를 반환합니다.
-    /// 스탯 계산이나 발사체 생성 시 사용합니다.
-    /// </summary>
+    /// <summary>무기 ID에 해당하는 CWeaponDataSO를 반환합니다. 스탯 계산이나 발사체 생성 시 사용합니다.</summary>
     public CWeaponDataSO GetWeaponData(int weaponId) => CDataManager.Instance.GetWeapon(weaponId);
 
     #endregion
@@ -235,6 +268,8 @@ public class CInventorySystemJ : MonoBehaviour
             {
                 var w = new CWeaponInstance(wSo);
                 w._rank = sData.rank;
+                w._isEquipped = sData.isEquipped;
+                w._upgrade = sData.upgrade;
                 w._instanceID = sData.instanceID;
                 _inventory.Add(w);
             }
@@ -247,6 +282,20 @@ public class CInventorySystemJ : MonoBehaviour
             _equippedWeapon = _inventory.Find(i => i._itemData.Id == _equippedWeaponId) as CWeaponInstance;
 
         OnInventoryChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 인벤토리 내 아이템들을 정렬합니다.
+    /// OnInventoryChanged를 구독하여 사용합니다.
+    /// </summary>
+    private void SortInventory()
+    {
+        Inventory = Inventory
+            .OrderByDescending(i => (i as CWeaponInstance)?._isEquipped ?? false)
+            .ThenBy(i => i._itemData.ItemType)
+            .ThenByDescending(i => (i as CWeaponInstance)?._rank ?? 0)
+            .ThenBy(i => i._itemData.Id)
+            .ToList();
     }
         
     #endregion

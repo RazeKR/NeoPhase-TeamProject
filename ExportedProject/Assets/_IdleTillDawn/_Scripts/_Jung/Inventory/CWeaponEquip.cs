@@ -1,23 +1,30 @@
 using System.Collections;
 using UnityEngine;
 
-/*
-��CWeaponEquip
-- �ν����ͷ� ������ ���� ��������Ʈ �������� ��ü���ִ� ���
-   �� �ð������� �������� �ΰ��� ���⸸ �����ϴ� Ŭ����
-- ���� �ݵ�/�ֵθ��� �Լ� WeaponRebound() ���ؼ� ���� ����
-*/
+/// <summary>
+/// 장착된 무기 정보를 가져와 스프라이트 이미지를 적용합니다.
+/// </summary>
 
 public class CWeaponEquip : MonoBehaviour
 {
+    #region SingleTon
     public static CWeaponEquip Instance { get; private set; }
+    #endregion
 
-    [SerializeField] private GameObject _targetObject = null;
-    [SerializeField] private bool _showDebug = false;
+    #region Inspectors & Private Variables
 
-    private string _currentInstanceID;              // ���� �������� ������ �ν��Ͻ�ID
-    private SpriteRenderer _targetSpriteRdr;        // ���� ������ ���� �ٲ��� ��� ��������Ʈ
-    private CItemDataSO _itemDataSO;                // ���� ��� �ִ� ���� ����SO
+    [SerializeField] private GameObject _targetObject = null;   // 스프라이트 바꿀 타겟
+
+    private string _currentInstanceID;
+    private SpriteRenderer _targetSpriteRdr;
+    private CItemDataSO _itemDataSO;
+
+    #endregion
+
+
+
+
+    #region UnityMethods
 
     private void Awake()
     {
@@ -31,7 +38,6 @@ public class CWeaponEquip : MonoBehaviour
 
         if (_targetObject == null)
         {
-            if (_showDebug) Debug.Log("_targetObject �ν����� �������");
             enabled = false;
         }
 
@@ -39,7 +45,6 @@ public class CWeaponEquip : MonoBehaviour
 
         if (!getSpriteRenderer)
         {
-            if (_showDebug) Debug.Log("_targetObject�� SpriteRenderer�� �����ϰ� ���� ����");
             enabled = false;
         }
     }
@@ -57,50 +62,55 @@ public class CWeaponEquip : MonoBehaviour
         }
     }
 
-
     private void Update()
     {
-        CWeaponInstance equipped = CInventoryManager.Instance.EquippedWeapon;
+        CWeaponInstance equipped = CInventorySystemJ.Instance.EquippedWeapon;
         if (equipped == null) return;
 
-        // ���� ������ ����
         if (_currentInstanceID != equipped._instanceID)
         {
             _currentInstanceID = equipped._instanceID;
             _itemDataSO = equipped._itemData as CWeaponDataSO;
             LoadEquippedWeapon();
-
-            if (_showDebug) Debug.Log("���� InstanceID ���� ���� : ���� ���� ������Ʈ");
         }
 
-        // ���� ������ ������ SO�� �޶����� ������Ʈ (�ν����� ������ ���� ��ȯ�Ǵ� ��쿡 ���� �����ڵ�)
         else if (_itemDataSO != equipped._itemData)
         {
             LoadEquippedWeapon();
-
-            if (_showDebug) Debug.Log("���� SO ���� ���� : ���� ���� ������Ʈ");
         }
     }
 
+    #endregion
+
+    #region PrivateMethods
 
     private void LoadEquippedWeapon()
     {
-        CWeaponInstance weapon = CInventoryManager.Instance.EquippedWeapon;
+        CWeaponInstance weapon = CInventorySystemJ.Instance.EquippedWeapon;
         if (weapon == null || weapon._itemData == null) return;
 
         _itemDataSO = weapon._itemData;
         _targetSpriteRdr.sprite = weapon._itemData.ItemSprite;
     }
 
+    private IEnumerator CoBulletLifeTime(GameObject a, float time)
+    {
+        yield return new WaitForSeconds(time);
+        Destroy(a);
+    }
 
-    
-    // �ִϸ����� ���ؼ� ���� �ݵ�/�ֵθ��� ����
-    // ������ �ڵ� ���� ��� �ִϸ����� ��Ǹ� ���� �����ͼ� ���
+    #endregion
+
+    #region PublicMethods
+
+    /// <summary>
+    /// 무기의 반동 모션 혹은 휘두르기 모션을 재생합니다.
+    /// </summary>
     public void WeaponRebound()
     {
         Animator anim = _targetObject.GetComponent<Animator>();
                 
-        if (_itemDataSO.ItemId == "weapon_05")
+        if (_itemDataSO.Id == 3)
         {
             anim.Play("Swing", 0, 0f);
         }
@@ -110,7 +120,6 @@ public class CWeaponEquip : MonoBehaviour
         }
     }
 
-    // ����ü ��Ʈ�� ���� �ʿ�
     public void GenerateBullet()
     {
         GameObject a = Instantiate((_itemDataSO as CWeaponDataSO).BulletPrefab);
@@ -127,10 +136,8 @@ public class CWeaponEquip : MonoBehaviour
         StartCoroutine(CoBulletLifeTime(a, (_itemDataSO as CWeaponDataSO).LifeTime));
     }
 
+    #endregion
 
-    private IEnumerator CoBulletLifeTime(GameObject a, float time)
-    {
-        yield return new WaitForSeconds(time);
-        Destroy(a);
-    }
+
+    
 }

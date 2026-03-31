@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
-ㆍCGenerateItem
-- 무작위 정보를 저장한 아이템을 생성 후 인벤토리에 추가해주는 컴포넌트
-- 인스펙터를 통해 생성 확률 바운더리를 설정 가능
-*/
+
+/// <summary>
+/// 무작위 종류와 희귀도를 가진 무기를 생성하여 인벤토리에 추가해줍니다.
+/// 인스펙터를 통해 생성 확률을 설정할 수 있습니다.
+/// </summary>
+
 
 public class CGenerateItem : MonoBehaviour
 {
+    #region Inspectors
+
     [SerializeField] private int _commonRate = 85;
     [SerializeField] private int _rareRate = 10;
     [SerializeField] private int _epicRate = 4;
@@ -17,13 +20,22 @@ public class CGenerateItem : MonoBehaviour
 
     [SerializeField] private CWeaponDataBaseSO _weaponDataBaseSO = null;
 
-    #region 프로퍼티
+    #endregion
+
+    #region Properties
+
     public int CommonRate => _commonRate;
     public int RareRate => _rareRate;
     public int EpicRate => _epicRate;
     public int LegendaryRate => _legendaryRate;
+
     #endregion
 
+    #region PublicMethods
+
+    /// <summary>
+    /// 무작위 종류와 희귀도를 가진 무기를 생성하여 인벤토리에 추가해줍니다.
+    /// </summary>
     public void GenerateRandomRankItem()
     {
         int  r = Random.Range(0, _commonRate + _rareRate + _epicRate + _legendaryRate + 1);
@@ -48,4 +60,6 @@ public class CGenerateItem : MonoBehaviour
 
         CInventorySystemJ.Instance.AddItem(desiredWeaponID, 1, desiredRank);
     }
+
+    #endregion
 }
