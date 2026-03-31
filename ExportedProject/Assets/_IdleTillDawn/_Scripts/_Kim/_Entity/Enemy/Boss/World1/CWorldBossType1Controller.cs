@@ -19,7 +19,12 @@ public class CWorldBossType1Controller : CBossBase
     #endregion
 
     #region 내부 변수
+    private CNode _rootNode;
+    private int _originLayer;
+    private Animator _bossAnimator;
+
     private int _currentTentacleCount = 0;
+    private float _lastTentacleSpawnTime = 0f;
     private Coroutine _spawnLoopTentacle;
     #endregion
 
@@ -30,100 +35,74 @@ public class CWorldBossType1Controller : CBossBase
     protected override void Awake()
     {
         base.Awake();
+        _bossAnimator = GetComponent<Animator>();
         CTentacleController.OnTentacleDestroyed += HandleTentacleDestroyed;
     }
 
     private void OnDestroy()
     {
         CTentacleController.OnTentacleDestroyed -= HandleTentacleDestroyed;
+    }
 
-        if (_spawnLoopTentacle != null)
-        {
-            StopCoroutine(_spawnLoopTentacle);
-            _spawnLoopTentacle = null;
-        }
+    protected override void Start()
+    {
+        base.Start();
+        _originLayer = gameObject.layer;
+        ConstructBehaviourTree();
+    }
+
+    private void ConstructBehaviourTree()
+    {
+        CNode checkTentacle = new CheckTentacleConditionNode(this);
+        CNode spawnTentcale = new SpawnTentacleNode(this);
+
+        CNode checkDash = new CCheckDashConditionNode(this);
+        CNode dashAction = new CDashActionNode
+        (
+            this,
+            _bossAnimator,
+            0f,
+            _slidingTime,
+            _dashForce,
+            LayerMask.NameToLayer(_dashLayer),
+            _originLayer
+        );
+        CNode chaseAction = new CChaseNode(this);
+
+        CSequence tentacleSequence = new CSequence(new List<CNode> { checkTentacle, spawnTentcale });
+        CSequence dashSequece = new CSequence(new List<CNode> { checkDash, dashAction });
+
+        _rootNode = new CSelector(new List<CNode> { tentacleSequence, dashSequece, chaseAction });
     }
 
     protected override void HandleAttack()
     {
-        base.HandleAttack();
 
-        if (_spawnLoopTentacle == null)
+    }
+
+    protected override void HandleMovement()
+    {
+        if (IsKnockBacked) return;
+
+        if (CurrentTarget != null && _rootNode != null)
         {
-            _spawnLoopTentacle = StartCoroutine(CoTentacleSpawnLoop());
+            _rootNode.Evaluate();
         }
-    }
+        else
+        {
+            Rb.velocity = Vector2.zero;
+        }
 
-    protected override IEnumerator CoAttackSequence()
-    {
-        int originLayer = gameObject.layer;
-        int dashLayer = LayerMask.NameToLayer(_dashLayer);
-
-        SetLayerRecursively(gameObject, dashLayer);
-
-        yield return base.CoAttackSequence();
-
-        SetLayerRecursively(gameObject, originLayer);
-    }
-
-    protected override IEnumerator CoTelegraph()
-    {
-        Rb.velocity = Vector2.zero;
-
-        Debug.Log($"{gameObject.name} 돌진 준비");
-
-        yield return new WaitForSeconds(0.2f);
+        float speed = Rb.velocity.magnitude;
+        _bossAnimator.SetFloat("aSpeed", speed);
+        FlipCharacter(Rb.velocity.x);
     }
 
     protected override IEnumerator CoProcessPattern()
     {
-        if (CurrentTarget == null) yield break;
-
-        Vector2 dashDir = (CurrentTarget.position - transform.position).normalized;
-
-        Rb.AddForce(dashDir * _dashForce, ForceMode2D.Impulse);
-
-        yield return new WaitForSeconds(_slidingTime);
-
-        Rb.velocity = Vector2.zero;
+        yield break;
     }
 
-    /// <summary>
-    /// 자신을 포함한 모든 자식의 레이어를 바꾸는 재귀함수
-    /// </summary>
-    /// <param name="go"></param>
-    /// <param name="newLayer"></param>
-    private void SetLayerRecursively(GameObject go, int newLayer)
-    {
-        go.layer = newLayer;
-
-        foreach (Transform child in go.transform)
-        {
-            SetLayerRecursively(child.gameObject, newLayer);
-        }
-    }
-
-    private IEnumerator CoTentacleSpawnLoop()
-    {
-        while (true)
-        {
-            if (_currentTentacleCount < _maxTentacleCount)
-            {
-                Vector2 spawnPos = GetRandomSpawnPos();
-
-                OnRequestSpawn?.Invoke(_tentaclePoolKey, spawnPos);
-                _currentTentacleCount++;
-
-                Debug.Log($"현재 촉수 갯수 :{_currentTentacleCount}, 최대 촉수 갯수 {_maxTentacleCount}");
-
-                yield return new WaitForSeconds(_spawnInterval);
-            }
-            else
-            {
-                yield return null;
-            }
-        }
-    }
 
     private void HandleTentacleDestroyed()
     {
@@ -137,5 +116,54 @@ public class CWorldBossType1Controller : CBossBase
 
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
         return (Vector2)CurrentTarget.position + offset;
+    }
+
+    private class CheckTentacleConditionNode : CNode
+    {
+        private CWorldBossType1Controller _boss;
+
+        public CheckTentacleConditionNode(CWorldBossType1Controller boss)
+        {
+            _boss = boss;
+        }
+
+        public override ENodeState Evaluate()
+        {
+            if (_boss.IsAttacking) return ENodeState.Failure;
+
+            bool isCooltimeReady = Time.time >= _boss._lastTentacleSpawnTime + _boss._spawnInterval;
+            bool isCountAvailable = _boss._currentTentacleCount < _boss._maxTentacleCount;
+            
+            if (isCooltimeReady && isCountAvailable)
+            {
+                State = ENodeState.Success;
+                return State;
+            }
+
+            State = ENodeState.Failure;
+            return State;
+        }
+    }
+
+    private class SpawnTentacleNode : CNode
+    {
+        private CWorldBossType1Controller _boss;
+
+        public SpawnTentacleNode(CWorldBossType1Controller boss)
+        {
+            _boss = boss;
+        }
+
+        public override ENodeState Evaluate()
+        {
+            Vector2 spawnPos = _boss.GetRandomSpawnPos();
+            OnRequestSpawn?.Invoke(_boss._tentaclePoolKey, spawnPos);
+
+            _boss._currentTentacleCount++;
+            _boss._lastTentacleSpawnTime = Time.time;
+
+            State = ENodeState.Success;
+            return State;
+        }
     }
 }

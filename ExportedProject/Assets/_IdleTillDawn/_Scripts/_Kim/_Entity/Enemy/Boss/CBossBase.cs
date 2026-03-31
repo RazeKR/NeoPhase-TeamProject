@@ -18,11 +18,13 @@ public abstract class CBossBase : CEnemyBase
     private int _hashAttack;
     private bool _hasAttackParam;
 
-    private bool _isAttacking = false;
-
     private Coroutine _attackCoroutine;
 
     private CEntityBase _playerEntity;
+    #endregion
+
+    #region 프로퍼티
+    public bool IsAttacking { get; set; } = false;
     #endregion
 
     #region 이벤트
@@ -136,7 +138,7 @@ public abstract class CBossBase : CEnemyBase
 
     protected override void HandleMovement()
     {
-        if (_isAttacking) return;
+        if (IsAttacking) return;
 
         base.HandleMovement();
 
@@ -154,7 +156,7 @@ public abstract class CBossBase : CEnemyBase
 
     protected override void ExecuteAttack()
     {
-        if (_isAttacking || Time.time < LastAttackTime + EnemyData.AttackCooltime) return;
+        if (IsAttacking || Time.time < LastAttackTime + EnemyData.AttackCooltime) return;
 
         _attackCoroutine = StartCoroutine(CoAttackSequence());
     }
@@ -169,7 +171,7 @@ public abstract class CBossBase : CEnemyBase
 
     protected virtual IEnumerator CoAttackSequence()
     {
-        _isAttacking = true;
+        IsAttacking = true;
         _animator.SetTrigger(_hashAttack);
 
         yield return StartCoroutine(CoTelegraph());
@@ -177,7 +179,7 @@ public abstract class CBossBase : CEnemyBase
 
         yield return StartCoroutine(CoProcessPattern());
 
-        _isAttacking = false;
+        IsAttacking = false;
         LastAttackTime = Time.time;
     }
 
@@ -196,8 +198,10 @@ public abstract class CBossBase : CEnemyBase
             _attackCoroutine = null;
         }
 
-        _isAttacking = false;
+        IsAttacking = false;
 
         Rb.velocity = Vector2.zero;
     }
+
+    
 }

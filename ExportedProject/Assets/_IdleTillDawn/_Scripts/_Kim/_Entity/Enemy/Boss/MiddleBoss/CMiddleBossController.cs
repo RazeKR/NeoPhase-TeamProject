@@ -12,35 +12,70 @@ public class CMiddleBossController : CBossBase
     [SerializeField] private string _dashLayer = "Dash_Layer";
     #endregion
 
-    protected override IEnumerator CoAttackSequence()
+    #region 내부 변수
+    private CNode _rootNode;
+    private int _originLayer;
+    private Animator _bossAnimator;
+    #endregion
+
+    protected override void Awake()
     {
-        int originLayer = gameObject.layer;
-        gameObject.layer = LayerMask.NameToLayer(_dashLayer);
-
-        yield return base.CoAttackSequence();
-
-        gameObject.layer = originLayer;
+        base.Awake();
+        _bossAnimator = GetComponent<Animator>();
     }
 
-    protected override IEnumerator CoTelegraph()
+    protected override void Start()
     {
-        Rb.velocity = Vector2.zero;
+        base.Start();
+        _originLayer = gameObject.layer;
+        ConstructBehaviourTree();
+    }
 
-        Debug.Log($"{gameObject.name} 돌진 준비");
+    private void ConstructBehaviourTree()
+    {
+        CNode checkDash = new CCheckDashConditionNode(this);
+        CNode dashAction = new CDashActionNode
+        (
+            this,
+            _bossAnimator,
+            _prepareTime,
+            _slidingTime,
+            _dashForce,
+            LayerMask.NameToLayer(_dashLayer),
+            _originLayer
+        );
+        CNode chaseAction = new CChaseNode(this);
 
-        yield return new WaitForSeconds(_prepareTime);
+        CSequence dashSequence = new CSequence(new List<CNode> { checkDash, dashAction });
+
+        _rootNode = new CSelector(new List<CNode> { dashSequence, chaseAction });
+    }
+
+    protected override void HandleMovement()
+    {
+        if (IsKnockBacked) return;
+
+        if (CurrentTarget != null && _rootNode != null)
+        {
+            _rootNode.Evaluate();
+        }
+        else
+        {
+            Rb.velocity = Vector2.zero;
+        }
+
+        float speed = Rb.velocity.magnitude;
+        _bossAnimator.SetFloat("aSpeed", speed);
+        FlipCharacter(Rb.velocity.x);
+    }
+
+    protected override void HandleAttack()
+    {
+
     }
 
     protected override IEnumerator CoProcessPattern()
     {
-        if (CurrentTarget == null) yield break;
-
-        Vector2 dashDir = (CurrentTarget.position - transform.position).normalized;
-
-        Rb.AddForce(dashDir * _dashForce, ForceMode2D.Impulse);
-
-        yield return new WaitForSeconds(_slidingTime);
-
-        Rb.velocity = Vector2.zero;
+        yield break;
     }
 }

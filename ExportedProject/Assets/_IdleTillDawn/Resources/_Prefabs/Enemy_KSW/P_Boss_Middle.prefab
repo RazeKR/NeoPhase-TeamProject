@@ -128,7 +128,7 @@ MonoBehaviour:
   _scanRadius: 10
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -138,8 +138,8 @@ MonoBehaviour:
   _paramSpeed: aSpeed
   _paramAttack: tAttack
   _dashForce: 10
-  _prepareTime: 0.5
-  _slidingTime: 0.8
+  _prepareTime: 0.35
+  _slidingTime: 0.9
   _dashLayer: Dash_Layer
 --- !u!50 &3775951802548029952
 Rigidbody2D:
