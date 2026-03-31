@@ -17,7 +17,7 @@ public class CSaveData
     public EPlayerType characterType;
 
     // ── 플레이어 기본 ─────────────────────────────────────────────────────
-    public int   playerStatId    = 1;     // 사용 중인 CPlayerStatDataSO ID
+    public int   playerStatId    = 0;     // 사용 중인 CPlayerStatDataSO ID
     public int   playerLevel     = 1;     // 현재 플레이어 레벨
     public float playerExp       = 0f;    // 현재 경험치
     public float currentHp       = 100f;  // 현재 체력

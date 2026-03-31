@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class CPlayerStatManager : MonoBehaviour
 {
-    #region 인스펙터
-    [Header("데이터 참조")]
-    [SerializeField] private CPlayerDataSO _baseData;
-    #endregion
-
     #region 내부 변수
+    private CPlayerDataSO _baseData;
     // 레벨업 모디파이어
     private float[] _levelModifiers = new float[(int)EPlayerStatType.Count];
     // 추가 스탯 모디파이어
@@ -31,11 +24,23 @@ public class CPlayerStatManager : MonoBehaviour
     #endregion
 
     /// <summary>
-    /// 세이브 데이터를 기반으로 현재 레벨과 경험치를 동기화하고 모디파이어를 계산
+    /// 세이프 파일이 없을 때 SO 데이터만 우선 연결해 주는 초기화 메서드
+    /// </summary>
+    /// <param name="baseData"></param>
+    public void InitBaseData(CPlayerDataSO baseData)
+    {
+        _baseData = baseData;
+        SetModifier(CurrentLevel);
+    }
+
+    /// <summary>
+    /// 세이브 데이터와 SO 데이터를 기반으로 현재 레벨과 경험치를 동기화하고 모디파이어를 계산
     /// </summary>
     /// <param name="data"></param>
-    public void SyncWithSaveData(CSaveData data)
+    public void SyncWithSaveData(CPlayerDataSO baseData, CSaveData data)
     {
+        _baseData = baseData;
+
         CurrentLevel = data.playerLevel;
         CurrentExp = data.playerExp;
 

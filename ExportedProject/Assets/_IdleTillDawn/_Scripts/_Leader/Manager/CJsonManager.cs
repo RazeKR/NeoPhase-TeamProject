@@ -292,7 +292,7 @@ public class CJsonManager : MonoBehaviour
             nickname = "이름 없는 플레이어",
             characterType = EPlayerType.Dasher,
 
-            playerStatId     = 1,
+            playerStatId     = 0,
             playerLevel      = 1,
             playerExp        = 0f,
             currentHp        = 100f,

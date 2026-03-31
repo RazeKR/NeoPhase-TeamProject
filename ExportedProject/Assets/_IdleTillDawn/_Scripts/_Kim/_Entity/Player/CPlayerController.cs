@@ -1,16 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEngine.UIElements;
-
-// TODO : 플레이어 스탯 조절용 스크립트 추가
 
 [RequireComponent(typeof(CPlayerInputHandler))]
 public class CPlayerController : CEntityBase
 {
     #region 인스펙터
     [Header("캐릭터 참조")]
-    [SerializeField] private CPlayerDataSO _characterData;
     [SerializeField] private Animator _animator;
 
     [Header("스킬 참조")]
@@ -37,6 +32,8 @@ public class CPlayerController : CEntityBase
     #endregion
 
     #region 내부 변수
+    private CPlayerDataSO _characterData;
+
     private CPlayerInputHandler _inputHandler;
     private float _lastAttackTime = 0f;
     private int   _hashSpeed;
@@ -119,12 +116,6 @@ public class CPlayerController : CEntityBase
     {
         base.Awake();
         
-        if (_characterData == null)
-        {
-            Debug.LogWarning("Data SO 없음, 참조 확인");
-            return;
-        }
-
         if (_inputHandler == null)
         {
             _inputHandler = GetComponent<CPlayerInputHandler>();
@@ -239,9 +230,18 @@ public class CPlayerController : CEntityBase
     /// <param name="saveData">세이브 데이터 (나중에 병합 시 맞는 타입으로 변경)</param>
     public void InitPlayer(CSaveData saveData)
     {
-        // TODO : 병합 후 추가 내용 작성
+        int playerId = (saveData != null && saveData.playerStatId >= 0) ? saveData.playerStatId : 0;
 
-        if (_characterData == null) return;
+        if (CDataManager.Instance != null)
+        {
+            _characterData = CDataManager.Instance.GetPlayerData(playerId);
+        }
+
+        if (_characterData == null)
+        {
+            Debug.LogError($"CPlayerController : {playerId}의 플레이어 데이터 로드 실패");
+            return;
+        }
 
         if (saveData == null || string.IsNullOrEmpty(saveData.uid))
         {
@@ -269,7 +269,7 @@ public class CPlayerController : CEntityBase
             return;
         }
 
-        _statManager.SyncWithSaveData(saveData);
+        _statManager.SyncWithSaveData(_characterData, saveData);
 
         MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
         MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);

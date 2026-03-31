@@ -282,7 +282,6 @@ MonoBehaviour:
   _entityName: 
   _description: 
   _defaultGravityScale: 0
-  _characterData: {fileID: 11400000, guid: c2e332dd47076fd4dad21a792296cd12, type: 2}
   _animator: {fileID: 3722675710176299580}
   _equippedSkills:
   - {fileID: 0}
@@ -292,7 +291,7 @@ MonoBehaviour:
   _evadeRadius: 2.5
   _hazardLayer:
     serializedVersion: 2
-    m_Bits: 1472
+    m_Bits: 1984
   _paramSpeed: aSpeed
   _defaultAttackRange: 5
   _bulletSpeed: 20
@@ -360,7 +359,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980395e424067841ab536ac4a158a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseData: {fileID: 11400000, guid: c2e332dd47076fd4dad21a792296cd12, type: 2}
 --- !u!1 &4525051250244295124
 GameObject:
   m_ObjectHideFlags: 0
