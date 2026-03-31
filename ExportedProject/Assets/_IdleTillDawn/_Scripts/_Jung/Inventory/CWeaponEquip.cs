@@ -132,8 +132,10 @@ public class CWeaponEquip : MonoBehaviour
     /// </summary>
     public void WeaponRebound()
     {
+        if (_targetObject == null || _itemDataSO == null) return;
+
         Animator anim = _targetObject.GetComponent<Animator>();
-                
+
         if (_itemDataSO.Id == 3)
         {
             anim.Play("Swing", 0, 0f);
