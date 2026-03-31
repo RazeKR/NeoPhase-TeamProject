@@ -4,9 +4,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>
+/// 인벤토리 UI 정보들을 관리하고 최신화합니다.
+/// CInventorySlot 컴포넌트를 가진 유닛들을 생성하여 인벤토리 UI에 정렬합니다.
+/// </summary>
+
 public class CInventoryUI : MonoBehaviour
 {
+    #region SingleTon
     public static CInventoryUI Instance { get; private set; }
+    #endregion
+
+    #region Inspectors & PrivateVariables
 
     [Header("인벤토리 슬롯 인스펙터")]
     [SerializeField] private Transform _slotParent = null;      // 인벤토리 슬롯이 들어갈 부모 객체
@@ -33,10 +42,19 @@ public class CInventoryUI : MonoBehaviour
     [Header("강화 UI 인스펙터")]
     [SerializeField] private GameObject _upgradeUI = null;
 
-    public CItemInstance Item = null;
-    public bool IsChoiceUpgrade = false;
+    private CItemInstance _item = null;
+    private bool _isChoiceUpgrade = false;
     private int _desiredAmount = 0;
-    
+
+    #endregion
+
+    #region Properties
+
+    public CItemInstance Item { get { return _item; } set { _item = value; } }
+    public bool IsChoiceUpgrade { get {  return _isChoiceUpgrade; } set { _isChoiceUpgrade = value; } }
+    #endregion
+
+    #region UnityMethods
 
     private void Awake()
     {
@@ -66,7 +84,14 @@ public class CInventoryUI : MonoBehaviour
             _upgradeUI.SetActive(false);
         }
 
-        Item = null;
+        _item = null;
+
+        if (CInventorySystemJ.Instance != null)
+        {
+            CInventorySystemJ.Instance.OnInventoryChanged += RefreshUI;
+            CInventorySystemJ.Instance.OnInventoryChanged += OnOffInfo;
+        }
+            
     }
 
 
@@ -99,8 +124,8 @@ public class CInventoryUI : MonoBehaviour
 
             _desiredAmount = 0;
             _upgradeUI.SetActive(false);
-            _itemInfoUI.SetActive(false);            
-            Item = null;
+            _itemInfoUI.SetActive(false);
+            _item = null;
 
 
             if (IsChoiceUpgrade)
@@ -122,13 +147,11 @@ public class CInventoryUI : MonoBehaviour
                         break;
                     }
                 }
-
-                
-                if (!isClickedSlot) IsChoiceUpgrade = false;
+                                
+                if (!isClickedSlot) _isChoiceUpgrade = false;
             }
         }
     }
-
 
     private void OnDestroy()
     {
@@ -136,11 +159,21 @@ public class CInventoryUI : MonoBehaviour
         {
             Instance = null;
         }
+
+        if (CInventorySystemJ.Instance != null)
+        {
+            CInventorySystemJ.Instance.OnInventoryChanged -= RefreshUI;
+            CInventorySystemJ.Instance.OnInventoryChanged -= OnOffInfo;
+        }
     }
 
+    #endregion
 
-    // UI 슬롯 최신화
-    //  ㄴ 최신화 후 유니티 UI 컴포넌트로 별도 정렬함
+    #region PublicMethods
+
+    /// <summary>UI 슬롯을 최신화합니다.
+    /// OnInventoryChanged에 구독하여 갱신합니다.
+    /// </summary>
     public void RefreshUI()
     {
         // 자식 슬롯을 순회하며 리셋
@@ -149,7 +182,16 @@ public class CInventoryUI : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        if (CInventorySystemJ.Instance == null || CInventorySystemJ.Instance.Inventory == null)
+        {
+            Debug.LogWarning("인벤토리 시스템이 아직 준비되지 않음"); return;
+        }
+
         var inventory = CInventorySystemJ.Instance.Inventory;
+        if (inventory ==  null)
+        {
+            Debug.Log("inventory null"); return;
+        }
 
         // 인벤토리를 순회하며 생성
         foreach (var item in inventory)
@@ -160,12 +202,14 @@ public class CInventoryUI : MonoBehaviour
             slot.SetSlot(item);
         }
 
+
         Debug.Log("UI 최신화 완료");
     }
 
-
-
-    // 인벤토리 창 열고 닫는 기능 (버튼이나 키 할당해서 사용)
+    /// <summary>
+    /// 인벤토리 UI를 열거나 닫습니다.
+    /// 버튼 컴포넌트에 연결하거나 키에 할당하여 사용합니다.
+    /// </summary>
     public void OnOffInventoryUI()
     {
         if (_inventoryUI == null) return;
@@ -182,31 +226,115 @@ public class CInventoryUI : MonoBehaviour
         }
     }
 
-
-    // 현재 슬롯으로부터 받아온 아이템 인스턴스 여부에 따라 UI 활성화/비활성화
-    private void OnOffInfo()
+    /// <summary>
+    /// 클릭 시 현재 Item에 바인드된 무기로 스왑 / 포션 사용 / 스크롤을 사용할 무기 선택을 활성화합니다.
+    /// 버튼 컴포넌트에 연결하거나 키에 할당하여 사용합니다.
+    /// </summary>
+    public void ClickUse()
     {
-        if (Item ==  null) return;
+        if (_item == null) return;
 
-        if (Item._itemData != null && !_itemInfoUI.activeInHierarchy)
+
+        if (_item is CWeaponInstance weapon)
         {
-            _itemInfoUI.SetActive(true);
+            CInventorySystemJ.Instance.EquipWeapon(weapon._instanceID);
         }
 
-        if (Item._itemData == null && _itemInfoUI.activeInHierarchy)
+        else if (_item is CPotionInstance potion)
         {
-            _itemInfoUI.SetActive(false);
+            // 포션 사용 로직 구현 필요
+            CInventorySystemJ.Instance.RemoveItem(potion._instanceID, 1);
+            return;
+        }
+
+        else if (_item is CScrollInstance scroll)
+        {
+            _isChoiceUpgrade = true;
+            _upgradeUI.SetActive(true);
+            _itemUI.SetActive(false);
+        }
+
+        _itemInfoUI.SetActive(false);
+        _item = null;
+        RefreshUI();
+    }
+
+    /// <summary>
+    /// 아이템을 삭제합니다. (소모품의 경우 ClickAmountUpDown 버튼으로 추가로 수량을 정한 뒤 삭제합니다.)
+    /// 버튼 컴포넌트에 연결하거나 키에 할당하여 사용합니다.
+    /// </summary>
+    public void ClickDelete()
+    {
+        if (_item == null) return;
+
+        CInventorySystemJ.Instance.RemoveItem(Item._instanceID, _desiredAmount == 0 ? 1 : _desiredAmount);
+
+        _desiredAmount = 0;
+        _item = null;
+        _itemInfoUI.SetActive(false);
+        OnOffInfo();
+        RefreshUI();
+    }
+
+    /// <summary>
+    /// 삭제할 아이템의 수량을 올리거나 내립니다.
+    /// 버튼 컴포넌트에 연결하거나 키에 할당하여 사용하며, bool을 체크할 시 감소, 해제할 시 증가합니다.
+    /// </summary>
+    public void ClickAmountUpDown(bool isDown)
+    {
+        if (_item == null) return;
+
+        if (isDown)
+        {
+            _desiredAmount -= (_desiredAmount > 0 ? 1 : 0);
+        }
+
+        else
+        {
+            if (_item is CPotionInstance potion)
+            {
+                _desiredAmount += (_desiredAmount < potion._amount ? 1 : 0);
+                _amountText.text = $"{_desiredAmount} / {potion._amount}";
+            }
+            else if (_item is CScrollInstance scroll)
+            {
+                _desiredAmount += (_desiredAmount < scroll._amount ? 1 : 0);
+                _amountText.text = $"{_desiredAmount} / {scroll._amount}";
+            }
+        }
+    }
+
+    #endregion
+
+    #region PrivateMethods
+
+    /// <summary>
+    /// 현재 슬롯으로부터 받아온 아이템 상세 UI를 활성화/비활성화를 실행합니다.
+    /// </summary>
+    private void OnOffInfo()
+    {
+        if (_item == null || _item._itemData == null)
+        {
+            if (_itemInfoUI.activeSelf) _itemInfoUI.SetActive(false);
+            return;
+        }
+
+        if (!_itemInfoUI.activeSelf)
+        {
+            _itemInfoUI.SetActive(true);
         }
     }
 
 
-    // 아이템 별로 버튼 UI를 On/Off
+    /// <summary>
+    /// 아이템 별로 버튼 UI를 On/Off 힙니다.
+    /// </summary>
     private void OnOffButton()
     {
-        if (Item ==  null) return;
+        if (_item ==  null) return;
 
 
-        if (Item is CWeaponInstance weapon)
+        if (_item is CWeaponInstance weapon)
         {
             if (weapon._isEquipped == true)
             {
@@ -223,30 +351,32 @@ public class CInventoryUI : MonoBehaviour
             }
         }
 
-        else if (Item is CPotionInstance)
+        else if (_item is CPotionInstance)
         {
             _equippedUI.SetActive(false);
             _weaponUI.SetActive(false);
             _itemUI.SetActive(true);
-            _amountText.text = $"{_desiredAmount} / {(Item as CPotionInstance)._amount}";
+            _amountText.text = $"{_desiredAmount} / {(_item as CPotionInstance)._amount}";
         }
 
-        else if (Item is CScrollInstance)
+        else if (_item is CScrollInstance)
         {
             _equippedUI.SetActive(false);
             _weaponUI.SetActive(false);
             _itemUI.SetActive(true);
-            _amountText.text = $"{_desiredAmount} / {(Item as CScrollInstance)._amount}";
+            _amountText.text = $"{_desiredAmount} / {(_item as CScrollInstance)._amount}";
         }
     }
 
 
-    // 스프라이트, 이름, 정보 등 업데이트
+    /// <summary>
+    /// 스프라이트, 이름, 정보 등을 업데이트합니다.
+    /// </summary>
     private void InfoUpdate()
     {
-        if (Item == null) return;
+        if (_item == null) return;
         
-        if (Item is CWeaponInstance weapon)
+        if (_item is CWeaponInstance weapon)
         {
             _itemSprite.sprite = weapon._itemData.ItemSprite;
             _itemRank.sprite = _itemRankSprites[weapon._rank];
@@ -254,7 +384,7 @@ public class CInventoryUI : MonoBehaviour
             _upgradeText.text = "+" + weapon._upgrade.ToString();
         }
 
-        else if (Item is CPotionInstance potion)
+        else if (_item is CPotionInstance potion)
         {
             _itemSprite.sprite = potion._itemData.ItemSprite;
             _itemRank.sprite = _itemRankSprites[0];
@@ -262,7 +392,7 @@ public class CInventoryUI : MonoBehaviour
             _upgradeText.text = "";
         }
 
-        else if (Item is CScrollInstance scroll)
+        else if (_item is CScrollInstance scroll)
         {
             _itemSprite.sprite = scroll._itemData.ItemSprite;
             _itemRank.sprite = _itemRankSprites[0];
@@ -271,72 +401,6 @@ public class CInventoryUI : MonoBehaviour
         }
     }
 
-
-    // 버튼 컴포넌트에 연결하여 호출
-    // 클릭 시 현재 Item에 바인드된 무기로 스왑 / 포션 사용 / 스크롤 사용할 무기 선택 활성화
-    public void ClickUse()
-    {
-        if (Item == null) return;
-
-
-        if (Item is CWeaponInstance weapon)
-        {
-            CInventorySystemJ.Instance.EquipWeapon(weapon._instanceID);
-        }
-
-        else if (Item is CPotionInstance potion)
-        {
-            // 포션 사용 로직 구현 필요
-            CInventorySystemJ.Instance.RemoveItem(potion._instanceID, 1);
-        }
-
-        else if (Item is CScrollInstance scroll)
-        {
-            IsChoiceUpgrade = true;
-            _upgradeUI.SetActive(true);
-            _itemUI.SetActive(false);
-        }
-
-        Item = null;
-        RefreshUI();
-    }
-
-
-    public void ClickDelete()
-    {
-        if (Item == null) return;
-
-        CInventorySystemJ.Instance.RemoveItem(Item._instanceID, _desiredAmount == 0 ? 1 : _desiredAmount);
-
-        _desiredAmount = 0;
-        Item = null;        
-        _itemInfoUI.SetActive(false);
-        RefreshUI();
-    }
-
-
-    public void ClickAmountUpDown(bool isDown)
-    {
-        if (Item ==  null) return;        
-
-        if (isDown)
-        {
-            _desiredAmount -= (_desiredAmount > 0 ? 1 : 0);
-        }
-
-        else
-        {
-            if (Item is CPotionInstance potion)
-            {
-                _desiredAmount += (_desiredAmount < potion._amount ? 1 : 0);
-                _amountText.text = $"{_desiredAmount} / {potion._amount}";
-            }
-            else if (Item is CScrollInstance scroll)
-            {
-                _desiredAmount += (_desiredAmount < scroll._amount ? 1 : 0);
-                _amountText.text = $"{_desiredAmount} / {scroll._amount}";
-            }
-        }
-    }
+    #endregion   
 
 }

@@ -3,14 +3,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/*
-ㆍCInventorySlot
-- 인벤토리 매니저의 정보를 받아와서 UI에 반영
-- UI 클릭한 뒤 -> 인벤토리 매니저의 SwapWeapon로 던저줌 or UsePotion로 던져줌
-*/
+/// <summary>
+/// 인벤토리 매니저의 정보를 받아와서 UI에 반영합니다.
+/// </summary>
 
 public class CInventorySlot : MonoBehaviour
 {
+    #region Inspectors & PrivateVariables
+
     [SerializeField] private Image _itemIcon = null;                // 이미지
     [SerializeField] private Image _itemEquipMark = null;           // 장착중인 아이템 표시
     [SerializeField] private TextMeshProUGUI _itemTMP = null;       // 갯수 스택 (물약) / 강화도 (무기)
@@ -19,7 +19,9 @@ public class CInventorySlot : MonoBehaviour
     
     private CItemInstance _item;
 
+    #endregion
 
+    #region UnityMethods
 
     private void Update()
     {
@@ -34,14 +36,21 @@ public class CInventorySlot : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region PublicMethods
 
 
+    /// <summary>
+    /// 아이템 인스턴스를 받아와 슬롯의 정보를 설정합니다.
+    /// 이미지, 장착여부, 등급, 수량 정보가 표시됩니다.
+    /// </summary>
     public void SetSlot(CItemInstance item)
     {
         _itemIcon.sprite = item._itemData.ItemSprite;
         _item = item;
 
-        // 무기 등급 표시 (이미지는 아마 색깔 테두리로 or 이니셜로 설정도 가능)
+        // 무기 등급 표시
         if (item is CWeaponInstance weapon)
         {
             _itemRank.sprite = _itemRanksSprite[weapon._rank];
@@ -76,9 +85,10 @@ public class CInventorySlot : MonoBehaviour
         }
     }
 
-
-    // 버튼 컴포넌트에 연결하여 호출
-    // 클릭 시 상세 정보 UI 활성화
+    /// <summary>
+    /// 상세 정보 UI를 활성화합니다.
+    /// 버튼 컴포넌트에 연결하여 호출합니다.
+    /// </summary>
     public void OnSlotClick()
     {
         if (CInventoryUI.Instance.IsChoiceUpgrade)
@@ -89,7 +99,7 @@ public class CInventorySlot : MonoBehaviour
             {
                 Debug.Log("강화");
 
-                CInventoryManager.Instance.UseScroll(weapon._instanceID);
+                CInventorySystemJ.Instance.UseScroll(weapon._instanceID);
 
                 CInventoryUI.Instance.IsChoiceUpgrade = false;
                 CInventoryUI.Instance.RefreshUI();
@@ -106,8 +116,8 @@ public class CInventorySlot : MonoBehaviour
         {
             Debug.Log("슬롯에 저장된 정보 전송");
             CInventoryUI.Instance.Item = _item;
-        }
-                  
+        }                  
     }
 
+    #endregion
 }

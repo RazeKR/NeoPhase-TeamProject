@@ -84,10 +84,15 @@ public class CInventorySystem : MonoBehaviour
 
     #region PublicMethods
 
-    /// <summary>
-    /// 아이템을 인벤토리에 추가합니다.
-    /// count만큼 수량을 증가시키고 즉시 저장합니다.
-    /// </summary>
+    /// <summary>버튼 할당하여 테스트 하는 용도/// </summary>
+    public void AddPotionScroll()
+    {
+        AddItem(1, 1);
+        AddItem(2, 1);
+    }
+
+
+    /// <summary>아이템을 인벤토리에 추가합니다. count만큼 수량을 증가시키고 즉시 저장합니다./// </summary>
     public void AddItem(int itemId, int count = 1)
     {
         if (count <= 0) return;

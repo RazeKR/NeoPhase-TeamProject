@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94217e4b0f949be4fb251ebac21b61aa, type: 3}
   m_Name: WeaponData_Shotgun
   m_EditorClassIdentifier: 
-  _id: 6
+  _id: 7
   _itemId: weapon_02
   _itemName: Shotgun
   _type: 0

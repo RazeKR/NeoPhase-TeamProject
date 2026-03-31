@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94217e4b0f949be4fb251ebac21b61aa, type: 3}
   m_Name: WeaponData_GrenadeLauncher
   m_EditorClassIdentifier: 
-  _id: 4
+  _id: 5
   _itemId: weapon_04
   _itemName: Grenade Launcher
   _type: 0
