@@ -9,6 +9,7 @@ public class CPlayerSpawner : MonoBehaviour
     [Header("플레이어 참조 수신 대상")]
     [SerializeField] private _CPlayerCameraController _cameraController;
     [SerializeField] private CSpawnManager            _spawnManager;
+    [SerializeField] private CWorldShift              _worldShift;
 
     #endregion
 
@@ -51,5 +52,10 @@ public class CPlayerSpawner : MonoBehaviour
             _spawnManager.SetPlayerTarget(playerTransform);
         else
             Debug.LogWarning("CPlayerSpawner : SpawnManager 미연결");
+
+        if (_worldShift != null)
+            _worldShift.SetPlayerTarget(playerTransform);
+        else
+            Debug.LogWarning("CPlayerSpawner : WorldShift 미연결");
     }
 }

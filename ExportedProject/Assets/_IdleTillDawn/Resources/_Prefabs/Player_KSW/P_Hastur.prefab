@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 3844336600422313753}
   - component: {fileID: 8780424355032175541}
   - component: {fileID: 3649854704783532146}
+  - component: {fileID: 1640045531688734854}
   m_Layer: 0
   m_Name: P_Hastur
   m_TagString: Untagged
@@ -166,16 +167,15 @@ MonoBehaviour:
   _isPersonalScene: 1
   _maxHealth: 0
   _currentHealth: 0
-  _moveSpeed: 0
-  _scanRadius: 5
+  _moveSpeed: 3
+  _scanRadius: 15
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 448
   _scanInterval: 0.2
   _entityName: 
   _description: 
   _defaultGravityScale: 0
-  _characterData: {fileID: 11400000, guid: d60d8b83261b69749944e0e153ac3ecd, type: 2}
   _animator: {fileID: 0}
   _equippedSkills:
   - {fileID: 0}
@@ -203,7 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980395e424067841ab536ac4a158a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseData: {fileID: 0}
 --- !u!70 &3649854704783532146
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -239,6 +238,21 @@ CapsuleCollider2D:
   m_Offset: {x: -0.03223774, y: -0.047292948}
   m_Size: {x: 0.5, y: 0.8}
   m_Direction: 0
+--- !u!114 &1640045531688734854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5717717816164410344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bc10e54e46b9043a4dbbbc24159ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outerRadius: 5
+  _innerRatio: 0.5
+  _intensity: 1
 --- !u!1 &7856283033719894046
 GameObject:
   m_ObjectHideFlags: 0

@@ -39,6 +39,13 @@ public class CWorldShift : MonoBehaviour
 
     #endregion
 
+    #region Public Methods
+
+    /// <summary>플레이어 Transform을 런타임에 설정합니다.</summary>
+    public void SetPlayerTarget(Transform playerTransform) => _player = playerTransform;
+
+    #endregion
+
     #region Private Variables
 
     private float localMinX; // 타일맵의 WorldRoot 기준 로컬 좌측 경계 X
