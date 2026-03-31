@@ -65,6 +65,8 @@ public class CWeaponEquip : MonoBehaviour
 
     private void Update()
     {
+        if (CInventorySystemJ.Instance == null) return;
+
         CWeaponInstance equipped = CInventorySystemJ.Instance.EquippedWeapon;
         if (equipped == null) return;
 

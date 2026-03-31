@@ -17,7 +17,7 @@ public enum EStatus
 /// <summary>
 /// 스킬의 기본 정보, 비용, 선행 조건, 레벨별 데이터 참조를 정의하는 ScriptableObject입니다.
 /// CDataManager.GetSkill(id)로 int ID 기반 접근을 지원합니다.
-/// 기존 CSkillManager와의 호환을 위해 public 필드(skillName 등)를 유지합니다.
+/// 기존 CSkillSystem와의 호환을 위해 public 필드(skillName 등)를 유지합니다.
 /// </summary>
 [CreateAssetMenu(menuName = "IdleTillDawn/Data/SkillData", fileName = "SkillData_")]
 public class CSkillDataSO : CBaseDataSO
@@ -25,7 +25,7 @@ public class CSkillDataSO : CBaseDataSO
     #region InspectorVariables
 
     [Header("기본 정보")]
-    public string skillName;      // 스킬명 (CSkillManager의 string 키 호환 유지)
+    public string skillName;      // 스킬명 (CSkillSystem의 string 키 호환 유지)
     public string flavourText;    // 스킬 설명
     public ESkillType skillType;  // 스킬 종류
     public Sprite icon;           // 스킬 아이콘

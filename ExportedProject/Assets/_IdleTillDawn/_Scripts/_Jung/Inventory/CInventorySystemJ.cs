@@ -68,7 +68,6 @@ public class CInventorySystemJ : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()

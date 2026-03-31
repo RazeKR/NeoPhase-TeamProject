@@ -25,7 +25,7 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
 
     private IEnumerator SetupSlopRoutine()
     {
-        while (CSkillManager.Instance == null || CDataManager.Instance == null)
+        while (CSkillSystem.Instance == null || CDataManager.Instance == null)
         {
             yield return null;
         }
@@ -35,8 +35,8 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
             yield return null;
         }
 
-        CSkillManager.Instance.OnSkillEquipped -= UpdateSlotUI;
-        CSkillManager.Instance.OnSkillEquipped += UpdateSlotUI;
+        CSkillSystem.Instance.OnSkillEquipped -= UpdateSlotUI;
+        CSkillSystem.Instance.OnSkillEquipped += UpdateSlotUI;
 
         UpdateSlotUI();
         Debug.Log("슬롯 UI 갱신 완료");
@@ -44,9 +44,9 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
 
     private void OnDisable()
     {
-        if (CSkillManager.Instance != null)
+        if (CSkillSystem.Instance != null)
         {
-            CSkillManager.Instance.OnSkillEquipped -= UpdateSlotUI;
+            CSkillSystem.Instance.OnSkillEquipped -= UpdateSlotUI;
         }
     }
 
@@ -54,11 +54,11 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        CSkillDataSO dragged = CSkillManager.Instance.CurrentlyDraggingSkill;
+        CSkillDataSO dragged = CSkillSystem.Instance.CurrentlyDraggingSkill;
 
         if (dragged != null)
         {
-            if (CSkillManager.Instance.EquipSkill(dragged, _slotIndex))
+            if (CSkillSystem.Instance.EquipSkill(dragged, _slotIndex))
             {
                 UpdateSlotUI();
             }
@@ -67,13 +67,13 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
 
     public void UpdateSlotUI()
     {
-        if (CSkillManager.Instance == null)
+        if (CSkillSystem.Instance == null)
         {
-            Debug.Log("CSkillManager 인스턴스가 아직 존재하지 않습니다.");
+            Debug.Log("CSkillSystem 인스턴스가 아직 존재하지 않습니다.");
             return;
         }
 
-        if (CSkillManager.Instance._equippedSkills ==  null)
+        if (CSkillSystem.Instance._equippedSkills ==  null)
         {
             IconImage.enabled = false;
             Debug.Log("_equippedSkills ==  null");
@@ -85,14 +85,14 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
             Debug.Log("_slotIndex < 0");
             return;
         }
-        if (_slotIndex >= CSkillManager.Instance._equippedSkills.Count)
+        if (_slotIndex >= CSkillSystem.Instance._equippedSkills.Count)
         {
             IconImage.enabled = false;
-            Debug.Log("_slotIndex >= CSkillManager.Instance._equippedSkills.Count");
+            Debug.Log("_slotIndex >= CSkillSystem.Instance._equippedSkills.Count");
             return;
         }
 
-        int equippedId = CSkillManager.Instance._equippedSkills[_slotIndex];
+        int equippedId = CSkillSystem.Instance._equippedSkills[_slotIndex];
 
         CSkillDataSO so = CDataManager.Instance.GetSkill(equippedId);
 
