@@ -59,7 +59,13 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 
         foreach (IDamageable target in _targetsInRange)
         {
-            target.TakeDamage(_damage * _lvMagnification);
+            // 범위 이펙트는 발사 방향이 없으므로 이펙트 중심→적 방향을 hitDir로 사용
+            // MonoBehaviour 캐스팅으로 위치를 얻어 자연스러운 텍스트 오프셋 방향을 결정한다
+            Vector2 hitDir = Vector2.up; // 위치 취득 실패 시 기본값
+            if (target is MonoBehaviour mb)
+                hitDir = ((Vector2)(mb.transform.position - transform.position)).normalized;
+
+            target.TakeDamage(_damage * _lvMagnification, hitDir);
         }            
     }
 

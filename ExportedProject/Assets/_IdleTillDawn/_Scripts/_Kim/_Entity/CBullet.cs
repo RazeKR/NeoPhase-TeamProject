@@ -39,10 +39,11 @@ public class CBullet : MonoBehaviour
 
     #region 내부 변수
 
-    private float _damage;
-    private float _lifeTime;
-    private float _spawnTime;
-    private bool  _initialized;
+    private float   _damage;
+    private float   _lifeTime;
+    private float   _spawnTime;
+    private bool    _initialized;
+    private Vector2 _direction; // 발사 방향 — 충돌 시 hitDir로 전달하기 위해 Init에서 저장
 
     #endregion
 
@@ -70,6 +71,7 @@ public class CBullet : MonoBehaviour
 
         // ── 이동 방향 설정 ──────────────────────────────────────
         Vector2 dir = direction.normalized;
+        _direction   = dir; // 충돌 시 피격 방향으로 전달하기 위해 저장
         GetComponent<Rigidbody2D>().velocity = dir * speed;
 
         // 전체 오브젝트를 진행 방향으로 회전
@@ -116,7 +118,8 @@ public class CBullet : MonoBehaviour
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
         if (damageable != null)
         {
-            damageable.TakeDamage(_damage);
+            // _direction : Init에서 저장한 발사 방향을 hitDir로 전달하여 HitFlash·데미지텍스트 연출 활성화
+            damageable.TakeDamage(_damage, _direction);
             DestroyBullet();
         }
     }

@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_IdleTillDawn/_Scenes/Stage1_KSH.unity
     guid: 2370c581be2290b41b45c02a681c74b6
-  - enabled: 0
+  - enabled: 1
     path: Assets/_IdleTillDawn/_Scenes/Stage2_KSH.unity
     guid: 9a2c761be654fa247bf4b5c9f70659fd
-  - enabled: 0
+  - enabled: 1
     path: Assets/_IdleTillDawn/_Scenes/Stage3_KSH.unity
     guid: 3c809af6da53d7c429fc24e72a1e34c2
   m_configObjects: {}

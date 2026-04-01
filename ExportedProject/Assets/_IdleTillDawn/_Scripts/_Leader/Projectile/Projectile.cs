@@ -88,10 +88,11 @@ namespace flanne
             if (owner != null && other.gameObject == owner) return;
 
             // 데미지는 IDamageable에만 적용
+            // move.vector : 현재 이동 방향을 hitDir로 전달하여 HitFlash·데미지텍스트 연출 활성화
             IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
             if (damageable != null)
             {
-                damageable.TakeDamage(_damage);
+                damageable.TakeDamage(_damage, move.vector.normalized);
             }
 
             // 소멸/관통/반사는 IDamageable 여부와 무관하게 처리

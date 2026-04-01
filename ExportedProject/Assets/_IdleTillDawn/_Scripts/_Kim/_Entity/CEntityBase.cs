@@ -29,7 +29,8 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     [SerializeField] private float _defaultGravityScale = 0f;
 
     [Header("피격 연출 설정")]
-    [SerializeField] private float _hitFlashDuration = 0.1f; // 피격 시 흰색으로 유지되는 시간 (초)
+    [SerializeField] private float    _hitFlashDuration = 0.1f; // 피격 시 흰색 플래시가 유지되는 시간 (초)
+    [SerializeField] private Material _hitFlashMaterial;        // SpriteFlash 셰이더를 사용하는 전용 머티리얼 (인스펙터에서 연결)
     #endregion
 
     #region 내부 변수
@@ -40,9 +41,9 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     private float _scanTimer = 0f;
     private Collider2D[] _targetColliders = new Collider2D[50];
 
-    private SpriteRenderer _spriteRenderer; // 피격 플래시에 사용할 스프라이트 렌더러
-    private Color _originalColor;           // 피격 전 원래 색상 (복구 기준값)
-    private Coroutine _hitFlashCoroutine;   // 동시 피격 시 코루틴 중첩 방지용 핸들
+    private SpriteRenderer _hitFlashRenderer;  // 피격 플래시 대상 스프라이트 렌더러
+    private Material       _originalMaterial;  // 플래시 전 원본 공유 머티리얼 — 복구 기준값
+    private Coroutine      _hitFlashCoroutine; // 동시 피격 시 코루틴 중첩 방지용 핸들
     #endregion
 
     #region 프로퍼티
@@ -92,13 +93,15 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
         _rb.freezeRotation = true;
 
         // SpriteRenderer 자동 탐색 : 직접 부착된 컴포넌트 우선, 없으면 자식에서 탐색
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        if (_spriteRenderer == null)
-            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        _hitFlashRenderer = GetComponent<SpriteRenderer>();
+        if (_hitFlashRenderer == null)
+            _hitFlashRenderer = GetComponentInChildren<SpriteRenderer>();
 
-        // 원본 색상 저장 : SpriteRenderer 없는 엔티티는 HitFlash 연출이 생략된다
-        if (_spriteRenderer != null)
-            _originalColor = _spriteRenderer.color;
+        // 원본 공유 머티리얼 저장
+        // sharedMaterial 사용으로 불필요한 머티리얼 인스턴스 생성(GC)을 방지한다
+        // SpriteRenderer가 없는 엔티티는 HitFlash 연출이 자동으로 생략된다
+        if (_hitFlashRenderer != null)
+            _originalMaterial = _hitFlashRenderer.sharedMaterial;
     }
 
     protected virtual void FixedUpdate()
@@ -119,8 +122,9 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
             _hitFlashCoroutine = null;
         }
 
-        if (_spriteRenderer != null)
-            _spriteRenderer.color = _originalColor;
+        // 풀 반환(SetActive false) 시 머티리얼을 원본으로 복구하여 다음 스폰에 플래시 머티리얼이 잔류하지 않도록 한다
+        if (_hitFlashRenderer != null)
+            _hitFlashRenderer.sharedMaterial = _originalMaterial;
     }
 
     protected virtual void OnDrawGizmosSelected()
@@ -175,13 +179,20 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// 피격 시 SpriteRenderer 색상을 흰색으로 잠깐 변경 후 원래 색상으로 복구한다
-    /// 연속 피격 시 기존 코루틴을 즉시 취소하고 새로 시작하여 색상 중첩을 방지한다
-    /// SpriteRenderer가 없는 엔티티는 자동으로 생략된다
+    /// 피격 시 SpriteRenderer의 머티리얼을 SpriteFlash 전용 머티리얼로 교체하여 흰색 플래시를 구현한다
+    /// SpriteRenderer.color 방식은 원본 tint가 이미 (1,1,1,1)인 경우 시각적 변화가 없으므로
+    /// 셰이더 레벨에서 픽셀 RGB를 강제로 흰색으로 교체하는 머티리얼 스왑 방식을 사용한다
+    /// 연속 피격 시 기존 코루틴을 즉시 취소하고 새로 시작하여 머티리얼 중첩을 방지한다
+    /// _hitFlashMaterial이 null이거나 SpriteRenderer가 없는 엔티티는 자동으로 생략된다
     /// </summary>
     protected void HitFlash()
     {
-        if (_spriteRenderer == null) return;
+        if (_hitFlashRenderer == null) return;
+        if (_hitFlashMaterial == null) return;
+
+        // 사망 직후 Die() → SetActive(false) 호출로 비활성화된 경우
+        // 비활성 오브젝트에서는 StartCoroutine이 불가능하므로 조기 반환한다
+        if (!gameObject.activeInHierarchy) return;
 
         // 이미 플래시 중이면 현재 코루틴 취소 후 재시작 (연속 피격 안정성)
         if (_hitFlashCoroutine != null)
@@ -191,13 +202,14 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     }
 
     /// <summary>
-    /// HitFlash 코루틴 — 흰색으로 변경 후 _hitFlashDuration 경과 시 원래 색상으로 복구
+    /// HitFlash 코루틴 — SpriteFlash 머티리얼로 교체 후 _hitFlashDuration 경과 시 원본 머티리얼로 복구
+    /// sharedMaterial 교체이므로 GC 할당이 발생하지 않는다
     /// </summary>
     private IEnumerator Co_HitFlash()
     {
-        _spriteRenderer.color = Color.white;
+        _hitFlashRenderer.sharedMaterial = _hitFlashMaterial;
         yield return new WaitForSeconds(_hitFlashDuration);
-        _spriteRenderer.color = _originalColor;
+        _hitFlashRenderer.sharedMaterial = _originalMaterial;
         _hitFlashCoroutine = null;
     }
 

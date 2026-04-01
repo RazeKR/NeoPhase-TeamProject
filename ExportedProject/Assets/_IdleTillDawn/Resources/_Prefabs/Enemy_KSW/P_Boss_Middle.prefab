@@ -133,6 +133,8 @@ MonoBehaviour:
   _entityName: 
   _description: 
   _defaultGravityScale: 0
+  _hitFlashDuration: 0.1
+  _hitFlashMaterial: {fileID: 2100000, guid: 99f40263e839e68459c4e85288f49349, type: 2}
   _enemyData: {fileID: 11400000, guid: 8e8de08b4b4679b438c43125bbd85856, type: 2}
   _animator: {fileID: 0}
   _paramSpeed: aSpeed

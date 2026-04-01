@@ -20,11 +20,17 @@ public class CDamageText : MonoBehaviour
     [SerializeField] private float _hitDirOffset = 0.7f;      // 피격 방향 기준 생성 오프셋 거리 (권장 0.5~1.0)
     [SerializeField] private float _randomOffsetRadius = 0.2f; // 자연스러움을 위한 랜덤 오프셋 반경
 
-    [Header("크리티컬 설정")]
-    [SerializeField] private Color _criticalColor = Color.red; // 크리티컬 히트 시 텍스트 색상
-    [SerializeField] private int _criticalFontSize = 22;       // 크리티컬 히트 시 폰트 크기 (고정)
-    [SerializeField] private int _normalFontSizeMin = 14;      // 일반 히트 폰트 크기 최솟값 (랜덤)
-    [SerializeField] private int _normalFontSizeMax = 18;      // 일반 히트 폰트 크기 최댓값 (랜덤)
+    [Header("색상 설정")]
+    [SerializeField] private Color _normalColor   = Color.yellow; // 일반 피격 텍스트 색상 (몬스터 HitFlash 흰색과 구분)
+    [SerializeField] private Color _criticalColor = Color.red;    // 크리티컬 히트 시 텍스트 색상
+
+    [Header("폰트 크기 설정")]
+    [SerializeField] private int _criticalFontSize = 22;  // 크리티컬 히트 시 폰트 크기 (고정)
+    [SerializeField] private int _normalFontSizeMin = 14; // 일반 히트 폰트 크기 최솟값 (랜덤)
+    [SerializeField] private int _normalFontSizeMax = 18; // 일반 히트 폰트 크기 최댓값 (랜덤)
+
+    [Header("렌더링 설정")]
+    [SerializeField] private int _sortingOrder = 32767; // TextMesh MeshRenderer 소팅 순서 — 최상단 표시용 최대값 권장
     #endregion
 
     #region 내부 변수
@@ -38,6 +44,11 @@ public class CDamageText : MonoBehaviour
     private void Awake()
     {
         _textMesh = GetComponent<TextMesh>();
+
+        // TextMesh는 MeshRenderer로 렌더링된다
+        // SpriteRenderer의 sortingOrder와 달리 Inspector에서 자동 노출되지 않으므로 코드에서 직접 설정해야 한다
+        // 32767(short.MaxValue)로 설정하여 몬스터·배경 스프라이트 위에 항상 표시한다
+        GetComponent<MeshRenderer>().sortingOrder = _sortingOrder;
     }
 
     /// <summary>
@@ -78,7 +89,8 @@ public class CDamageText : MonoBehaviour
         _textMesh.text = damage.ToString();
 
         // 크리티컬 여부에 따라 색상·폰트 크기 분기
-        _baseColor = isCritical ? _criticalColor : Color.white;
+        // 일반 피격은 _normalColor(기본 노란색)로 표시 — 몬스터 스프라이트 HitFlash(흰색)와 시각적으로 구분된다
+        _baseColor = isCritical ? _criticalColor : _normalColor;
         _textMesh.color = _baseColor;
         _textMesh.fontSize = isCritical
             ? _criticalFontSize
