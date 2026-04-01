@@ -49,7 +49,6 @@ public class CPlayerController : CEntityBase, IHealable
     private Coroutine  _preventCoroutine   = null; // 코루틴 참조 — 중단/재시작 안전 관리용
     private SpriteRenderer _spriteRenderer;
     private WaitForSeconds _blinkWait;
-    private bool  _isKnockedBack    = false;
     private float _knockbackEndTime = 0f;
 
     #endregion
@@ -108,10 +107,12 @@ public class CPlayerController : CEntityBase, IHealable
     /// 외부에서 넉백을 가하는 메서드 (전기벽 등)
     /// duration 동안 플레이어 이동 입력을 무시하고 velocity를 유지한다
     /// </summary>
-    public void ApplyKnockback(Vector2 force, float duration)
+    public override void ApplyKnockback(Vector2 force, float duration)
     {
+        if (HasStatus(EStatusEffect.Knockback)) return;
+
+        AddStatus(EStatusEffect.Knockback);
         Rb.velocity       = force;
-        _isKnockedBack    = true;
         _knockbackEndTime = Time.fixedTime + duration;
     }
 
@@ -287,10 +288,12 @@ public class CPlayerController : CEntityBase, IHealable
     /// </summary>
     protected override void HandleMovement()
     {
-        if (_isKnockedBack)
+        if (HasStatus(EStatusEffect.Knockback))
         {
             if (Time.fixedTime < _knockbackEndTime) return;
-            _isKnockedBack = false;
+
+            RemoveStatus(EStatusEffect.Knockback);
+            Rb.velocity = Vector2.zero;
         }
 
         StateMachine.FixedUpdate();

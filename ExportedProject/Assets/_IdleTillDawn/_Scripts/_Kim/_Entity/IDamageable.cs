@@ -20,9 +20,4 @@ public interface IDamageable
     /// 체력이 0이 되면 호출
     /// </summary>
     void Die();
-
-    //void RecoverHP(float amount);
-    //void RecoverMP(float amount);
-    //void RegenHP(float amount);
-    //void RegenMP(float amount);
 }

@@ -34,7 +34,7 @@ public class CRangedController : CEnemyBase
 
     protected override void HandleMovement()
     {
-        if (IsKnockBacked) return;
+        if (HasStatus(EStatusEffect.Knockback)) return;
 
         if (CurrentTarget == null)
         {

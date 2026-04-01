@@ -76,7 +76,7 @@ public class CWorldBossType1Controller : CBossBase
 
     protected override void HandleMovement()
     {
-        if (IsKnockBacked) return;
+        if (HasStatus(EStatusEffect.Knockback)) return;
 
         if (CurrentTarget != null && _rootNode != null)
         {
