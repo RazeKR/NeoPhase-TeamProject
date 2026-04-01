@@ -131,12 +131,14 @@ public class CSkillSystem : MonoBehaviour
 
         // 데이터 체크
         CSkillDataSO data = CDataManager.Instance.GetSkill(skillId);
-        if (data == null || !IsSkillReady(skillId)) return;
+        if (data == null || data.effectPrefab == null) return;
         if (!IsSkillReady(skillId)) return;
 
         Transform target = GetNearestEnemy();
+        Vector3 spawnPos = transform.position;
+        spawnPos.z = 0;
 
-        GameObject go = Instantiate(data.effectPrefab, transform.position, Quaternion.identity);
+        GameObject go = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
 
         // 근접한 타겟이 있다면 그 방향으로 회전
         if (target != null)
@@ -148,10 +150,11 @@ public class CSkillSystem : MonoBehaviour
         
         // ISkill 상속한 모든 스킬 컴포넌트 Init
         ISkill[] effects = go.GetComponents<ISkill>();
+        int skillLevel = GetSkillLevel(skillId);
 
         foreach (var effect in effects)
         {
-            effect.Init(CDataManager.Instance.GetSkill(skillId).damage, GetSkillLevel(skillId));
+            effect.Init(data.damage, skillLevel);
         }
 
         // 쿨타임

@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 스킬 생성 후 매니저로부터 스킬 레벨 데이터를 받아와 데미지 적용
-
 public class CSkillAreaEffect : MonoBehaviour, ISkill
 {
     [Header("지속 피해 간격")]
     [SerializeField] private float _damageInterval = 1f;
-    [Header("레벨에 따른 투사체 스케일 조정")]
-    [SerializeField] private bool _useScaleMagnification = false;
-
-    private int _level;
+    [Header("레벨에 따른 투사체 스케일 조정 여부")]
+    [SerializeField] private bool _useScaleMagnification = true;
+        
     private float _damage;
+    private float _lvMagnification;
+    private int _level;
     private float _timer = 0f;  // 인터벌용 타이머
 
     // 현재 범위 안에 있는 적 목록 — Enter/Exit로 관리
@@ -23,12 +22,12 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
     public void Init(float damage, int level)
     {
         _level = level;
-        float lvMagnification = 1f + (_level - 1) * 0.1f;
 
-        _damage = damage * lvMagnification;
+        _damage = damage;
+        _lvMagnification = 1f + (_level - 1) * 0.1f;
 
         if (_useScaleMagnification)
-            transform.localScale = Vector3.one * lvMagnification;
+            transform.localScale = Vector3.one * _lvMagnification;
 
         _timer = _damageInterval;
     }
@@ -50,24 +49,21 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
     /// </summary>
     private void DamageAll()
     {
-        // 사망 타겟 제거
         _targetsInRange.RemoveWhere
-            (
-               t => 
-               t == null 
-               || (t as MonoBehaviour) == null
-               || !(t as MonoBehaviour).gameObject.activeInHierarchy
+            (t =>
+                t == null ||
+                (t is MonoBehaviour mb && !mb.gameObject.activeInHierarchy)
             );
 
         foreach (IDamageable target in _targetsInRange)
         {
-            target.TakeDamage(_damage);
+            target.TakeDamage(_damage * _lvMagnification);
         }            
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        //if (other.GetComponentInParent<CEnemyBase>() == null) return;
+        if (!other.CompareTag("Enemy")) return;
 
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
         if (damageable != null && other.CompareTag("Enemy"))
