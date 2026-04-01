@@ -57,6 +57,15 @@ public class CBoomerController : CEnemyBase
         {
             if (col.gameObject == this.gameObject) continue;
 
+            // 보스가 아닌 일반 적 — 즉시 사망 처리 (Die → OnDied → 풀 반환)
+            CEnemyBase enemy = col.GetComponent<CEnemyBase>();
+            if (enemy != null && !(enemy is CBossBase))
+            {
+                enemy.Die();
+                continue;
+            }
+
+            // 플레이어·보스 — 설정된 데미지 적용
             IDamageable damageable = col.GetComponent<IDamageable>();
             damageable?.TakeDamage(AttackDamage);
         }
