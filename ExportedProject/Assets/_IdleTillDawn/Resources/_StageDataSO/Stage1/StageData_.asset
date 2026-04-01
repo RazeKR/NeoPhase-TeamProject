@@ -20,7 +20,7 @@ MonoBehaviour:
   _killGoal: 10
   _maxActiveCount: 100
   _spawnInterval: 2
-  _bossId: 9
+  _bossId: 11
   _bossHpMultiplier: 100
   _bossAtkMultiplier: 10
   _rewardItemIds: 
