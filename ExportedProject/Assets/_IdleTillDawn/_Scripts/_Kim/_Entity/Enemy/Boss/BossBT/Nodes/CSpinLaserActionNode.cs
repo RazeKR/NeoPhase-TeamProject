@@ -18,12 +18,17 @@ public class CSpinLaserActionNode : CNode
         {
             _boss.FireSpinLaser(_duration);
             _hasStarted = true;
+
+            StopBossMovement();
+
             State = ENodeState.Running;
             return State;
         }
 
         if (_boss.IsFiringLaser)
         {
+            StopBossMovement();
+
             State = ENodeState.Running;
             return State;
         }
@@ -31,5 +36,13 @@ public class CSpinLaserActionNode : CNode
         _hasStarted = false;
         State = ENodeState.Success;
         return State;
+    }
+
+    private void StopBossMovement()
+    {
+        if (_boss is CBossBase bossBase)
+        {
+            bossBase.Rb.velocity = Vector2.zero;
+        }
     }
 }

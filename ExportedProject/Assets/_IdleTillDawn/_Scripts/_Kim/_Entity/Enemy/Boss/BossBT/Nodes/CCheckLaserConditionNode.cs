@@ -11,7 +11,11 @@ public class CCheckLaserConditionNode : CNode
 
     public override ENodeState Evaluate()
     {
-        if (_boss.IsFiringLaser) return ENodeState.Failure;
+        if (_boss.IsFiringLaser)
+        {
+            State = ENodeState.Success;
+            return State;
+        }
 
         if (_boss.CheckLaserCooldown())
         {
