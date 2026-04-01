@@ -103,6 +103,19 @@ public class CBoss : MonoBehaviour, IDamageable
         if (currentHp <= 0f) Die();
     }
 
+    /// <summary>
+    /// 피격 방향 정보를 포함한 피격 처리 메서드 — IDamageable 인터페이스 구현
+    /// 체력 차감은 기존 TakeDamage(float)에 위임하고, 데미지 텍스트 연출을 추가로 발생시킨다
+    /// CBoss는 CEntityBase를 상속하지 않으므로 HitFlash 연출은 생략한다
+    /// </summary>
+    /// <param name="damage">받는 피해량</param>
+    /// <param name="hitDir">피격 방향 벡터 — 데미지 텍스트 오프셋 방향 결정에 사용</param>
+    public void TakeDamage(float damage, Vector2 hitDir)
+    {
+        TakeDamage(damage);
+        CDamageTextPoolManager.Instance?.ShowDamage((int)damage, transform.position, hitDir);
+    }
+
     #endregion
 
     #region Private Methods
