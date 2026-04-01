@@ -11,6 +11,7 @@ public class CPlayerSpawner : MonoBehaviour
     [SerializeField] private CSpawnManager            _spawnManager;
     [SerializeField] private CWorldShift              _worldShift;
     [SerializeField] private CWeaponEquip             _weaponEquip;
+    [SerializeField] private CBossManager             _bossManager;
 
     [Header("무기 오브젝트 설정")]
     [Tooltip("플레이어 프리팹 내 무기 스프라이트 자식 오브젝트 이름")]
@@ -75,6 +76,11 @@ public class CPlayerSpawner : MonoBehaviour
         {
             Debug.LogWarning("CPlayerSpawner : WeaponEquip 미연결");
         }
+
+        if (_bossManager != null)
+            _bossManager.SetPlayerTarget(playerTransform);
+        else
+            Debug.LogWarning("CPlayerSpawner : BossManager 미연결");
     }
 
     /// <summary>

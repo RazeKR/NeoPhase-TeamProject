@@ -138,7 +138,7 @@ MonoBehaviour:
   _enemyData: {fileID: 11400000, guid: 03e210c9ffa8da34fb949ff0f100a8cb, type: 2}
   _explosionEffectPrefab: {fileID: 1272640065766086230, guid: d84c12be6b14f9144a323ebcbeae67e4,
     type: 3}
-  _explosionRadius: 1
+  _explosionRadius: 1.2
   _explosionLayer:
     serializedVersion: 2
     m_Bits: 72

@@ -19,7 +19,7 @@ public class CBossManager : MonoBehaviour
     #region Inspector Variables
 
     [Header("플레이어 참조")]
-    [SerializeField] private Transform _player; // 보스 스폰 반경의 기준이 되는 플레이어 Transform
+    private Transform _player; // 보스 스폰 반경의 기준이 되는 플레이어 Transform (CPlayerSpawner가 주입)
 
     [Header("전기벽")]
     [SerializeField] private CElectircWall _electricWall; // 보스 소환 시 활성화할 전기벽
@@ -48,6 +48,14 @@ public class CBossManager : MonoBehaviour
     #endregion
 
     #region Public Methods
+
+    /// <summary>
+    /// CPlayerSpawner가 플레이어 스폰 직후 호출하여 플레이어 Transform을 주입한다
+    /// </summary>
+    public void SetPlayerTarget(Transform playerTransform)
+    {
+        _player = playerTransform;
+    }
 
     /// <summary>
     /// 스테이지 데이터를 기반으로 보스를 플레이어 주변 랜덤 위치에 스폰하고 스탯을 초기화한다
