@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 3078906915411312779}
   - component: {fileID: -7859340508443334934}
   - component: {fileID: 1473068902611465577}
+  - component: {fileID: 2882316132455469128}
   m_Layer: 0
   m_Name: P_Spark
   m_TagString: Untagged
@@ -206,7 +207,8 @@ MonoBehaviour:
   _entityName: 
   _description: 
   _defaultGravityScale: 0
-  _characterData: {fileID: 11400000, guid: 6d222f895d2e3894b8f806143842fd70, type: 2}
+  _hitFlashDuration: 0.1
+  _hitFlashMaterial: {fileID: 0}
   _animator: {fileID: 0}
   _equippedSkills:
   - {fileID: 0}
@@ -220,6 +222,8 @@ MonoBehaviour:
   _paramSpeed: aSpeed
   _defaultAttackRange: 1.5
   _bulletSpeed: 10
+  _useTestWeaponOverride: 0
+  _testWeaponData: {fileID: 0}
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!114 &-7859340508443334934
@@ -234,7 +238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980395e424067841ab536ac4a158a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseData: {fileID: 0}
 --- !u!70 &1473068902611465577
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -270,3 +273,19 @@ CapsuleCollider2D:
   m_Offset: {x: -0.06, y: 0.03}
   m_Size: {x: 0.5, y: 0.8}
   m_Direction: 0
+--- !u!114 &2882316132455469128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8493900152578435068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63bf0b5d76e5344d9a9cf4d55663242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnDistance: 0.2
+  _backOffset: 0.15
+  _sideOffset: 0.15
+  _jitter: 0.15

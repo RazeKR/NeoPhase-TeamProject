@@ -123,6 +123,7 @@ GameObject:
   - component: {fileID: 2160385164997705626}
   - component: {fileID: -4221088072868245136}
   - component: {fileID: 7560496786862968432}
+  - component: {fileID: 9021300582484656099}
   m_Layer: 3
   m_Name: P_Dasher
   m_TagString: Untagged
@@ -282,6 +283,8 @@ MonoBehaviour:
   _entityName: 
   _description: 
   _defaultGravityScale: 0
+  _hitFlashDuration: 0.1
+  _hitFlashMaterial: {fileID: 0}
   _animator: {fileID: 3722675710176299580}
   _equippedSkills:
   - {fileID: 0}
@@ -295,6 +298,8 @@ MonoBehaviour:
   _paramSpeed: aSpeed
   _defaultAttackRange: 5
   _bulletSpeed: 20
+  _useTestWeaponOverride: 0
+  _testWeaponData: {fileID: 0}
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!70 &2160385164997705626
@@ -359,6 +364,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f980395e424067841ab536ac4a158a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9021300582484656099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3993902716402548796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63bf0b5d76e5344d9a9cf4d55663242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnDistance: 0.2
+  _backOffset: 0.15
+  _sideOffset: 0.15
+  _jitter: 0.15
 --- !u!1 &4525051250244295124
 GameObject:
   m_ObjectHideFlags: 0

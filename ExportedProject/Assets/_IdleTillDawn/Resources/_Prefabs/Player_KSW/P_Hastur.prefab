@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 8780424355032175541}
   - component: {fileID: 3649854704783532146}
   - component: {fileID: 1640045531688734854}
+  - component: {fileID: 7920098649435966472}
   m_Layer: 3
   m_Name: P_Hastur
   m_TagString: Untagged
@@ -257,6 +258,22 @@ MonoBehaviour:
   _outerRadius: 5
   _innerRatio: 0.5
   _intensity: 1
+--- !u!114 &7920098649435966472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5717717816164410344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e63bf0b5d76e5344d9a9cf4d55663242, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnDistance: 0.2
+  _backOffset: 0.15
+  _sideOffset: 0.15
+  _jitter: 0.15
 --- !u!1 &7856283033719894046
 GameObject:
   m_ObjectHideFlags: 0
