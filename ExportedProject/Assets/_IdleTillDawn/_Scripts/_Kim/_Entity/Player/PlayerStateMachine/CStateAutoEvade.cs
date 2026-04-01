@@ -49,7 +49,9 @@ public class CStateAutoEvade : IPlayerState
 
 		foreach (Collider2D threat in threats)
 		{
-			Vector2 dirAwayFromThreat = (Vector2)_player.transform.position - (Vector2)threat.transform.position;
+			Vector2 closestPoint = threat.ClosestPoint(_player.transform.position);
+
+			Vector2 dirAwayFromThreat = (Vector2)_player.transform.position - closestPoint;
 			float distance = Mathf.Max(dirAwayFromThreat.magnitude, 0.1f);
 
 			float repulsionForce = 1f / distance;

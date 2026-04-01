@@ -65,7 +65,7 @@ public abstract class CBossBase : CEnemyBase
         }
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
         StopAttack();
     }

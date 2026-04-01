@@ -28,7 +28,7 @@ public abstract class CEnemyBase : CEntityBase
     #region 프로퍼티
     protected CEnemyDataSO EnemyData => _enemyData;
     protected IDamageable TargetDamageable { get; private set; }
-    protected float AttackDamage { get; set; }
+    public float AttackDamage { get; protected set; }
     public float AttackCooltime { get; protected set; }
     public float AttackRange { get; protected set; }
     public float LastAttackTime { get; set; }

@@ -171,7 +171,7 @@ public class CPlayerController : CEntityBase, IHealable
         }
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
         if (_inputHandler != null)
         {
@@ -333,16 +333,18 @@ public class CPlayerController : CEntityBase, IHealable
         _lastAttackTime = Time.fixedTime;
 
 #if UNITY_EDITOR
-        Debug.Log($"[Attack] SO: {weaponData.name} | FireRate: {weaponData.WeaponFireRate} | Interval: {fireInterval:F3}s | Override: {_useTestWeaponOverride}");
+        //Debug.Log($"[Attack] SO: {weaponData.name} | FireRate: {weaponData.WeaponFireRate} | Interval: {fireInterval:F3}s | Override: {_useTestWeaponOverride}");
 #endif
 
         if (CWeaponEquip.Instance != null)
+        {
             CWeaponEquip.Instance.WeaponRebound();
+        }
 
-        Vector2    dir        = (CurrentTarget.position - transform.position).normalized;
-        float      rotZ       = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        GameObject bulletObj  = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.Euler(0f, 0f, rotZ));
-        float      finalDamage = _statManager != null
+        Vector2 dir = (CurrentTarget.position - transform.position).normalized;
+        float rotZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.Euler(0f, 0f, rotZ));
+        float finalDamage = _statManager != null
                                     ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
                                     : weaponData.WeaponDamage;
 
@@ -360,7 +362,7 @@ public class CPlayerController : CEntityBase, IHealable
         {
             proj.damage = finalDamage;
             proj.vector = dir * _bulletSpeed;
-            proj.owner  = gameObject;
+            proj.owner = gameObject;
 
             // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
             flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();
@@ -457,6 +459,8 @@ public class CPlayerController : CEntityBase, IHealable
         if (_isPreventDamage) return;
 
         base.TakeDamage(damage);
+
+        Debug.Log($"{gameObject.name} 데미지를 입음 : 데미지 {damage}");
 
         if (CurrentHealth <= 0) return; // 사망 처리는 Die()에 위임, 코루틴 불필요
 
