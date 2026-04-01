@@ -15,6 +15,8 @@ public class CMeleeController : CEnemyBase
     private WaitForSeconds _knockBackWait;
     private float _defaultKnockBackForce;
     private float _defaultKnockBackTime;
+
+    private int _originLayer;
     #endregion
 
     protected override void Awake()
@@ -24,6 +26,8 @@ public class CMeleeController : CEnemyBase
 
         _defaultKnockBackForce = _knockBackForce;
         _defaultKnockBackTime = _knockBackTime;
+
+        _originLayer = gameObject.layer;
     }
 
     public override void ResetForPool()
@@ -32,6 +36,8 @@ public class CMeleeController : CEnemyBase
 
         _knockBackForce = _defaultKnockBackForce;
         _knockBackTime = _defaultKnockBackTime;
+
+        gameObject.layer = _originLayer;
     }
 
     protected override void Start()
@@ -74,7 +80,7 @@ public class CMeleeController : CEnemyBase
     /// <returns></returns>
     private IEnumerator CoAttackKnockBack()
     {
-        IsKnockBacked = true;
+        AddStatus(EStatusEffect.Knockback);
         Rb.velocity = Vector2.zero;
 
         int originLayer = gameObject.layer;
@@ -88,6 +94,6 @@ public class CMeleeController : CEnemyBase
         gameObject.layer = originLayer;
 
         Rb.velocity = Vector2.zero;
-        IsKnockBacked = false;
+        RemoveStatus(EStatusEffect.Knockback);
     }
 }

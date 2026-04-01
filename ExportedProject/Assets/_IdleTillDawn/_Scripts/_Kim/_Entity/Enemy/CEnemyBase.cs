@@ -26,7 +26,6 @@ public abstract class CEnemyBase : CEntityBase
     protected float AttackDamage { get; set; }
     public float AttackCooltime { get; protected set; }
     public float AttackRange { get; protected set; }
-    protected bool IsKnockBacked { get; set; } = false;
     public float LastAttackTime { get; set; }
     #endregion
 
@@ -95,6 +94,8 @@ public abstract class CEnemyBase : CEntityBase
         _lastAttackTime = 0f;
         Rb.velocity    = Vector2.zero;
         CurrentHealth  = MaxHealth;
+
+        ClearAllStatuses();
     }
 
     /// <summary>
@@ -117,7 +118,7 @@ public abstract class CEnemyBase : CEntityBase
 
     protected override void HandleMovement()
     {
-        if (IsKnockBacked) return;
+        if (HasStatus(EStatusEffect.Knockback)) return;
 
         if (CurrentTarget == null)
         {
@@ -131,7 +132,7 @@ public abstract class CEnemyBase : CEntityBase
         FlipCharacter(dirToPlayer.x);
 
         if (distance > AttackRange * 0.8f)
-            Rb.velocity = dirToPlayer * MoveSpeed;
+            Rb.velocity = dirToPlayer * CurrentMoveSpeed;
         else
             Rb.velocity = Vector2.zero;
     }
