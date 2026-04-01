@@ -11,9 +11,18 @@ using UnityEngine;
 
 public class CSkillSystem : MonoBehaviour
 {
+    #region SingleTon
     public static CSkillSystem Instance;
+    #endregion
 
+    #region Inspectors
+
+    [Header("적 레이어")]
     [SerializeField] private LayerMask _enemyLayer;
+    [Header("마나 사용 (디버깅용, false 시 0 사용)")]
+    [SerializeField] private bool _manaUse = true;
+
+    #endregion
 
     #region Events
 
@@ -136,32 +145,63 @@ public class CSkillSystem : MonoBehaviour
         if (data == null || data.effectPrefab == null) return;
         if (!IsSkillReady(skillId)) return;
 
-        Transform target = GetNearestEnemy();
+        // 플레이어 스탯 매니저 체크
+        GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
+        if (playerObj == null) return;
 
-        GameObject player = FindObjectOfType<CPlayerController>()?.gameObject;
-        if (player == null) return;
-        Vector3 spawnPos = player.transform.position;
+        IManaUser manaUser = playerObj.GetComponent<IManaUser>();
+        CPlayerStatManager playerStatManager = playerObj.GetComponent<CPlayerStatManager>();
 
+        if (manaUser != null && !manaUser.ConsumeMana(_manaUse ? data.requiredMana : 0))
+        {
+            Debug.Log($"마나 부족으로 스킬 사용 불가, 현재 마나 {playerStatManager.CurrentMana}");
+            return;
+        }
+
+        Vector3 spawnPos = playerObj.transform.position;
         spawnPos.z = 0;
 
-        GameObject go = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
+        Transform target = GetNearestEnemy();
+        float baseAngle = 0;
 
-        // 근접한 타겟이 있다면 그 방향으로 회전
         if (target != null)
         {
-            Vector2 dir = (target.position - transform.position).normalized;
-            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            go.transform.rotation = Quaternion.Euler(0, 0, angle);
+            Vector2 dir = (target.position - spawnPos).normalized;
+            baseAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         }
-        
-        // ISkill 상속한 모든 스킬 컴포넌트 Init
-        ISkill[] effects = go.GetComponents<ISkill>();
-        int skillLevel = GetSkillLevel(skillId);
-
-        foreach (var effect in effects)
+        else
         {
-            effect.Init(data.damage, skillLevel);
+            baseAngle = playerObj.transform.eulerAngles.z;
         }
+
+        int count = data.projectileAmount > 0 ? data.projectileAmount : 1;
+        float spread = data.spreadAngle;
+
+        // 중앙 baseAngle 기준으로 대칭으로 발사
+        float startAngle = baseAngle - (spread * (count - 1) / 2f);
+
+        for (int i = 0; i < count; i++)
+        {
+            float currentAngle = startAngle + (spread * i);
+            Quaternion rot = Quaternion.Euler(0, 0, currentAngle);
+
+            GameObject go = Instantiate(data.effectPrefab, spawnPos, rot);
+
+            var followScript = go.GetComponent<CSkillFollow>();
+            if (followScript != null )
+                followScript.SetTarget(playerObj.transform);
+
+            // ISkill 상속한 모든 스킬 컴포넌트 Init
+            ISkill[] effects = go.GetComponents<ISkill>();
+            int skillLevel = GetSkillLevel(skillId);
+
+            foreach (var effect in effects)
+            {
+                effect.Init(data.damage, skillLevel);
+            }
+        }   
+        
+        
 
         // 쿨타임
         StartCooldown(skillId, data.coolDown);
@@ -189,6 +229,13 @@ public class CSkillSystem : MonoBehaviour
         if (data == null) return 0f;
 
         return _cooldownDict[skillId] / data.coolDown;
+    }
+
+    public float GetRemainingCoolDown(int skillId)
+    {
+        if (!_cooldownDict.ContainsKey(skillId)) return 0f;
+
+        return _cooldownDict[skillId];
     }
 
     /// <summary>스킬포인트 추가</summary>
@@ -275,9 +322,7 @@ public class CSkillSystem : MonoBehaviour
         }
 
         return true;
-    }
-
-
+    }    
 
     /// <summary>모든 노드 리프레쉬</summary>
     public void RefreshAllNodes()

@@ -26,9 +26,13 @@ MonoBehaviour:
   actionName: BlazingSpeed
   coolDown: 8
   requiredMana: 10
+  projectileAmount: 0
+  spreadAngle: 0
+  AuraType: 1
   skillEffects:
   - type: 2
     value: 5
     chance: 0.1
-  effectPrefab: {fileID: 0}
+  effectPrefab: {fileID: 7223285654047631799, guid: ad42e090ee1d1224da837c2e9cd80fc9,
+    type: 3}
   _levelData: []

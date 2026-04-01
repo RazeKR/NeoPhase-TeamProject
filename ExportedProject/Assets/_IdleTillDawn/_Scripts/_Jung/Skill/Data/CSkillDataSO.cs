@@ -43,6 +43,8 @@ public class CSkillDataSO : CBaseDataSO
     public string actionName;     // 발동할 함수 이름 (리플렉션 또는 switch 키)
     public float coolDown;        // 쿨타임 (초)
     public float requiredMana;    // 마나 소모량
+    public int projectileAmount;  // 투사체 수량
+    public float spreadAngle;     // 투사체 탄퍼짐
 
     [Header("이펙트")]
     public List<CSkillEffect> skillEffects;           // 스킬 이펙트 목록

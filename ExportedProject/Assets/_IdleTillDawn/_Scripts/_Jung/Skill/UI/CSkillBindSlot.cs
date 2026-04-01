@@ -6,16 +6,30 @@ using UnityEngine.UI;
 
 public class CSkillBindSlot : MonoBehaviour, IDropHandler
 {
+    #region Inspactors & PrivateVariables
+
     [Header("슬롯 인덱스")]
     [SerializeField] private int _slotIndex;
+    [Header("쿨타임 연출")]
+    public Image CoolDownOverLay;   // 쿨타임 오버레이 이미지
+    public Text CoolDownText;       // 쿨타임 텍스트
+    [Header("아이콘 이미지")]
+    public Image IconImage;         // 장착 아이콘
 
-    public Image IconImage; // 장착 아이콘
+    private int _currentSkillId = 0;
+
+    #endregion
 
     #region UnityMethods
 
     private void Start()
     {
         UpdateSlotUI(); // 게임 시작 시 이미 로드된 데이터가 있다면 즉시 갱신
+    }
+
+    private void Update()
+    {
+        UpdateCoolDownDisplay();
     }
 
     private void OnEnable()
@@ -51,6 +65,8 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
     }
 
     #endregion
+
+    #region PublicMethods
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -103,5 +119,43 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
         }
 
         else IconImage.enabled = false;
+
+        _currentSkillId = CSkillSystem.Instance._equippedSkills[_slotIndex];
+
+        if (_currentSkillId != 0)
+        {
+            CoolDownOverLay.enabled = false;
+            if (CoolDownText != null) CoolDownText.text = "";
+        }
     }
+
+    #endregion
+
+    #region PrivateMethods
+
+    private void UpdateCoolDownDisplay()
+    {
+        if (_currentSkillId <= 0) return;
+
+        float progress = CSkillSystem.Instance.GetCooldownNormalized(_currentSkillId);
+
+        if (progress > 0)
+        {
+            CoolDownOverLay.enabled = true;
+            CoolDownOverLay.fillAmount = progress;
+
+            if (CoolDownText != null)
+            {
+                float remainingTime = CSkillSystem.Instance.GetRemainingCoolDown(_currentSkillId);
+                CoolDownText.text = Mathf.CeilToInt(remainingTime).ToString();
+            }
+        }
+        else
+        {
+            CoolDownOverLay.enabled = false;
+            if (CoolDownText != null) CoolDownText.text = "";
+        }
+    }
+
+    #endregion
 }

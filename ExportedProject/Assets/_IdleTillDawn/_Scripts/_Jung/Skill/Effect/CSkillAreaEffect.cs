@@ -5,15 +5,16 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 {
     [Header("지속 피해 간격")]
     public float damageInterval = 1f;
-    [Header("레벨에 따른 투사체 스케일 조정 여부")]
+    [Header("레벨에 따른 스케일 조정 여부")]
     public bool useScaleMagnification = true;
+    public float scalePreset = 1f;
     public LayerMask enemyLayer;
 
 
     private float _damage;
     private float _lvMagnification;
     private int _level;
-    private float _timer = 0f;  // 인터벌용 타이머
+    private float _timer = 1f;  // 인터벌용 타이머
 
     // 현재 범위 안에 있는 적 목록 — Enter/Exit로 관리
     private readonly HashSet<IDamageable> _targetsInRange = new HashSet<IDamageable>();
@@ -29,7 +30,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
         _lvMagnification = 1f + (_level - 1) * 0.1f;
 
         if (useScaleMagnification)
-            transform.localScale = Vector3.one * _lvMagnification;
+            transform.localScale = Vector3.one * scalePreset * _lvMagnification;
 
         _timer = damageInterval;
     }
@@ -40,7 +41,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
         _timer += Time.deltaTime;
         if (_timer >= damageInterval)
         {
-            _timer = 0f;
+            _timer -= damageInterval;
             DamageAll();
         }
     }
@@ -71,10 +72,10 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer != enemyLayer) return;
+        if (!other.CompareTag("Enemy")) return;
 
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
-        if (damageable != null && other.CompareTag("Enemy"))
+        if (damageable != null)
         {
             _targetsInRange.Add(damageable);
         }

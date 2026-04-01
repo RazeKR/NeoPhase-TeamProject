@@ -26,9 +26,13 @@ MonoBehaviour:
   actionName: FireBall
   coolDown: 15
   requiredMana: 20
+  projectileAmount: 0
+  spreadAngle: 0
+  AuraType: 0
   skillEffects:
   - type: 2
     value: 5
     chance: 0.15
-  effectPrefab: {fileID: 0}
+  effectPrefab: {fileID: 8709800503564725059, guid: 8c38680fa5bfceb46ac64ce986ff2480,
+    type: 3}
   _levelData: []
