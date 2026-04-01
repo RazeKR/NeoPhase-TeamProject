@@ -13,6 +13,8 @@ public class CSkillSystem : MonoBehaviour
 {
     public static CSkillSystem Instance;
 
+    [SerializeField] private LayerMask _enemyLayer;
+
     #region Events
 
     /// <summary>스킬 내용이 변경될 때마다 발생합니다. UI 갱신 구독에 사용합니다./// </summary>
@@ -48,15 +50,15 @@ public class CSkillSystem : MonoBehaviour
 
     public int GetSkillLevel(int id)
     {
-        if (_saveData == null)
-        {
-            if (CJsonManager.Instance.CurrentSaveData != null)
-                return CJsonManager.Instance.CurrentSaveData.GetSkillLevel(id);
+        if (_saveData != null)
+            return _saveData.GetSkillLevel(id);
 
-            return 0;
-        }            
+        if (CJsonManager.Instance == null) return 0;
 
-        return _saveData.GetSkillLevel(id);
+        if (CJsonManager.Instance.CurrentSaveData != null)
+            return CJsonManager.Instance.CurrentSaveData.GetSkillLevel(id);
+
+        return 0;
     }
 
     /// <summary>스킬 사용 가능 상태 반환</summary>
@@ -135,7 +137,11 @@ public class CSkillSystem : MonoBehaviour
         if (!IsSkillReady(skillId)) return;
 
         Transform target = GetNearestEnemy();
-        Vector3 spawnPos = transform.position;
+
+        GameObject player = FindObjectOfType<CPlayerController>()?.gameObject;
+        if (player == null) return;
+        Vector3 spawnPos = player.transform.position;
+
         spawnPos.z = 0;
 
         GameObject go = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
@@ -333,12 +339,12 @@ public class CSkillSystem : MonoBehaviour
     /// <summary>가장 가까운 적을 탐색하여 Transform 반환/// </summary>
     private Transform GetNearestEnemy()
     {             
-        GameObject player = GameObject.FindWithTag("Player");
+        GameObject player = FindObjectOfType<CPlayerController>()?.gameObject;
         if (player ==  null) return null;
 
         Vector3 currentPos = player.transform.position;
 
-        Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(currentPos, 10f);
+        Collider2D[] enemyColliders = Physics2D.OverlapCircleAll(currentPos, 10f, _enemyLayer);
 
         Transform nearest = null;
         float minDistance = Mathf.Infinity;

@@ -14,6 +14,7 @@ public class CProjectileSkill : MonoBehaviour, ISkill
     public bool destroyOnHit = true;
     /// <summary>충돌 이후 생성되는 이펙트입니다. 충돌 이펙트에도 ISkill이 포함될 수 있습니다.</summary>
     public GameObject effectPrefab;
+    public LayerMask enemyLayer;
 
     private float _damage;
     private float _lvMagnification;
@@ -39,8 +40,11 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.gameObject.layer != enemyLayer) return;
+
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target == null) return;
+
 
         if (_hitTargets.Contains(target)) return;
 

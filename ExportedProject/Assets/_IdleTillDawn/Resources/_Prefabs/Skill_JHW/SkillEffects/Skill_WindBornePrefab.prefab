@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 6767527481344673097}
   - component: {fileID: 2155170661316995454}
   - component: {fileID: 5186448400411981548}
-  - component: {fileID: 27130975136273745}
   - component: {fileID: 8008338727944915770}
+  - component: {fileID: 7429335934087281970}
   - component: {fileID: -4099264492174989860}
+  - component: {fileID: 27130975136273745}
   m_Layer: 0
   m_Name: Skill_WindBornePrefab
   m_TagString: Untagged
@@ -109,6 +110,70 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8008338727944915770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967118725219851522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7d592119f8c65d4eb2b3954e4462bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageInterval: 1
+  useScaleMagnification: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!114 &7429335934087281970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967118725219851522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3083fc15248af1409961d2e4aa17f15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 2
+  lifeTime: 5
+  damagable: 0
+  destroyOnHit: 0
+  effectPrefab: {fileID: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+--- !u!50 &-4099264492174989860
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967118725219851522}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!61 &27130975136273745
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -154,45 +219,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8702425, y: 1}
   m_EdgeRadius: 0
---- !u!114 &8008338727944915770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8967118725219851522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7d592119f8c65d4eb2b3954e4462bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _so: {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
-  _lifetime: 500
-  _damageInterval: 1
---- !u!50 &-4099264492174989860
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8967118725219851522}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0

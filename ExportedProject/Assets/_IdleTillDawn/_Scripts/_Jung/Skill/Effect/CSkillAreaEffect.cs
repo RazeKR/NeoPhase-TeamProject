@@ -4,10 +4,12 @@ using UnityEngine;
 public class CSkillAreaEffect : MonoBehaviour, ISkill
 {
     [Header("지속 피해 간격")]
-    [SerializeField] private float _damageInterval = 1f;
+    public float damageInterval = 1f;
     [Header("레벨에 따른 투사체 스케일 조정 여부")]
-    [SerializeField] private bool _useScaleMagnification = true;
-        
+    public bool useScaleMagnification = true;
+    public LayerMask enemyLayer;
+
+
     private float _damage;
     private float _lvMagnification;
     private int _level;
@@ -26,17 +28,17 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
         _damage = damage;
         _lvMagnification = 1f + (_level - 1) * 0.1f;
 
-        if (_useScaleMagnification)
+        if (useScaleMagnification)
             transform.localScale = Vector3.one * _lvMagnification;
 
-        _timer = _damageInterval;
+        _timer = damageInterval;
     }
 
     private void Update()
     {
         // 스킬 지속 피해 쿨타임
         _timer += Time.deltaTime;
-        if (_timer >= _damageInterval)
+        if (_timer >= damageInterval)
         {
             _timer = 0f;
             DamageAll();
@@ -63,7 +65,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Enemy")) return;
+        if (other.gameObject.layer != enemyLayer) return;
 
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
         if (damageable != null && other.CompareTag("Enemy"))

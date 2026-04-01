@@ -26,5 +26,6 @@ MonoBehaviour:
   coolDown: 7
   requiredMana: 10
   skillEffects: []
-  effectPrefab: {fileID: 0}
+  effectPrefab: {fileID: 8967118725219851522, guid: 3b4503a46423fa14e829b06142fcf717,
+    type: 3}
   _levelData: []

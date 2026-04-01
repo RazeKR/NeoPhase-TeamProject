@@ -130,12 +130,14 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         Debug.Log($"CPlayerStatManager : 마나 회복 (현재 : {CurrentMana}/{MaxMana}");
     }
 
-    public void ConsumeMana(float amount)
+    public bool ConsumeMana(float amount)
     {
-        if (CurrentMana - amount < 0) return;
+        if (CurrentMana - amount < 0) return false;
 
         CurrentMana -= amount;
         Debug.Log($"CPlayerStatManager : 마나 사용 (사용량 : {amount}");
+
+        return true;
     }
     #endregion
 }

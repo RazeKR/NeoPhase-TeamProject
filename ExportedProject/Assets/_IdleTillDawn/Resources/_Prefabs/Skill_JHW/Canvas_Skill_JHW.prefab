@@ -75,6 +75,58 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &412524084985440620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7506901645659906883}
+  - component: {fileID: 5858643199450467623}
+  m_Layer: 5
+  m_Name: SkillSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7506901645659906883
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412524084985440620}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4574626742019152168}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5858643199450467623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 412524084985440620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f17c92a3393d41941818ed4080f8ef92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentSkillPoints: 10
+  CurrentlyDraggingSkill: {fileID: 0}
+  DragIconVisual: {fileID: 6077629946996377268}
+  _equippedSkills: 
 --- !u!1 &785380929161363575
 GameObject:
   m_ObjectHideFlags: 0
@@ -666,11 +718,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4574626742019152168}
+  m_Father: {fileID: 2468412885413891319}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 179.19995, y: -486.3}
+  m_AnchoredPosition: {x: 54.19995, y: -53.900024}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1645955319962439883
@@ -1340,11 +1392,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4574626742019152168}
+  m_Father: {fileID: 823508703381520542}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -70.79993, y: -486.3}
+  m_AnchoredPosition: {x: 54.200073, y: -53.900024}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4286505704016871950
@@ -2163,11 +2215,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4574626742019152168}
+  m_Father: {fileID: 5629741271809720500}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 53.200073, y: -486.3}
+  m_AnchoredPosition: {x: 53.200073, y: -53.900024}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8694566752421074445
@@ -2299,6 +2351,7 @@ GameObject:
   - component: {fileID: 2270761001415293975}
   - component: {fileID: 7865007230869248045}
   - component: {fileID: 7077963561093347727}
+  - component: {fileID: 8886635632424274370}
   m_Layer: 5
   m_Name: SkillBindUI_Q
   m_TagString: Untagged
@@ -2321,6 +2374,7 @@ RectTransform:
   - {fileID: 2281064448103732925}
   - {fileID: 2745273055446338841}
   - {fileID: 8367373004129623249}
+  - {fileID: 695110165768169607}
   m_Father: {fileID: 4574626742019152168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2380,6 +2434,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slotIndex: 0
   IconImage: {fileID: 2078133462728862105}
+--- !u!114 &8886635632424274370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7251277598172204592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 7865007230869248045}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5858643199450467623}
+        m_TargetAssemblyTypeName: CSkillSystem, Assembly-CSharp
+        m_MethodName: UseBindSkill
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7402070636987369621
 GameObject:
   m_ObjectHideFlags: 0
@@ -2546,7 +2656,6 @@ GameObject:
   - component: {fileID: 214077405315757139}
   - component: {fileID: 5719477812506128030}
   - component: {fileID: 3849385883355632642}
-  - component: {fileID: 1177139279923260509}
   m_Layer: 5
   m_Name: Canvas_Skill_JHW
   m_TagString: Untagged
@@ -2566,15 +2675,13 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7506901645659906883}
   - {fileID: 8166152578703735405}
   - {fileID: 3659674821385317500}
   - {fileID: 1115710142808715573}
   - {fileID: 2468412885413891319}
   - {fileID: 5629741271809720500}
   - {fileID: 823508703381520542}
-  - {fileID: 695110165768169607}
-  - {fileID: 4081322477029390354}
-  - {fileID: 7042892091782955203}
   - {fileID: 2495770782063797167}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2646,22 +2753,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &1177139279923260509
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7649153159741360658}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f17c92a3393d41941818ed4080f8ef92, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  currentSkillPoints: 10
-  CurrentlyDraggingSkill: {fileID: 0}
-  DragIconVisual: {fileID: 6077629946996377268}
-  _equippedSkills: 
 --- !u!1 &7711807950655586426
 GameObject:
   m_ObjectHideFlags: 0
@@ -2976,6 +3067,7 @@ GameObject:
   - component: {fileID: 2301672425754681036}
   - component: {fileID: 8072569710553718178}
   - component: {fileID: 3508692961903301708}
+  - component: {fileID: 2310412836986756015}
   m_Layer: 5
   m_Name: SkillBindUI_E
   m_TagString: Untagged
@@ -2998,6 +3090,7 @@ RectTransform:
   - {fileID: 7727043145460079442}
   - {fileID: 3567803514892911344}
   - {fileID: 1997975240107322787}
+  - {fileID: 7042892091782955203}
   m_Father: {fileID: 4574626742019152168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3057,6 +3150,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slotIndex: 2
   IconImage: {fileID: 1760573881330549730}
+--- !u!114 &2310412836986756015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8264356525139323114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 8072569710553718178}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5858643199450467623}
+        m_TargetAssemblyTypeName: CSkillSystem, Assembly-CSharp
+        m_MethodName: UseBindSkill
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8418631965970248718
 GameObject:
   m_ObjectHideFlags: 0
@@ -3504,6 +3653,7 @@ GameObject:
   - component: {fileID: 6236548758625654902}
   - component: {fileID: 7962348091394935484}
   - component: {fileID: 3370348137760806592}
+  - component: {fileID: 5468302599589326283}
   m_Layer: 5
   m_Name: SkillBindUI_W
   m_TagString: Untagged
@@ -3526,6 +3676,7 @@ RectTransform:
   - {fileID: 1984404752675624956}
   - {fileID: 7755825190684383521}
   - {fileID: 3354698611462497077}
+  - {fileID: 4081322477029390354}
   m_Father: {fileID: 4574626742019152168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3585,6 +3736,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slotIndex: 1
   IconImage: {fileID: 5962571354327914921}
+--- !u!114 &5468302599589326283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9203197476828910513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 7962348091394935484}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5858643199450467623}
+        m_TargetAssemblyTypeName: CSkillSystem, Assembly-CSharp
+        m_MethodName: UseBindSkill
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &100386387345492395
 PrefabInstance:
   m_ObjectHideFlags: 0

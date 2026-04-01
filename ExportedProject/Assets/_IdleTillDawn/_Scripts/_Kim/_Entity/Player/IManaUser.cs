@@ -9,5 +9,5 @@
     /// 마나를 사용할 때 호출하는 메서드
     /// </summary>
     /// <param name="amount"></param>
-    void ConsumeMana(float amount);
+    bool ConsumeMana(float amount);
 }
