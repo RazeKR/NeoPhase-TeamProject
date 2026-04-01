@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157a6f1bb6ecd894ebf5c23d9bf4d332, type: 3}
   m_Name: BossDataSO_World1
   m_EditorClassIdentifier: 
-  _id: 1
+  _id: 10
   _enemyName: BossHastur
   _description: Character Description
   _baseHealth: 2000

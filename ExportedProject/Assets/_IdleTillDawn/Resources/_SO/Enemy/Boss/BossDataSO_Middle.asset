@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 157a6f1bb6ecd894ebf5c23d9bf4d332, type: 3}
   m_Name: BossDataSO_Middle
   m_EditorClassIdentifier: 
+  _id: 9
   _enemyName: ShubNiggurath
   _description: "\uAC78\uC5B4\uB2E4\uB2C8\uB2E4\uAC00 \uC900\uBE44\uD0DC\uC138\uC774\uD6C4
     \uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C \uBE60\uB978\uC18D\uB3C4\uB85C \uB3CC\uC9C4\uD55C\uB2E4."
@@ -23,5 +24,15 @@ MonoBehaviour:
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 4372230758617115628, guid: b4f9240c6f7375947afec7ecc2963589, type: 3}
+  _dropItemId: 0
+  _dropChance: 0.1
+  _expReward: 10
   _specialAttackCooldown: 5
   _specialAttackEffect: {fileID: 0}
+  _telegraphDuration: 1
+  _maxActivePatternCount: 3
+  _phase2Threshold: 0.5
+  _phase3Threshold: 0.25
+  _rewardItemIds: 
+  _bossExpReward: 500
+  _bossGoldReward: 1000

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public abstract class CEnemyBase : CEntityBase
@@ -10,14 +11,18 @@ public abstract class CEnemyBase : CEntityBase
 
     #region 이벤트
     /// <summary>
-    /// 사망 시 발행 — CSpawnManager가 구독하여 풀 반환 처리
+    /// 사망 애니메이션 완료 후 발행 — CSpawnManager가 구독하여 풀 반환 처리
     /// </summary>
     public event Action<CEnemyBase> OnDied;
     #endregion
 
     #region 내부 변수
-    private float    _lastAttackTime = 0f;
-    private   Transform _playerTransform;   // 스폰 시 주입된 플레이어 Transform
+    private static readonly int _hashDead = Animator.StringToHash("tDead");
+
+    private float     _lastAttackTime = 0f;
+    private Transform _playerTransform;  // 스폰 시 주입된 플레이어 Transform
+    protected Animator _animator;
+    private bool      _isDead;
     #endregion
 
     #region 프로퍼티
@@ -32,6 +37,7 @@ public abstract class CEnemyBase : CEntityBase
     protected override void Awake()
     {
         base.Awake();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     /// <summary>
@@ -50,9 +56,11 @@ public abstract class CEnemyBase : CEntityBase
 
     /// <summary>
     /// 스캔 방식 대신 주입된 플레이어 Transform을 항상 타겟으로 사용
+    /// 사망 처리 중(_isDead)에는 이동·공격을 모두 중단한다
     /// </summary>
     protected override void FixedUpdate()
     {
+        if (_isDead) return;
         CurrentTarget = _playerTransform; // 스캔 없이 직접 추적
         HandleMovement();
         HandleAttack();
@@ -90,28 +98,50 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     public virtual void ResetForPool()
     {
-        CurrentTarget  = null;
-        _lastAttackTime = 0f;
-        Rb.velocity    = Vector2.zero;
-        CurrentHealth  = MaxHealth;
+        _isDead            = false;
+        CurrentTarget      = null;
+        _lastAttackTime    = 0f;
+        Rb.velocity        = Vector2.zero;
+        Rb.constraints     = RigidbodyConstraints2D.FreezeRotation; // 사망 시 FreezeAll 복구
+        CurrentHealth      = MaxHealth;
 
         ClearAllStatuses();
     }
 
     /// <summary>
-    /// 사망 처리 — Destroy 대신 OnDied 이벤트 발행, 실제 비활성화는 CSpawnManager가 처리
+    /// 사망 처리 — Dead 애니메이션 재생 후 OnDied 발행, 실제 비활성화는 CSpawnManager가 처리
     /// </summary>
     public override void Die()
     {
+        if (_isDead) return; // 중복 호출 방지
+        _isDead = true;
+
         if (CJsonManager.Instance != null)
-        {
             CJsonManager.Instance.AddTotalKillCount(1);
-        }
 
         if (Rb != null && Rb.bodyType != RigidbodyType2D.Static)
         {
-            Rb.velocity = Vector2.zero;
+            Rb.velocity    = Vector2.zero;
+            Rb.constraints = RigidbodyConstraints2D.FreezeAll; // 사망 중 물리 이동 완전 차단
         }
+
+        if (_animator != null && UseDeathAnimation())
+            StartCoroutine(Co_DeathAnimation());
+        else
+            OnDied?.Invoke(this);
+    }
+
+    /// <summary>
+    /// Dead 트리거 발동 → 전환 완료 대기 → 애니메이션 길이만큼 대기 → 풀 반환 이벤트 발행
+    /// </summary>
+    private IEnumerator Co_DeathAnimation()
+    {
+        _animator.SetTrigger(_hashDead);
+        yield return null; // 트리거 처리 한 프레임 대기
+        yield return new WaitUntil(() => !_animator.IsInTransition(0)); // Dead 상태 진입 대기
+
+        AnimatorStateInfo stateInfo = _animator.GetCurrentAnimatorStateInfo(0);
+        yield return new WaitForSeconds(stateInfo.length);
 
         OnDied?.Invoke(this);
     }
@@ -154,4 +184,9 @@ public abstract class CEnemyBase : CEntityBase
     /// 실제 공격 실행 — 서브클래스에서 구현
     /// </summary>
     protected abstract void ExecuteAttack();
+
+    /// <summary>
+    /// 사망 애니메이션 재생 여부 — 자폭처럼 별도 연출이 있는 경우 false로 오버라이드
+    /// </summary>
+    protected virtual bool UseDeathAnimation() => true;
 }

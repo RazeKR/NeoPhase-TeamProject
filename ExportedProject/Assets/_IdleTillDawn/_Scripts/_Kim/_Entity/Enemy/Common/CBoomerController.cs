@@ -20,6 +20,8 @@ public class CBoomerController : CEnemyBase
         _defaultExplosionRadius = _explosionRadius; // 인스펙터 설정값 보존
     }
 
+    protected override bool UseDeathAnimation() => false; // 자폭 이펙트가 연출을 대체
+
     public override void Die()
     {
         Explode();

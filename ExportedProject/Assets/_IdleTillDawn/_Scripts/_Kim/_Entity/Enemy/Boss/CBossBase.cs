@@ -8,7 +8,6 @@ public abstract class CBossBase : CEnemyBase
 {
     #region 인스펙터
     [Header("애니메이터 설정")]
-    [SerializeField] private Animator _animator;
     [SerializeField] private string _paramSpeed = "aSpeed";
     [SerializeField] private string _paramAttack = "tAttack";
     #endregion
@@ -55,12 +54,7 @@ public abstract class CBossBase : CEnemyBase
 
     protected override void Awake()
     {
-        base.Awake();
-
-        if (_animator == null)
-        {
-            _animator = GetComponent<Animator>();
-        }
+        base.Awake(); // CEnemyBase.Awake()에서 GetComponentInChildren<Animator>()로 이미 할당됨
 
         _hashSpeed = Animator.StringToHash(_paramSpeed);
 

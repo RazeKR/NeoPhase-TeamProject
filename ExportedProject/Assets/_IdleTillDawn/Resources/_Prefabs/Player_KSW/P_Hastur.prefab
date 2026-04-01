@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8780424355032175541}
   - component: {fileID: 3649854704783532146}
   - component: {fileID: 1640045531688734854}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: P_Hastur
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,6 +176,8 @@ MonoBehaviour:
   _entityName: 
   _description: 
   _defaultGravityScale: 0
+  _hitFlashDuration: 0.1
+  _hitFlashMaterial: {fileID: 0}
   _animator: {fileID: 0}
   _equippedSkills:
   - {fileID: 0}
@@ -264,7 +266,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9141945918906234050}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: WeaponPoint
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}

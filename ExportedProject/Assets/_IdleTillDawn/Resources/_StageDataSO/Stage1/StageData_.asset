@@ -17,10 +17,10 @@ MonoBehaviour:
   _stageNumber: 1
   _stageName: "\uC554\uD751\uC758 \uC232"
   _spawnMonsterIds: 000000000100000002000000
-  _killGoal: 100
+  _killGoal: 10
   _maxActiveCount: 100
   _spawnInterval: 2
-  _bossId: 0
+  _bossId: 9
   _bossHpMultiplier: 100
   _bossAtkMultiplier: 10
   _rewardItemIds: 
