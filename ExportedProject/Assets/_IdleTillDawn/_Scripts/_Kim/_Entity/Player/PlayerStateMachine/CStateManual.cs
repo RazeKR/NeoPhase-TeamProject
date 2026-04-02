@@ -12,13 +12,13 @@ public class CStateManual : IPlayerState
 
     public void Enter()
     {
-        Debug.Log("CStateManual : Enter");
+        //Debug.Log("CStateManual : Enter");
         _idleTimer = 0f;
     }
 
     public void Exit()
     {
-        Debug.Log("CStateManual : Exit");
+        //Debug.Log("CStateManual : Exit");
         _idleTimer = 0f;
     }
 
