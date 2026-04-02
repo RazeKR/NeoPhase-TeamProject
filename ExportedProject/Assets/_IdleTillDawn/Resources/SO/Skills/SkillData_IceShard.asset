@@ -19,16 +19,40 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 316788000f4b67b43ad6f0f4b6c76fd1, type: 2}
   maxLevel: 5
   requiredPoints: 2
-  damage: 25
   prerequisiteSkills:
   - {fileID: 11400000, guid: 9fb72b125860a8a479ee45fdc2bfee99, type: 2}
-  statUp: 0
-  actionName: IceShard
-  coolDown: 7
-  requiredMana: 15
-  skillEffects:
-  - type: 1
-    value: 1
-    chance: 1
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 30
+    coolDown: 14
+    requiredMana: 20
+    projectileAmount: 3
+  - damage: 35
+    coolDown: 13
+    requiredMana: 22
+    projectileAmount: 4
+  - damage: 40
+    coolDown: 12
+    requiredMana: 24
+    projectileAmount: 5
+  - damage: 45
+    coolDown: 11
+    requiredMana: 26
+    projectileAmount: 6
+  - damage: 50
+    coolDown: 10
+    requiredMana: 28
+    projectileAmount: 7
+  spreadAngle: 15
+  speed: 4
+  damageInterval: 0
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 5
+  useSkillEffect: 1
+  skillEffect:
+    type: 1
+    value: 0
+    duration: 4
+  effectPrefab: {fileID: 6094829181732757940, guid: 5857b61ea27ccba45af8d21537c66e0b,
+    type: 3}
