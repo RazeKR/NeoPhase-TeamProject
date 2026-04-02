@@ -302,7 +302,7 @@ public class CJsonManager : MonoBehaviour
             highestStageId   = 0,
             currentKillCount = 0,
             equippedWeaponId = 0,
-            inventorySaveData = null,
+            inventorySaveData = new(), // 기본 생성자를 사용하도록 변경
             skillPoints      = 0,
             saveVersion      = 1,
         };

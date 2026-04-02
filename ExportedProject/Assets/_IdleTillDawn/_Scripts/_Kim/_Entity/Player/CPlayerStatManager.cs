@@ -56,6 +56,8 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         }
 
         SetModifier(CurrentLevel);
+
+        CurrentMana = data.currentMana;
     }
 
     /// <summary>

@@ -8,10 +8,6 @@ public class CPlayerController : CEntityBase, IHealable
     [Header("캐릭터 참조")]
     [SerializeField] private Animator _animator;
 
-    [Header("스킬 참조")]
-    // 나중에 스킬 클래스 타입에 맞게 수정해야 함
-    [SerializeField] private MonoBehaviour[] _equippedSkills = new MonoBehaviour[3];
-
     [Header("자동 이동 딜레이")]
     [SerializeField] private float _autoModeDelay = 3.0f;
 
@@ -215,6 +211,11 @@ public class CPlayerController : CEntityBase, IHealable
             TakeDamage(1);
         }
 
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Debug.Log($"현재 마나 : {_statManager.CurrentMana}");
+        }
+
         if (StateMachine != null)
         {
             StateMachine.Update();
@@ -252,6 +253,8 @@ public class CPlayerController : CEntityBase, IHealable
             Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
             if (_statManager != null)
             {
+                _statManager.InitBaseData(_characterData);
+
                 MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
                 MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
             }
@@ -275,10 +278,7 @@ public class CPlayerController : CEntityBase, IHealable
 
         _statManager.SyncWithSaveData(_characterData, saveData);
 
-        MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
-        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
-
-        CurrentHealth = saveData.currentHp;
+        CurrentHealth = (saveData != null && saveData.currentHp > 0) ? saveData.currentHp : _statManager.GetFinalStat(EPlayerStatType.Health);
 
         Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}");
     }
@@ -439,18 +439,13 @@ public class CPlayerController : CEntityBase, IHealable
     /// <param name="index">스킬 슬롯 번호</param>
     private void ExecuteManualSkill(int index)
     {
-        if (index < 0 || index >= _equippedSkills.Length) return;
-
-        var skillToUse = _equippedSkills[index];
-
-        if (skillToUse != null)
+        if (CSkillSystem.Instance != null)
         {
-            Debug.Log($"{index + 1} 번 슬롯 스킬 사용");
-            // 스킬 사용
+            CSkillSystem.Instance.UseBindSkill(index);
         }
         else
         {
-            Debug.Log($"{index + 1} 번 슬롯 비어있음");
+            Debug.LogWarning("CSkillSystem이 씬에 없음");
         }
     }
 
@@ -503,7 +498,7 @@ public class CPlayerController : CEntityBase, IHealable
     {
         float previousMaxHealth = MaxHealth;
 
-        MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+        MaxHealth = _statManager.MaxHealth;
         MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
 
         if (MaxHealth > previousMaxHealth)
