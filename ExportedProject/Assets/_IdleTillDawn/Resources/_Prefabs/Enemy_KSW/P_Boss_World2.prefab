@@ -144,7 +144,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boss: {fileID: 2370461831107529463}
-  _damageTickRate: 0.5
 --- !u!1 &1606119990535782878
 GameObject:
   m_ObjectHideFlags: 0
@@ -313,7 +312,7 @@ MonoBehaviour:
   _paramAttack: tAttack
   _laserCooldown: 8
   _laserDuration: 4
-  _laserRotationSpeed: 90
+  _laserRotationSpeed: 50
   _laserObject: {fileID: 6785474683938576410}
   _fireParam: tFire
   _disappearParam: tDisappear
@@ -498,7 +497,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boss: {fileID: 2370461831107529463}
-  _damageTickRate: 0.5
 --- !u!1 &5620296198292872855
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,7 +641,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boss: {fileID: 2370461831107529463}
-  _damageTickRate: 0.5
 --- !u!1 &6181271730633946614
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,7 +785,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boss: {fileID: 2370461831107529463}
-  _damageTickRate: 0.5
 --- !u!1 &6785474683938576410
 GameObject:
   m_ObjectHideFlags: 0

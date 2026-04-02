@@ -66,6 +66,11 @@ public class CPlayerSpawner : MonoBehaviour
 
         if (_weaponEquip != null)
         {
+            if (playerTransform.TryGetComponent<CPlayerController>(out CPlayerController playerController))
+                _weaponEquip.SetPlayerController(playerController);
+            else
+                Debug.LogWarning("CPlayerSpawner : 플레이어에서 CPlayerController를 찾을 수 없음");
+
             Transform weaponChild = FindDeepChild(playerTransform, _weaponChildName);
             if (weaponChild != null)
                 _weaponEquip.SetTargetObject(weaponChild.gameObject);

@@ -278,7 +278,9 @@ public class CPlayerController : CEntityBase, IHealable
 
         _statManager.SyncWithSaveData(_characterData, saveData);
 
-        CurrentHealth = (saveData != null && saveData.currentHp > 0) ? saveData.currentHp : _statManager.GetFinalStat(EPlayerStatType.Health);
+        MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
+        CurrentHealth = (saveData != null && saveData.currentHp > 0) ? saveData.currentHp : MaxHealth;
 
         Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}");
     }
@@ -335,11 +337,6 @@ public class CPlayerController : CEntityBase, IHealable
 #if UNITY_EDITOR
         //Debug.Log($"[Attack] SO: {weaponData.name} | FireRate: {weaponData.WeaponFireRate} | Interval: {fireInterval:F3}s | Override: {_useTestWeaponOverride}");
 #endif
-
-        if (CWeaponEquip.Instance != null)
-        {
-            CWeaponEquip.Instance.WeaponRebound();
-        }
 
         Vector2 dir = (CurrentTarget.position - transform.position).normalized;
         float rotZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
