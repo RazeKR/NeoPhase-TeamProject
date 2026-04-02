@@ -19,6 +19,8 @@ public class CChaseNode : CNode
         if (distance > _boss.AttackRange * 0.8f)
         {
             _boss.Rb.velocity = dirToPlayer * _boss.CurrentMoveSpeed;
+
+            _boss.FlipCharacter(dirToPlayer.x);
         }
         else
         {

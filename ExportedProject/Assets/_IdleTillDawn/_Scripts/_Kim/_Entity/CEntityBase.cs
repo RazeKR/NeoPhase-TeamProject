@@ -282,7 +282,7 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     /// 캐릭터 좌우 반전
     /// </summary>
     /// <param name="velocityX"></param>
-    protected void FlipCharacter(float velocityX)
+    public void FlipCharacter(float velocityX)
     {
         if (velocityX > 0.001f)
         {
