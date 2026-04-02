@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8929154920754220031}
   - component: {fileID: 3674075436809364576}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: P_World3_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,7 +63,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3281684641902719678}
   - component: {fileID: 7068589727738338184}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: T_Rhogog_Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
