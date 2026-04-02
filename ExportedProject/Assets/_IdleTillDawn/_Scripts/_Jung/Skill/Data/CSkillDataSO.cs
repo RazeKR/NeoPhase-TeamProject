@@ -51,8 +51,9 @@ public class CSkillDataSO : CBaseDataSO
     public List<ActiveLevelData> ActiveLevelDatas;
 
     [Header("투사체 설정")]
-    public float spreadAngle;     // 투사체 탄퍼짐
+    public float spreadAngle;     // 투사체 탄퍼짐 (circularSpread=false 일 때만 사용)
     public float speed;           // 투사체 속도
+    public bool circularSpread;   // true = 360도 원형 발사, false = 부채꼴 발사
 
     [Header("범위기술 설정")]
     public float damageInterval;        // 피해 간격
@@ -61,6 +62,11 @@ public class CSkillDataSO : CBaseDataSO
 
     [Header("잔류 시간 설정(투사체, 범위기술 공용)")]    
     public float lifeTime;
+
+    [Header("범위 넉백 (스킬 발동 시 주변 전체 적용)")]
+    public float areaKnockbackRadius;    // 0이면 비활성화
+    public float areaKnockbackForce;
+    public float areaKnockbackDuration;
 
     [Header("부가효과(넉백, 화상, 빙결)")]
     public bool useSkillEffect = false; // 스킬 부가효과 여부

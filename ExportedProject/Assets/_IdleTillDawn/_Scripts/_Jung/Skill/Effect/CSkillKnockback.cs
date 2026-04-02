@@ -1,31 +1,19 @@
-using flanne;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CSkillKnockback : MonoBehaviour
 {
-    [Header("³Ë¹é ¼³Á¤")]
-    public float knockbackForce = 10f; // ¹ÐÃÄ³»´Â Èû (Rigidbody Áú·®¿¡ µû¶ó Á¶Àý)
+    [Header("ë„‰ë°± ì„¤ì •")]
+    public float knockbackForce = 10f;
+    public float knockbackDuration = 0.3f;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Enemy"))
-        {
-            Rigidbody2D enemyRb = other.GetComponentInParent<Rigidbody2D>();
+        if (!other.CompareTag("Enemy")) return;
 
-            if (enemyRb != null)
-            {
-                Vector2 pushDir = (other.transform.position - transform.position).normalized;
+        CEntityBase entity = other.GetComponentInParent<CEntityBase>();
+        if (entity == null) return;
 
-                // 1. ±âÁ¸ ¼Óµµ¸¦ ¹«½ÃÇÏ°í ³Ë¹é ¹æÇâÀ¸·Î °­Á¦ ¼Óµµ ºÎ¿©
-                // 100Àº ³Ê¹« Å¬ ¼ö ÀÖÀ¸´Ï 10~20ºÎÅÍ Å×½ºÆ®ÇØº¸¼¼¿ä.
-                //enemyRb.velocity = pushDir * knockbackForce;
-
-                other.transform.position += (Vector3)pushDir * knockbackForce * Time.deltaTime;
-
-                Debug.Log($"[³Ë¹é] {other.name}¿¡°Ô {knockbackForce} ¼Óµµ ºÎ¿©µÊ");
-            }
-        }
+        Vector2 dir = (other.transform.position - transform.position).normalized;
+        entity.ApplyKnockback(dir * knockbackForce, knockbackDuration);
     }
 }
