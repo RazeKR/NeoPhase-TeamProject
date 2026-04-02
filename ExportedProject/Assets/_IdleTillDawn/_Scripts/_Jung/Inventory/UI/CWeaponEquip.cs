@@ -16,9 +16,19 @@ public class CWeaponEquip : MonoBehaviour
     [SerializeField] private GameObject _targetObject = null;   // 스프라이트 바꿀 타겟
     [SerializeField] private CPlayerController _playerController = null; // 플레이어 (자동 탐색)
 
+    [Header("총구 화염")]
+    [SerializeField] private Sprite _muzzleFlashSprite = null;   // 총구화염 스프라이트 (1장)
+    [SerializeField] private float  _muzzleOffsetAdjust = 0f;    // 스프라이트 오른쪽 끝에서 추가 보정(양수=앞, 음수=뒤)
+    [SerializeField] private float  _muzzleFlashDuration = 0.08f; // 화염 표시 시간(초)
+
     private string _currentInstanceID;
     private SpriteRenderer _targetSpriteRdr;
     private CItemDataSO _itemDataSO;
+
+    // 총구화염 전용 오브젝트 (풀링 대신 단일 재사용)
+    private GameObject     _muzzleFlashObj;
+    private SpriteRenderer _muzzleFlashRdr;
+    private Coroutine      _muzzleFlashCoroutine;
 
     #endregion
 
@@ -48,7 +58,10 @@ public class CWeaponEquip : MonoBehaviour
         if (!getSpriteRenderer)
         {
             enabled = false;
+            return;
         }
+
+        SetupMuzzleFlash();
     }
 
     private void Start()
@@ -133,6 +146,58 @@ public class CWeaponEquip : MonoBehaviour
 
         _itemDataSO = weapon._itemData;
         _targetSpriteRdr.sprite = weapon._itemData.ItemSprite;
+
+        UpdateMuzzlePosition();
+    }
+
+    /// <summary>
+    /// 현재 무기 스프라이트의 오른쪽 끝(bounds.max.x)을 총구 위치로 설정합니다.
+    /// 스프라이트마다 크기가 달라도 자동으로 맞춰집니다.
+    /// </summary>
+    private void UpdateMuzzlePosition()
+    {
+        if (_muzzleFlashObj == null) return;
+
+        Sprite weaponSprite = _targetSpriteRdr.sprite;
+        // bounds.max.x : 스프라이트 로컬 공간에서 오른쪽 끝 (총구 방향)
+        float autoX = weaponSprite != null
+            ? weaponSprite.bounds.max.x + _muzzleOffsetAdjust
+            : _muzzleOffsetAdjust;
+
+        _muzzleFlashObj.transform.localPosition = new Vector3(autoX, 0f, 0f);
+    }
+
+    /// <summary>
+    /// 총구화염 전용 GameObject를 무기 스프라이트의 자식으로 생성합니다.
+    /// _muzzleFlashSprite가 null이면 아무것도 만들지 않습니다.
+    /// </summary>
+    private void SetupMuzzleFlash()
+    {
+        if (_muzzleFlashSprite == null || _targetObject == null) return;
+
+        // 이미 존재하면 재생성하지 않음
+        if (_muzzleFlashObj != null) return;
+
+        _muzzleFlashObj = new GameObject("MuzzleFlash");
+        _muzzleFlashObj.transform.SetParent(_targetObject.transform, false);
+        _muzzleFlashObj.transform.localPosition = Vector3.zero; // LoadEquippedWeapon에서 갱신
+        _muzzleFlashObj.transform.localRotation = Quaternion.identity;
+        _muzzleFlashObj.transform.localScale    = Vector3.one;
+
+        _muzzleFlashRdr          = _muzzleFlashObj.AddComponent<SpriteRenderer>();
+        _muzzleFlashRdr.sprite   = _muzzleFlashSprite;
+        _muzzleFlashRdr.sortingLayerName = _targetSpriteRdr.sortingLayerName;
+        _muzzleFlashRdr.sortingOrder     = _targetSpriteRdr.sortingOrder + 1;
+
+        _muzzleFlashObj.SetActive(false);
+    }
+
+    private IEnumerator CoHideMuzzleFlash()
+    {
+        yield return new WaitForSeconds(_muzzleFlashDuration);
+        if (_muzzleFlashObj != null)
+            _muzzleFlashObj.SetActive(false);
+        _muzzleFlashCoroutine = null;
     }
 
     private IEnumerator CoBulletLifeTime(GameObject a, float time)
@@ -144,6 +209,14 @@ public class CWeaponEquip : MonoBehaviour
     #endregion
 
     #region PublicMethods
+
+    /// <summary>
+    /// 총구의 월드 좌표. _muzzleFlashObj가 없으면 무기 스프라이트 위치를 반환합니다.
+    /// </summary>
+    public Vector3 MuzzleWorldPosition =>
+        _muzzleFlashObj != null
+            ? _muzzleFlashObj.transform.position
+            : (_targetObject != null ? _targetObject.transform.position : Vector3.zero);
 
     /// <summary>
     /// 스폰 후 플레이어 컨트롤러를 주입합니다.
@@ -173,7 +246,28 @@ public class CWeaponEquip : MonoBehaviour
         }
 
         enabled = true;
+        SetupMuzzleFlash();
         LoadEquippedWeapon();
+    }
+
+    /// <summary>
+    /// 발사 시 총구화염을 재생합니다.
+    /// 근접무기(BulletPrefab == null)이면 자동으로 무시됩니다.
+    /// </summary>
+    public void ShowMuzzleFlash()
+    {
+        if (_muzzleFlashObj == null) return;
+
+        // 근접무기는 제외
+        CWeaponDataSO weaponData = _itemDataSO as CWeaponDataSO;
+        if (weaponData == null || weaponData.IsMelee) return;
+
+        // 이미 표시 중이면 코루틴만 재시작 (깜빡임 방지)
+        if (_muzzleFlashCoroutine != null)
+            StopCoroutine(_muzzleFlashCoroutine);
+
+        _muzzleFlashObj.SetActive(true);
+        _muzzleFlashCoroutine = StartCoroutine(CoHideMuzzleFlash());
     }
 
     public void GenerateBullet()

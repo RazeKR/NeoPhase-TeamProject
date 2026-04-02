@@ -340,10 +340,16 @@ public class CPlayerController : CEntityBase, IHealable
 
         Vector2 dir = (CurrentTarget.position - transform.position).normalized;
         float rotZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, transform.position, Quaternion.Euler(0f, 0f, rotZ));
+        Vector3 spawnPos = CWeaponEquip.Instance != null
+            ? CWeaponEquip.Instance.MuzzleWorldPosition
+            : transform.position;
+        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, Quaternion.Euler(0f, 0f, rotZ));
         float finalDamage = _statManager != null
                                     ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
                                     : weaponData.WeaponDamage;
+
+        // 총구화염 재생
+        CWeaponEquip.Instance?.ShowMuzzleFlash();
 
         // CBullet 계열 투사체
         CBullet bullet = bulletObj.GetComponent<CBullet>();

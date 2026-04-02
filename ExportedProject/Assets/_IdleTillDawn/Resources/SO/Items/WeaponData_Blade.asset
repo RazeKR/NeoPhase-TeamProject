@@ -24,3 +24,4 @@ MonoBehaviour:
     type: 3}
   _lifeTime: 1
   _damagePerRank: 0
+  _isMelee: 1

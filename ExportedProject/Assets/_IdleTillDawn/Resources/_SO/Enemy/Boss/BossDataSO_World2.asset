@@ -19,7 +19,7 @@ MonoBehaviour:
   _baseDamage: 10
   _attackCooltime: 1.5
   _moveSpeed: 3
-  _attackRange: 5
+  _attackRange: 2
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 1606119990535782878, guid: e2bdf707083451d4cb467da82aea58b7, type: 3}
