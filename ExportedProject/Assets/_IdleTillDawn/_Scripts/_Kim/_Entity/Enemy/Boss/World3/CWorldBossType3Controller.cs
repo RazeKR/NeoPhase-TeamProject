@@ -6,6 +6,12 @@ using UnityEngine;
 public class CWorldBossType3Controller : CBossBase
 {
     #region 인스펙터
+    [Header("이동 연출")]
+    [SerializeField] private Transform _bossSprite;
+    [SerializeField] private float _hoverSpeed = 3f;
+    [SerializeField] private float _hoverHeight = 0.2f;
+    [SerializeField] private float _hoveringSharpness = 10f;
+
     [Header("공격 설정")]
     [SerializeField] private CParabolaProjectile _projectilePrefab;
     [SerializeField] private float _bombardmentCooldown = 5f;
@@ -26,6 +32,11 @@ public class CWorldBossType3Controller : CBossBase
         ConstructBehaviourTree();
     }
 
+    private void Update()
+    {
+        Hovering();
+    }
+
     protected override void HandleMovement()
     {
         if (HasStatus(EStatusEffect.Knockback)) return;
@@ -43,10 +54,31 @@ public class CWorldBossType3Controller : CBossBase
     protected override void ExecuteAttack() { }
     protected override IEnumerator CoProcessPattern() { yield break; }
 
+    private void Hovering()
+    {
+        if (_bossSprite == null) return;
+
+        Vector3 targetPos;
+
+        if (!_isBombarding)
+        {
+            float newY = Mathf.Sin(Time.time * _hoverSpeed) * _hoverHeight;
+            targetPos = new Vector3(0f, newY, 0f);
+        }
+        else
+        {
+            targetPos = Vector3.zero;
+        }
+
+        _bossSprite.localPosition = Vector3.Lerp(_bossSprite.localPosition, targetPos, Time.deltaTime * _hoveringSharpness);
+    }
+
     private void ConstructBehaviourTree()
     {
         CNode checkBombardment = new CConditionDelegateNode(() =>
         {
+            if (_isBombarding) return true;
+
             return Time.time >= _lastBombardmentTime + _bombardmentCooldown && !_isBombarding;
         });
 
@@ -62,6 +94,9 @@ public class CWorldBossType3Controller : CBossBase
     {
         if (!_isBombarding)
         {
+            Vector2 dirToTarget = (CurrentTarget.position - transform.position).normalized;
+            FlipCharacter(dirToTarget.x);
+
             StartCoroutine(CoBombardmentPattern());
             Rb.velocity = Vector2.zero;
             return ENodeState.Running;
@@ -81,7 +116,7 @@ public class CWorldBossType3Controller : CBossBase
         _isBombarding = true;
         _lastBombardmentTime = Time.time;
 
-        Vector3 originScale = transform.localScale;
+        Vector3 originScale = _bossSprite.localScale;
         Vector3 strechScale = new Vector3(originScale.x * 1.3f, originScale.y * 0.6f, originScale.z);
 
         float chargeDuration = 0.5f;
@@ -90,11 +125,11 @@ public class CWorldBossType3Controller : CBossBase
         while (timer < chargeDuration)
         {
             timer += Time.deltaTime;
-            transform.localScale = Vector3.Lerp(originScale, strechScale, timer / chargeDuration);
+            _bossSprite.localScale = Vector3.Lerp(originScale, strechScale, timer / chargeDuration);
             yield return null;
         }
 
-        transform.localScale = strechScale;
+        _bossSprite.localScale = strechScale;
 
         float recoveryDuration = 0.05f;
         timer = 0f;
@@ -102,19 +137,19 @@ public class CWorldBossType3Controller : CBossBase
         while (timer < recoveryDuration)
         {
             timer += Time.deltaTime;
-            transform.localScale = Vector3.Lerp(strechScale, originScale, timer / recoveryDuration);
+            _bossSprite.localScale = Vector3.Lerp(strechScale, originScale, timer / recoveryDuration);
             yield return null;
         }
 
-        transform.localScale = originScale;
+        _bossSprite.localScale = originScale;
 
         for (int i = 0; i < _projectileCount; i++)
         {
             Vector2 randomTargetOffset = Random.insideUnitCircle * _bombardmentRadius;
             Vector2 targetPosition = (Vector2)CurrentTarget.transform.position + randomTargetOffset;
 
-            CParabolaProjectile projectile = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
-            projectile.Fire(transform.position, targetPosition, AttackDamage);
+            CParabolaProjectile projectile = Instantiate(_projectilePrefab, _bossSprite.position, Quaternion.identity);
+            projectile.Fire(_bossSprite.position, targetPosition, AttackDamage);
         }
 
         yield return new WaitForSeconds(0.5f);
