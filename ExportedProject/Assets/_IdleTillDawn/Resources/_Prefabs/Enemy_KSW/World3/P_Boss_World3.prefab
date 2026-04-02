@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7995438715037353370}
   - component: {fileID: 3211837725830543129}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: T_Rhogog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,6 +149,10 @@ MonoBehaviour:
   _enemyData: {fileID: 11400000, guid: 9eff3f7f244ce0741ac5cd0de4106e55, type: 2}
   _paramSpeed: aSpeed
   _paramAttack: tAttack
+  _bossSprite: {fileID: 7995438715037353370}
+  _hoverSpeed: 3
+  _hoverHeight: 0.2
+  _hoveringSharpness: 10
   _projectilePrefab: {fileID: 3674075436809364576, guid: 5f561e20bc59da24685baae80a95e6ba,
     type: 3}
   _bombardmentCooldown: 5
