@@ -21,6 +21,16 @@ namespace flanne
 
         public int piercing;
 
+        [Header("피격 포그 플래시 (안개 밝기 연출)")]
+        [Tooltip("적 피격 시 밝아지는 외곽 반경 (월드 유닛)")]
+        [SerializeField] private float _fogImpactOuterRadius      = 4f;
+        [Tooltip("내부 완전 밝음 비율 (0~1)")]
+        [SerializeField] [Range(0f, 1f)] private float _fogImpactInnerRatio       = 0.3f;
+        [Tooltip("플래시 최대 밝기 (0~1)")]
+        [SerializeField] [Range(0f, 1f)] private float _fogImpactPeakIntensity    = 1f;
+        [Tooltip("페이드 아웃 시간 (초)")]
+        [SerializeField] private float _fogImpactFadeOutDuration  = 0.3f;
+
         public bool dontRotateOnBounce;
 
         [NonSerialized]
@@ -93,6 +103,14 @@ namespace flanne
             if (damageable != null)
             {
                 damageable.TakeDamage(_damage, move.vector.normalized);
+
+                // 피격 위치에서 안개 밝기 플래시 연출
+                CFogFlashSource.SpawnImpact(
+                    transform.position,
+                    _fogImpactOuterRadius,
+                    _fogImpactInnerRatio,
+                    _fogImpactPeakIntensity,
+                    _fogImpactFadeOutDuration);
             }
 
             // 소멸/관통/반사는 IDamageable 여부와 무관하게 처리

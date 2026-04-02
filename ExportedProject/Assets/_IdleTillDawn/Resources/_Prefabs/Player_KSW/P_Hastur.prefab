@@ -186,7 +186,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1984
   _paramSpeed: aSpeed
-  _defaultAttackRange: 2
+  _defaultAttackRange: 10
   _bulletSpeed: 10
   _useTestWeaponOverride: 0
   _testWeaponData: {fileID: 11400000, guid: aef908ab333a0954ab49189d04b946b8, type: 2}
@@ -253,7 +253,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _outerRadius: 5
   _innerRatio: 0.5
-  _intensity: 1
+  _intensity: 0.85
 --- !u!114 &7920098649435966472
 MonoBehaviour:
   m_ObjectHideFlags: 0
