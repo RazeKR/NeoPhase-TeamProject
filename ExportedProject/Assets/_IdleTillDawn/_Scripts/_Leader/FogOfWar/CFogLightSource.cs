@@ -27,6 +27,19 @@ public class CFogLightSource : MonoBehaviour
 
     #endregion
 
+    #region Runtime Control (CFogFlashSource 등에서 사용)
+
+    /// <summary>런타임에서 강도를 덮어쓴다 — CFogFlashSource의 코루틴 페이드에서 호출</summary>
+    public void SetIntensity(float value)  => _intensity    = Mathf.Clamp01(value);
+
+    /// <summary>런타임에서 외곽 반경을 덮어쓴다</summary>
+    public void SetOuterRadius(float value) => _outerRadius = Mathf.Max(0f, value);
+
+    /// <summary>런타임에서 내부 반경 비율을 덮어쓴다 (0~1)</summary>
+    public void SetInnerRatio(float value)  => _innerRatio  = Mathf.Clamp01(value);
+
+    #endregion
+
     #region Unity Methods
 
     /// <summary>

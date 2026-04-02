@@ -351,15 +351,7 @@ public class CPlayerController : CEntityBase, IHealable
         // 총구화염 재생
         CWeaponEquip.Instance?.ShowMuzzleFlash();
 
-        // CBullet 계열 투사체
-        CBullet bullet = bulletObj.GetComponent<CBullet>();
-        if (bullet != null)
-        {
-            bullet.Init(dir, finalDamage, _bulletSpeed, weaponData.LifeTime);
-            return;
-        }
-
-        // flanne.Projectile 계열 투사체 (PF_RevolverProjectile 등)
+        // flanne.Projectile 계열 투사체
         flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
         if (proj != null)
         {

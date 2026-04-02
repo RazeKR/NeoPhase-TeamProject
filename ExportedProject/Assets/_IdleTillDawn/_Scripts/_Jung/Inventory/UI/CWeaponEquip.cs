@@ -21,6 +21,16 @@ public class CWeaponEquip : MonoBehaviour
     [SerializeField] private float  _muzzleOffsetAdjust = 0f;    // 스프라이트 오른쪽 끝에서 추가 보정(양수=앞, 음수=뒤)
     [SerializeField] private float  _muzzleFlashDuration = 0.08f; // 화염 표시 시간(초)
 
+    [Header("총구 포그 플래시 (안개 밝기 연출)")]
+    [Tooltip("발사 시 총구 위치에서 밝아지는 외곽 반경 (월드 유닛) — 플레이어 고유 반경보다 크게 설정 권장")]
+    [SerializeField] private float _fogMuzzleOuterRadius   = 6f;
+    [Tooltip("내부 완전 밝음 비율 (0~1)")]
+    [SerializeField] [Range(0f, 1f)] private float _fogMuzzleInnerRatio  = 0.35f;
+    [Tooltip("플래시 최대 밝기 (0~1) — 플레이어 고유 광원 강도보다 높게 설정 권장")]
+    [SerializeField] [Range(0f, 1f)] private float _fogMuzzlePeakIntensity = 1f;
+    [Tooltip("총구 끝에서 조준 방향으로 추가 이동할 거리 (월드 유닛, 양수=앞)")]
+    [SerializeField] private float _fogMuzzleForwardOffset = 0.5f;
+
     private string _currentInstanceID;
     private SpriteRenderer _targetSpriteRdr;
     private CItemDataSO _itemDataSO;
@@ -29,6 +39,10 @@ public class CWeaponEquip : MonoBehaviour
     private GameObject     _muzzleFlashObj;
     private SpriteRenderer _muzzleFlashRdr;
     private Coroutine      _muzzleFlashCoroutine;
+
+    // 총구 포그 플래시 — 비주얼 화염과 별개로 항상 동작하는 안개 광원
+    private GameObject      _fogMuzzleObj;
+    private CFogFlashSource _muzzleFogSource;
 
     #endregion
 
@@ -62,6 +76,7 @@ public class CWeaponEquip : MonoBehaviour
         }
 
         SetupMuzzleFlash();
+        SetupFogMuzzleFlash();
     }
 
     private void Start()
@@ -156,15 +171,19 @@ public class CWeaponEquip : MonoBehaviour
     /// </summary>
     private void UpdateMuzzlePosition()
     {
-        if (_muzzleFlashObj == null) return;
-
-        Sprite weaponSprite = _targetSpriteRdr.sprite;
+        Sprite weaponSprite = _targetSpriteRdr != null ? _targetSpriteRdr.sprite : null;
         // bounds.max.x : 스프라이트 로컬 공간에서 오른쪽 끝 (총구 방향)
         float autoX = weaponSprite != null
             ? weaponSprite.bounds.max.x + _muzzleOffsetAdjust
             : _muzzleOffsetAdjust;
 
-        _muzzleFlashObj.transform.localPosition = new Vector3(autoX, 0f, 0f);
+        if (_muzzleFlashObj != null)
+            _muzzleFlashObj.transform.localPosition = new Vector3(autoX, 0f, 0f);
+
+        // 포그 총구 광원은 총구 끝에서 조준 방향으로 _fogMuzzleForwardOffset 만큼 앞에 배치
+        // _fogMuzzleObj는 무기의 자식이므로 로컬 X가 항상 조준 방향과 일치한다
+        if (_fogMuzzleObj != null)
+            _fogMuzzleObj.transform.localPosition = new Vector3(autoX + _fogMuzzleForwardOffset, 0f, 0f);
     }
 
     /// <summary>
@@ -190,6 +209,24 @@ public class CWeaponEquip : MonoBehaviour
         _muzzleFlashRdr.sortingOrder     = _targetSpriteRdr.sortingOrder + 1;
 
         _muzzleFlashObj.SetActive(false);
+    }
+
+    /// <summary>
+    /// 총구 포그 플래시 광원을 무기 자식으로 생성합니다.
+    /// 비주얼 화염 스프라이트 유무와 무관하게 항상 동작합니다.
+    /// </summary>
+    private void SetupFogMuzzleFlash()
+    {
+        if (_targetObject == null) return;
+        if (_fogMuzzleObj != null) return; // 중복 생성 방지
+
+        _fogMuzzleObj = new GameObject("MuzzleFogSource");
+        _fogMuzzleObj.transform.SetParent(_targetObject.transform, false);
+        _fogMuzzleObj.transform.localPosition = Vector3.zero; // LoadEquippedWeapon → UpdateMuzzlePosition에서 갱신
+
+        _muzzleFogSource = _fogMuzzleObj.AddComponent<CFogFlashSource>();
+        // _muzzleFlashDuration을 포그 페이드 시간으로 재사용 (비주얼 화염과 동기화)
+        _muzzleFogSource.InitializeFlash(_fogMuzzleOuterRadius, _fogMuzzleInnerRatio, _fogMuzzlePeakIntensity, _muzzleFlashDuration);
     }
 
     private IEnumerator CoHideMuzzleFlash()
@@ -247,27 +284,32 @@ public class CWeaponEquip : MonoBehaviour
 
         enabled = true;
         SetupMuzzleFlash();
+        SetupFogMuzzleFlash();
         LoadEquippedWeapon();
     }
 
     /// <summary>
-    /// 발사 시 총구화염을 재생합니다.
-    /// 근접무기(BulletPrefab == null)이면 자동으로 무시됩니다.
+    /// 발사 시 총구화염(비주얼)과 포그 플래시(안개 밝기)를 재생합니다.
+    /// 근접무기(IsMelee)이면 두 연출 모두 무시됩니다.
     /// </summary>
     public void ShowMuzzleFlash()
     {
-        if (_muzzleFlashObj == null) return;
-
         // 근접무기는 제외
         CWeaponDataSO weaponData = _itemDataSO as CWeaponDataSO;
         if (weaponData == null || weaponData.IsMelee) return;
 
-        // 이미 표시 중이면 코루틴만 재시작 (깜빡임 방지)
-        if (_muzzleFlashCoroutine != null)
-            StopCoroutine(_muzzleFlashCoroutine);
+        // 비주얼 총구화염 (스프라이트 오브젝트가 있을 때만)
+        if (_muzzleFlashObj != null)
+        {
+            if (_muzzleFlashCoroutine != null)
+                StopCoroutine(_muzzleFlashCoroutine);
 
-        _muzzleFlashObj.SetActive(true);
-        _muzzleFlashCoroutine = StartCoroutine(CoHideMuzzleFlash());
+            _muzzleFlashObj.SetActive(true);
+            _muzzleFlashCoroutine = StartCoroutine(CoHideMuzzleFlash());
+        }
+
+        // 포그 총구 플래시 — 스프라이트 유무와 무관하게 항상 실행
+        _muzzleFogSource?.Trigger();
     }
 
     public void GenerateBullet()
