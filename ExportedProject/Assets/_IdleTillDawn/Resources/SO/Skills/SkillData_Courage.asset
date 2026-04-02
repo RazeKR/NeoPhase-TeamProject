@@ -19,15 +19,59 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 325bf823ce3c93d4da3f5b6c7a29d4f8, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 10
   prerequisiteSkills: []
-  statUp: 0
-  actionName: Courage
-  coolDown: 5
-  requiredMana: 10
-  skillEffects:
-  - type: 0
-    value: 5
-    chance: 1
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 10
+    coolDown: 10
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 12
+    coolDown: 10
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 14
+    coolDown: 9
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 16
+    coolDown: 9
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 18
+    coolDown: 8
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 29
+    coolDown: 8
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 22
+    coolDown: 8
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 24
+    coolDown: 7
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 26
+    coolDown: 7
+    requiredMana: 10
+    projectileAmount: 6
+  - damage: 28
+    coolDown: 7
+    requiredMana: 10
+    projectileAmount: 6
+  spreadAngle: 30
+  speed: 7
+  damageInterval: 0
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 0.5
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
+    duration: 0
+  effectPrefab: {fileID: 3298567962137407249, guid: 8091533b5d276e04597ba9e9b021204e,
+    type: 3}
