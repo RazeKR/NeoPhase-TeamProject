@@ -178,7 +178,7 @@ public class CSkillSystem : MonoBehaviour
             baseAngle = playerObj.transform.eulerAngles.z;
         }
 
-        int count = data.projectileAmount > 0 ? data.projectileAmount : 1;
+        int count = data.ActiveLevelDatas[levelIndex].projectileAmount > 0 ? data.ActiveLevelDatas[levelIndex].projectileAmount : 1;
         float spread = data.spreadAngle;
 
         // 중앙 baseAngle 기준으로 대칭으로 발사

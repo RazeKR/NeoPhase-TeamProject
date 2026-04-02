@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class CSkillAreaEffect : MonoBehaviour, ISkill
 {
+    [Header("온힛 설정")]
+    public bool damagable;
     public LayerMask enemyLayer;
 
     private float _damageInterval;
     private float _damage;
     private float _timer = 1f;  // 인터벌용 타이머
+    private CSkillDataSO _data;
 
     // 현재 범위 안에 있는 적 목록 — Enter/Exit로 관리
     private readonly HashSet<IDamageable> _targetsInRange = new HashSet<IDamageable>();
@@ -17,18 +20,24 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
     /// </summary>
     public void Init(CSkillDataSO data, int level)
     {
-        _damage = data.ActiveLevelDatas[level].damage;
+        _data = data;
 
-        if (data.useScaleMagnification)
-            transform.localScale = Vector3.one * (1 + (level - 1) * 0.1f) * data.scalePreset;
+        _damage = _data.ActiveLevelDatas[level].damage;
 
-        _damageInterval = data.damageInterval;
+        if (_data.useScaleMagnification)
+            transform.localScale = Vector3.one * (1 + (level - 1) * 0.1f) * _data.scalePreset;
+
+        
+
+        _damageInterval = _data.damageInterval;
 
         _timer = _damageInterval;
     }
 
     private void Update()
     {
+        if (!damagable) return;
+
         // 스킬 지속 피해 쿨타임
         _timer += Time.deltaTime;
         if (_timer >= _damageInterval)
@@ -59,11 +68,27 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
                 hitDir = ((Vector2)(mb.transform.position - transform.position)).normalized;
 
             target.TakeDamage(_damage, hitDir);
+
+            if (_data.useSkillEffect)
+            {
+                switch (_data.skillEffect.type)
+                {
+                    case EEffectType.Burn:
+                        (target as CEntityBase).ApplyBurn(_data.skillEffect.duration, _data.skillEffect.value, 1f);
+                        break;
+
+                    case EEffectType.Freeze:
+                        (target as CEntityBase).ApplyFreeze(_data.skillEffect.duration, _data.skillEffect.value);
+                        break;
+                }
+            }
         }            
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!damagable) return;
+
         if (!other.CompareTag("Enemy")) return;
 
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
@@ -75,6 +100,8 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        if (!damagable) return;
+
         IDamageable damageable = other.GetComponentInParent<IDamageable>();
         if (damageable != null)
         {

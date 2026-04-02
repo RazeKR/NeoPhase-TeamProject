@@ -19,16 +19,60 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: a9a711d04b8ab4b479181ca8762231c0, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 20
   prerequisiteSkills:
   - {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
-  statUp: 0
-  actionName: Frostbite
-  coolDown: 8
-  requiredMana: 10
-  skillEffects:
-  - type: 1
-    value: 1
-    chance: 1
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 30
+    coolDown: 8
+    requiredMana: 10
+    projectileAmount: 1
+  - damage: 32
+    coolDown: 8
+    requiredMana: 11
+    projectileAmount: 1
+  - damage: 34
+    coolDown: 8
+    requiredMana: 12
+    projectileAmount: 1
+  - damage: 36
+    coolDown: 8
+    requiredMana: 13
+    projectileAmount: 1
+  - damage: 38
+    coolDown: 8
+    requiredMana: 14
+    projectileAmount: 1
+  - damage: 40
+    coolDown: 8
+    requiredMana: 15
+    projectileAmount: 1
+  - damage: 42
+    coolDown: 8
+    requiredMana: 16
+    projectileAmount: 1
+  - damage: 43
+    coolDown: 8
+    requiredMana: 17
+    projectileAmount: 1
+  - damage: 44
+    coolDown: 8
+    requiredMana: 18
+    projectileAmount: 1
+  - damage: 45
+    coolDown: 8
+    requiredMana: 20
+    projectileAmount: 1
+  spreadAngle: 0
+  speed: 0
+  damageInterval: 1
+  useScaleMagnification: 1
+  scalePreset: 3
+  lifeTime: 0.5
+  useSkillEffect: 1
+  skillEffect:
+    type: 1
+    value: 0
+    duration: 3
+  effectPrefab: {fileID: 5417784064630873361, guid: 6b76323d181ab944db25e675ae1e7642,
+    type: 3}

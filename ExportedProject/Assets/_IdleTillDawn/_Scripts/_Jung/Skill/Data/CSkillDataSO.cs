@@ -15,6 +15,14 @@ public enum EStatus
     // 추후 활성화 예정
 }
 
+/// <summary>스킬의 부가효과 열거형입니다.</summary>
+public enum EEffectType
+{
+    Knockback,
+    Freeze,
+    Burn,
+}
+
 /// <summary>
 /// 스킬의 기본 정보, 비용, 선행 조건, 레벨별 데이터 참조를 정의하는 ScriptableObject입니다.
 /// CDataManager.GetSkill(id)로 int ID 기반 접근을 지원합니다.
@@ -43,7 +51,6 @@ public class CSkillDataSO : CBaseDataSO
     public List<ActiveLevelData> ActiveLevelDatas;
 
     [Header("투사체 설정")]
-    public int projectileAmount;  // 투사체 수량
     public float spreadAngle;     // 투사체 탄퍼짐
     public float speed;           // 투사체 속도
 
@@ -61,60 +68,7 @@ public class CSkillDataSO : CBaseDataSO
 
     [Header("실사용 오브젝트 프리팹")]
     public GameObject effectPrefab;
-
-    
-
-    //[Header("레벨별 데이터 (index = level - 1)")]    
-    //[SerializeField] private List<CSkillLevelDataSO> _levelData = new(); // 레벨별 수치 SO 목록
-
-    #endregion
-
-    #region Properties
-
-    /// <summary>등록된 레벨 데이터 목록의 읽기 전용 접근자입니다.</summary>
-    //public IReadOnlyList<CSkillLevelDataSO> LevelData => _levelData;
-
-    #endregion
-
-    #region PublicMethods
-
-    /// <summary>
-    /// 특정 레벨에 해당하는 CSkillLevelDataSO를 반환합니다.
-    /// 레벨은 1부터 시작하며, 범위를 벗어나면 가장 가까운 항목을 반환합니다.
-    /// _levelData가 비어 있으면 null을 반환합니다.
-    /// </summary>
-    //public CSkillLevelDataSO GetLevelData(int level)
-    //{
-    //    if (_levelData == null || _levelData.Count == 0) return null;
-    //
-    //    int index = Mathf.Clamp(level - 1, 0, _levelData.Count - 1);
-    //    return _levelData[index];
-    //}
-
-    ///// <summary>특정 레벨에서의 실제 데미지를 반환합니다. 레벨 데이터가 없으면 기본 damage를 반환합니다.</summary>
-    //public float GetDamageAtLevel(int level)
-    //{
-    //    CSkillLevelDataSO levelData = GetLevelData(level);
-    //    if (levelData == null) return damage;
-    //    return levelData.GetFinalDamage(damage);
-    //}
-    //
-    ///// <summary>특정 레벨에서의 쿨타임을 반환합니다. 레벨 데이터가 없으면 기본 coolDown을 반환합니다.</summary>
-    //public float GetCooldownAtLevel(int level)
-    //{
-    //    CSkillLevelDataSO levelData = GetLevelData(level);
-    //    if (levelData == null) return coolDown;
-    //    return levelData.GetFinalCooldown(coolDown);
-    //}
-    //
-    ///// <summary>특정 레벨에서의 마나 소모량을 반환합니다. 레벨 데이터가 없으면 기본 requiredMana를 반환합니다.</summary>
-    //public float GetManaCostAtLevel(int level)
-    //{
-    //    CSkillLevelDataSO levelData = GetLevelData(level);
-    //    if (levelData == null) return requiredMana;
-    //    return levelData.GetFinalManaCost(requiredMana);
-    //}
-
+        
     #endregion
 }
 
@@ -124,10 +78,20 @@ public class ActiveLevelData
     public int damage;
     public int coolDown;
     public int requiredMana;
+    public int projectileAmount = 1;
 }
 
 [Serializable]
 public class PassiveLevelData
 {
     public int statUp;
+}
+
+
+[Serializable]
+public class CSkillEffect
+{
+    public EEffectType type;        // 효과 종류
+    public float value;             // 세부 적용 수치
+    public float duration;          // 지속시간
 }

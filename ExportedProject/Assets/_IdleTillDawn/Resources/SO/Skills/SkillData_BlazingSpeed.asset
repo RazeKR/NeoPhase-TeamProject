@@ -63,6 +63,7 @@ MonoBehaviour:
   useSkillEffect: 1
   skillEffect:
     type: 2
-    value: 5
+    value: 10
+    duration: 2
   effectPrefab: {fileID: 7223285654047631799, guid: ad42e090ee1d1224da837c2e9cd80fc9,
     type: 3}

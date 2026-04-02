@@ -33,7 +33,8 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
     private void Update()
     {
-        if (!movable) return;
+        if (!movable || _data == null) return;
+
         transform.Translate(Vector3.right * _data.speed * Time.deltaTime);
     }
 
@@ -56,9 +57,23 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
             if (damagable)
             {
-                Debug.Log("피해를 주었습니다.");
                 // transform.right : 투사체의 월드 기준 진행 방향을 hitDir로 전달하여 HitFlash·데미지텍스트 연출 활성화
                 target.TakeDamage(_damage, transform.right);
+
+                if (_data.useSkillEffect)
+                {
+                    switch (_data.skillEffect.type)
+                    {
+                        case EEffectType.Burn:
+                            (target as CEntityBase).ApplyBurn(_data.skillEffect.duration, _data.skillEffect.value, 1f);
+                            break;
+
+                        case EEffectType.Freeze:
+                            (target as CEntityBase).ApplyFreeze(_data.skillEffect.duration, _data.skillEffect.value);
+                            break;
+                    }
+                }
+
                 _hitTargets.Add(target);
             }
 
@@ -74,9 +89,27 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
             if (destroyOnHit)
             {
-                Debug.Log("투사체 파괴");
-                Destroy(gameObject);
+                StopParticleAndDestroy();
             }
-        }        
+        }
+    }
+
+    /// <summary>
+    /// 기존 삭제와 더불어, 파티클이 있다면 파티클 개별 처리 후 삭제
+    /// </summary>
+    private void StopParticleAndDestroy()
+    {
+        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+
+        if (ps != null)
+        {
+            ps.transform.SetParent(null);
+
+            var emission = ps.emission;
+            emission.enabled = false;
+            Destroy(ps.gameObject, ps.main.duration + ps.main.startLifetime.constantMax);
+        }
+
+        Destroy(gameObject);
     }
 }
