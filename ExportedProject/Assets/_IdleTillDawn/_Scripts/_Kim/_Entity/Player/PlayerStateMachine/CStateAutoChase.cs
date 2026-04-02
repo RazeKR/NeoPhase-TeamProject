@@ -13,14 +13,14 @@ public class CStateAutoChase : IPlayerState
 
     public void Enter()
     {
-        Debug.Log("CStateAutoChase : Enter");
+        //Debug.Log("CStateAutoChase : Enter");
         _isApproaching = false;
         _lastTarget = null;
     }
 
     public void Exit()
     {
-        Debug.Log("CStateAutoChase : Exit");
+        //Debug.Log("CStateAutoChase : Exit");
         _player.Rb.velocity = Vector2.zero;
     }
 
