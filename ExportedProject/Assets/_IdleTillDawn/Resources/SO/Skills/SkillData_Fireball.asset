@@ -19,20 +19,35 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: b1250bbd53b03584e9ab22fc787950d8, type: 2}
   maxLevel: 5
   requiredPoints: 2
-  damage: 50
   prerequisiteSkills:
   - {fileID: 11400000, guid: a7af05fc9b1429d4c9c2f0c607ba7a8e, type: 2}
-  statUp: 0
-  actionName: FireBall
-  coolDown: 15
-  requiredMana: 20
-  projectileAmount: 0
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 45
+    coolDown: 18
+    requiredMana: 20
+  - damage: 50
+    coolDown: 17
+    requiredMana: 25
+  - damage: 55
+    coolDown: 16
+    requiredMana: 30
+  - damage: 60
+    coolDown: 15
+    requiredMana: 35
+  - damage: 70
+    coolDown: 14
+    requiredMana: 40
+  projectileAmount: 1
   spreadAngle: 0
-  AuraType: 0
-  skillEffects:
-  - type: 2
+  speed: 6
+  damageInterval: 1
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 1
+  useSkillEffect: 1
+  skillEffect:
+    type: 2
     value: 5
-    chance: 0.15
   effectPrefab: {fileID: 8709800503564725059, guid: 8c38680fa5bfceb46ac64ce986ff2480,
     type: 3}
-  _levelData: []

@@ -19,20 +19,50 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 122b6fa5b389978449cf06af1af45d07, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 5
   prerequisiteSkills:
   - {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
-  statUp: 0
-  actionName: BlazingSpeed
-  coolDown: 8
-  requiredMana: 10
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 10
+    coolDown: 16
+    requiredMana: 15
+  - damage: 13
+    coolDown: 16
+    requiredMana: 15
+  - damage: 16
+    coolDown: 16
+    requiredMana: 15
+  - damage: 18
+    coolDown: 15
+    requiredMana: 15
+  - damage: 20
+    coolDown: 15
+    requiredMana: 15
+  - damage: 22
+    coolDown: 15
+    requiredMana: 15
+  - damage: 24
+    coolDown: 14
+    requiredMana: 15
+  - damage: 26
+    coolDown: 14
+    requiredMana: 15
+  - damage: 28
+    coolDown: 14
+    requiredMana: 15
+  - damage: 30
+    coolDown: 14
+    requiredMana: 15
   projectileAmount: 0
   spreadAngle: 0
-  AuraType: 1
-  skillEffects:
-  - type: 2
+  speed: 0
+  damageInterval: 1
+  useScaleMagnification: 1
+  scalePreset: 1
+  lifeTime: 5
+  useSkillEffect: 1
+  skillEffect:
+    type: 2
     value: 5
-    chance: 0.1
   effectPrefab: {fileID: 7223285654047631799, guid: ad42e090ee1d1224da837c2e9cd80fc9,
     type: 3}
-  _levelData: []

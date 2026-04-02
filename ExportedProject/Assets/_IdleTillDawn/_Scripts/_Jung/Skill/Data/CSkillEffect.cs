@@ -13,5 +13,4 @@ public class CSkillEffect
 
     public EEffectType type;        // 효과 종류
     public float value;             // 세부 적용 수치
-    public float chance = 1f;       // 0~1 사이, 발동 확률
 }

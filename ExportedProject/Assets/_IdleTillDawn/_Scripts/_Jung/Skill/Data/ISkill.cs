@@ -4,5 +4,5 @@
 /// </summary>
 public interface ISkill
 {
-    void Init(float damage, int level);
+    void Init(CSkillDataSO data, int level);
 }

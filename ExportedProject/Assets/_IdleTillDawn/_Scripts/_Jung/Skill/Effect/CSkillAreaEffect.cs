@@ -3,17 +3,10 @@ using UnityEngine;
 
 public class CSkillAreaEffect : MonoBehaviour, ISkill
 {
-    [Header("지속 피해 간격")]
-    public float damageInterval = 1f;
-    [Header("레벨에 따른 스케일 조정 여부")]
-    public bool useScaleMagnification = true;
-    public float scalePreset = 1f;
     public LayerMask enemyLayer;
 
-
+    private float _damageInterval;
     private float _damage;
-    private float _lvMagnification;
-    private int _level;
     private float _timer = 1f;  // 인터벌용 타이머
 
     // 현재 범위 안에 있는 적 목록 — Enter/Exit로 관리
@@ -22,26 +15,25 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
     /// <summary>
     /// 스킬 시스템에서 생성과 동시에 호출 (의존성 분리)
     /// </summary>
-    public void Init(float damage, int level)
+    public void Init(CSkillDataSO data, int level)
     {
-        _level = level;
+        _damage = data.ActiveLevelDatas[level].damage;
 
-        _damage = damage;
-        _lvMagnification = 1f + (_level - 1) * 0.1f;
+        if (data.useScaleMagnification)
+            transform.localScale = Vector3.one * (1 + (level - 1) * 0.1f) * data.scalePreset;
 
-        if (useScaleMagnification)
-            transform.localScale = Vector3.one * scalePreset * _lvMagnification;
+        _damageInterval = data.damageInterval;
 
-        _timer = damageInterval;
+        _timer = _damageInterval;
     }
 
     private void Update()
     {
         // 스킬 지속 피해 쿨타임
         _timer += Time.deltaTime;
-        if (_timer >= damageInterval)
+        if (_timer >= _damageInterval)
         {
-            _timer -= damageInterval;
+            _timer -= _damageInterval;
             DamageAll();
         }
     }
@@ -66,7 +58,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
             if (target is MonoBehaviour mb)
                 hitDir = ((Vector2)(mb.transform.position - transform.position)).normalized;
 
-            target.TakeDamage(_damage * _lvMagnification, hitDir);
+            target.TakeDamage(_damage, hitDir);
         }            
     }
 

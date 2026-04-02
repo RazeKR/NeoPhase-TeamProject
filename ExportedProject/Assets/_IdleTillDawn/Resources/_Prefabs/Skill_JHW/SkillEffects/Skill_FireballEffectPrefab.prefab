@@ -100,9 +100,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3083fc15248af1409961d2e4aa17f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0
-  lifeTime: 0.5
   damagable: 1
+  movable: 0
+  _visualChild: {fileID: 0}
   destroyOnHit: 0
   effectPrefab: {fileID: 0}
   enemyLayer:

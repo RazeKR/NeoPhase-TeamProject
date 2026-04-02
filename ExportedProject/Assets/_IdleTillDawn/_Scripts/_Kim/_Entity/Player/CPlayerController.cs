@@ -423,9 +423,9 @@ public class CPlayerController : CEntityBase, IHealable
         if (_useTestWeaponOverride)
             return _testWeaponData;
 
-        if (CInventoryManager.Instance != null)
+        if (CInventorySystemJ.Instance != null)
         {
-            CWeaponInstance weapon = CInventoryManager.Instance.EquippedWeapon;
+            CWeaponInstance weapon = CInventorySystemJ.Instance.EquippedWeapon;
             if (weapon != null)
                 return weapon._itemData as CWeaponDataSO;
         }

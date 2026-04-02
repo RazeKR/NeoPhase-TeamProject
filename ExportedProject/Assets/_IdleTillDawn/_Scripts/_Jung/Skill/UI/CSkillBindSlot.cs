@@ -147,7 +147,7 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
             if (CoolDownText != null)
             {
                 float remainingTime = CSkillSystem.Instance.GetRemainingCoolDown(_currentSkillId);
-                CoolDownText.text = Mathf.CeilToInt(remainingTime).ToString();
+                CoolDownText.text = remainingTime.ToString("F0");
             }
         }
         else

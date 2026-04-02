@@ -152,7 +152,11 @@ public class CSkillSystem : MonoBehaviour
         IManaUser manaUser = playerObj.GetComponent<IManaUser>();
         CPlayerStatManager playerStatManager = playerObj.GetComponent<CPlayerStatManager>();
 
-        if (manaUser != null && !manaUser.ConsumeMana(_manaUse ? data.requiredMana : 0))
+        int levelIndex = GetSkillLevel(skillId) - 1;
+
+        int requiredMana = data.ActiveLevelDatas[levelIndex].requiredMana;
+
+        if (manaUser != null && !manaUser.ConsumeMana(_manaUse ? requiredMana : 0))
         {
             Debug.Log($"마나 부족으로 스킬 사용 불가, 현재 마나 {playerStatManager.CurrentMana}");
             return;
@@ -193,18 +197,17 @@ public class CSkillSystem : MonoBehaviour
 
             // ISkill 상속한 모든 스킬 컴포넌트 Init
             ISkill[] effects = go.GetComponents<ISkill>();
-            int skillLevel = GetSkillLevel(skillId);
 
             foreach (var effect in effects)
             {
-                effect.Init(data.damage, skillLevel);
+                effect.Init(data, levelIndex);
             }
         }   
         
         
 
         // 쿨타임
-        StartCooldown(skillId, data.coolDown);
+        StartCooldown(skillId, data.ActiveLevelDatas[levelIndex].coolDown);
 
         OnSkillEquipped?.Invoke();
     }
@@ -228,7 +231,9 @@ public class CSkillSystem : MonoBehaviour
         CSkillDataSO data = CDataManager.Instance.GetSkill(skillId);
         if (data == null) return 0f;
 
-        return _cooldownDict[skillId] / data.coolDown;
+        int levelIndex = GetSkillLevel(skillId) - 1;
+
+        return _cooldownDict[skillId] / data.ActiveLevelDatas[levelIndex].coolDown;
     }
 
     public float GetRemainingCoolDown(int skillId)

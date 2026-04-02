@@ -19,13 +19,49 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 8755a4ebc99191d41bc2ea8a074f16a3, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 10
   prerequisiteSkills: []
-  statUp: 0
-  actionName: WindBorne
-  coolDown: 7
-  requiredMana: 10
-  skillEffects: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 10
+    coolDown: 12
+    requiredMana: 10
+  - damage: 12
+    coolDown: 12
+    requiredMana: 10
+  - damage: 14
+    coolDown: 12
+    requiredMana: 11
+  - damage: 16
+    coolDown: 12
+    requiredMana: 11
+  - damage: 18
+    coolDown: 12
+    requiredMana: 12
+  - damage: 20
+    coolDown: 12
+    requiredMana: 12
+  - damage: 22
+    coolDown: 12
+    requiredMana: 13
+  - damage: 23
+    coolDown: 12
+    requiredMana: 13
+  - damage: 24
+    coolDown: 12
+    requiredMana: 14
+  - damage: 25
+    coolDown: 12
+    requiredMana: 15
+  projectileAmount: 1
+  spreadAngle: 0
+  speed: 2
+  damageInterval: 1
+  useScaleMagnification: 1
+  scalePreset: 1.5
+  lifeTime: 5
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
   effectPrefab: {fileID: 8967118725219851522, guid: 3b4503a46423fa14e829b06142fcf717,
     type: 3}
-  _levelData: []
