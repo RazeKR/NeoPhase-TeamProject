@@ -19,10 +19,11 @@ public abstract class CEnemyBase : CEntityBase
     #region 내부 변수
     private static readonly int _hashDead = Animator.StringToHash("tDead");
 
-    private float     _lastAttackTime = 0f;
-    private Transform _playerTransform;  // 스폰 시 주입된 플레이어 Transform
+    private float      _lastAttackTime = 0f;
+    private Transform  _playerTransform;  // 스폰 시 주입된 플레이어 Transform
     protected Animator _animator;
-    private bool      _isDead;
+    private bool       _isDead;
+    private Collider2D _selfCollider;     // 피격 FX 위치 계산용 콜라이더 캐시
     #endregion
 
     #region 프로퍼티
@@ -37,7 +38,24 @@ public abstract class CEnemyBase : CEntityBase
     protected override void Awake()
     {
         base.Awake();
-        _animator = GetComponentInChildren<Animator>();
+        _animator     = GetComponentInChildren<Animator>();
+        _selfCollider = GetComponent<Collider2D>();
+    }
+
+    /// <summary>
+    /// 피격 방향 정보를 포함한 데미지 처리 — 기본 연출(HitFlash, 데미지 텍스트)에 더해
+    /// 적 전용 HitImpact 스프라이트 이펙트를 피격 위치에 표시한다
+    /// </summary>
+    public override void TakeDamage(float damage, Vector2 hitDir)
+    {
+        base.TakeDamage(damage, hitDir);
+
+        // 콜라이더 평균 반경 계산 (원형·박스 모두 대응)
+        float radius = _selfCollider != null
+            ? (_selfCollider.bounds.extents.x + _selfCollider.bounds.extents.y) * 0.5f
+            : 0.3f;
+
+        CHitImpactPoolManager.Instance?.ShowHitImpact(transform.position, hitDir, radius);
     }
 
     /// <summary>
