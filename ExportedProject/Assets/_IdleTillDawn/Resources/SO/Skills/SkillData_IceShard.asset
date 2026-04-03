@@ -43,12 +43,17 @@ MonoBehaviour:
     coolDown: 10
     requiredMana: 28
     projectileAmount: 7
+  BuffLevelsDatas: []
   spreadAngle: 15
-  speed: 4
+  speed: 8
+  circularSpread: 0
   damageInterval: 0
   useScaleMagnification: 0
   scalePreset: 0
   lifeTime: 5
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
   useSkillEffect: 1
   skillEffect:
     type: 1
