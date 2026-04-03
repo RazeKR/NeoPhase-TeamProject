@@ -12,6 +12,10 @@ public class CRankingTestScript : MonoBehaviour
     {
         uiScript = FindObjectOfType<CRankingUI>();
 
+        CRankingUI ui = FindFirstObjectByType<CRankingUI>();
+
+        UiCanvas = ui.gameObject;
+
         UiCanvas.SetActive(_isActived);
     }
 

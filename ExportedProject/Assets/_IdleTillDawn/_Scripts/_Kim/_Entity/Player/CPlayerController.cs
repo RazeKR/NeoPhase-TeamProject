@@ -97,6 +97,10 @@ public class CPlayerController : CEntityBase, IHealable
         {
             return transform.localScale;
         }
+        set
+        {
+            transform.localScale = value;
+        }
     }
 
     /// <summary>
