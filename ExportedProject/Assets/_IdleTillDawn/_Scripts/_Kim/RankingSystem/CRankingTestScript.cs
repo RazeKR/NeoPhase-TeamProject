@@ -4,8 +4,20 @@ using UnityEngine;
 
 public class CRankingTestScript : MonoBehaviour
 {
+    public GameObject UiCanvas;
+    public CRankingUI uiScript;
+    private bool _isActived = false;
+
+    private void Start()
+    {
+        uiScript = FindObjectOfType<CRankingUI>();
+
+        UiCanvas.SetActive(_isActived);
+    }
+
     void Update()
     {
+
         if (Input.GetKeyDown(KeyCode.Equals))
         {
             Debug.Log("TEST 랭킹 데이터 가져오기");
@@ -35,6 +47,22 @@ public class CRankingTestScript : MonoBehaviour
             CRankData myData = CRankData.FromSaveDataToRankData(CJsonManager.Instance.CurrentSaveData);
 
             CRankingManager.Instance.SaveMyRanking(myData);
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            _isActived = !_isActived;
+            UiCanvas.SetActive(_isActived);
+
+            if (_isActived)
+            {
+                if (uiScript != null) uiScript.ShowLoadingMessage();
+
+                CRankingManager.Instance.GetRankingData((rankList) =>
+                {
+                    if (uiScript != null) uiScript.DrawRankingBoard(rankList);
+                });
+            }
         }
     }
 }
