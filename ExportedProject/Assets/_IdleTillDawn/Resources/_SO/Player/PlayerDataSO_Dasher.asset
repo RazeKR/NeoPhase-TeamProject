@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eafe04373dd89ca40be3b65cb58e58f3, type: 3}
   m_Name: PlayerDataSO_Dasher
   m_EditorClassIdentifier: 
-  _id: 0
+  _id: 1
   _characterName: "\uB300\uC154"
   _description: "10\uCD08\uB9C8\uB2E4 \uC77C\uC2DC\uC801\uC73C\uB85C \uC0AC\uC2B4\uC73C\uB85C
     \uBCC0\uC2E0\uD569\uB2C8\uB2E4. \uC0AC\uC2B4 \uD615\uC0C1\uC73C\uB85C \uBCC0\uC2E0\uD55C
@@ -30,7 +30,7 @@ MonoBehaviour:
     BaseValue: 50
     GrowthPerLevel: 0
   - StatType: 3
-    BaseValue: 0.5
+    BaseValue: 20
     GrowthPerLevel: 0
   - StatType: 4
     BaseValue: 1
@@ -39,7 +39,7 @@ MonoBehaviour:
     BaseValue: 1
     GrowthPerLevel: 0
   - StatType: 6
-    BaseValue: 10
+    BaseValue: 5
     GrowthPerLevel: 0
   - StatType: 7
     BaseValue: 1

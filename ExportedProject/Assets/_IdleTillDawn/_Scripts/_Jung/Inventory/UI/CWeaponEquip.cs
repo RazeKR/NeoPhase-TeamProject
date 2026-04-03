@@ -282,9 +282,18 @@ public class CWeaponEquip : MonoBehaviour
             return;
         }
 
-        enabled = true;
+        // Awake에서 이미 생성된 MuzzleFlash 오브젝트가 있으면
+        // 새 타겟(clone WeaponTarget)으로 재부모 설정
+        // 이렇게 하지 않으면 _muzzleFlashObj가 original WeaponTarget 하위에 남아
+        // lossyScale.x 기준 오브젝트와 실제 렌더링 오브젝트가 달라 회전이 틀어짐
+        if (_muzzleFlashObj != null)
+            _muzzleFlashObj.transform.SetParent(_targetObject.transform, false);
+        if (_fogMuzzleObj != null)
+            _fogMuzzleObj.transform.SetParent(_targetObject.transform, false);
+
         SetupMuzzleFlash();
         SetupFogMuzzleFlash();
+        enabled = true;
         LoadEquippedWeapon();
     }
 

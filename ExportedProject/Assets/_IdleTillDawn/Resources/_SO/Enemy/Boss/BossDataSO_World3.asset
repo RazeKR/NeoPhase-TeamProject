@@ -15,14 +15,14 @@ MonoBehaviour:
   _id: 12
   _enemyName: BossBombard
   _description: Description
-  _baseHealth: 50
+  _baseHealth: 1000
   _baseDamage: 10
   _attackCooltime: 1.5
   _moveSpeed: 3
   _attackRange: 5
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
-  _prefab: {fileID: 0}
+  _prefab: {fileID: 2289894174751621941, guid: 7ff55cc6106cfe14a81a405b7a278aac, type: 3}
   _dropItemId: 0
   _dropChance: 0.1
   _expReward: 10

@@ -55,6 +55,8 @@ MonoBehaviour:
   _bossList:
   - {fileID: 11400000, guid: 055ec93b603deb240b2650415311fcb9, type: 2}
   - {fileID: 11400000, guid: 8e8de08b4b4679b438c43125bbd85856, type: 2}
+  - {fileID: 11400000, guid: 83054da3142c9454ea046782d98bba04, type: 2}
+  - {fileID: 11400000, guid: 9eff3f7f244ce0741ac5cd0de4106e55, type: 2}
   _stageList:
   - {fileID: 11400000, guid: 95fd794cf5e3ed74da1c577e52d3c478, type: 2}
   _itemList:

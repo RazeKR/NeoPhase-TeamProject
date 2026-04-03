@@ -189,7 +189,7 @@ MonoBehaviour:
   _defaultAttackRange: 10
   _bulletSpeed: 10
   _useTestWeaponOverride: 0
-  _testWeaponData: {fileID: 11400000, guid: aef908ab333a0954ab49189d04b946b8, type: 2}
+  _testWeaponData: {fileID: 0}
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!114 &8780424355032175541
@@ -310,6 +310,27 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 9141945918906234050}
     m_Modifications:
+    - target: {fileID: 1717170004236854790, guid: 5027dceae8de9744d9abc2622a1d88c6,
+        type: 3}
+      propertyPath: m_Size.x
+      value: 0.6217853
+      objectReference: {fileID: 0}
+    - target: {fileID: 1717170004236854790, guid: 5027dceae8de9744d9abc2622a1d88c6,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 0.49678528
+      objectReference: {fileID: 0}
+    - target: {fileID: 1717170004236854790, guid: 5027dceae8de9744d9abc2622a1d88c6,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c3542454d7567c54493f4a0dec78cac5,
+        type: 2}
+    - target: {fileID: 1717170004236854790, guid: 5027dceae8de9744d9abc2622a1d88c6,
+        type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3098061790733595749, guid: 5027dceae8de9744d9abc2622a1d88c6,
         type: 3}
       propertyPath: m_LocalPosition.x

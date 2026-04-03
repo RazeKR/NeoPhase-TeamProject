@@ -145,7 +145,7 @@ MonoBehaviour:
   _description: 
   _defaultGravityScale: 0
   _hitFlashDuration: 0.1
-  _hitFlashMaterial: {fileID: 0}
+  _hitFlashMaterial: {fileID: 2100000, guid: 99f40263e839e68459c4e85288f49349, type: 2}
   _enemyData: {fileID: 11400000, guid: 9eff3f7f244ce0741ac5cd0de4106e55, type: 2}
   _paramSpeed: aSpeed
   _paramAttack: tAttack
@@ -156,7 +156,7 @@ MonoBehaviour:
   _projectilePrefab: {fileID: 3674075436809364576, guid: 5f561e20bc59da24685baae80a95e6ba,
     type: 3}
   _bombardmentCooldown: 5
-  _projectileCount: 5
+  _projectileCount: 20
   _bombardmentRadius: 2
 --- !u!50 &566332770441042721
 Rigidbody2D:

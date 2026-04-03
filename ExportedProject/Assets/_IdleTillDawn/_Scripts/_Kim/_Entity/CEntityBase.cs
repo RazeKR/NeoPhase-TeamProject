@@ -333,6 +333,8 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     /// <param name="tickInterval">데미지가 들어가는 간격</param>
     public virtual void ApplyBurn(float duration, float tickDamage, float tickInterval)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (_burnCoroutine != null)
         {
             StopCoroutine(_burnCoroutine);
@@ -368,6 +370,8 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     /// <param name="slowAmount">둔화율 (30f면 30% 속도로 느려짐)</param>
     public virtual void ApplyFreeze(float duration, float slowAmount)
     {
+        if (!gameObject.activeInHierarchy) return;
+
         if (_freezeCoroutine != null)
         {
             StopCoroutine(_freezeCoroutine);

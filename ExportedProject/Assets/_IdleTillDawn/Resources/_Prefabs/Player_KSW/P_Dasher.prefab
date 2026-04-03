@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6631375704956956956}
   - component: {fileID: 6584507635242647340}
-  - component: {fileID: 4365328048943841700}
   m_Layer: 3
   m_Name: WeaponTarget
   m_TagString: Untagged
@@ -73,39 +72,18 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
-  m_Sprite: {fileID: 0}
+  m_SortingOrder: 202
+  m_Sprite: {fileID: 21300000, guid: c3542454d7567c54493f4a0dec78cac5, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.6217853, y: 0.49678528}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &4365328048943841700
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 251442076396267112}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: dde519bc90f16cf4fbab4e3d889373f1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3993902716402548796
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,10 +264,6 @@ MonoBehaviour:
   _hitFlashDuration: 0.1
   _hitFlashMaterial: {fileID: 0}
   _animator: {fileID: 3722675710176299580}
-  _equippedSkills:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   _autoModeDelay: 3
   _evadeRadius: 2.5
   _hazardLayer:
@@ -297,7 +271,7 @@ MonoBehaviour:
     m_Bits: 1984
   _paramSpeed: aSpeed
   _defaultAttackRange: 5
-  _bulletSpeed: 20
+  _bulletSpeed: 10
   _useTestWeaponOverride: 0
   _testWeaponData: {fileID: 0}
   _preventTime: 1.5
@@ -351,7 +325,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _outerRadius: 5
   _innerRatio: 0.5
-  _intensity: 1
+  _intensity: 0.85
 --- !u!114 &7560496786862968432
 MonoBehaviour:
   m_ObjectHideFlags: 0
