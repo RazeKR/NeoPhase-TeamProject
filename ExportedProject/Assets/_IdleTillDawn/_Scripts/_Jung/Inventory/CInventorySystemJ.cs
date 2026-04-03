@@ -77,6 +77,12 @@ public class CInventorySystemJ : MonoBehaviour
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
 
         OnInventoryChanged += SortInventory;
+
+        // 이미 로드된 데이터가 있다면 즉시 복구
+        if (CJsonManager.Instance.CurrentSaveData != null)
+        {
+            RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
+        }
     }
 
     private void OnDestroy()
@@ -263,22 +269,35 @@ public class CInventorySystemJ : MonoBehaviour
             CItemDataSO so = CDataManager.Instance.GetItem(sData.itemID);
             if (so == null) continue;
 
+            CItemInstance itemInstance = null;
+
             if (so is CWeaponDataSO wSo)
             {
                 var w = new CWeaponInstance(wSo);
                 w._rank = sData.rank;
                 w._isEquipped = sData.isEquipped;
                 w._upgrade = sData.upgrade;
-                w._instanceID = sData.instanceID;
-                _inventory.Add(w);
+                itemInstance = w; // 할당
             }
-            else if (so is CPotionDataSO pSo) _inventory.Add(new CPotionInstance(pSo, sData.amount));
-            else if (so is CScrollDataSO sSo) _inventory.Add(new CScrollInstance(sSo, sData.amount));
+            else if (so is CPotionDataSO pSo)
+            {
+                itemInstance = new CPotionInstance(pSo, sData.amount);
+            }
+            else if (so is CScrollDataSO sSo)
+            {
+                itemInstance = new CScrollInstance(sSo, sData.amount);
+            }
+
+            if (itemInstance != null)
+            {
+                itemInstance._instanceID = sData.instanceID;
+                _inventory.Add(itemInstance);
+            }
         }
 
         _equippedWeaponId = saveData.equippedWeaponId;
         if (_equippedWeaponId != 0)
-            _equippedWeapon = _inventory.Find(i => i._itemData.Id == _equippedWeaponId) as CWeaponInstance;
+            _equippedWeapon = _inventory.Find(i => i is CWeaponInstance w && w._isEquipped) as CWeaponInstance;
 
         OnInventoryChanged?.Invoke();
     }
