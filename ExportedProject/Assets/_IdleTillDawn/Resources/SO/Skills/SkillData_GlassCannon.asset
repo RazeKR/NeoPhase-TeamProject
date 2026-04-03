@@ -15,17 +15,99 @@ MonoBehaviour:
   _id: 13
   skillName: "\uC720\uB9AC\uB300\uD3EC"
   flavourText: 
-  skillType: 1
+  skillType: 2
   icon: {fileID: 21300000, guid: 2c43266e36dcfa34a90c8532cd729709, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 0
   prerequisiteSkills:
   - {fileID: 11400000, guid: 9bae4d13e4f963a46944fae28c9ff464, type: 2}
-  statUp: 0
-  actionName: GlassCannon
-  coolDown: 15
-  requiredMana: 10
-  skillEffects: []
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 0
+    coolDown: 24
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 23
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 22
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 21
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 20
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 19
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 18
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 17
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 16
+    requiredMana: 16
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 15
+    requiredMana: 16
+    projectileAmount: 0
+  BuffLevelsDatas:
+  - statType: 2
+    buffAmount: 6
+    duration: 10
+  - statType: 2
+    buffAmount: 7
+    duration: 10
+  - statType: 2
+    buffAmount: 8
+    duration: 10
+  - statType: 2
+    buffAmount: 9
+    duration: 10
+  - statType: 2
+    buffAmount: 10
+    duration: 10
+  - statType: 2
+    buffAmount: 11
+    duration: 10
+  - statType: 2
+    buffAmount: 12
+    duration: 10
+  - statType: 2
+    buffAmount: 13
+    duration: 10
+  - statType: 2
+    buffAmount: 14
+    duration: 10
+  - statType: 2
+    buffAmount: 15
+    duration: 10
+  spreadAngle: 0
+  speed: 0
+  circularSpread: 0
+  damageInterval: 0
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 10
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
+    duration: 0
+  effectPrefab: {fileID: 4130152711437544586, guid: 6bfc0aa111507234fb3b7e07fce7718e,
+    type: 3}

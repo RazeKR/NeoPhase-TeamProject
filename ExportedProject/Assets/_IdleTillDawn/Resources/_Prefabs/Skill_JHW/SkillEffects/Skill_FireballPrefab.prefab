@@ -5081,6 +5081,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagable: 0
   movable: 1
+  acceleration: 10
+  maxSpeed: 20
+  minSpeed: 0
   _visualChild: {fileID: 0}
   destroyOnHit: 1
   effectPrefab: {fileID: 6187072102146129967, guid: e60ca9825ebf29b4487cb7bad71b8bf6,

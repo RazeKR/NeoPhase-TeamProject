@@ -62,8 +62,9 @@ MonoBehaviour:
     coolDown: 12
     requiredMana: 15
     projectileAmount: 1
+  BuffLevelsDatas: []
   spreadAngle: 0
-  speed: 2
+  speed: 7
   circularSpread: 0
   damageInterval: 1
   useScaleMagnification: 1

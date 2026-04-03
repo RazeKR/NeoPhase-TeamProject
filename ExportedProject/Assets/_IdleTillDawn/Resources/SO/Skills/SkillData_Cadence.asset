@@ -19,13 +19,45 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: f40ef85e60069664db4c0eb51c777b9c, type: 2}
   maxLevel: 5
   requiredPoints: 2
-  damage: 100
   prerequisiteSkills:
   - {fileID: 11400000, guid: f7f590cb11d68f740935756e0369447e, type: 2}
-  statUp: 0
-  actionName: Cadence
-  coolDown: 16
-  requiredMana: 30
-  skillEffects: []
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 60
+    coolDown: 18
+    requiredMana: 30
+    projectileAmount: 0
+  - damage: 70
+    coolDown: 17
+    requiredMana: 35
+    projectileAmount: 0
+  - damage: 80
+    coolDown: 16
+    requiredMana: 40
+    projectileAmount: 0
+  - damage: 90
+    coolDown: 15
+    requiredMana: 40
+    projectileAmount: 0
+  - damage: 100
+    coolDown: 14
+    requiredMana: 40
+    projectileAmount: 0
+  BuffLevelsDatas: []
+  spreadAngle: 0
+  speed: 2
+  circularSpread: 0
+  damageInterval: 0
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 3
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
+    duration: 0
+  effectPrefab: {fileID: 5840033563634840676, guid: 0edaea73303d4504ebda66c031f0af43,
+    type: 3}

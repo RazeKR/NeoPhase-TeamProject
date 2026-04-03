@@ -7,6 +7,11 @@ public class CProjectileSkill : MonoBehaviour, ISkill
     public bool damagable = true;
     public bool movable = true;
 
+    [Header("투사체 가속 설정")]
+    public float acceleration = 0f;
+    public float maxSpeed = 20f;
+    public float minSpeed = 0f;
+
     [Header("회전값 고정 이미지(자식 오브젝트 연결)")]
     public Transform _visualChild;
 
@@ -15,6 +20,7 @@ public class CProjectileSkill : MonoBehaviour, ISkill
     public GameObject effectPrefab;
     public LayerMask enemyLayer;
 
+    private float _currentSpeed;
     private float _damage;
     private int _level;
     private CSkillDataSO _data;
@@ -27,6 +33,8 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
         _data = data;
 
+        _currentSpeed = data.speed;
+
         Destroy(gameObject, data.lifeTime);
     }
 
@@ -34,8 +42,15 @@ public class CProjectileSkill : MonoBehaviour, ISkill
     private void Update()
     {
         if (!movable || _data == null) return;
+                
+        _currentSpeed += acceleration * Time.deltaTime;
 
-        transform.Translate(Vector3.right * _data.speed * Time.deltaTime);
+        if (acceleration > 0)
+            _currentSpeed = Mathf.Min(_currentSpeed, maxSpeed);
+        else
+            _currentSpeed = Mathf.Max(_currentSpeed, minSpeed);
+
+        transform.Translate(Vector3.right * _currentSpeed * Time.deltaTime);
     }
 
     private void LateUpdate()

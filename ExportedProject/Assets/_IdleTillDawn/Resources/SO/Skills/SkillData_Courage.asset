@@ -29,43 +29,44 @@ MonoBehaviour:
   - damage: 12
     coolDown: 10
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 13
     coolDown: 8
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 16
     coolDown: 9
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 18
     coolDown: 8
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 29
     coolDown: 8
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 22
     coolDown: 8
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 24
     coolDown: 7
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 26
     coolDown: 7
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
   - damage: 28
     coolDown: 7
     requiredMana: 10
-    projectileAmount: 6
+    projectileAmount: 1
+  BuffLevelsDatas: []
   spreadAngle: 0
-  speed: 7
-  circularSpread: 1
-  damageInterval: 0
+  speed: 0
+  circularSpread: 0
+  damageInterval: 1
   useScaleMagnification: 0
   scalePreset: 0
   lifeTime: 0.5

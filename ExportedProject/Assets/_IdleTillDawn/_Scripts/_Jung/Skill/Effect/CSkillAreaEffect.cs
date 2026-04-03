@@ -31,7 +31,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 
         _damageInterval = _data.damageInterval;
 
-        _timer = _damageInterval;
+        _timer = _damageInterval - 0.1f;
     }
 
     private void Update()

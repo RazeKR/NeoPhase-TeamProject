@@ -7,6 +7,7 @@ public enum ESkillType
 {
     Passive, // 패시브 - 장착 시 자동 적용
     Active,  // 액티브 - 수동 발동
+    Buff,    // 액티브 - 수동 발동 (버프)
 }
 
 /// <summary>스킬의 부가효과 열거형입니다.</summary>
@@ -44,7 +45,7 @@ public class CSkillDataSO : CBaseDataSO
     [Header("액티브")]
     public List<ActiveLevelData> ActiveLevelDatas;
 
-    [Header("버프형 액티브")]
+    [Header("액티브 - 레벨 당 버프 추가 설정")]
     public List<BuffLevelData> BuffLevelsDatas;
 
     [Header("투사체 설정")]

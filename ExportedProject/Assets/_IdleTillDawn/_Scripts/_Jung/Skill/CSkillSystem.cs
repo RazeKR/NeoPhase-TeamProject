@@ -159,6 +159,18 @@ public class CSkillSystem : MonoBehaviour
             return;
         }
 
+        if (data.skillType == ESkillType.Buff)
+        {
+            CPlayerStatManager pStat = playerObj.GetComponent<CPlayerStatManager>();
+            if (pStat == null) return;
+
+            BuffLevelData datas = data.BuffLevelsDatas[levelIndex];
+
+            pStat.AddTemporaryBuff(datas.statType, datas.buffAmount, datas.duration);
+
+            Debug.Log("Buff On");
+        }
+
         Vector3 spawnPos = playerObj.transform.position;
         spawnPos.z = 0;
 
@@ -198,6 +210,8 @@ public class CSkillSystem : MonoBehaviour
             float currentAngle = startAngle + (step * i);
             Quaternion rot = Quaternion.Euler(0, 0, currentAngle);
 
+            if (data.skillType == ESkillType.Buff) rot = Quaternion.identity;
+
             GameObject go = Instantiate(data.effectPrefab, spawnPos, rot);
 
             var followScript = go.GetComponent<CSkillFollow>();
@@ -219,7 +233,7 @@ public class CSkillSystem : MonoBehaviour
         if (data.areaKnockbackRadius > 0)
             ApplyAreaKnockback(spawnPos, data.areaKnockbackRadius, data.areaKnockbackForce, data.areaKnockbackDuration);
 
-        // ��Ÿ��
+        // CoolDown
         StartCooldown(skillId, data.ActiveLevelDatas[levelIndex].coolDown);
 
         OnSkillEquipped?.Invoke();
@@ -281,7 +295,7 @@ public class CSkillSystem : MonoBehaviour
     {
         if (GetSkillLevel(data.Id) <= 0) return false;   // ������ ���� �� false ��ȯ
 
-        if (data.skillType != ESkillType.Active) return false;  // ��Ƽ�갡 �ƴ� �� false ��ȯ
+        if (data.skillType == ESkillType.Passive) return false;  // ��Ƽ�갡 �ƴ� �� false ��ȯ
 
         while (_equippedSkills.Count <= slotIndex)
         {

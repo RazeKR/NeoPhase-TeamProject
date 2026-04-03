@@ -26,44 +26,58 @@ MonoBehaviour:
   - damage: 10
     coolDown: 16
     requiredMana: 15
+    projectileAmount: 1
   - damage: 13
     coolDown: 16
     requiredMana: 15
+    projectileAmount: 1
   - damage: 16
     coolDown: 16
     requiredMana: 15
+    projectileAmount: 1
   - damage: 18
     coolDown: 15
     requiredMana: 15
+    projectileAmount: 1
   - damage: 20
     coolDown: 15
     requiredMana: 15
+    projectileAmount: 1
   - damage: 22
     coolDown: 15
     requiredMana: 15
+    projectileAmount: 1
   - damage: 24
     coolDown: 14
     requiredMana: 15
+    projectileAmount: 1
   - damage: 26
     coolDown: 14
     requiredMana: 15
+    projectileAmount: 1
   - damage: 28
     coolDown: 14
     requiredMana: 15
+    projectileAmount: 1
   - damage: 30
     coolDown: 14
     requiredMana: 15
-  projectileAmount: 0
+    projectileAmount: 1
+  BuffLevelsDatas: []
   spreadAngle: 0
   speed: 0
+  circularSpread: 0
   damageInterval: 1
   useScaleMagnification: 1
   scalePreset: 1
   lifeTime: 5
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
   useSkillEffect: 1
   skillEffect:
     type: 2
     value: 10
     duration: 2
-  effectPrefab: {fileID: 7223285654047631799, guid: ad42e090ee1d1224da837c2e9cd80fc9,
+  effectPrefab: {fileID: 2568841504235296460, guid: 4b1c951a5c5d0e04c87f82d4a13b86e1,
     type: 3}
