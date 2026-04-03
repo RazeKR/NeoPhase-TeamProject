@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class CPlayerStatManager : MonoBehaviour, IManaUser
@@ -9,6 +10,8 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     private float[] _levelModifiers = new float[(int)EPlayerStatType.Count];
     // 추가 스탯 모디파이어
     private float[] _bonusModifiers = new float[(int)EPlayerStatType.Count];
+    // buff Stat Modifier
+    private float[] _temporaryModifiers = new float[(int)EPlayerStatType.Count];
     #endregion
 
     #region 프로퍼티
@@ -71,6 +74,30 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
         OnStatUpgraded?.Invoke();
     }
+
+    /// <summary>
+    /// Temporary Buff Stat API
+    /// </summary>
+    /// <param name="statType"></param>
+    /// <param name="amount"></param>
+    /// <param name="duration"></param>
+    public void AddTemporaryBuff(EPlayerStatType statType, float amount, float duration)
+    {
+        StartCoroutine(BuffRoutine(statType, amount, duration));
+    }
+
+    private IEnumerator BuffRoutine(EPlayerStatType statType, float amount, float duration)
+    {
+        _temporaryModifiers[(int)statType] += amount;
+        
+        OnStatUpgraded?.Invoke();
+
+        yield return new WaitForSeconds(duration);
+
+        _temporaryModifiers[(int)statType] -= amount;
+        OnStatUpgraded?.Invoke();
+    }
+
     /// <summary>
     /// 최종 스탯을 계산한 후 반환하는 메서드
     /// </summary>
@@ -81,7 +108,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         int index = (int)type;
         float baseValue = _baseData.GetStatInfo(type).BaseValue;
 
-        return baseValue + _levelModifiers[index] + _bonusModifiers[index];
+        return baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index];
     }
 
     public void AddExp(float amount)

@@ -131,21 +131,18 @@ public class CSkillSystem : MonoBehaviour
     #region PublicMethods
 
     /// <summary>
-    /// ��ų ���, ���ε�� ��ų SO ���ο� ����� ���� ����
+    /// Use Skill by Index
     /// </summary>
     public void UseBindSkill(int slotIndex)
     {
-        // ���� ��ȿ�� �˻�
         if (slotIndex < 0 || slotIndex >= _equippedSkills.Count) return;
         int skillId = _equippedSkills[slotIndex];
         if (skillId == 0) return;
 
-        // ������ üũ
         CSkillDataSO data = CDataManager.Instance.GetSkill(skillId);
         if (data == null || data.effectPrefab == null) return;
         if (!IsSkillReady(skillId)) return;
 
-        // �÷��̾� ���� �Ŵ��� üũ
         GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
         if (playerObj == null) return;
 
@@ -158,7 +155,7 @@ public class CSkillSystem : MonoBehaviour
 
         if (manaUser != null && !manaUser.ConsumeMana(_manaUse ? requiredMana : 0))
         {
-            Debug.Log($"���� �������� ��ų ��� �Ұ�, ���� ���� {playerStatManager.CurrentMana}");
+            Debug.Log($"Mana Use : {playerStatManager.CurrentMana}");
             return;
         }
 
@@ -207,7 +204,7 @@ public class CSkillSystem : MonoBehaviour
             if (followScript != null )
                 followScript.SetTarget(playerObj.transform);
 
-            // ISkill ����� ��� ��ų ������Ʈ Init
+            // ISkill Init
             ISkill[] effects = go.GetComponents<ISkill>();
 
             foreach (var effect in effects)

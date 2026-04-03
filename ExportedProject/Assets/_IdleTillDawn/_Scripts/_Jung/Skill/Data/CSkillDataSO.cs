@@ -9,12 +9,6 @@ public enum ESkillType
     Active,  // 액티브 - 수동 발동
 }
 
-// 추후 패시브 스탯 연동 시 사용합니다
-public enum EStatus
-{
-    // 추후 활성화 예정
-}
-
 /// <summary>스킬의 부가효과 열거형입니다.</summary>
 public enum EEffectType
 {
@@ -49,6 +43,9 @@ public class CSkillDataSO : CBaseDataSO
 
     [Header("액티브")]
     public List<ActiveLevelData> ActiveLevelDatas;
+
+    [Header("버프형 액티브")]
+    public List<BuffLevelData> BuffLevelsDatas;
 
     [Header("투사체 설정")]
     public float spreadAngle;     // 투사체 탄퍼짐 (circularSpread=false 일 때만 사용)
@@ -90,8 +87,17 @@ public class ActiveLevelData
 [Serializable]
 public class PassiveLevelData
 {
-    public int statUp;
+    public float statAmount;
 }
+
+[Serializable]
+public class BuffLevelData
+{
+    public EPlayerStatType statType;
+    public float buffAmount;
+    public float duration;
+}
+
 
 
 [Serializable]
