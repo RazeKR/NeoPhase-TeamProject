@@ -202,6 +202,10 @@ public class CGameManager : MonoBehaviour
     /// </summary>
     public void SaveProgress()
     {
+        // 항상 PlayerPrefs에 동기화 (LoadProgress는 BeforeSceneLoad 타이밍에 PlayerPrefs를 읽기 때문)
+        PlayerPrefs.SetInt("StageIndex", _currentStageIndex);
+        PlayerPrefs.Save();
+
         if (CJsonManager.Instance != null)
         {
             CSaveData saveData = CJsonManager.Instance.GetOrCreateSaveData();
@@ -209,12 +213,7 @@ public class CGameManager : MonoBehaviour
             if (_currentStageIndex > saveData.highestStageId)
                 saveData.highestStageId = _currentStageIndex;
             CJsonManager.Instance.Save(saveData);
-            return;
         }
-
-        // CJsonManager 미존재 시 폴백 (RuntimeInitialize 타이밍 등)
-        PlayerPrefs.SetInt("StageIndex", _currentStageIndex);
-        PlayerPrefs.Save();
     }
 
     /// <summary>
