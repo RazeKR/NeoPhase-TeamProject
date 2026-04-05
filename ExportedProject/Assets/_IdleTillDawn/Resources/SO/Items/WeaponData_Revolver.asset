@@ -25,3 +25,14 @@ MonoBehaviour:
   _lifeTime: 5
   _damagePerRank: 0
   _isMelee: 0
+  _fireSFX:
+    _clips:
+    - {fileID: 8300000, guid: 0b3b02c677903fc428abb5b90239a767, type: 3}
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
