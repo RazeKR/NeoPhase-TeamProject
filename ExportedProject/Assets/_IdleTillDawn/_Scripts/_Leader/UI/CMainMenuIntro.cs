@@ -171,16 +171,16 @@ public class CMainMenuIntro : MonoBehaviour
         StartCoroutine(Co_SlideLeaf(_rightLeaf, Vector2.left  * _leafSlideDistance, _leafDuration));
         StartCoroutine(Co_FadeCanvasGroup(_logoCG, 0f, 1f, _logoDuration));
 
-        yield return new WaitForSeconds(_delayBeforeText);
+        yield return new WaitForSecondsRealtime(_delayBeforeText);
 
         for (int i = 0; i < _menuTextCGs.Length; i++)
         {
             StartCoroutine(Co_SlideAndFadeText(i));
-            yield return new WaitForSeconds(_textStagger);
+            yield return new WaitForSecondsRealtime(_textStagger);
         }
 
         float textTotalDuration = _textFadeDuration + _textStagger * (_menuTextCGs.Length - 1);
-        yield return new WaitForSeconds(textTotalDuration + _delayBeforeEyeBlink);
+        yield return new WaitForSecondsRealtime(textTotalDuration + _delayBeforeEyeBlink);
 
         StartCoroutine(Co_ShowEyeBlink());
     }
@@ -199,7 +199,7 @@ public class CMainMenuIntro : MonoBehaviour
 
         while (t < duration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             leaf.anchoredPosition = Vector2.Lerp(start, target, Mathf.SmoothStep(0f, 1f, t / duration));
             yield return null;
         }
@@ -221,7 +221,7 @@ public class CMainMenuIntro : MonoBehaviour
 
         while (t < _textFadeDuration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             float ratio = Mathf.SmoothStep(0f, 1f, t / _textFadeDuration);
             rect.anchoredPosition = Vector2.Lerp(start, target, ratio);
             if (cg != null) cg.alpha = ratio;
@@ -246,7 +246,7 @@ public class CMainMenuIntro : MonoBehaviour
 
         while (t < _eyeFadeDuration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             float ratio = Mathf.SmoothStep(0f, 1f, t / _eyeFadeDuration);
             _eyeBlinkRect.anchoredPosition = Vector2.Lerp(start, target, ratio);
             Color c = _eyeBlinkImage.color; c.a = ratio;
@@ -276,7 +276,7 @@ public class CMainMenuIntro : MonoBehaviour
 
         while (true)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
 
             if (timer >= _eyeFrameInterval) // 매 프레임 _eyeFrameInterval을 읽어 실시간 반영
             {
@@ -298,7 +298,7 @@ public class CMainMenuIntro : MonoBehaviour
 
         while (true)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             float offsetY = Mathf.Sin(elapsed * _eyeBobSpeed * Mathf.PI) * _eyeBobAmount;
             _eyeBlinkRect.anchoredPosition = _eyeBlinkOrigin + new Vector2(0f, offsetY);
             yield return null;
@@ -317,7 +317,7 @@ public class CMainMenuIntro : MonoBehaviour
 
         while (t < duration)
         {
-            t += Time.deltaTime;
+            t += Time.unscaledDeltaTime;
             cg.alpha = Mathf.Lerp(from, to, Mathf.SmoothStep(0f, 1f, t / duration));
             yield return null;
         }

@@ -47,6 +47,9 @@ public class CPlayerDataSO : CBaseDataSO
     [Header("소환 오브젝트")]
     [SerializeField] private GameObject _prefab; // 플레이어 프리팹
 
+    [Header("사운드")]
+    [SerializeField] private CSoundData _hitSFX; // 플레이어 피격 시 재생 사운드
+
     #endregion
 
     #region Properties
@@ -55,6 +58,9 @@ public class CPlayerDataSO : CBaseDataSO
     public string     Description       => _description;
     public Sprite     CharacterPortrait => _characterPortrait;
     public GameObject Prefab            => _prefab;
+
+    /// <summary>플레이어 피격 시 재생할 사운드 데이터. null이면 무음</summary>
+    public CSoundData HitSFX            => _hitSFX;
 
     #endregion
 

@@ -72,6 +72,11 @@ public class CJsonManager : MonoBehaviour
         _savePath = Path.Combine(Application.persistentDataPath, _saveFileName);
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     #endregion
 
     #region PublicMethods

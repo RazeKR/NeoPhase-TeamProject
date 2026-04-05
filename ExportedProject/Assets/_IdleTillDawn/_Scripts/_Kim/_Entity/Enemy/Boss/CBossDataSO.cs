@@ -26,6 +26,9 @@ public class CBossDataSO : CEnemyDataSO
     [SerializeField] private int _bossExpReward = 500;          // 처치 시 경험치 보상
     [SerializeField] private int _bossGoldReward = 1000;        // 처치 시 골드 보상
 
+    [Header("사운드 (CEnemyDataSO.HitSFX 포함)")]
+    [SerializeField] private CSoundData _attackSFX;  // 특수 공격 시전 시 재생 사운드
+
     #endregion
 
     #region Properties
@@ -39,6 +42,9 @@ public class CBossDataSO : CEnemyDataSO
     public List<int>   RewardItemIds          => _rewardItemIds;
     public int         BossExpReward          => _bossExpReward;
     public int         BossGoldReward         => _bossGoldReward;
+
+    /// <summary>보스 특수 공격 시전 시 재생할 사운드 데이터. 피격음은 부모 HitSFX 사용</summary>
+    public CSoundData  AttackSFX              => _attackSFX;
 
     #endregion
 

@@ -16,7 +16,7 @@ MonoBehaviour:
   _enemyName: ShubNiggurath
   _description: "\uAC78\uC5B4\uB2E4\uB2C8\uB2E4\uAC00 \uC900\uBE44\uD0DC\uC138\uC774\uD6C4
     \uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C \uBE60\uB978\uC18D\uB3C4\uB85C \uB3CC\uC9C4\uD55C\uB2E4."
-  _baseHealth: 1000
+  _baseHealth: 10
   _baseDamage: 10
   _attackCooltime: 1.5
   _moveSpeed: 3

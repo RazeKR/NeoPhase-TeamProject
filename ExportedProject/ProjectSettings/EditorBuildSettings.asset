@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_IdleTillDawn/_Scenes/MainMenu_KSH.unity
+    guid: c581432e7d01b1142a253eb0affaf646
+  - enabled: 1
     path: Assets/_IdleTillDawn/_Scenes/Stage1_KSH.unity
     guid: 2370c581be2290b41b45c02a681c74b6
   - enabled: 1

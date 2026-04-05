@@ -28,6 +28,11 @@ public class CSettingsManager : MonoBehaviour
         LoadAll();
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     #endregion
 
     #region Constants

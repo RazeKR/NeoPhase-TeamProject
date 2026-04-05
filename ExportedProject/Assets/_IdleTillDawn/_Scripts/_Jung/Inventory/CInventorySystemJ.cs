@@ -267,7 +267,11 @@ public class CInventorySystemJ : MonoBehaviour
         foreach (var sData in saveData.inventorySaveData.items)
         {
             CItemDataSO so = CDataManager.Instance.GetItem(sData.itemID);
-            if (so == null) continue;
+            if (so == null)
+            {
+                Debug.LogWarning($"[CInventorySystemJ] ID={sData.itemID} ({sData.type}) SO를 CDataManager에서 찾을 수 없습니다. CDataManager의 _weaponList/_itemList에 해당 SO가 등록되었는지 확인하세요.");
+                continue;
+            }
 
             CItemInstance itemInstance = null;
 

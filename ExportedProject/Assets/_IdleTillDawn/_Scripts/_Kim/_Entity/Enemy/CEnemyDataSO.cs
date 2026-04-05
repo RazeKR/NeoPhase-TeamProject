@@ -32,6 +32,9 @@ public class CEnemyDataSO : CBaseDataSO
     [SerializeField] private float _dropChance = 0.1f;  // 아이템 드롭 확률 (0~1)
     [SerializeField] private int _expReward = 10;        // 기본 경험치 보상
 
+    [Header("사운드")]
+    [SerializeField] private CSoundData _hitSFX;        // 피격 시 재생 사운드
+
     #endregion
 
     #region Properties
@@ -49,6 +52,9 @@ public class CEnemyDataSO : CBaseDataSO
     public int       DropItemId            => _dropItemId;
     public float     DropChance            => _dropChance;
     public int       ExpReward             => _expReward;
+
+    /// <summary>몬스터 피격 시 재생할 사운드 데이터. null이면 무음</summary>
+    public CSoundData HitSFX              => _hitSFX;
 
     #endregion
 

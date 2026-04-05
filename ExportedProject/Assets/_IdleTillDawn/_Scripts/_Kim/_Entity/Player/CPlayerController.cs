@@ -355,6 +355,9 @@ public class CPlayerController : CEntityBase, IHealable
         // 총구화염 재생
         CWeaponEquip.Instance?.ShowMuzzleFlash();
 
+        // 발사 사운드 재생
+        CAudioManager.Instance?.Play(weaponData.FireSFX, spawnPos);
+
         // flanne.Projectile 계열 투사체
         flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
         if (proj != null)

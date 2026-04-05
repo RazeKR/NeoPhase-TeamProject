@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
-/// 씬 전환과 전역 게임 상태를 관리하는 최상위 매니저입니다.
-/// DontDestroyOnLoad로 씬이 바뀌어도 파괴되지 않습니다.
+/// 씬 전환과 전역 게임 상태를 관리하는 매니저입니다.
+/// 각 씬에 GameManager_KSH 프리팹을 배치하여 사용합니다.
 /// 스테이지 SO 데이터는 CDataManager에서 조회하며 직접 보유하지 않습니다.
 /// 스테이지 인덱스 추적, 씬 전환, 스케일링 공식만 담당합니다.
 /// </summary>
@@ -12,12 +12,11 @@ public class CGameManager : MonoBehaviour
 {
     #region Singleton
 
-    public static CGameManager Instance { get; private set; } // 전역 접근점, 씬 전환 후에도 유지
+    public static CGameManager Instance { get; private set; }
 
     /// <summary>
     /// 씬 로드 전 가장 먼저 실행됩니다.
     /// CGameManager 인스턴스가 없으면 Resources/_Prefabs/GameManager_KSH 프리팹을 자동 생성합니다.
-    /// 어떤 씬에서 Play를 시작해도 Instance가 null이 되지 않습니다.
     /// </summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoCreate()
@@ -49,6 +48,9 @@ public class CGameManager : MonoBehaviour
 
     #region InspectorVariables
 
+    [Header("메인 메뉴 씬 이름")]
+    [SerializeField] private string _mainMenuSceneName = "MainMenu_KSH";
+
     [Header("월드별 씬 이름")]
     [SerializeField] private string[] _worldSceneNames; // world[0]="World_1", world[1]="World_2"...
 
@@ -66,7 +68,9 @@ public class CGameManager : MonoBehaviour
 
     #region PrivateVariables
 
-    private int _currentStageIndex; // 현재 진행 중인 스테이지 인덱스 (0-based, 씬 간 유지)
+    private int  _currentStageIndex;  // 현재 진행 중인 스테이지 인덱스 (0-based, 씬 간 유지)
+    private bool _hasEnteredGame;     // 한 번이라도 게임(스테이지)에 진입했으면 true
+    private int  _selectedPlayerId = -1; // 캐릭터 선택 화면에서 선택한 플레이어 ID (-1 = 미선택)
 
     #endregion
 
@@ -74,6 +78,9 @@ public class CGameManager : MonoBehaviour
 
     /// <summary>현재 진행 중인 스테이지 인덱스 (0-based).</summary>
     public int CurrentStageIndex => _currentStageIndex;
+
+    /// <summary>캐릭터 선택 화면에서 선택한 플레이어 ID. -1이면 JSON에서 읽어야 함.</summary>
+    public int SelectedPlayerId => _selectedPlayerId;
 
     /// <summary>
     /// 현재 스테이지의 SO 데이터를 CDataManager에서 조회하여 반환합니다.
@@ -109,27 +116,35 @@ public class CGameManager : MonoBehaviour
 
     #region UnityMethods
 
-    /// <summary>씬 중복 로드 방지 및 DontDestroyOnLoad 등록.</summary>
     private void Awake()
     {
-        if (Instance != null) { Destroy(gameObject); return; }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
         LoadProgress();
+        RedirectToCorrectWorldScene();
     }
 
     private void Start()
     {
-        // CDataManager가 이미 초기화돼 있으면 즉시 검증,
-        // 아직 초기화 전이면 OnDataInitialized 이벤트 구독 후 대기
-        if (CDataManager.Instance != null && CDataManager.Instance.IsInitialized)
+        SubscribeDataManager();
+    }
+
+    private void SubscribeDataManager()
+    {
+        if (CDataManager.Instance == null) return;
+
+        CDataManager.Instance.OnDataInitialized -= ValidateStageIndex;
+
+        if (CDataManager.Instance.IsInitialized)
             ValidateStageIndex();
-        else if (CDataManager.Instance != null)
+        else
             CDataManager.Instance.OnDataInitialized += ValidateStageIndex;
     }
 
     private void OnDestroy()
     {
+        if (Instance == this) Instance = null;
         if (CDataManager.Instance != null)
             CDataManager.Instance.OnDataInitialized -= ValidateStageIndex;
     }
@@ -156,7 +171,7 @@ public class CGameManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
-            ResetToFirstStage();
+            ResetAllData();
     }
 
     #endregion
@@ -188,22 +203,54 @@ public class CGameManager : MonoBehaviour
     public void RespawnCurrentStage() =>
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-    /// <summary>스테이지를 1-1로 초기화합니다 (P키 디버그용).</summary>
-    public void ResetToFirstStage()
+    /// <summary>
+    /// 모든 플레이어 데이터(스테이지 진행도·스킬트리·인벤토리)를 초기화하고
+    /// 메인 메뉴 씬으로 이동합니다. (P키)
+    /// </summary>
+    public void ResetAllData()
     {
-        _currentStageIndex = 0;
-        SaveProgress();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        // 1. JSON 세이브 파일 삭제
+        if (CJsonManager.Instance != null)  { CJsonManager.Instance.DeleteSave();  Destroy(CJsonManager.Instance.gameObject); }
+        if (CAudioManager.Instance != null) { Destroy(CAudioManager.Instance.gameObject); }
+        if (CDataManager.Instance != null)  { Destroy(CDataManager.Instance.gameObject); }
+        if (CSettingsManager.Instance != null) { Destroy(CSettingsManager.Instance.gameObject); }
+
+        // 2. PlayerPrefs 전체 초기화
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+
+        // 3. timeScale 복구
+        Time.timeScale = 1f;
+
+        Debug.Log("[CGameManager] 전체 데이터 초기화 완료 → 메인 메뉴로 이동");
+
+        // 4. 자기 자신도 파괴한 뒤 메인 메뉴 로드 → AutoCreate가 새 인스턴스를 생성
+        Destroy(gameObject);
+        SceneManager.LoadScene(_mainMenuSceneName);
     }
 
     /// <summary>
     /// 현재 스테이지 인덱스를 CJsonManager에 저장합니다.
     /// CJsonManager가 없는 타이밍이면 PlayerPrefs로 폴백합니다.
     /// </summary>
+    /// <summary>
+    /// 처음으로 스테이지에 진입할 때 호출합니다.
+    /// playerId를 메모리에 보관하여 씬 전환 직후 CPlayerSpawner가 즉시 참조할 수 있게 합니다.
+    /// </summary>
+    public void MarkGameEntered(int playerId = -1)
+    {
+        _hasEnteredGame  = true;
+        if (playerId >= 0) _selectedPlayerId = playerId;
+        SaveProgress();
+    }
+
     public void SaveProgress()
     {
-        // 항상 PlayerPrefs에 동기화 (LoadProgress는 BeforeSceneLoad 타이밍에 PlayerPrefs를 읽기 때문)
-        PlayerPrefs.SetInt("StageIndex", _currentStageIndex);
+        // PlayerPrefs에 모든 상태 동기화
+        // (LoadProgress는 BeforeSceneLoad 타이밍에 실행 → CJsonManager 미존재 → PlayerPrefs가 유일한 저장소)
+        PlayerPrefs.SetInt("StageIndex",      _currentStageIndex);
+        PlayerPrefs.SetInt("HasEnteredGame",  _hasEnteredGame ? 1 : 0);
+        PlayerPrefs.SetInt("SelectedPlayerId", _selectedPlayerId); // 재실행 후에도 캐릭터 선택 유지
         PlayerPrefs.Save();
 
         if (CJsonManager.Instance != null)
@@ -212,25 +259,34 @@ public class CGameManager : MonoBehaviour
             saveData.currentStageId = _currentStageIndex;
             if (_currentStageIndex > saveData.highestStageId)
                 saveData.highestStageId = _currentStageIndex;
+            // playerStatId도 항상 최신값으로 동기화 (JSON 단독 읽기 시 대비)
+            if (_selectedPlayerId >= 0)
+                saveData.playerStatId = _selectedPlayerId;
             CJsonManager.Instance.Save(saveData);
         }
     }
 
     /// <summary>
-    /// 저장된 스테이지 인덱스를 불러옵니다.
-    /// CJsonManager가 없는 타이밍이면 PlayerPrefs에서 폴백으로 읽습니다.
+    /// 저장된 진행 상태를 불러옵니다.
+    /// BeforeSceneLoad 타이밍(CJsonManager 미존재)이면 PlayerPrefs에서 읽습니다.
     /// </summary>
     public void LoadProgress()
     {
+        // PlayerPrefs는 항상 읽음 (BeforeSceneLoad 타이밍 대응)
+        _currentStageIndex = PlayerPrefs.GetInt("StageIndex", 0);
+        _hasEnteredGame    = PlayerPrefs.GetInt("HasEnteredGame", 0) == 1;
+        _selectedPlayerId  = PlayerPrefs.GetInt("SelectedPlayerId", -1);
+
+        // CJsonManager가 있으면 JSON으로 보완
         if (CJsonManager.Instance != null)
         {
             CSaveData saveData = CJsonManager.Instance.GetOrCreateSaveData();
             _currentStageIndex = saveData.currentStageId;
-            return;
-        }
 
-        // CJsonManager 미존재 시 폴백
-        _currentStageIndex = PlayerPrefs.GetInt("StageIndex", 0);
+            // JSON의 playerStatId가 유효하면 우선 적용 (PlayerPrefs보다 신뢰도 높음)
+            if (saveData.playerStatId >= 0 && _selectedPlayerId < 0)
+                _selectedPlayerId = saveData.playerStatId;
+        }
     }
 
     /// <summary>
@@ -261,6 +317,39 @@ public class CGameManager : MonoBehaviour
     #endregion
 
     #region PrivateMethods
+
+    /// <summary>
+    /// 저장된 스테이지 인덱스에 해당하는 월드 씬이 현재 씬과 다를 경우 올바른 씬으로 이동합니다.
+    /// - 최초 실행(_hasEnteredGame == false): 메인 메뉴에서 시작합니다.
+    /// - 이전에 게임에 진입한 적 있음: 마지막으로 저장된 월드 씬으로 이동합니다.
+    /// </summary>
+    private void RedirectToCorrectWorldScene()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        // 최초 실행 — 메인 메뉴에 있지 않으면 메인 메뉴로 이동
+        if (!_hasEnteredGame)
+        {
+            if (currentScene != _mainMenuSceneName)
+            {
+                Debug.Log($"[CGameManager] 최초 실행 → 메인 메뉴 '{_mainMenuSceneName}'으로 이동");
+                SceneManager.LoadScene(_mainMenuSceneName);
+            }
+            return;
+        }
+
+        // 이후 실행 — 마지막으로 저장된 월드 씬으로 이동
+        if (_worldSceneNames == null || _worldSceneNames.Length == 0) return;
+
+        int worldIndex = _currentStageIndex / 10;
+        if (worldIndex < 0 || worldIndex >= _worldSceneNames.Length) return;
+
+        string expectedScene = _worldSceneNames[worldIndex];
+        if (string.IsNullOrEmpty(expectedScene) || currentScene == expectedScene) return;
+
+        Debug.Log($"[CGameManager] StageIndex={_currentStageIndex} → 월드씬 '{expectedScene}'으로 리다이렉트 (현재: '{currentScene}')");
+        SceneManager.LoadScene(expectedScene);
+    }
 
     /// <summary>
     /// 다음 월드 씬을 로드합니다.

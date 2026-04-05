@@ -83,6 +83,11 @@ public class CDataManager : MonoBehaviour
         InitAllDictionaries();
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
     #endregion
 
     #region PublicMethods
@@ -213,9 +218,7 @@ public class CDataManager : MonoBehaviour
     private void InitAllDictionaries()
     {
         LoadPlayerDataFromResources();
-        // 1차: Inspector _stageList에 직접 연결된 SO 등록 (DataManager 프리팹 Inspector)
-        RegisterList(_stageList, _stageDict, "Stage");
-        // 2차: Resources/_StageDataSO 하위 전체 자동 로드 (파일만 있으면 자동 인식, 중복 시 경고 후 스킵)
+        // 스테이지는 Resources/_StageDataSO에서 자동 로드 (인스펙터 _stageList 중복 등록 불필요)
         LoadStageDataFromResources();
         RegisterList(_monsterList, _monsterDict, "Monster");
         RegisterList(_bossList,    _bossDict,    "Boss");
@@ -250,7 +253,7 @@ public class CDataManager : MonoBehaviour
 
             if (_stageDict.ContainsKey(stage.Id))
             {
-                Debug.LogWarning($"[CDataManager] StageData 중복 ID 발견: {stage.Id} ({stage.name}). 건너뜁니다.");
+                Debug.LogWarning($"[CDataManager] StageData 중복 ID — SO 파일이 두 개 이상 같은 Id({stage.Id})를 사용 중입니다: {stage.name}. 에셋 Id를 확인하세요.");
                 continue;
             }
 

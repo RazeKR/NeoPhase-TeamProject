@@ -49,6 +49,13 @@ public class CWorldShiftHorizontal : MonoBehaviour
 
     #endregion
 
+    #region Public Methods
+
+    /// <summary>플레이어 Transform을 런타임에 설정합니다.</summary>
+    public void SetPlayerTarget(Transform playerTransform) => _player = playerTransform;
+
+    #endregion
+
     #region Unity Methods
 
     private void Start()
