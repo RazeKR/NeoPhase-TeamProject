@@ -23,6 +23,7 @@ public class CSaveData
     public float currentHp       = 100f;  // 현재 체력
     public float currentMana     = 100f;  // 현재 마나
     public int   gold            = 0;     // 보유 골드
+    public int   diamond         = 0;     // 보유 다이아 (상점에서 획득, 골드 구매에 사용)
 
     // ── 스테이지 진행 ─────────────────────────────────────────────────────
     public int currentStageId   = 1;  // 현재 스테이지 ID (CStageDataSO.Id 기준)

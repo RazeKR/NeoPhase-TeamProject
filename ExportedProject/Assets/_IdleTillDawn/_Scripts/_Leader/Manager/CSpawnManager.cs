@@ -209,7 +209,11 @@ public class CSpawnManager : MonoBehaviour
     /// <summary>적 인스턴스를 비활성화하고 풀에 반환한다</summary>
     private void ReturnToPool(CEnemyBase enemy, bool registerKill)
     {
-        if (registerKill) _stageManager.RegisterKill();
+        if (registerKill)
+        {
+            _stageManager.RegisterKill();
+            CGoldManager.Instance?.AddGold(enemy.GetGoldDrop()); // 확정 골드 드롭
+        }
 
         enemy.ResetForPool();
         enemy.gameObject.SetActive(false);

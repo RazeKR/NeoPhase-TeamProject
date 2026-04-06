@@ -192,6 +192,7 @@ public class CStageManager : MonoBehaviour
                 break;
 
             case EStageState.StageClear:
+                CGoldManager.Instance?.AddGold(stageData.ClearGoldReward); // 스테이지 클리어 골드 보상
                 OnStageClear?.Invoke();
                 // 저장은 CGameManager.OnApplicationQuit에서 처리 — 여기서 호출하지 않음
                 CGameManager.Instance.ProgressToNextStage();

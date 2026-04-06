@@ -32,6 +32,10 @@ public class CEnemyDataSO : CBaseDataSO
     [SerializeField] private float _dropChance = 0.1f;  // 아이템 드롭 확률 (0~1)
     [SerializeField] private int _expReward = 10;        // 기본 경험치 보상
 
+    [Header("골드 드롭 (확정 지급)")]
+    [SerializeField] private int _minGoldDrop = 5;      // 처치 시 최소 골드 드롭량
+    [SerializeField] private int _maxGoldDrop = 15;     // 처치 시 최대 골드 드롭량
+
     [Header("사운드")]
     [SerializeField] private CSoundData _hitSFX;        // 피격 시 재생 사운드
 
@@ -52,6 +56,8 @@ public class CEnemyDataSO : CBaseDataSO
     public int       DropItemId            => _dropItemId;
     public float     DropChance            => _dropChance;
     public int       ExpReward             => _expReward;
+    public int       MinGoldDrop           => _minGoldDrop;
+    public int       MaxGoldDrop           => _maxGoldDrop;
 
     /// <summary>몬스터 피격 시 재생할 사운드 데이터. null이면 무음</summary>
     public CSoundData HitSFX              => _hitSFX;
@@ -65,6 +71,9 @@ public class CEnemyDataSO : CBaseDataSO
 
     /// <summary>스테이지 인덱스에 따른 스케일된 공격력을 반환합니다.</summary>
     public float GetDamageForStage(int stageIndex) => _baseDamage + _damageGrowthPerStage * stageIndex;
+
+    /// <summary>처치 시 확정 지급할 골드를 min~max 범위에서 랜덤하게 반환합니다.</summary>
+    public int GetRandomGoldDrop() => UnityEngine.Random.Range(_minGoldDrop, _maxGoldDrop + 1);
 
     #endregion
 }

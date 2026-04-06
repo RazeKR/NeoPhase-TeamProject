@@ -214,6 +214,7 @@ public class CGameManager : MonoBehaviour
         if (CAudioManager.Instance != null) { Destroy(CAudioManager.Instance.gameObject); }
         if (CDataManager.Instance != null)  { Destroy(CDataManager.Instance.gameObject); }
         if (CSettingsManager.Instance != null) { Destroy(CSettingsManager.Instance.gameObject); }
+        if (CGoldManager.Instance != null)  { Destroy(CGoldManager.Instance.gameObject); }
 
         // 2. PlayerPrefs 전체 초기화
         PlayerPrefs.DeleteAll();

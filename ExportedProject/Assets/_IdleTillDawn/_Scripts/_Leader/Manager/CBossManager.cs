@@ -32,7 +32,8 @@ public class CBossManager : MonoBehaviour
 
     #region Private Variables
 
-    private CBossBase currentBoss; // 현재 활성 보스 인스턴스 (null이면 전투 중 아님)
+    private CBossBase    currentBoss;    // 현재 활성 보스 인스턴스 (null이면 전투 중 아님)
+    private CBossDataSO  currentBossData; // 현재 보스의 SO 데이터 (골드 보상 참조용)
 
     #endregion
 
@@ -80,6 +81,7 @@ public class CBossManager : MonoBehaviour
             Debug.LogError($"[CBossManager] BossId {stageData.BossId}에 해당하는 보스 데이터 또는 프리팹이 없음");
             return;
         }
+        currentBossData = bossData; // 골드 보상 참조를 위해 캐싱
 
         Vector3 spawnPos   = GetRandomSpawnPosition();                              // 플레이어 주변 랜덤 위치 계산
         GameObject bossObj = Instantiate(bossData.Prefab, spawnPos, Quaternion.identity);
@@ -120,6 +122,7 @@ public class CBossManager : MonoBehaviour
     private void HandleBossDefeated()
     {
         _electricWall?.Deactivate();
+        CGoldManager.Instance?.AddGold(currentBossData?.BossGoldReward ?? 0); // 보스 처치 골드 보상
         CleanUpBoss();
         OnBossDefeated?.Invoke();
     }
@@ -159,7 +162,8 @@ public class CBossManager : MonoBehaviour
         currentBoss.OnDefeated     -= HandleBossDefeated;
         currentBoss.OnPlayerKilled -= HandlePlayerDefeated;
         Destroy(currentBoss.gameObject);
-        currentBoss = null;
+        currentBoss     = null;
+        currentBossData = null;
     }
 
     #endregion

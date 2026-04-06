@@ -59,6 +59,12 @@ public abstract class CEnemyBase : CEntityBase
     }
 
     /// <summary>
+    /// 처치 시 확정 지급할 골드를 SO의 min~max 범위에서 랜덤하게 반환합니다.
+    /// CSpawnManager가 킬 처리 시 호출합니다.
+    /// </summary>
+    public int GetGoldDrop() => _enemyData != null ? _enemyData.GetRandomGoldDrop() : 0;
+
+    /// <summary>
     /// 스캔 없이 플레이어를 직접 타겟으로 설정 — CSpawnManager가 스폰 시 호출
     /// </summary>
     public void SetTarget(Transform player)

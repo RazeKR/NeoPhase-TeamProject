@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b17ef902cf4aaf04aaf3b8b75cd90461, type: 3}
   m_Name: EnemyDataSO_Boomer
   m_EditorClassIdentifier: 
+  _id: 0
   _enemyName: Boomer
   _description: "\uC8FD\uC73C\uBA74 \uC8FC\uBCC0 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C
     \uC900\uB2E4."
@@ -23,3 +24,18 @@ MonoBehaviour:
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 1394497009925343553, guid: 6f33b9f5b1fd64442b07a142159c9b8c, type: 3}
+  _dropItemId: 0
+  _dropChance: 0.1
+  _expReward: 10
+  _minGoldDrop: 50
+  _maxGoldDrop: 70
+  _hitSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
