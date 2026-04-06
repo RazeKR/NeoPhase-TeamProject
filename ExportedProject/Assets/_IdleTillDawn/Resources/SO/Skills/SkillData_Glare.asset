@@ -68,7 +68,7 @@ MonoBehaviour:
   circularSpread: 0
   damageInterval: 2
   useScaleMagnification: 1
-  scalePreset: 1.025
+  scalePreset: 0.25
   lifeTime: 0
   areaKnockbackRadius: 0
   areaKnockbackForce: 0

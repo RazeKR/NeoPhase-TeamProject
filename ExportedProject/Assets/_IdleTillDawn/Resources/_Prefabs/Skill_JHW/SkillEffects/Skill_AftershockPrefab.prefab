@@ -117,7 +117,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 784437573273145217}
@@ -210,6 +210,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagable: 0
   movable: 1
+  acceleration: 0
+  maxSpeed: 20
+  minSpeed: 0
   _visualChild: {fileID: 0}
   destroyOnHit: 0
   effectPrefab: {fileID: 0}
