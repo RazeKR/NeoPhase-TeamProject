@@ -182,7 +182,7 @@ public class CSkillSystem : MonoBehaviour
 
         if (GetSkillLevel(11) != 0) // Giant
         {
-            finalScaleMult += (0.005f * GetSkillLevel(11));           
+            finalScaleMult += (0.05f * GetSkillLevel(11));           
 
             smg.SetPassiveStatUpgrade(EPlayerStatType.Health, 0.05f * GetSkillLevel(11));
             smg.SetPassiveStatUpgrade(EPlayerStatType.MoveSpeed, -0.016f * GetSkillLevel(11));
@@ -513,7 +513,7 @@ public class CSkillSystem : MonoBehaviour
         CSkillUI.Instance.TextSet(currentSkillPoints);
         RefreshAllNodes();
 
-        Debug.Log($"{data.skillName} ���� ���, ���� ����Ʈ : {currentSkillPoints}");
+        Debug.Log($"{data.skillName} : {currentSkillPoints}");
 
         return true;
     }
