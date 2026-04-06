@@ -141,6 +141,10 @@ public class CSkillSystem : MonoBehaviour
     public void RefreshPassiveSkill()
     {
         GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
+
+        // 플레이어가 아직 씬에 없으면(메인메뉴, 초기화 타이밍 등) 조용히 종료
+        if (playerObj == null) return;
+
         CPlayerController ctr = playerObj.GetComponent<CPlayerController>();
         CPlayerStatManager smg = playerObj.GetComponent<CPlayerStatManager>();
         Vector3 spawnPos = playerObj.transform.position;
