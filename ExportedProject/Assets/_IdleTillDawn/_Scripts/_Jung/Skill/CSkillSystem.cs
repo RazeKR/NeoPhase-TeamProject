@@ -98,6 +98,7 @@ public class CSkillSystem : MonoBehaviour
     private void Start()
     {
         OnSkillChanged += RefreshPassiveSkill;
+        RefreshPassiveSkill();
 
         if (CJsonManager.Instance != null)
         {
@@ -182,7 +183,7 @@ public class CSkillSystem : MonoBehaviour
 
         if (GetSkillLevel(11) != 0) // Giant
         {
-            finalScaleMult += (0.05f * GetSkillLevel(11));           
+            finalScaleMult += (0.1f * GetSkillLevel(11));           
 
             smg.SetPassiveStatUpgrade(EPlayerStatType.Health, 0.05f * GetSkillLevel(11));
             smg.SetPassiveStatUpgrade(EPlayerStatType.MoveSpeed, -0.016f * GetSkillLevel(11));
@@ -196,10 +197,10 @@ public class CSkillSystem : MonoBehaviour
 
             if (ctr != null)
             {
-                ctr.BulletScaleBonus = 0.04f * level;
+                ctr.BulletScaleBonus = 0.4f * level;
             }            
 
-            smg.SetPassiveStatUpgrade(EPlayerStatType.Damage, 0.04f * level);
+            smg.SetPassiveStatUpgrade(EPlayerStatType.Damage, data.PassiveLevelDatas[level - 1].statAmount);
         }
 
         if (GetSkillLevel(2) != 0)  // Anger Point
@@ -239,6 +240,9 @@ public class CSkillSystem : MonoBehaviour
             {
                 effect.Init(data, level - 1);
             }
+
+            // CoolDown
+            StartCooldown(7, data.ActiveLevelDatas[level - 1].coolDown);
         }
 
         ctr.PlayerLocalScale = Vector3.one * finalScaleMult;
@@ -246,6 +250,8 @@ public class CSkillSystem : MonoBehaviour
 
     public void FanFire()
     {
+        if (!IsSkillReady(8)) return;
+
         GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
 
         Vector3 spawnPos = playerObj.transform.position;
@@ -284,15 +290,20 @@ public class CSkillSystem : MonoBehaviour
                 effect.Init(data, levelIndex);
             }
         }
+
+        // CoolDown
+        StartCooldown(8, data.ActiveLevelDatas[GetSkillLevel(8) - 1].coolDown);
     }
 
     public void AngerPoint()
     {
+        if (!IsSkillReady(2)) return;
+
         GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
 
         CSkillDataSO data = CDataManager.Instance.GetSkill(2);
 
-        if (data != null && IsSkillReady(2) && playerObj != null)
+        if (data != null && playerObj != null)
         {
             CPlayerStatManager pStat = playerObj.GetComponent<CPlayerStatManager>();
             if (pStat == null) return;

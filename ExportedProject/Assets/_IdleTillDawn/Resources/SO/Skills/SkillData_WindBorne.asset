@@ -68,7 +68,7 @@ MonoBehaviour:
   circularSpread: 0
   damageInterval: 1
   useScaleMagnification: 1
-  scalePreset: 1.5
+  scalePreset: 0.5
   lifeTime: 5
   areaKnockbackRadius: 0
   areaKnockbackForce: 0
@@ -80,3 +80,13 @@ MonoBehaviour:
     duration: 0
   effectPrefab: {fileID: 8967118725219851522, guid: 3b4503a46423fa14e829b06142fcf717,
     type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

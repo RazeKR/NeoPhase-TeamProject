@@ -17,7 +17,8 @@ public class CSkillAreaSpawner : MonoBehaviour, ISkill
         _level = level;
         _timer = spawnInterval;
 
-        Destroy(gameObject, data.lifeTime);
+        if (data.lifeTime != 0f)
+            Destroy(gameObject, data.lifeTime);
     }
 
     void Update()
@@ -36,6 +37,9 @@ public class CSkillAreaSpawner : MonoBehaviour, ISkill
         if (areaPrefab == null) return;
 
         GameObject area = Instantiate(areaPrefab, transform.position, Quaternion.identity);
+
+        if (_data.useScaleMagnification)
+            area.transform.localScale *= (1 + (_level - 1) * 0.1f * _data.scalePreset);
 
         if (area.TryGetComponent(out ISkill iSkill))
         {

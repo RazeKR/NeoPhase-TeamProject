@@ -270,10 +270,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1984
   _paramSpeed: aSpeed
-  _defaultAttackRange: 5
+  _defaultAttackRange: 0.1
   _bulletSpeed: 10
   _useTestWeaponOverride: 0
   _testWeaponData: {fileID: 0}
+  _weaponVisualObj: {fileID: 251442076396267112}
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!70 &2160385164997705626

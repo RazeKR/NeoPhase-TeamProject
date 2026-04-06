@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CPlayerInputHandler))]
@@ -19,13 +20,16 @@ public class CPlayerController : CEntityBase, IHealable
     [SerializeField] private string _paramSpeed = "aSpeed";
 
     [Header("공격 기본 옵션")]
-    [SerializeField] private float _defaultAttackRange = 1.5f;
+    [SerializeField] private float _defaultAttackRange = 0.1f;
     [SerializeField] private float _bulletSpeed = 10f;
 
     [Header("테스트용 무기 직접 참조")]
     [Tooltip("true로 켜면 CInventoryManager를 무시하고 아래 SO를 직접 사용합니다.\n인스펙터에서 FireRate 등을 바로 조정할 때 사용하세요.")]
     [SerializeField] private bool _useTestWeaponOverride = false;
     [SerializeField] private CWeaponDataSO _testWeaponData = null;
+
+    [Header("무기 오브젝트")]
+    [SerializeField] private GameObject _weaponVisualObj;
 
     [Header("피격 연출 옵션")]
     [SerializeField] private float _preventTime = 1.5f;
@@ -47,6 +51,10 @@ public class CPlayerController : CEntityBase, IHealable
     private WaitForSeconds _blinkWait;
     private float _knockbackEndTime = 0f;
 
+    private bool _isWeaponDisabled = false;
+
+    private float _traitSpeedMultiplier = 1.0f;
+
     private float _bulletScaleBonus;    // for Passive Skill
 
     #endregion
@@ -56,6 +64,22 @@ public class CPlayerController : CEntityBase, IHealable
     public LayerMask HazardLayer => _hazardLayer;
     public float AutoModeDelay => _autoModeDelay;
     public CPlayerInputHandler InputHandler => _inputHandler;
+
+    public RuntimeAnimatorController CurrentAnimator => _animator != null ? _animator.runtimeAnimatorController : null;
+    public bool IsWeaponDisabled
+    {
+        get => _isWeaponDisabled;
+        set
+        {
+            _isWeaponDisabled = value;
+
+            if (_weaponVisualObj != null)
+            {
+                _weaponVisualObj.SetActive(!_isWeaponDisabled);
+            }
+        }
+    }
+    public bool IsAutoEvadeDisabled { get; set; } = false;
 
     // FSM 관련 변수
     public CPlayerStateMachine StateMachine { get; private set; }
@@ -72,6 +96,7 @@ public class CPlayerController : CEntityBase, IHealable
     /// <summary>Shot Event(for Passive Skill) </summary>
     public event System.Action OnShot;
 
+    public event Action OnPlayerAttack;
     #endregion
 
     /// <summary>
@@ -81,6 +106,8 @@ public class CPlayerController : CEntityBase, IHealable
     {
         get
         {
+            if (IsWeaponDisabled) return _defaultAttackRange;
+
             CWeaponDataSO data = GetEquippedWeaponData();
             return data != null ? data.WeaponRange : _defaultAttackRange;
         }
@@ -170,6 +197,9 @@ public class CPlayerController : CEntityBase, IHealable
         // _isPreventDamage = false 가 실행되지 않아 영구 고착될 수 있으므로 여기서 보장한다
         _isPreventDamage  = false;
         _preventCoroutine = null;
+
+        IsWeaponDisabled = false;
+        IsAutoEvadeDisabled = false;
 
         if (_inputHandler != null)
         {
@@ -264,41 +294,34 @@ public class CPlayerController : CEntityBase, IHealable
             return;
         }
 
-        if (saveData == null || string.IsNullOrEmpty(saveData.uid))
+        if (_statManager != null)
         {
-            Debug.LogWarning("세이브 데이터 없음 (임시 : 초기 데이터로 게임 시작)");
-            if (_statManager != null)
-            {
-                _statManager.InitBaseData(_characterData);
+            _statManager.InitBaseData(_characterData);
 
-                MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
-                MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
-            }
-            else
+            if (saveData != null && !string.IsNullOrEmpty(saveData.uid))
             {
-                MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
-                MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
+                _statManager.SyncWithSaveData(_characterData, saveData);
             }
-            CurrentHealth = MaxHealth;
-            return;
+
+            MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
+            MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
         }
-
-        if (_statManager == null)
+        else
         {
             Debug.LogWarning("_statManager가 null입니다. 기본 데이터로 초기화합니다.");
             MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
             MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
-            CurrentHealth = MaxHealth;
-            return;
         }
 
-        _statManager.SyncWithSaveData(_characterData, saveData);
-
-        MaxHealth = _statManager.GetFinalStat(EPlayerStatType.Health);
-        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
         CurrentHealth = (saveData != null && saveData.currentHp > 0) ? saveData.currentHp : MaxHealth;
 
-        Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}");
+        Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}, 최대 체력 {MaxHealth}");
+
+        if (_characterData.UniqueTrait != null)
+        {
+            _characterData.UniqueTrait.ApplyTrait(this);
+            Debug.Log($"고유 특성 [{_characterData.UniqueTrait.TraitName}] 적용");
+        }
     }
 
     /// <summary>
@@ -331,6 +354,8 @@ public class CPlayerController : CEntityBase, IHealable
     /// </summary>
     protected override void HandleAttack()
     {
+        if (IsWeaponDisabled) return;
+
         if (CurrentTarget == null) return;
 
         // 무기 데이터를 한 번만 가져온다 (이후 재호출 없음)
@@ -370,6 +395,8 @@ public class CPlayerController : CEntityBase, IHealable
 
         // 발사 사운드 재생
         CAudioManager.Instance?.Play(weaponData.FireSFX, spawnPos);
+
+        OnPlayerAttack?.Invoke();
 
         // flanne.Projectile 계열 투사체
         flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
@@ -431,6 +458,25 @@ public class CPlayerController : CEntityBase, IHealable
     }
 
     /// <summary>
+    /// 외부에서 캐릭터의 애니메이터를 교체할 수 있게 해주는 메서드
+    /// </summary>
+    /// <param name="newController"></param>
+    public void ChangeAnimator(RuntimeAnimatorController newController)
+    {
+        if (_animator != null && newController != null)
+        {
+            _animator.runtimeAnimatorController = newController;
+        }
+    }
+
+    public void SetTraitSpeedMultiplier(float multiplier)
+    {
+        _traitSpeedMultiplier = multiplier;
+
+        RefreshStats();
+    }
+
+    /// <summary>
     /// 현재 장착된 무기 SO를 반환한다.
     /// _useTestWeaponOverride가 true이면 인벤토리를 무시하고 _testWeaponData를 반환한다.
     /// </summary>
@@ -468,6 +514,8 @@ public class CPlayerController : CEntityBase, IHealable
 
     public override void TakeDamage(float damage)
     {
+        if (HasStatus(EStatusEffect.Invincible)) return;
+
         if (_isPreventDamage) return;
 
         base.TakeDamage(damage);
@@ -518,7 +566,7 @@ public class CPlayerController : CEntityBase, IHealable
         float previousMaxHealth = MaxHealth;
 
         MaxHealth = _statManager.MaxHealth;
-        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed);
+        MoveSpeed = _statManager.GetFinalStat(EPlayerStatType.MoveSpeed) * _traitSpeedMultiplier;
 
         if (MaxHealth > previousMaxHealth)
         {

@@ -24,53 +24,53 @@ MonoBehaviour:
   PassiveLevelDatas: []
   ActiveLevelDatas:
   - damage: 10
-    coolDown: 5
-    requiredMana: 0
+    coolDown: 15
+    requiredMana: 15
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 12
+    coolDown: 15
+    requiredMana: 16
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 14
+    coolDown: 15
+    requiredMana: 17
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 16
+    coolDown: 15
+    requiredMana: 18
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 18
+    coolDown: 15
+    requiredMana: 19
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 20
+    coolDown: 15
+    requiredMana: 20
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 22
+    coolDown: 15
+    requiredMana: 21
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 24
+    coolDown: 15
+    requiredMana: 22
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 26
+    coolDown: 15
+    requiredMana: 23
     projectileAmount: 1
-  - damage: 0
-    coolDown: 0
-    requiredMana: 0
+  - damage: 28
+    coolDown: 15
+    requiredMana: 24
     projectileAmount: 1
   BuffLevelsDatas: []
   spreadAngle: 0
   speed: 0
   circularSpread: 0
-  damageInterval: 0
-  useScaleMagnification: 0
-  scalePreset: 0
-  lifeTime: 0
+  damageInterval: 1
+  useScaleMagnification: 1
+  scalePreset: 1
+  lifeTime: 5
   areaKnockbackRadius: 0
   areaKnockbackForce: 0
   areaKnockbackDuration: 0
@@ -81,3 +81,13 @@ MonoBehaviour:
     duration: 0
   effectPrefab: {fileID: 7223285654047631799, guid: ad42e090ee1d1224da837c2e9cd80fc9,
     type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

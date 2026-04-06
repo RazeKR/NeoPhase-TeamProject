@@ -48,9 +48,7 @@ public class CRankingTestScript : MonoBehaviour
         {
             Debug.Log("TEST 랭킹 데이터 저장");
 
-            CRankData myData = CRankData.FromSaveDataToRankData(CJsonManager.Instance.CurrentSaveData);
-
-            CRankingManager.Instance.SaveMyRanking(myData);
+            CRankingManager.Instance.SaveMyRanking(CJsonManager.Instance.CurrentSaveData);
         }
 
         if (Input.GetKeyDown(KeyCode.V))

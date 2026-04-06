@@ -11,7 +11,7 @@ public class CStateAutoEvade : IPlayerState
 
 	public void Enter()
 	{
-		//Debug.Log("CStateAutoEvade : Enter");
+		Debug.Log("CStateAutoEvade : Enter");
 	}
 
 	public void Exit()
@@ -24,6 +24,10 @@ public class CStateAutoEvade : IPlayerState
 		if (_player.InputHandler.IsManualMove)
 		{
 			_player.StateMachine.ChangeState(_player.StateManual);
+		}
+		else if (_player.IsAutoEvadeDisabled)
+		{
+			_player.StateMachine.ChangeState(_player.StateAutoChase);
 		}
 	}
 

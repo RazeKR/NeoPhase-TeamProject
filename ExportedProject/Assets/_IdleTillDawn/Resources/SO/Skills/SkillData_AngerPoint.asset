@@ -22,8 +22,43 @@ MonoBehaviour:
   prerequisiteSkills:
   - {fileID: 11400000, guid: 76b4cce7ff8fd42438bae371fc49644b, type: 2}
   PassiveLevelDatas: []
-  ActiveLevelDatas: []
-  BuffLevelsDatas: []
+  ActiveLevelDatas:
+  - damage: 0
+    coolDown: 12
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 12
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 12
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 12
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 0
+    coolDown: 12
+    requiredMana: 0
+    projectileAmount: 0
+  BuffLevelsDatas:
+  - statType: 2
+    buffAmount: 10
+    duration: 6
+  - statType: 2
+    buffAmount: 15
+    duration: 6
+  - statType: 2
+    buffAmount: 18
+    duration: 6
+  - statType: 2
+    buffAmount: 22
+    duration: 6
+  - statType: 2
+    buffAmount: 25
+    duration: 6
   spreadAngle: 0
   speed: 0
   circularSpread: 0

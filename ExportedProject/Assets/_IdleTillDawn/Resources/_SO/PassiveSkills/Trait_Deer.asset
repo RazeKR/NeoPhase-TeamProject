@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5283fee0b51d4ed4d9a72175c964bb44, type: 3}
+  m_Name: Trait_Deer
+  m_EditorClassIdentifier: 
+  _traitName: "\uC0AC\uC2B4 \uBCC0\uC2E0"
+  _description: 
+  _icon: {fileID: 0}
+  _damage: 80
+  _transformInterval: 10
+  _duration: 3
+  _speedMultiplier: 1.5
+  _deerAnimator: {fileID: 9100000, guid: b73b088048695a9418ad5db03100af18, type: 2}
