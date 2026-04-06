@@ -278,7 +278,7 @@ public class CGoldShopUI : MonoBehaviour
             bool canBuy = count < WeeklyLimit;
 
             SetButtonState(i, canBuy);
-            SetCountText(i, $"주간 {count}/{WeeklyLimit}");
+            SetCountText(i, $"주간 {count}/{WeeklyLimit}", !canBuy);
         }
 
         // 일일 무료 골드 버튼 4
@@ -287,7 +287,7 @@ public class CGoldShopUI : MonoBehaviour
             bool canBuy = count < DailyLimit;
 
             SetButtonState(4, canBuy);
-            SetCountText(4, canBuy ? $"일일 구매 {count}/{DailyLimit}" : "오늘 수령 완료");
+            SetCountText(4, canBuy ? $"일일 구매 {count}/{DailyLimit}" : "오늘 수령 완료", !canBuy);
         }
 
         // 다이아 소모 골드 버튼 5 (한도 없음 — 다이아 잔액만 확인)
@@ -302,13 +302,21 @@ public class CGoldShopUI : MonoBehaviour
     private void SetButtonState(int index, bool interactable)
     {
         if (index >= _shopItemButtons.Length || _shopItemButtons[index] == null) return;
+
         _shopItemButtons[index].interactable = interactable;
+
+        // Unity Color Tint가 Disabled 상태에서 배경 Image를 반투명하게 만드는 것을 방지
+        // Disabled Color를 흰색 불투명으로 고정 → 검정 배경 × 흰색 = 검정 그대로 유지
+        ColorBlock cb = _shopItemButtons[index].colors;
+        cb.disabledColor = Color.white;
+        _shopItemButtons[index].colors = cb;
     }
 
-    private void SetCountText(int index, string text)
+    private void SetCountText(int index, string text, bool limitReached = false)
     {
         if (index >= _shopItemCountTexts.Length || _shopItemCountTexts[index] == null) return;
-        _shopItemCountTexts[index].text = text;
+        _shopItemCountTexts[index].text  = text;
+        _shopItemCountTexts[index].color = limitReached ? Color.red : Color.yellow;
     }
 
     #endregion
