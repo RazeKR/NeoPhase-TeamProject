@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 9
   skillName: "\uD30C\uC774\uC5B4\uBCFC"
-  flavourText: 
+  flavourText: "\uB2FF\uC73C\uBA74 \uD3ED\uBC1C\uD558\uBA70 \uBC94\uC704 \uD53C\uD574\uB97C
+    \uC785\uD788\uACE0 \uD654\uC0C1 \uC0C1\uD0DC\uB85C \uB9CC\uB4DC\uB294 \uD654\uC5FC
+    \uAD6C\uCCB4\uB97C \uBC1C\uC0AC\uD569\uB2C8\uB2E4."
   skillType: 1
   icon: {fileID: 21300000, guid: b1250bbd53b03584e9ab22fc787950d8, type: 2}
   maxLevel: 5
@@ -26,25 +28,34 @@ MonoBehaviour:
   - damage: 45
     coolDown: 18
     requiredMana: 20
+    projectileAmount: 1
   - damage: 50
     coolDown: 17
     requiredMana: 25
+    projectileAmount: 1
   - damage: 55
     coolDown: 16
     requiredMana: 30
+    projectileAmount: 1
   - damage: 60
     coolDown: 15
     requiredMana: 35
+    projectileAmount: 1
   - damage: 70
     coolDown: 14
     requiredMana: 40
-  projectileAmount: 1
+    projectileAmount: 1
+  BuffLevelsDatas: []
   spreadAngle: 0
   speed: 6
+  circularSpread: 0
   damageInterval: 1
   useScaleMagnification: 0
   scalePreset: 0
   lifeTime: 1
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
   useSkillEffect: 1
   skillEffect:
     type: 2
@@ -52,3 +63,13 @@ MonoBehaviour:
     duration: 3
   effectPrefab: {fileID: 8709800503564725059, guid: 8c38680fa5bfceb46ac64ce986ff2480,
     type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

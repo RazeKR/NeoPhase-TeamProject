@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 10
   skillName: "\uB3D9\uC0C1"
-  flavourText: 
+  flavourText: "\uBC94\uC704 \uB0B4\uC758 \uC801\uC5D0\uAC8C \uD53C\uD574\uB97C \uC8FC\uACE0
+    \uBE59\uACB0 \uC0C1\uD0DC\uB85C \uB9CC\uB4ED\uB2C8\uB2E4."
   skillType: 1
   icon: {fileID: 21300000, guid: a9a711d04b8ab4b479181ca8762231c0, type: 2}
   maxLevel: 10

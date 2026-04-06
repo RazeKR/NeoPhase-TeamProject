@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: SkillData_IceShard
   m_EditorClassIdentifier: 
   _id: 14
-  skillName: "\uC544\uC774\uC2A4 \uC0E4\uB4DC"
-  flavourText: 
+  skillName: "\uB098\uBE44\uCDA4"
+  flavourText: "\uC804\uBC29\uC5D0 \uAD00\uD1B5\uD558\uB294 \uB098\uBE44 \uD22C\uC0AC\uCCB4\uB97C
+    \uB0A0\uB824 \uD53C\uD574\uB97C \uC8FC\uACE0 \uBE59\uACB0 \uC0C1\uD0DC\uB85C
+    \uB9CC\uB4ED\uB2C8\uB2E4. \uB808\uBCA8\uC5D0 \uB530\uB77C \uD22C\uC0AC\uCCB4\uAC00
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
   skillType: 1
-  icon: {fileID: 21300000, guid: 316788000f4b67b43ad6f0f4b6c76fd1, type: 2}
+  icon: {fileID: 21300000, guid: db434907b3df58b409a9d11f71aaa3b0, type: 2}
   maxLevel: 5
   requiredPoints: 2
   prerequisiteSkills:
@@ -61,3 +64,13 @@ MonoBehaviour:
     duration: 4
   effectPrefab: {fileID: 6094829181732757940, guid: 5857b61ea27ccba45af8d21537c66e0b,
     type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

@@ -14,18 +14,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 3
   skillName: "\uBE45 \uC0F7"
-  flavourText: 
+  flavourText: "\uACF5\uACA9\uB825\uC774 \uC99D\uAC00\uD558\uACE0, \uD0C4\uD658\uC758
+    \uD06C\uAE30\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   skillType: 0
   icon: {fileID: 21300000, guid: a9e5123b8b7b98141a445b08568d2dfa, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 0
   prerequisiteSkills:
   - {fileID: 11400000, guid: 88f1c8eb8ebdcaf43bf72ef8bdfec4fb, type: 2}
-  statUp: 10
-  actionName: 
-  coolDown: 0
-  requiredMana: 0
-  skillEffects: []
+  PassiveLevelDatas:
+  - statAmount: 0.04
+  - statAmount: 0.08
+  - statAmount: 0.12
+  - statAmount: 0.16
+  - statAmount: 0.2
+  - statAmount: 0.24
+  - statAmount: 0.28
+  - statAmount: 0.32
+  - statAmount: 0.36
+  - statAmount: 0.4
+  ActiveLevelDatas: []
+  BuffLevelsDatas: []
+  spreadAngle: 0
+  speed: 0
+  circularSpread: 0
+  damageInterval: 0
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 0
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
+    duration: 0
   effectPrefab: {fileID: 0}
-  _levelData: []
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

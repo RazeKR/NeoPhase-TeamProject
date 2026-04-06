@@ -29,7 +29,7 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
     public void Init(CSkillDataSO data, int level)
     {
-        _damage = data.ActiveLevelDatas[level].damage;
+        _damage = data.ActiveLevelDatas[level - 1].damage;
 
         _data = data;
 

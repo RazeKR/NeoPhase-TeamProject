@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [Header("µ•¿Ã≈Õ")]
     [SerializeField] private CSkillDataSO _skillData;
@@ -116,5 +116,19 @@ public class CSkillNode : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public void OnEndDrag(PointerEventData eventData)
     {
         if (_dragIcon != null) _dragIcon.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (SkillData != null)
+        {
+            CSkillTooltip.Instance.ShowTooltip(SkillData, _currentLevel);
+            CSkillTooltip.Instance.transform.position = Input.mousePosition;
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        CSkillTooltip.Instance.Hide();
     }
 }

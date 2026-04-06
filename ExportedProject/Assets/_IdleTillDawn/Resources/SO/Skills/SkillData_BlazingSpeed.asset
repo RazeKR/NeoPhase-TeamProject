@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 4
   skillName: "\uBD88\uC758 \uC9C8\uC8FC"
-  flavourText: 
+  flavourText: "5\uCD08\uB3D9\uC548 \uBC1C \uBC11\uC5D0 \uD654\uC5FC\uC744 \uB0A8\uAE41\uB2C8\uB2E4.
+    \uD654\uC5FC\uC5D0 \uB2FF\uC740 \uC801\uC740 \uD53C\uD574\uB97C \uC785\uACE0
+    \uD654\uC0C1 \uC0C1\uD0DC\uAC00 \uB429\uB2C8\uB2E4."
   skillType: 1
   icon: {fileID: 21300000, guid: 122b6fa5b389978449cf06af1af45d07, type: 2}
   maxLevel: 10
@@ -68,8 +70,8 @@ MonoBehaviour:
   speed: 0
   circularSpread: 0
   damageInterval: 1
-  useScaleMagnification: 1
-  scalePreset: 1
+  useScaleMagnification: 0
+  scalePreset: 0
   lifeTime: 5
   areaKnockbackRadius: 0
   areaKnockbackForce: 0
@@ -81,3 +83,13 @@ MonoBehaviour:
     duration: 2
   effectPrefab: {fileID: 2568841504235296460, guid: 4b1c951a5c5d0e04c87f82d4a13b86e1,
     type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

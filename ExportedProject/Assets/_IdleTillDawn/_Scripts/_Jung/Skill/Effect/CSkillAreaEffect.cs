@@ -23,7 +23,8 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
     {
         _data = data;
 
-        _damage = _data.ActiveLevelDatas[level].damage;
+        int index = Mathf.Clamp(level - 1, 0, _data.ActiveLevelDatas.Count - 1);
+        _damage = _data.ActiveLevelDatas[index].damage;
 
         if (_data.useScaleMagnification)
             transform.localScale *= (1 + (level - 1) * 0.1f * _data.scalePreset) ;

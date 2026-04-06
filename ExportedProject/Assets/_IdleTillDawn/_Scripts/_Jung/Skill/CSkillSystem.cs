@@ -106,7 +106,6 @@ public class CSkillSystem : MonoBehaviour
 
             if (CJsonManager.Instance.CurrentSaveData != null)
             {
-                Debug.Log("[CSkillSystem] �̹� �ε�� �����͸� �߰��Ͽ� ��� �����մϴ�.");
                 RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
             }
         }
@@ -160,7 +159,7 @@ public class CSkillSystem : MonoBehaviour
 
             if (fog != null)
             {
-                fog.SetOuterRadius(5f + 5f * (0.025f * level));
+                fog.SetOuterRadius(5f + 5f * data.PassiveLevelDatas[level -1].statAmount);
             }                        
             if (GlareGO != null)
             {
@@ -177,15 +176,19 @@ public class CSkillSystem : MonoBehaviour
 
             foreach (var effect in effects)
             {
-                effect.Init(data, level - 1);
+                effect.Init(data, level);
             }
         }
 
         if (GetSkillLevel(11) != 0) // Giant
         {
-            finalScaleMult += (0.1f * GetSkillLevel(11));           
+            finalScaleMult += (0.1f * GetSkillLevel(11));
 
-            smg.SetPassiveStatUpgrade(EPlayerStatType.Health, 0.05f * GetSkillLevel(11));
+            CSkillDataSO data = CDataManager.Instance.GetSkill(11);
+
+            int level = GetSkillLevel(11);
+
+            smg.SetPassiveStatUpgrade(EPlayerStatType.Health, data.PassiveLevelDatas[level - 1].statAmount);
             smg.SetPassiveStatUpgrade(EPlayerStatType.MoveSpeed, -0.016f * GetSkillLevel(11));
         }
 
@@ -412,7 +415,7 @@ public class CSkillSystem : MonoBehaviour
 
             foreach (var effect in effects)
             {
-                effect.Init(data, levelIndex);
+                effect.Init(data, GetSkillLevel(skillId));
             }
         }   
         

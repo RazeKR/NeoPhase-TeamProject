@@ -14,18 +14,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 8
   skillName: "\uD68C\uC624\uB9AC \uC5F0\uC0AC"
-  flavourText: 
+  flavourText: "\uC77C\uC815 \uC2DC\uAC04\uB9C8\uB2E4 \uBC1C\uC0AC \uC2DC 10\uBC1C\uC758
+    \uD0C4\uD658\uC744 \uC0AC\uBC29\uC73C\uB85C \uBC1C\uC0AC\uD569\uB2C8\uB2E4."
   skillType: 0
   icon: {fileID: 21300000, guid: ce24d91da0c6de3439a2767c40369c28, type: 2}
   maxLevel: 5
   requiredPoints: 2
-  damage: 15
   prerequisiteSkills:
   - {fileID: 11400000, guid: f1d4b2a71ea5a2b4a8236ba59ec2beb4, type: 2}
-  statUp: 0
-  actionName: 
-  coolDown: 0
-  requiredMana: 0
-  skillEffects: []
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 20
+    coolDown: 18
+    requiredMana: 0
+    projectileAmount: 10
+  - damage: 22
+    coolDown: 16
+    requiredMana: 0
+    projectileAmount: 10
+  - damage: 24
+    coolDown: 14
+    requiredMana: 0
+    projectileAmount: 10
+  - damage: 26
+    coolDown: 12
+    requiredMana: 0
+    projectileAmount: 10
+  - damage: 30
+    coolDown: 10
+    requiredMana: 0
+    projectileAmount: 10
+  BuffLevelsDatas: []
+  spreadAngle: 36
+  speed: 10
+  circularSpread: 0
+  damageInterval: 0
+  useScaleMagnification: 0
+  scalePreset: 0
+  lifeTime: 3
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
+    duration: 0
+  effectPrefab: {fileID: 2341659196089596006, guid: 72e206993d25b314f888b25a348191ab,
+    type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

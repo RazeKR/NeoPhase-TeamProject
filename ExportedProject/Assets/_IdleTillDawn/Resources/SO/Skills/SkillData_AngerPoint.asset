@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 2
   skillName: "\uBD84\uB178"
-  flavourText: 
+  flavourText: "\uD53C\uACA9 \uC2DC 15\uCD08 \uB3D9\uC548 \uACF5\uACA9\uB825\uC774
+    \uC99D\uAC00\uD569\uB2C8\uB2E4."
   skillType: 0
   icon: {fileID: 21300000, guid: 80f75358e92b9a34a86bf1247bbc3368, type: 2}
   maxLevel: 5
@@ -24,41 +25,41 @@ MonoBehaviour:
   PassiveLevelDatas: []
   ActiveLevelDatas:
   - damage: 0
-    coolDown: 12
+    coolDown: 50
     requiredMana: 0
     projectileAmount: 0
   - damage: 0
-    coolDown: 12
+    coolDown: 45
     requiredMana: 0
     projectileAmount: 0
   - damage: 0
-    coolDown: 12
+    coolDown: 40
     requiredMana: 0
     projectileAmount: 0
   - damage: 0
-    coolDown: 12
+    coolDown: 35
     requiredMana: 0
     projectileAmount: 0
   - damage: 0
-    coolDown: 12
+    coolDown: 30
     requiredMana: 0
     projectileAmount: 0
   BuffLevelsDatas:
   - statType: 2
     buffAmount: 10
-    duration: 6
+    duration: 15
   - statType: 2
     buffAmount: 15
-    duration: 6
+    duration: 15
   - statType: 2
     buffAmount: 18
-    duration: 6
+    duration: 15
   - statType: 2
     buffAmount: 22
-    duration: 6
+    duration: 15
   - statType: 2
     buffAmount: 25
-    duration: 6
+    duration: 15
   spreadAngle: 0
   speed: 0
   circularSpread: 0
