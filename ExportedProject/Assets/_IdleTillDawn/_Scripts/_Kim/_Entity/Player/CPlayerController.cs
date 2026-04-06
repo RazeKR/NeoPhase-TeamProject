@@ -66,6 +66,14 @@ public class CPlayerController : CEntityBase, IHealable
     public float BulletScaleBonus { get{ return _bulletScaleBonus; } set { _bulletScaleBonus = value; } } // for Passive Skill
     #endregion
 
+    #region Event
+    /// <summary>Damaged Event(for Passive Skill) </summary>
+    public event System.Action OnDamaged;
+    /// <summary>Shot Event(for Passive Skill) </summary>
+    public event System.Action OnShot;
+
+    #endregion
+
     /// <summary>
     /// 장착 무기의 사거리 — 무기 미장착 시 기본값 반환
     /// </summary>
@@ -376,6 +384,8 @@ public class CPlayerController : CEntityBase, IHealable
             if (ttl != null)
                 ttl.SetLifetime(weaponData.LifeTime);
         }
+
+        OnShot?.Invoke();
     }
 
     /// <summary>
@@ -471,6 +481,8 @@ public class CPlayerController : CEntityBase, IHealable
         // 비정상 종료로 참조가 남은 경우를 방어한다
         if (_preventCoroutine != null) StopCoroutine(_preventCoroutine);
         _preventCoroutine = StartCoroutine(CoPreventDamage());
+
+        OnDamaged?.Invoke();
     }
 
     private IEnumerator CoPreventDamage()

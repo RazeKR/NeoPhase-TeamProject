@@ -19,12 +19,74 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 6d4dcfd3b4d6eae40a590edf89b21cc5, type: 2}
   maxLevel: 10
   requiredPoints: 1
-  damage: 2
   prerequisiteSkills: []
-  statUp: 0
-  actionName: 
-  coolDown: 2
-  requiredMana: 0
-  skillEffects: []
-  effectPrefab: {fileID: 0}
-  _levelData: []
+  PassiveLevelDatas: []
+  ActiveLevelDatas:
+  - damage: 6
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 7
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 8
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 9
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 10
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 11
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 12
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 13
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 14
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 15
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  BuffLevelsDatas: []
+  spreadAngle: 0
+  speed: 0
+  circularSpread: 0
+  damageInterval: 2
+  useScaleMagnification: 1
+  scalePreset: 1.025
+  lifeTime: 0
+  areaKnockbackRadius: 0
+  areaKnockbackForce: 0
+  areaKnockbackDuration: 0
+  useSkillEffect: 0
+  skillEffect:
+    type: 0
+    value: 0
+    duration: 0
+  effectPrefab: {fileID: 4539359579862691148, guid: ed46cfdf7fd54a245829359fcc800f4a,
+    type: 3}
+  _castSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

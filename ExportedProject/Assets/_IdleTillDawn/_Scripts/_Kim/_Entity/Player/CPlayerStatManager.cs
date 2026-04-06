@@ -122,7 +122,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         int index = (int)type;
         float baseValue = _baseData.GetStatInfo(type).BaseValue;
 
-        return (baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index]) * _passiveModifiers[index];
+        return (baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index]) * ( 1 + _passiveModifiers[index]);
     }
 
     public void AddExp(float amount)

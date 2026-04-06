@@ -44,6 +44,10 @@ public class CSkillSystem : MonoBehaviour
     // ��Ÿ�� ���� ��ųʸ�
     private Dictionary<int, float> _cooldownDict = new Dictionary<int, float>();
 
+    private GameObject GlareGO;     // PassiveSkill - 'Glare' GameObject
+
+    private GameObject EOStormGO;   // PassiveSkill - 'Eye of The Storm' GameObject
+
     #endregion
 
     #region publicVariables
@@ -88,11 +92,13 @@ public class CSkillSystem : MonoBehaviour
             return;
         }
 
-        Instance = this;          
+        Instance = this;
     }
 
     private void Start()
     {
+        OnSkillChanged += RefreshPassiveSkill;
+
         if (CJsonManager.Instance != null)
         {
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
@@ -114,6 +120,8 @@ public class CSkillSystem : MonoBehaviour
         {
             Instance = null;
         }
+
+        OnSkillChanged -= RefreshPassiveSkill;
     }
 
     private void Update()
@@ -130,15 +138,17 @@ public class CSkillSystem : MonoBehaviour
 
     #region PublicMethods
 
-    public void SetPassiveSkill()
+    public void RefreshPassiveSkill()
     {
         GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
+        CPlayerController ctr = playerObj.GetComponent<CPlayerController>();
+        CPlayerStatManager smg = playerObj.GetComponent<CPlayerStatManager>();
         Vector3 spawnPos = playerObj.transform.position;
+        float finalScaleMult = 1.0f;
 
         if (GetSkillLevel(12) != 0) // Glare
-        {            
+        {
             CFogLightSource fog = playerObj.GetComponent<CFogLightSource>();
-
             CSkillDataSO data = CDataManager.Instance.GetSkill(12);
 
             int level = GetSkillLevel(12);
@@ -146,15 +156,19 @@ public class CSkillSystem : MonoBehaviour
             if (fog != null)
             {
                 fog.SetOuterRadius(5f + 5f * (0.025f * level));
+            }                        
+            if (GlareGO != null)
+            {
+                Destroy(GlareGO);
+                GlareGO = null;
             }
-                        
-            GameObject go = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
+            GlareGO = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
 
-            var followScript = go.GetComponent<CSkillFollow>();
+            var followScript = GlareGO.GetComponent<CSkillFollow>();
             if (followScript != null)
                 followScript.SetTarget(playerObj.transform);
 
-            ISkill[] effects = go.GetComponents<ISkill>();
+            ISkill[] effects = GlareGO.GetComponents<ISkill>();
 
             foreach (var effect in effects)
             {
@@ -164,18 +178,14 @@ public class CSkillSystem : MonoBehaviour
 
         if (GetSkillLevel(11) != 0) // Giant
         {
+            finalScaleMult += (0.005f * GetSkillLevel(11));           
 
+            smg.SetPassiveStatUpgrade(EPlayerStatType.Health, 0.05f * GetSkillLevel(11));
+            smg.SetPassiveStatUpgrade(EPlayerStatType.MoveSpeed, -0.016f * GetSkillLevel(11));
         }
 
-        if (GetSkillLevel(2) != 0)  // Anger Point
-        {
-
-        }
-        
         if (GetSkillLevel(3) != 0)  // Big Shot
         {
-            CPlayerController ctr = playerObj.GetComponent<CPlayerController>();
-
             CSkillDataSO data = CDataManager.Instance.GetSkill(3);
 
             int level = GetSkillLevel(3);
@@ -183,22 +193,116 @@ public class CSkillSystem : MonoBehaviour
             if (ctr != null)
             {
                 ctr.BulletScaleBonus = 0.04f * level;
-            }
-            
-            CPlayerStatManager smg = playerObj.GetComponent<CPlayerStatManager>();
+            }            
 
             smg.SetPassiveStatUpgrade(EPlayerStatType.Damage, 0.04f * level);
         }
+
+        if (GetSkillLevel(2) != 0)  // Anger Point
+        {
+            ctr.OnDamaged -= AngerPoint;
+            ctr.OnDamaged += AngerPoint;
+        }
+        else ctr.OnDamaged -= AngerPoint;
+
         if (GetSkillLevel(8) != 0)  // Fan Fire
         {
-
+            ctr.OnShot -= FanFire;
+            ctr.OnShot += FanFire;
         }
+        else ctr.OnShot -= FanFire;
+
         if (GetSkillLevel(7) != 0)  // Eye of the Storm
         {
+            CSkillDataSO data = CDataManager.Instance.GetSkill(7);
 
+            int level = GetSkillLevel(7);
+
+            if (EOStormGO != null)
+            {
+                Destroy(EOStormGO);
+                EOStormGO = null;
+            }
+            EOStormGO = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
+
+            var followScript = EOStormGO.GetComponent<CSkillFollow>();
+            if (followScript != null)
+                followScript.SetTarget(playerObj.transform);
+
+            ISkill[] effects = EOStormGO.GetComponents<ISkill>();
+
+            foreach (var effect in effects)
+            {
+                effect.Init(data, level - 1);
+            }
+        }
+
+        ctr.PlayerLocalScale = Vector3.one * finalScaleMult;
+    }
+
+    public void FanFire()
+    {
+        GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
+
+        Vector3 spawnPos = playerObj.transform.position;
+
+        CSkillDataSO data = CDataManager.Instance.GetSkill(8);
+
+        spawnPos.z = 0;
+
+        int levelIndex = GetSkillLevel(8) - 1;
+
+        Transform target = GetNearestEnemy();
+        float baseAngle = playerObj.transform.eulerAngles.z;
+
+        float startAngle;
+        float step = 36f;
+        startAngle = baseAngle;
+
+        for (int i = 0; i < 10; i++)
+        {
+            float currentAngle = startAngle + (step * i);
+            Quaternion rot = Quaternion.Euler(0, 0, currentAngle);
+
+            if (data.skillType == ESkillType.Buff) rot = Quaternion.identity;
+
+            GameObject go = Instantiate(data.effectPrefab, spawnPos, rot);
+
+            var followScript = go.GetComponent<CSkillFollow>();
+            if (followScript != null)
+                followScript.SetTarget(playerObj.transform);
+
+            // ISkill Init
+            ISkill[] effects = go.GetComponents<ISkill>();
+
+            foreach (var effect in effects)
+            {
+                effect.Init(data, levelIndex);
+            }
         }
     }
 
+    public void AngerPoint()
+    {
+        GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
+
+        CSkillDataSO data = CDataManager.Instance.GetSkill(2);
+
+        if (data != null && IsSkillReady(2) && playerObj != null)
+        {
+            CPlayerStatManager pStat = playerObj.GetComponent<CPlayerStatManager>();
+            if (pStat == null) return;
+
+            BuffLevelData datas = data.BuffLevelsDatas[GetSkillLevel(2) - 1];
+
+            pStat.AddTemporaryBuff(datas.statType, datas.buffAmount, datas.duration);
+
+            Debug.Log("AngerPoint On");
+
+            // CoolDown
+            StartCooldown(2, data.ActiveLevelDatas[GetSkillLevel(2) - 1].coolDown);
+        }
+    }
 
     /// <summary>
     /// Use Skill by Index
@@ -442,6 +546,8 @@ public class CSkillSystem : MonoBehaviour
         {
             c.UpdateLineColor();
         }
+
+        OnSkillChanged?.Invoke();
     }
 
 
