@@ -64,6 +64,15 @@ public class CGoldManager : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    /// <summary>
+    /// Start에서 로드하는 이유:
+    /// Awake(BeforeSceneLoad) 타이밍엔 CJsonManager가 아직 null이어서 로드 불가.
+    /// Start 시점에는 DontDestroyOnLoad 매니저들이 모두 초기화된 상태.
+    /// </summary>
+    private void Start()
+    {
         LoadFromSave();
     }
 

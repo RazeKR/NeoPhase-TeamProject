@@ -47,16 +47,17 @@ public class CStageManager : MonoBehaviour
 
     #region Private Variables
 
-    private EStageState currentState;   // 현재 상태 (외부에서 직접 변경 불가)
-    private int         currentKillCount; // 이번 스테이지 누적 처치 수
-    private CStageDataSO stageData;       // 현재 스테이지 데이터 캐시 (GameManager에서 수신)
+    private EStageState  currentState;     // 현재 상태 (외부에서 직접 변경 불가)
+    private int          currentKillCount; // 이번 스테이지 누적 처치 수
+    private CStageDataSO stageData;        // 현재 스테이지 데이터 캐시 (GameManager에서 수신)
+    private bool         _stageCleared;    // StageClear 여부 — OnDestroy에서 중복 저장 방지용
 
     #endregion
 
     #region Properties
 
     /// <summary>현재 상태를 외부에서 읽기 전용으로 노출한다</summary>
-    public EStageState CurrentState => currentState; // 읽기 전용, 변경은 TransitionTo만 허용
+    public EStageState CurrentState => currentState;
 
     #endregion
 
@@ -64,8 +65,7 @@ public class CStageManager : MonoBehaviour
 
     /// <summary>
     /// 씬 시작 시 GameManager로부터 스테이지 데이터를 받아 초기화한다
-    /// 보스 매니저 이벤트를 구독하고 즉시 Farming 상태로 진입하여 스폰을 시작한다
-    /// Awake가 아닌 Start를 사용하는 이유는 다른 매니저들의 Awake 초기화가 완료된 이후에 실행해야 하기 때문이다
+    /// 저장된 킬카운트가 있으면 복원하여 게임 재시작 후에도 진행도가 유지된다
     /// </summary>
     private void Start()
     {
@@ -81,19 +81,23 @@ public class CStageManager : MonoBehaviour
                 "  3) 현재 StageIndex(" + CGameManager.Instance.CurrentStageIndex +
                 ")와 일치하는 StageDataSO의 StageIndex 값이 설정됐는지 확인",
                 this);
-            return; // 이하 초기화 중단
+            return;
         }
 
+        RestoreKillCount(); // 저장된 킬카운트 복원
         SubscribeToBossEvents();
-        TransitionTo(EStageState.Farming); // 씬 시작 즉시 파밍 루프 시작
+        TransitionTo(EStageState.Farming);
     }
 
-    /// <summary>씬 언로드 시 이벤트 구독을 해제하여 메모리 누수를 방지한다</summary>
+    /// <summary>씬 언로드 시 킬카운트를 저장하고 이벤트 구독을 해제한다</summary>
     private void OnDestroy()
     {
         _bossManager.OnBossDefeated   -= HandleBossDefeated;
         _bossManager.OnPlayerDefeated -= HandlePlayerDefeated;
-        _bossManager.OnPlayerDefeated -= HandlePlayerDefeated;
+
+        // 스테이지 클리어 시엔 EnterState(StageClear)에서 이미 저장 완료 → 중복 저장 방지
+        if (!_stageCleared)
+            SaveKillCountToData();
     }
 
     #endregion
@@ -107,10 +111,13 @@ public class CStageManager : MonoBehaviour
     /// </summary>
     public void RegisterKill()
     {
-        if (currentState != EStageState.Farming) return; // Farming 외 상태의 킬은 무시
+        if (currentState != EStageState.Farming) return;
 
         currentKillCount++;
-        OnKillCountChanged?.Invoke(currentKillCount, stageData.KillGoal); // UI 갱신 이벤트
+        OnKillCountChanged?.Invoke(currentKillCount, stageData.KillGoal);
+
+        // 메모리상 CSaveData만 갱신 (파일 쓰기는 씬 언로드/종료 시 한 번만)
+        UpdateKillCountInMemory();
 
         if (currentKillCount >= stageData.KillGoal) TransitionTo(EStageState.BossReady);
     }
@@ -129,36 +136,19 @@ public class CStageManager : MonoBehaviour
 
     #region Private Methods
 
-    /// <summary>
-    /// 보스 매니저의 결과 이벤트를 구독한다
-    /// Start에서 호출하여 _bossManager가 Awake에서 초기화된 이후에 구독한다
-    /// </summary>
     private void SubscribeToBossEvents()
     {
         _bossManager.OnBossDefeated   += HandleBossDefeated;
-        _bossManager.OnPlayerDefeated  += HandlePlayerDefeated;
+        _bossManager.OnPlayerDefeated += HandlePlayerDefeated;
     }
 
-    /// <summary>
-    /// 보스 처치 이벤트를 수신하여 StageClear 상태로 전환한다
-    /// </summary>
     private void HandleBossDefeated() => TransitionTo(EStageState.StageClear);
 
-    /// <summary>
-    /// 플레이어 사망 이벤트를 수신하여 사망 UI를 띄우고 GameManager에 리스폰을 위임한다
-    /// 리스폰은 씬 리로드 방식으로 처리하므로 이 클래스에서 추가 상태 복구가 필요 없다
-    /// </summary>
     private void HandlePlayerDefeated()
     {
-        OnPlayerDied?.Invoke(); // 사망 UI 이벤트 (리스폰은 CPlayerController.Die()가 처리)
+        OnPlayerDied?.Invoke();
     }
 
-    /// <summary>
-    /// 상태 전환의 단일 진입점
-    /// 이전 상태를 Exit 처리한 뒤 새 상태를 Enter 처리한다
-    /// 직접 currentState를 변경하지 않고 반드시 이 메서드를 통해 전환하는 것을 강제한다
-    /// </summary>
-    /// <param name="nextState">전환할 목표 상태</param>
     private void TransitionTo(EStageState nextState)
     {
         ExitState(currentState);
@@ -166,48 +156,85 @@ public class CStageManager : MonoBehaviour
         EnterState(currentState);
     }
 
-    /// <summary>
-    /// 새 상태 진입 시 각 상태별 초기화 작업을 실행한다
-    /// 각 case는 해당 상태가 필요로 하는 컴포넌트만 최소한으로 조작한다
-    /// </summary>
-    /// <param name="state">진입할 상태</param>
     private void EnterState(EStageState state)
     {
         switch (state)
         {
             case EStageState.Farming:
-                _spawnManager.StartSpawning(stageData); // 일반 몬스터 스폰 시작
+                _spawnManager.StartSpawning(stageData);
                 break;
 
             case EStageState.BossReady:
-                // 스폰은 계속 유지 — Kill Goal 달성 후에도 일반 몬스터를 처치하여 성장이 지속되어야 한다
-                // 스폰 중단은 플레이어가 직접 보스 도전 버튼을 눌렀을 때(BossFight 진입)에만 한다
-                OnBossReady?.Invoke();                  // UI 버튼 활성화 이벤트
+                OnBossReady?.Invoke();
                 break;
 
             case EStageState.BossFight:
-                _spawnManager.StopSpawning();           // 보스 도전 시작 시에만 일반 스폰 중단
+                _spawnManager.StopSpawning();
                 OnBossFightStart?.Invoke();
-                _bossManager.SpawnBoss(stageData);      // 보스 등장
+                _bossManager.SpawnBoss(stageData);
                 break;
 
             case EStageState.StageClear:
-                CGoldManager.Instance?.AddGold(stageData.ClearGoldReward); // 스테이지 클리어 골드 보상
+                _stageCleared = true;
+                SaveKillCountReset(); // 다음 스테이지를 위해 킬카운트 0으로 저장
+                CGoldManager.Instance?.AddGold(stageData.ClearGoldReward);
                 OnStageClear?.Invoke();
-                // 저장은 CGameManager.OnApplicationQuit에서 처리 — 여기서 호출하지 않음
                 CGameManager.Instance.ProgressToNextStage();
                 break;
         }
     }
 
-    /// <summary>
-    /// 상태 종료 시 해당 상태에서 할당한 리소스를 정리한다
-    /// 현재는 별도 정리 로직이 없으나 이펙트, 타이머 등 확장 시 여기에 추가한다
-    /// </summary>
-    /// <param name="state">종료할 상태</param>
     private void ExitState(EStageState state)
     {
         // 확장 예정: 상태별 정리 로직 (이펙트 종료, 타이머 해제 등)
+    }
+
+    // ── 킬카운트 저장/복원 ────────────────────────────────────────────────
+
+    /// <summary>
+    /// 씬 시작 시 저장된 킬카운트를 복원한다.
+    /// 같은 스테이지이고 KillGoal 미만일 때만 복원 (다른 스테이지·클리어 후 잔류값 방어)
+    /// KillGoal 이상이면 BossReady 직전까지 채워 버튼을 활성화할 수 있도록 KillGoal-1로 복원한다
+    /// </summary>
+    private void RestoreKillCount()
+    {
+        if (CJsonManager.Instance == null) return;
+        CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+
+        if (data.currentStageId != stageData.StageIndex) return; // 다른 스테이지면 복원 안 함
+
+        currentKillCount = Mathf.Clamp(data.currentKillCount, 0, stageData.KillGoal);
+
+        if (currentKillCount > 0)
+            OnKillCountChanged?.Invoke(currentKillCount, stageData.KillGoal);
+    }
+
+    /// <summary>
+    /// 현재 킬카운트를 CSaveData 메모리에만 반영한다. (파일 쓰기 없음)
+    /// 실제 파일 저장은 씬 언로드(OnDestroy) 또는 앱 종료(OnApplicationQuit) 시 수행된다.
+    /// </summary>
+    private void UpdateKillCountInMemory()
+    {
+        if (CJsonManager.Instance == null) return;
+        CJsonManager.Instance.GetOrCreateSaveData().currentKillCount = currentKillCount;
+    }
+
+    /// <summary>다음 스테이지 시작을 위해 킬카운트를 0으로 초기화하고 파일에 저장한다.</summary>
+    private void SaveKillCountReset()
+    {
+        if (CJsonManager.Instance == null) return;
+        CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+        data.currentKillCount = 0;
+        CJsonManager.Instance.Save(data);
+    }
+
+    /// <summary>현재 킬카운트를 파일에 저장한다. (사망/씬 언로드 시 호출)</summary>
+    private void SaveKillCountToData()
+    {
+        if (CJsonManager.Instance == null || stageData == null) return;
+        CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+        data.currentKillCount = currentKillCount;
+        CJsonManager.Instance.Save(data);
     }
 
     #endregion
