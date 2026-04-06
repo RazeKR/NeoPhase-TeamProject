@@ -30,6 +30,10 @@ public class CRankingManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 서버에 있는 랭킹 데이터를 읽어오는 메서드
+    /// </summary>
+    /// <param name="onComplete"></param>
     public void GetRankingData(Action<List<CRankData>> onComplete)
     {
         if (Time.time - _lastFetchTime < FETCH_COOLDOWN && _cachedRankingData.Count > 0)
@@ -54,10 +58,22 @@ public class CRankingManager : MonoBehaviour
         ));
     }
 
-    public void SaveMyRanking(CRankData myData)
+    /// <summary>
+    /// 로컬 세이브 데이터를 기반으로 서버에 랭킹을 등록하는 메서드
+    /// </summary>
+    /// <param name="myData"></param>
+    public void SaveMyRanking(CSaveData localSaveData)
     {
+        if (localSaveData == null)
+        {
+            Debug.LogWarning("CRankingManager : 로컬 세이브 데이터가 NULL");
+            return;
+        }
+
+        CRankData rankDataToUpload = CRankData.FromSaveDataToRankData(localSaveData);
+
         StartCoroutine(CRankingAPI.CoSaveRanking(
-            myData,
+            rankDataToUpload,
             onSuccess: () => Debug.Log("서버 전송 완료"),
             onError: (error) => Debug.LogError($"전송 실패 : {error}")
         ));
