@@ -130,6 +130,76 @@ public class CSkillSystem : MonoBehaviour
 
     #region PublicMethods
 
+    public void SetPassiveSkill()
+    {
+        GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
+        Vector3 spawnPos = playerObj.transform.position;
+
+        if (GetSkillLevel(12) != 0) // Glare
+        {            
+            CFogLightSource fog = playerObj.GetComponent<CFogLightSource>();
+
+            CSkillDataSO data = CDataManager.Instance.GetSkill(12);
+
+            int level = GetSkillLevel(12);
+
+            if (fog != null)
+            {
+                fog.SetOuterRadius(5f + 5f * (0.025f * level));
+            }
+                        
+            GameObject go = Instantiate(data.effectPrefab, spawnPos, Quaternion.identity);
+
+            var followScript = go.GetComponent<CSkillFollow>();
+            if (followScript != null)
+                followScript.SetTarget(playerObj.transform);
+
+            ISkill[] effects = go.GetComponents<ISkill>();
+
+            foreach (var effect in effects)
+            {
+                effect.Init(data, level - 1);
+            }
+        }
+
+        if (GetSkillLevel(11) != 0) // Giant
+        {
+
+        }
+
+        if (GetSkillLevel(2) != 0)  // Anger Point
+        {
+
+        }
+        
+        if (GetSkillLevel(3) != 0)  // Big Shot
+        {
+            CPlayerController ctr = playerObj.GetComponent<CPlayerController>();
+
+            CSkillDataSO data = CDataManager.Instance.GetSkill(3);
+
+            int level = GetSkillLevel(3);
+
+            if (ctr != null)
+            {
+                ctr.BulletScaleBonus = 0.04f * level;
+            }
+            
+            CPlayerStatManager smg = playerObj.GetComponent<CPlayerStatManager>();
+
+            smg.SetPassiveStatUpgrade(EPlayerStatType.Damage, 0.04f * level);
+        }
+        if (GetSkillLevel(8) != 0)  // Fan Fire
+        {
+
+        }
+        if (GetSkillLevel(7) != 0)  // Eye of the Storm
+        {
+
+        }
+    }
+
+
     /// <summary>
     /// Use Skill by Index
     /// </summary>
