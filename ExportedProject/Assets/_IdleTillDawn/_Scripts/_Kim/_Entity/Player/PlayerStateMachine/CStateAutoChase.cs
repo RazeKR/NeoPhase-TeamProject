@@ -34,18 +34,22 @@ public class CStateAutoChase : IPlayerState
 
     public void FixedUpdate()
     {
-        Collider2D[] threats = Physics2D.OverlapCircleAll
-        (
-            _player.transform.position,
-            _player.EvadeRadius,
-            _player.HazardLayer
-        );
-
-        if (threats.Length > 0)
+        if (!_player.IsAutoEvadeDisabled)
         {
-            _player.StateMachine.ChangeState(_player.StateAutoEvade);
-            return;
+            Collider2D[] threats = Physics2D.OverlapCircleAll
+            (
+                _player.transform.position,
+                _player.EvadeRadius,
+                _player.HazardLayer
+            );
+
+            if (threats.Length > 0)
+            {
+                _player.StateMachine.ChangeState(_player.StateAutoEvade);
+                return;
+            }
         }
+
 
         if (_player.CurrentTarget == null)
         {
@@ -59,7 +63,7 @@ public class CStateAutoChase : IPlayerState
         Vector2 dirToTarget = (_player.CurrentTarget.position - _player.transform.position).normalized;
 
         float maxAttackRange = _player.CurrentAttackRange;
-        float stopApproachRange = maxAttackRange * 0.7f;
+        float stopApproachRange = Mathf.Max(0.5f, maxAttackRange * 0.7f);
 
         if (_player.CurrentTarget != _lastTarget)
         {

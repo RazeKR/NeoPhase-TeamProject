@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>플레이어 스탯의 종류를 구분하는 열거형입니다.</summary>
 public enum EPlayerStatType
@@ -41,6 +41,9 @@ public class CPlayerDataSO : CBaseDataSO
     [SerializeField] private string _description = "Character Description"; // 캐릭터 설명
     [SerializeField] private Sprite _characterPortrait = null;               // 캐릭터 초상화
 
+    [Header("고유 특성")]
+    [SerializeField] private CCharacterTraitSO _uniqueTrait;
+
     [Header("캐릭터 스탯 설정")]
     [SerializeField] private PlayerStatInfo[] _statSettings; // EPlayerStatType별 기본값·성장치 배열
 
@@ -61,6 +64,8 @@ public class CPlayerDataSO : CBaseDataSO
 
     /// <summary>플레이어 피격 시 재생할 사운드 데이터. null이면 무음</summary>
     public CSoundData HitSFX            => _hitSFX;
+
+    public CCharacterTraitSO UniqueTrait => _uniqueTrait;
 
     #endregion
 

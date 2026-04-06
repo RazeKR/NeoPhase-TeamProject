@@ -10,6 +10,7 @@ public enum EStatusEffect
     Freeze = 1 << 0,
     Burn = 1 << 1,
     Knockback = 1 << 2,
+    Invincible = 1 << 3,
 }
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -116,6 +117,8 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     public EStatusEffect CurrentStatus { get; protected set; } = EStatusEffect.None;
 
     protected float CurrentFreezeSlowRate => _currentFreezeSlowRate;
+
+    public LayerMask TargetLayer => _targetLayer;
     #endregion
 
     protected virtual void Awake()
@@ -284,6 +287,8 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     /// <param name="velocityX"></param>
     public void FlipCharacter(float velocityX)
     {
+        if (Mathf.Abs(velocityX) < 0.1f) return;
+
         Vector3 currentScale = transform.localScale;
 
         if (velocityX > 0.001f)
