@@ -284,14 +284,18 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     /// <param name="velocityX"></param>
     public void FlipCharacter(float velocityX)
     {
+        Vector3 currentScale = transform.localScale;
+
         if (velocityX > 0.001f)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            currentScale.x = Mathf.Abs(currentScale.x);
         }
         else if (velocityX < -0.001f)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            currentScale.x = -Mathf.Abs(currentScale.x);
         }
+
+        transform.localScale = currentScale;
     }
 
     #region 상태이상 관리
