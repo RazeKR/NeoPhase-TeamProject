@@ -57,6 +57,16 @@ public class CSaveData
     public List<int>   statTypeIds   = new(); // EPlayerStatType을 int로 저장
     public List<float> statBonuses   = new(); // 각 스탯 보너스 수치 (statTypeIds와 1:1 대응)
 
+    // ── 상점 구매 기록 ───────────────────────────────────────────────────
+    // 주간 다이아 상품 4종 구매 횟수 (인덱스 0~3 순서대로 11000·33000·55000·110000)
+    public List<int> shopWeeklyBuyCounts = new() { 0, 0, 0, 0 };
+    // 주간 초기화 기준 월요일 (KST, "yyyy-MM-dd")
+    public string    shopWeeklyResetDate = "";
+    // 일일 무료 골드 구매 횟수 (10000 골드 무료 1회)
+    public int       shopDailyBuyCount   = 0;
+    // 일일 초기화 기준 날짜 (KST, "yyyy-MM-dd")
+    public string    shopDailyResetDate  = "";
+
     // ── 메타데이터 ────────────────────────────────────────────────────────
     public string lastSavedTime = string.Empty; // 마지막 저장 시각 (ISO 8601)
     public int    saveVersion   = 1;             // 세이브 포맷 버전 (마이그레이션 대비)

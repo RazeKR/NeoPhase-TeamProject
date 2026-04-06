@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 골드·다이아 재화를 통합 관리하는 싱글톤 매니저입니다.
@@ -20,12 +21,26 @@ public class CGoldManager : MonoBehaviour
 
     public static CGoldManager Instance { get; private set; }
 
-    /// <summary>씬 로드 전 자동 생성. CGameManager와 동일한 패턴을 따릅니다.</summary>
+    /// <summary>
+    /// 게임 최초 실행 시 인스턴스를 생성하고, 이후 씬 로드마다 null 여부를 감지해 재생성합니다.
+    /// RuntimeInitializeOnLoadMethod는 프로세스당 한 번만 실행되므로,
+    /// ResetAllData()로 파괴된 뒤 씬이 재로드되어도 sceneLoaded 이벤트로 복구합니다.
+    /// </summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoCreate()
     {
-        if (Instance != null) return;
-        new GameObject("GoldManager").AddComponent<CGoldManager>();
+        if (Instance == null)
+            new GameObject("GoldManager").AddComponent<CGoldManager>();
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    /// <summary>씬 로드 완료 시 Instance가 null이면 재생성합니다.</summary>
+    private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (Instance == null)
+            new GameObject("GoldManager").AddComponent<CGoldManager>();
     }
 
     #endregion
@@ -74,6 +89,15 @@ public class CGoldManager : MonoBehaviour
     private void Start()
     {
         LoadFromSave();
+    }
+
+    /// <summary>
+    /// ResetAllData() 등으로 강제 파괴될 때 Instance를 null로 초기화합니다.
+    /// Instance가 null이 되어야 AutoCreate에서 새 인스턴스를 올바르게 생성합니다.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 
     #endregion
