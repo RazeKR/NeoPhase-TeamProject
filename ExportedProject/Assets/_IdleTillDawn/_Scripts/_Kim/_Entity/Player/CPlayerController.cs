@@ -47,6 +47,8 @@ public class CPlayerController : CEntityBase, IHealable
     private WaitForSeconds _blinkWait;
     private float _knockbackEndTime = 0f;
 
+    private float _bulletScaleBonus;    // for Passive Skill
+
     #endregion
 
     #region 프로퍼티
@@ -60,6 +62,8 @@ public class CPlayerController : CEntityBase, IHealable
     public CStateManual StateManual { get; private set; }
     public CStateAutoChase StateAutoChase { get; private set; }
     public CStateAutoEvade StateAutoEvade { get; private set; }
+
+    public float BulletScaleBonus { get{ return _bulletScaleBonus; } set { _bulletScaleBonus = value; } } // for Passive Skill
     #endregion
 
     /// <summary>
@@ -348,6 +352,7 @@ public class CPlayerController : CEntityBase, IHealable
             ? CWeaponEquip.Instance.MuzzleWorldPosition
             : transform.position;
         GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, Quaternion.Euler(0f, 0f, rotZ));
+        bulletObj.transform.localScale *= (1 + _bulletScaleBonus);
         float finalDamage = _statManager != null
                                     ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
                                     : weaponData.WeaponDamage;

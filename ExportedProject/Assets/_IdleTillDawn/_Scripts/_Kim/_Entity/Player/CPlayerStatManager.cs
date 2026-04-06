@@ -12,6 +12,8 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     private float[] _bonusModifiers = new float[(int)EPlayerStatType.Count];
     // buff Stat Modifier
     private float[] _temporaryModifiers = new float[(int)EPlayerStatType.Count];
+    // passivr Stat Modifier
+    private float[] _passiveModifiers = new float[(int)EPlayerStatType.Count];
     #endregion
 
     #region 프로퍼티
@@ -76,6 +78,18 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     }
 
     /// <summary>
+    /// Passive Buff Stat API (for Passive Skill)
+    /// </summary>
+    /// <param name="statType"></param>
+    /// <param name="amount"></param>
+    public void SetPassiveStatUpgrade(EPlayerStatType statType, float amount)
+    {
+        _passiveModifiers[(int)statType] = amount;
+
+        OnStatUpgraded?.Invoke();
+    }
+
+    /// <summary>
     /// Temporary Buff Stat API
     /// </summary>
     /// <param name="statType"></param>
@@ -108,7 +122,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         int index = (int)type;
         float baseValue = _baseData.GetStatInfo(type).BaseValue;
 
-        return baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index];
+        return (baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index]) * _passiveModifiers[index];
     }
 
     public void AddExp(float amount)
