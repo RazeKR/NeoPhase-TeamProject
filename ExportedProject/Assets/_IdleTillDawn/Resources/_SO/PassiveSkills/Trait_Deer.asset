@@ -20,3 +20,9 @@ MonoBehaviour:
   _duration: 3
   _speedMultiplier: 1.5
   _deerAnimator: {fileID: 9100000, guid: b73b088048695a9418ad5db03100af18, type: 2}
+  _transformToDeerDuration: 0.5
+  _transformToHumanDuration: 0.5
+  _transformToHumanTrigger: tDurationOver
+  _knockbackRadius: 5
+  _knockbackForce: 10
+  _knockbackDuration: 0.5

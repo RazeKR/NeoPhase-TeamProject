@@ -6,9 +6,15 @@ public class CDeerRamAttack : MonoBehaviour
 {
 	#region 프로퍼티
 	public float Damage { get; set; }
-
 	public LayerMask EnemyLayer { get; set; }
     #endregion
+
+    private void Awake()
+    {
+        CircleCollider2D col = gameObject.AddComponent<CircleCollider2D>();
+        col.isTrigger = true;
+        col.radius = 1.05f;
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {

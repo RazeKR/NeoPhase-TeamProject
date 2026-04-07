@@ -317,12 +317,6 @@ public class CPlayerController : CEntityBase, IHealable
         CurrentHealth = (saveData != null && saveData.currentHp > 0) ? saveData.currentHp : MaxHealth;
 
         Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}, 최대 체력 {MaxHealth}");
-
-        if (_characterData.UniqueTrait != null)
-        {
-            _characterData.UniqueTrait.ApplyTrait(this);
-            Debug.Log($"고유 특성 [{_characterData.UniqueTrait.TraitName}] 적용");
-        }
     }
 
     /// <summary>
