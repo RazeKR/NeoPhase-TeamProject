@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 /// <summary>
 /// 상점 내 카테고리 탭 전환과 재화(GoldShop) 패널의 6개 구매 버튼을 관리합니다.
 ///
@@ -38,6 +39,14 @@ public class CGoldShopUI : MonoBehaviour
     private const int GoldWithDiamondReward = 100000;  // 버튼5: 골드 지급량
     private const int DailyFreeGoldReward   = 10000;   // 버튼4: 무료 골드 지급량
 
+    // 무기 상자 골드 상품 (0~2번 버튼): 수량, 골드 비용
+    private static readonly int[] WeaponBoxGoldAmounts = { 10, 25, 50 };
+    private static readonly int[] WeaponBoxGoldCosts   = { 100000, 250000, 500000 };
+
+    // 무기 상자 다이아 상품 (3~5번 버튼): 수량, 다이아 비용
+    private static readonly int[] WeaponBoxDiamondAmounts = { 10, 25, 50 };
+    private static readonly int[] WeaponBoxDiamondCosts   = { 1000, 2500, 5000 };
+
     #endregion
 
     #region Inspector Variables
@@ -58,11 +67,24 @@ public class CGoldShopUI : MonoBehaviour
     [Header("버튼별 구매 횟수 Text (0~3: 주간 X/5 / 4: 일일 X/1 / 5: 없어도 됨)")]
     [SerializeField] private Text[] _shopItemCountTexts = new Text[6];
 
+    [Header("WeaponShopPanel (무기 패키지 탭)")]
+    [SerializeField] private GameObject _weaponShopPanel = null;
+
+    [Header("무기 상자 구매 버튼 6개 (0~2: 골드 / 3~5: 다이아)")]
+    [SerializeField] private Button[] _weaponShopButtons = new Button[6];
+
+    [Header("무기 상자 버튼별 비용 Text")]
+    [SerializeField] private Text[] _weaponShopCostTexts = new Text[6];
+
     #endregion
 
     #region Private Variables
 
-    private int _currentCategoryIndex = 0; // 현재 선택된 카테고리 (0 = 재화)
+    private int _currentCategoryIndex = 0; // 현재 선택된 카테고리 (0 = 재화, 2 = 무기 패키지)
+
+    // CGoldManager 이벤트 구독 해제용 델리게이트 캐시
+    private Action<int> _onGoldChanged;
+    private Action<int> _onDiamondChanged;
 
     #endregion
 
@@ -72,18 +94,36 @@ public class CGoldShopUI : MonoBehaviour
     {
         RegisterCategoryButtons();
         RegisterShopItemButtons();
+        RegisterWeaponShopButtons();
+
+        // CGoldManager 재화 변경 이벤트 구독 — 재화가 바뀌면 무기 상점 버튼 상태를 즉시 갱신
+        _onGoldChanged    = _ => RefreshWeaponShopButtonStates();
+        _onDiamondChanged = _ => RefreshWeaponShopButtonStates();
+        if (CGoldManager.Instance != null)
+        {
+            CGoldManager.Instance.OnGoldChanged    += _onGoldChanged;
+            CGoldManager.Instance.OnDiamondChanged += _onDiamondChanged;
+        }
 
         // 상점 열릴 때 재화 탭이 기본 선택
         SelectCategory(0);
         RefreshAllButtonStates();
+        // 무기 상점 버튼은 CGoldManager.Start()가 끝난 뒤 첫 재화 이벤트로 갱신되므로
+        // 여기서는 패널이 비활성이어도 상관없지만, 이미 로드된 경우를 위해 한 번 호출
+        RefreshWeaponShopButtonStates();
     }
 
     private void OnDestroy()
     {
+        if (CGoldManager.Instance != null)
+        {
+            if (_onGoldChanged    != null) CGoldManager.Instance.OnGoldChanged    -= _onGoldChanged;
+            if (_onDiamondChanged != null) CGoldManager.Instance.OnDiamondChanged -= _onDiamondChanged;
+        }
+
         for (int i = 0; i < _categoryButtons.Length; i++)
         {
             if (_categoryButtons[i] == null) continue;
-            int captured = i;
             _categoryButtons[i].onClick.RemoveAllListeners();
         }
 
@@ -91,6 +131,12 @@ public class CGoldShopUI : MonoBehaviour
         {
             if (_shopItemButtons[i] != null)
                 _shopItemButtons[i].onClick.RemoveAllListeners();
+        }
+
+        for (int i = 0; i < _weaponShopButtons.Length; i++)
+        {
+            if (_weaponShopButtons[i] != null)
+                _weaponShopButtons[i].onClick.RemoveAllListeners();
         }
     }
 
@@ -103,7 +149,11 @@ public class CGoldShopUI : MonoBehaviour
     {
         SelectCategory(0);
         RefreshAllButtonStates();
+        RefreshWeaponShopButtonStates();
     }
+
+    /// <summary>무기 상자 보유 수량 변경 시 발행됩니다. 인자: 변경 후 보유 수량</summary>
+    public static event Action<int> OnWeaponBoxCountChanged;
 
     #endregion
 
@@ -135,9 +185,15 @@ public class CGoldShopUI : MonoBehaviour
             _categoryButtons[i].colors = cb;
         }
 
-        // 재화(0)만 구현 — 나머지 카테고리 패널은 추후 연결
         if (_goldShopPanel != null)
             _goldShopPanel.SetActive(index == 0);
+
+        if (_weaponShopPanel != null)
+        {
+            _weaponShopPanel.SetActive(index == 2);
+            if (index == 2)
+                RefreshWeaponShopButtonStates();
+        }
     }
 
     #endregion
@@ -165,6 +221,84 @@ public class CGoldShopUI : MonoBehaviour
             case 4: TryBuyDailyFreeGold();  break;
             case 5: TryBuyGoldWithDiamond(); break;
         }
+    }
+
+    private void RegisterWeaponShopButtons()
+    {
+        for (int i = 0; i < _weaponShopButtons.Length; i++)
+        {
+            if (_weaponShopButtons[i] == null) continue;
+            int captured = i;
+            _weaponShopButtons[i].onClick.AddListener(() => OnWeaponShopButtonClicked(captured));
+        }
+    }
+
+    private void OnWeaponShopButtonClicked(int index)
+    {
+        if (index < 3) TryBuyWeaponBoxWithGold(index);
+        else           TryBuyWeaponBoxWithDiamond(index - 3);
+    }
+
+    /// <summary>골드로 무기 상자 구매 (0~2번 버튼)</summary>
+    private void TryBuyWeaponBoxWithGold(int itemIndex)
+    {
+        if (CGoldManager.Instance == null)
+        {
+            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            return;
+        }
+
+        int cost = WeaponBoxGoldCosts[itemIndex];
+        if (CGoldManager.Instance.Gold < cost)
+        {
+            Debug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {cost:N0})");
+            return;
+        }
+
+        bool success = CGoldManager.Instance.SpendGold(cost);
+        if (!success) return;
+
+        CSaveData data = GetSaveData();
+        if (data == null) return;
+
+        int amount = WeaponBoxGoldAmounts[itemIndex];
+        data.weaponBoxCount += amount;
+        SaveData(data);
+
+        OnWeaponBoxCountChanged?.Invoke(data.weaponBoxCount);
+        RefreshWeaponShopButtonStates();
+        Debug.Log($"[CGoldShopUI] 골드 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
+    }
+
+    /// <summary>다이아로 무기 상자 구매 (3~5번 버튼)</summary>
+    private void TryBuyWeaponBoxWithDiamond(int itemIndex)
+    {
+        if (CGoldManager.Instance == null)
+        {
+            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            return;
+        }
+
+        int cost = WeaponBoxDiamondCosts[itemIndex];
+        if (CGoldManager.Instance.Diamond < cost)
+        {
+            Debug.Log($"[CGoldShopUI] 다이아 부족 (보유: {CGoldManager.Instance.Diamond:N0}, 필요: {cost:N0})");
+            return;
+        }
+
+        bool success = CGoldManager.Instance.SpendDiamond(cost);
+        if (!success) return;
+
+        CSaveData data = GetSaveData();
+        if (data == null) return;
+
+        int amount = WeaponBoxDiamondAmounts[itemIndex];
+        data.weaponBoxCount += amount;
+        SaveData(data);
+
+        OnWeaponBoxCountChanged?.Invoke(data.weaponBoxCount);
+        RefreshWeaponShopButtonStates();
+        Debug.Log($"[CGoldShopUI] 다이아 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
     }
 
     /// <summary>주간 다이아 상품 구매 (0~3번 버튼)</summary>
@@ -317,6 +451,44 @@ public class CGoldShopUI : MonoBehaviour
         if (index >= _shopItemCountTexts.Length || _shopItemCountTexts[index] == null) return;
         _shopItemCountTexts[index].text  = text;
         _shopItemCountTexts[index].color = limitReached ? Color.red : Color.yellow;
+    }
+
+    /// <summary>무기 상점 버튼 6개의 interactable 상태와 비용 텍스트 색깔을 갱신합니다.</summary>
+    private void RefreshWeaponShopButtonStates()
+    {
+        if (CGoldManager.Instance == null) return;
+
+        // 골드 버튼 0~2: 텍스트 내용은 유지, 재화 부족 시 색깔만 빨간색으로
+        for (int i = 0; i < WeaponBoxGoldCosts.Length; i++)
+        {
+            bool canBuy = CGoldManager.Instance.Gold >= WeaponBoxGoldCosts[i];
+            SetWeaponShopButtonState(i, canBuy);
+            SetWeaponShopCostTextColor(i, !canBuy);
+        }
+
+        // 다이아 버튼 3~5: 텍스트 내용은 유지, 재화 부족 시 색깔만 빨간색으로
+        for (int i = 0; i < WeaponBoxDiamondCosts.Length; i++)
+        {
+            bool canBuy = CGoldManager.Instance.Diamond >= WeaponBoxDiamondCosts[i];
+            SetWeaponShopButtonState(i + 3, canBuy);
+            SetWeaponShopCostTextColor(i + 3, !canBuy);
+        }
+    }
+
+    private void SetWeaponShopButtonState(int index, bool interactable)
+    {
+        if (index >= _weaponShopButtons.Length || _weaponShopButtons[index] == null) return;
+        _weaponShopButtons[index].interactable = interactable;
+        ColorBlock cb = _weaponShopButtons[index].colors;
+        cb.disabledColor = Color.white;
+        _weaponShopButtons[index].colors = cb;
+    }
+
+    // 텍스트 내용은 변경하지 않고 색깔만 변경합니다.
+    private void SetWeaponShopCostTextColor(int index, bool insufficient)
+    {
+        if (index >= _weaponShopCostTexts.Length || _weaponShopCostTexts[index] == null) return;
+        _weaponShopCostTexts[index].color = insufficient ? Color.red : Color.yellow;
     }
 
     #endregion

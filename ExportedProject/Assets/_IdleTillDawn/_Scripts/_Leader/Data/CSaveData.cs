@@ -67,6 +67,9 @@ public class CSaveData
     // 일일 초기화 기준 날짜 (KST, "yyyy-MM-dd")
     public string    shopDailyResetDate  = "";
 
+    // ── 무기 상자 ─────────────────────────────────────────────────────────
+    public int weaponBoxCount = 0;  // 보유 무기 상자 수량
+
     // ── 메타데이터 ────────────────────────────────────────────────────────
     public string lastSavedTime = string.Empty; // 마지막 저장 시각 (ISO 8601)
     public int    saveVersion   = 1;             // 세이브 포맷 버전 (마이그레이션 대비)
