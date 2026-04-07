@@ -59,7 +59,7 @@ MonoBehaviour:
   effect: {fileID: 5293860927513481702}
   damagable: 1
   bounce: 0
-  piercing: 0
+  piercing: 10
   _fogImpactOuterRadius: 4
   _fogImpactInnerRatio: 0.3
   _fogImpactPeakIntensity: 1
