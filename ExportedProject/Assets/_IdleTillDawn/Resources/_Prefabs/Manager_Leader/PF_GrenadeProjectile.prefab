@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 114287441773404540}
   - component: {fileID: 114863579359868585}
   m_Layer: 0
-  m_Name: PF_RevolverProjectile
+  m_Name: PF_GrenadeProjectile
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,7 +76,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vectorLastFrame: {x: 0, y: 0}
-  drag: 0
+  drag: 5
   Rb: {fileID: 50681549671693459}
   knockbackImmune: 0
   rotateTowardsMove: 0
@@ -223,7 +223,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6, y: 4, z: 1}
+  m_LocalScale: {x: 15, y: 15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6651958014346269263}
@@ -270,7 +270,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 100
   m_Sprite: {fileID: 21300000, guid: 5e678bf9928f265419dbf8588a5ebee2, type: 2}
-  m_Color: {r: 0.9607844, g: 0.83921576, b: 0.7568628, a: 1}
+  m_Color: {r: 0.98823535, g: 0.31764707, b: 0.3803922, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -365,7 +365,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.18826103
+        value: 0.3987883
         inSlope: -0.035117082
         outSlope: -0.035117082
         tangentMode: 0
@@ -375,19 +375,19 @@ TrailRenderer:
       - serializedVersion: 3
         time: 1
         value: 0.0102005005
-        inSlope: -0.6304559
-        outSlope: -0.6304559
+        inSlope: -1.0238874
+        outSlope: -1.0238874
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.11739129
+        inWeight: 0.19565219
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.9607844, g: 0.83921576, b: 0.7568628, a: 1}
-      key1: {r: 0.9607844, g: 0.83921576, b: 0.7568628, a: 1}
+      key0: {r: 0.9921569, g: 0.31764707, b: 0.3803922, a: 1}
+      key1: {r: 0.98823535, g: 0.31764707, b: 0.3803922, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}

@@ -21,7 +21,8 @@ public class CPlayerController : CEntityBase, IHealable
 
     [Header("공격 기본 옵션")]
     [SerializeField] private float _defaultAttackRange = 0.1f;
-    [SerializeField] private float _bulletSpeed = 10f;
+    //[SerializeField] private float _bulletSpeed = 10f;
+    // SO -> ProjectileSpeed
 
     [Header("테스트용 무기 직접 참조")]
     [Tooltip("true로 켜면 CInventoryManager를 무시하고 아래 SO를 직접 사용합니다.\n인스펙터에서 FireRate 등을 바로 조정할 때 사용하세요.")]
@@ -387,6 +388,8 @@ public class CPlayerController : CEntityBase, IHealable
 
         int count = CWeaponEquip.Instance.GetProjectileAmount();
 
+        Debug.Log(count);
+
         float step = 15f;
         float startAngle = rotZ - (step * (count - 1) / 2f);
 
@@ -395,8 +398,7 @@ public class CPlayerController : CEntityBase, IHealable
             float currenAngle = startAngle + i * step;
             Quaternion rot = Quaternion.Euler(0, 0, currenAngle);
 
-            GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, Quaternion.Euler(0f, 0f, rotZ));
-            bulletObj.transform.localScale *= (1 + _bulletScaleBonus);
+            GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, rot);
             float finalDamage = _statManager != null
                                         ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
                                         : weaponData.WeaponDamage;
@@ -406,8 +408,9 @@ public class CPlayerController : CEntityBase, IHealable
             if (proj != null)
             {
                 proj.damage = finalDamage;
-                proj.vector = dir * _bulletSpeed;
+                proj.vector = (rot * Vector3.right) * weaponData.ProjectileSpeed;
                 proj.owner = gameObject;
+                proj.size = 1f + _bulletScaleBonus;
 
                 // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
                 flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();

@@ -16,6 +16,7 @@ public class CWeaponDataSO : CItemDataSO
     [SerializeField] private bool _isMelee = false;
     [Tooltip("Number of Projectile when shot.")]
     [SerializeField] private int _projectileAmount = 1;
+    [SerializeField] private float _projectileSpeed = 10f;
 
 
     [Header("사운드")]
@@ -30,6 +31,8 @@ public class CWeaponDataSO : CItemDataSO
     public bool IsMelee => _isMelee;                    // 근접무기 여부
 
     public int ProjectileAmount => _projectileAmount;
+
+    public float ProjectileSpeed => _projectileSpeed;
 
     /// <summary>발사(공격) 시 재생할 사운드 데이터. null이면 무음</summary>
     public CSoundData FireSFX => _fireSFX;

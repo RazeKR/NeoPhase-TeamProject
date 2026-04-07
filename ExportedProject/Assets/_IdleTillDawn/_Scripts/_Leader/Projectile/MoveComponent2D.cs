@@ -32,6 +32,13 @@ namespace flanne
         private void FixedUpdate()
         {
             if (_vector == Vector2.zero) return;
+
+            if (drag > 0)
+            {
+                if (_vector.magnitude < 0.01f) _vector = Vector2.zero;
+                else _vector -= _vector * drag * Time.fixedDeltaTime;
+            }
+
             Rb.MovePosition(Rb.position + _vector * Time.fixedDeltaTime);
         }
 

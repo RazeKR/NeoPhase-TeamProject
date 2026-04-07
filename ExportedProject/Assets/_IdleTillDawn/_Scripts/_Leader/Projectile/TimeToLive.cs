@@ -6,6 +6,10 @@ namespace flanne
     {
         [SerializeField]
         private float lifetime;
+        [SerializeField]
+        private bool explosable;
+        [SerializeField]
+        private GameObject explosionPrefab;        
 
         [SerializeField]
         private bool willDestroy;
@@ -33,6 +37,11 @@ namespace flanne
 
         private void Deactivate()
         {
+            if (explosable && explosionPrefab != null)
+            {
+                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            }
+
             if (willDestroy)
             {
                 Object.Destroy(base.gameObject);

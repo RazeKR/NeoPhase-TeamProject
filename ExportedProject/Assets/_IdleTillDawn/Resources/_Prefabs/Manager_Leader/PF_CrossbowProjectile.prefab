@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 114287441773404540}
   - component: {fileID: 114863579359868585}
   m_Layer: 0
-  m_Name: PF_RevolverProjectile
+  m_Name: PF_CrossbowProjectile
   m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -223,8 +223,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 6, y: 4, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 20, y: 5, z: 5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6651958014346269263}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
