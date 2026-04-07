@@ -84,9 +84,19 @@ public class CStageManager : MonoBehaviour
             return;
         }
 
-        RestoreKillCount(); // 저장된 킬카운트 복원
+        bool alreadyBossReady = RestoreKillCount(); // 저장된 킬카운트 복원, 목표 달성 여부 반환
         SubscribeToBossEvents();
-        TransitionTo(EStageState.Farming);
+
+        if (alreadyBossReady)
+        {
+            // 킬 목표를 이미 달성한 채로 재시작 — 스폰은 유지하되 BossReady로 직행
+            _spawnManager.StartSpawning(stageData);
+            TransitionTo(EStageState.BossReady);
+        }
+        else
+        {
+            TransitionTo(EStageState.Farming);
+        }
     }
 
     /// <summary>씬 언로드 시 킬카운트를 저장하고 이벤트 구독을 해제한다</summary>
@@ -194,19 +204,22 @@ public class CStageManager : MonoBehaviour
     /// <summary>
     /// 씬 시작 시 저장된 킬카운트를 복원한다.
     /// 같은 스테이지이고 KillGoal 미만일 때만 복원 (다른 스테이지·클리어 후 잔류값 방어)
-    /// KillGoal 이상이면 BossReady 직전까지 채워 버튼을 활성화할 수 있도록 KillGoal-1로 복원한다
+    /// KillGoal 이상이면 KillGoal로 복원하고 true를 반환하여 BossReady로 직접 전환할 수 있게 한다.
     /// </summary>
-    private void RestoreKillCount()
+    /// <returns>복원된 킬카운트가 KillGoal 이상이면 true (BossReady 상태로 시작해야 함)</returns>
+    private bool RestoreKillCount()
     {
-        if (CJsonManager.Instance == null) return;
+        if (CJsonManager.Instance == null) return false;
         CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
 
-        if (data.currentStageId != stageData.StageIndex) return; // 다른 스테이지면 복원 안 함
+        if (data.currentStageId != stageData.StageIndex) return false; // 다른 스테이지면 복원 안 함
 
         currentKillCount = Mathf.Clamp(data.currentKillCount, 0, stageData.KillGoal);
 
         if (currentKillCount > 0)
             OnKillCountChanged?.Invoke(currentKillCount, stageData.KillGoal);
+
+        return currentKillCount >= stageData.KillGoal;
     }
 
     /// <summary>
