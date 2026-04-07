@@ -37,7 +37,7 @@ public class CSkillDataSO : CBaseDataSO
     public int requiredPoints;    // 해금 필요 스킬 포인트
 
     [Header("선행 조건")]
-    public List<CSkillDataSO> prerequisiteSkills; // 선행 필요 스킬 목록
+    public List<PreRequireSkillData> prerequisiteSkills; // 선행 필요 스킬 목록
 
     [Header("패시브")]
     public List<PassiveLevelData> PassiveLevelDatas;
@@ -105,7 +105,12 @@ public class BuffLevelData
     public float duration;
 }
 
-
+[Serializable]
+public class PreRequireSkillData
+{
+    public CSkillDataSO skill;
+    public int level;
+}
 
 [Serializable]
 public class CSkillEffect

@@ -32,7 +32,9 @@ public class CNodeConnector : MonoBehaviour
 
         int parentLevel = CSkillSystem.Instance.GetSkillLevel(_parentNode.SkillData.Id);
 
-        if (parentLevel <= 0)
+        int maxLevel = _parentNode.SkillData.maxLevel;
+
+        if (parentLevel != maxLevel)
         {
             _lineImage.color = Color.gray;
         }
