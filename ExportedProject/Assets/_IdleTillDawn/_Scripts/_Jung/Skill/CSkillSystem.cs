@@ -535,13 +535,12 @@ public class CSkillSystem : MonoBehaviour
     /// <summary>���� ��ų �ǵ�</summary>
     public bool CheckPrerequisites(CSkillDataSO data)
     {
-        // ���� ��ų ���� ��� ���
         if (data.prerequisiteSkills == null || data.prerequisiteSkills.Count == 0) return true;
 
-        // ���� ��ų ����Ʈ ��ȸ �� ������ �� false ��ȯ
+
         foreach (var p in data.prerequisiteSkills)
         {
-            if (GetSkillLevel(p.Id) <= 0) return false;
+            if (GetSkillLevel(p.skill.Id) < p.level) return false;
         }
 
         return true;

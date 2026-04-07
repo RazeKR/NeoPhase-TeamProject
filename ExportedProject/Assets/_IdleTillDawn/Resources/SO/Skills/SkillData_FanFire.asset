@@ -21,7 +21,8 @@ MonoBehaviour:
   maxLevel: 5
   requiredPoints: 2
   prerequisiteSkills:
-  - {fileID: 11400000, guid: f1d4b2a71ea5a2b4a8236ba59ec2beb4, type: 2}
+  - skill: {fileID: 11400000, guid: f1d4b2a71ea5a2b4a8236ba59ec2beb4, type: 2}
+    level: 10
   PassiveLevelDatas: []
   ActiveLevelDatas:
   - damage: 20
