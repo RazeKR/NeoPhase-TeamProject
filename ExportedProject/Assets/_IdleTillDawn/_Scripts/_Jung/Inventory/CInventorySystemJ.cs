@@ -31,6 +31,9 @@ public class CInventorySystemJ : MonoBehaviour
     /// <summary>���� ���Ⱑ ����Ǿ��� �� ����� ���� ID�� �Բ� �߻��մϴ�.</summary>
     public event System.Action<int> OnWeaponEquipped;
 
+    /// <summary>아이템 추가 시 인벤토리가 가득 차서 실패했을 때 발생합니다.</summary>
+    public event System.Action OnInventoryFull;
+
     #endregion
 
     #region PrivateVariables
@@ -38,6 +41,10 @@ public class CInventorySystemJ : MonoBehaviour
     private int _equippedWeaponId = 0;       // ���� ���� ���� ID (0 = ����)
     private CWeaponInstance _equippedWeapon; // ���� ��� ���� ���� ����
     public List<CItemInstance> _inventory = new List<CItemInstance>(); // ���� ������ ���� �κ��丮 ����
+
+    private const int BaseCapacity      = 25;  // 기본 인벤토리 칸 수
+    private const int ExpandStep        = 25;  // 1회 확장 칸 수
+    private int _maxCapacity            = BaseCapacity;
 
     #endregion
 
@@ -49,8 +56,17 @@ public class CInventorySystemJ : MonoBehaviour
     /// <summary>���� �κ��丮 ������ �����ɴϴ�.</summary>
     public List<CItemInstance> Inventory { get { return _inventory; } set { _inventory = value; } }
 
+    /// <summary>현재 인벤토리 최대 칸 수.</summary>
+    public int MaxCapacity => _maxCapacity;
+
+    /// <summary>현재 사용 중인 칸 수.</summary>
+    public int UsedCapacity => _inventory.Count;
+
+    /// <summary>인벤토리가 가득 찼는지 여부.</summary>
+    public bool IsFull => _inventory.Count >= _maxCapacity;
+
     /// <summary>���� ���� ���� ID. 0�̸� ���� ����.</summary>
-    public int EquippedWeaponId => _equippedWeaponId;    
+    public int EquippedWeaponId => _equippedWeaponId;
 
     /// <summary>���� ���� ���� �ν��Ͻ�/// </summary>
     public CWeaponInstance EquippedWeapon { get { return _equippedWeapon; } set { _equippedWeapon = value; } }
@@ -115,6 +131,12 @@ public class CInventorySystemJ : MonoBehaviour
         {
             for (int i = 0; i < count; i++)
             {
+                if (IsFull)
+                {
+                    Debug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
+                    OnInventoryFull?.Invoke();
+                    break;
+                }
                 CWeaponInstance w = new CWeaponInstance(so as CWeaponDataSO);
                 w._rank = rank;
                 _inventory.Add(w);
@@ -123,18 +145,51 @@ public class CInventorySystemJ : MonoBehaviour
         else if (so.ItemType == EItemType.Potion)
         {
             var exist = _inventory.Find(i => i._itemData.Id == itemId) as CPotionInstance;
-            if (exist != null) exist._amount = (byte)Mathf.Min(exist._amount + count, exist._maxAmount);
-            else _inventory.Add(new CPotionInstance(so as CPotionDataSO, count));
+            if (exist != null)
+                exist._amount = (byte)Mathf.Min(exist._amount + count, exist._maxAmount);
+            else
+            {
+                if (IsFull)
+                {
+                    Debug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
+                    OnInventoryFull?.Invoke();
+                }
+                else _inventory.Add(new CPotionInstance(so as CPotionDataSO, count));
+            }
         }
         else if (so.ItemType == EItemType.Scroll)
         {
             var exist = _inventory.Find(i => i._itemData.Id == itemId) as CScrollInstance;
-            if (exist != null) exist._amount = (byte)Mathf.Min(exist._amount + count, exist._maxAmount);
-            else _inventory.Add(new CScrollInstance(so as CScrollDataSO, count));
+            if (exist != null)
+                exist._amount = (byte)Mathf.Min(exist._amount + count, exist._maxAmount);
+            else
+            {
+                if (IsFull)
+                {
+                    Debug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
+                    OnInventoryFull?.Invoke();
+                }
+                else _inventory.Add(new CScrollInstance(so as CScrollDataSO, count));
+            }
         }
 
         SyncAndSave();
         OnInventoryChanged?.Invoke();
+    }
+
+    /// <summary>외부에서 인벤토리 가득 참 이벤트를 발생시킵니다.</summary>
+    public void NotifyInventoryFull() => OnInventoryFull?.Invoke();
+
+    /// <summary>
+    /// 인벤토리 칸을 <see cref="ExpandStep"/>칸(25칸)씩 확장합니다.
+    /// 상점에서 재화를 지불한 뒤 호출하세요.
+    /// </summary>
+    public void ExpandCapacity()
+    {
+        _maxCapacity += ExpandStep;
+        SyncAndSave();
+        OnInventoryChanged?.Invoke();
+        Debug.Log($"[CInventorySystemJ] 인벤토리 확장 완료: {_maxCapacity}칸");
     }
 
     /// <summary>�������� �κ��丮���� �����մϴ�. count�� ���� ���� �̻��̸� �ش� ������ �׸� ��ü�� ���ŵ˴ϴ�.</summary>
@@ -244,7 +299,8 @@ public class CInventorySystemJ : MonoBehaviour
             data.inventorySaveData.items.Add(sData);
         }
 
-        data.equippedWeaponId = _equippedWeaponId;
+        data.equippedWeaponId    = _equippedWeaponId;
+        data.inventoryCapacity   = _maxCapacity;
         CJsonManager.Instance.Save(data);
     }
 
@@ -263,6 +319,7 @@ public class CInventorySystemJ : MonoBehaviour
     {
         if (saveData == null || saveData.inventorySaveData == null) return;
 
+        _maxCapacity = saveData.inventoryCapacity > 0 ? saveData.inventoryCapacity : BaseCapacity;
         _inventory.Clear();
         foreach (var sData in saveData.inventorySaveData.items)
         {

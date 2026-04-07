@@ -72,6 +72,13 @@ public class CGenerateItem : MonoBehaviour
             return;
         }
 
+        if (CInventorySystemJ.Instance.IsFull)
+        {
+            Debug.Log("[CGenerateItem] 인벤토리가 가득 차 무기 상자를 열 수 없습니다.");
+            CInventorySystemJ.Instance.NotifyInventoryFull();
+            return;
+        }
+
         data.weaponBoxCount--;
         CJsonManager.Instance.Save(data);
         RefreshWeaponBoxCountText(data.weaponBoxCount);

@@ -35,7 +35,9 @@ public class CSaveData
     public int equippedWeaponId = 0;  // 장착 무기 ID (0 = 없음)
 
     // ── 인벤토리 (ID-Count 쌍, JsonUtility Dictionary 미지원으로 List 사용) ──
-    
+
+    public int inventoryCapacity = 25;  // 인벤토리 최대 칸 수 (기본 25, 상점에서 25칸씩 확장 가능)
+
     public List<int> inventoryIds    = new(); // 인벤토리 아이템 ID 목록
     public List<int> inventoryCounts = new(); // 각 아이템 수량 (inventoryIds와 1:1 대응)
     /// <summary>

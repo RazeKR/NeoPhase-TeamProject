@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,12 +47,15 @@ public class CInventoryUI : MonoBehaviour
     private bool _isChoiceUpgrade = false;
     private int _desiredAmount = 0;
 
+    private readonly HashSet<string> _selectedInstanceIDs = new HashSet<string>();
+
     #endregion
 
     #region Properties
 
     public CItemInstance Item { get { return _item; } set { _item = value; } }
     public bool IsChoiceUpgrade { get {  return _isChoiceUpgrade; } set { _isChoiceUpgrade = value; } }
+    public bool IsMultiSelectMode => _selectedInstanceIDs.Count > 0;
     #endregion
 
     #region UnityMethods
@@ -80,9 +84,7 @@ public class CInventoryUI : MonoBehaviour
         }
 
         if (_upgradeUI != null)
-        {
             _upgradeUI.SetActive(false);
-        }
 
         _item = null;
 
@@ -97,36 +99,50 @@ public class CInventoryUI : MonoBehaviour
 
     private void Update()
     {
-        if (_desiredAmount == 0 && _deleteButton.interactable)
+        // ── 다중선택 모드 ──────────────────────────────────────────────────
+        if (IsMultiSelectMode)
         {
-            _deleteButton.interactable = false;
+            // 기존 itemInfoUI를 재활용해 "N개 선택됨" 표시 + 버리기만 활성
+            if (!_itemInfoUI.activeSelf) _itemInfoUI.SetActive(true);
+            _itemName.text     = $"{_selectedInstanceIDs.Count}개 선택됨";
+            _upgradeText.text  = "";
+            _weaponUI.SetActive(false);
+            _equippedUI.SetActive(false);
+            _itemUI.SetActive(true);
+            if (_deleteButton != null) _deleteButton.interactable = true;
+
+            // UI가 아닌 게임 월드를 클릭했을 때만 다중선택 해제
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            {
+                ClearMultiSelect();
+            }
+            return;
         }
-        else if (_desiredAmount != 0 && !_deleteButton.interactable)
+
+        // ── 단일선택 모드 ──────────────────────────────────────────────────
+        if (_deleteButton != null)
         {
-            _deleteButton.interactable = true;
+            if (_desiredAmount == 0 && _deleteButton.interactable)
+                _deleteButton.interactable = false;
+            else if (_desiredAmount != 0 && !_deleteButton.interactable)
+                _deleteButton.interactable = true;
         }
 
         OnOffInfo();
-
         OnOffButton();
-
         InfoUpdate();
 
         if (Input.GetMouseButtonDown(0))
         {
             // ���콺���� ���̸� ���, �� ������Ʈ�� �ɸ����� üũ
-            if 
-                (
-                EventSystem.current.IsPointerOverGameObject()
-                && RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), Input.mousePosition)
-                )
+            if (EventSystem.current.IsPointerOverGameObject()
+                && RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), Input.mousePosition))
                 return;
 
             _desiredAmount = 0;
             _upgradeUI.SetActive(false);
             _itemInfoUI.SetActive(false);
             _item = null;
-
 
             if (IsChoiceUpgrade)
             {
@@ -137,7 +153,6 @@ public class CInventoryUI : MonoBehaviour
                 EventSystem.current.RaycastAll(pd, results);
 
                 bool isClickedSlot = false;
-
                 foreach (RaycastResult r in results)
                 {
                     if (r.gameObject.transform.parent.CompareTag("Slot"))
@@ -147,7 +162,6 @@ public class CInventoryUI : MonoBehaviour
                         break;
                     }
                 }
-                                
                 if (!isClickedSlot) _isChoiceUpgrade = false;
             }
         }
@@ -170,6 +184,54 @@ public class CInventoryUI : MonoBehaviour
     #endregion
 
     #region PublicMethods
+
+    /// <summary>instanceID를 다중선택 목록에서 토글합니다. 선택 여부를 반환합니다.</summary>
+    public bool ToggleMultiSelect(string instanceID)
+    {
+        if (_selectedInstanceIDs.Contains(instanceID))
+        {
+            _selectedInstanceIDs.Remove(instanceID);
+            return false;
+        }
+        else
+        {
+            _selectedInstanceIDs.Add(instanceID);
+            return true;
+        }
+    }
+
+    /// <summary>instanceID가 현재 다중선택 목록에 있는지 반환합니다.</summary>
+    public bool IsSelected(string instanceID) => _selectedInstanceIDs.Contains(instanceID);
+
+    /// <summary>다중선택을 전부 해제하고 슬롯 하이라이트를 초기화합니다.</summary>
+    public void ClearMultiSelect()
+    {
+        _selectedInstanceIDs.Clear();
+        foreach (Transform child in _slotParent)
+        {
+            var slot = child.GetComponent<CInventorySlot>();
+            if (slot != null) slot.SetSelected(false);
+        }
+        _itemInfoUI.SetActive(false);
+    }
+
+    /// <summary>다중선택된 아이템을 전부 버립니다. 장착 중인 무기는 건너뜁니다.</summary>
+    public void ClickMultiDelete()
+    {
+        if (_selectedInstanceIDs.Count == 0) return;
+
+        var toDelete = new List<string>(_selectedInstanceIDs);
+        foreach (string id in toDelete)
+        {
+            var item = CInventorySystemJ.Instance.Inventory.Find(i => i._instanceID == id);
+            if (item is CWeaponInstance w && w._isEquipped) continue;
+            CInventorySystemJ.Instance.RemoveItem(id, int.MaxValue);
+        }
+
+        _selectedInstanceIDs.Clear();
+        _itemInfoUI.SetActive(false);
+        RefreshUI();
+    }
 
     /// <summary>UI ������ �ֽ�ȭ�մϴ�.
     /// OnInventoryChanged�� �����Ͽ� �����մϴ�.
@@ -280,6 +342,9 @@ public class CInventoryUI : MonoBehaviour
     /// </summary>
     public void ClickDelete()
     {
+        // 다중선택 모드면 일괄 삭제
+        if (IsMultiSelectMode) { ClickMultiDelete(); return; }
+
         if (_item == null) return;
 
         CInventorySystemJ.Instance.RemoveItem(Item._instanceID, _desiredAmount == 0 ? 1 : _desiredAmount);

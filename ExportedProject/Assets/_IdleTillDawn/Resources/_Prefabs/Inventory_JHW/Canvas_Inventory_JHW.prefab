@@ -199,8 +199,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6654828223933871016}
   m_HandleRect: {fileID: 2045833833162962790}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.99999756
+  m_Value: 0
+  m_Size: 0.99999636
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1111,7 +1111,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 270.1704}
+  m_AnchoredPosition: {x: 0, y: 267.8403}
   m_SizeDelta: {x: 540, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8153266925892935243
@@ -1196,7 +1196,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.055000003, y: 0.045}
   m_AnchorMax: {x: 0.95165837, y: 0.9483313}
-  m_AnchoredPosition: {x: -2, y: 2}
+  m_AnchoredPosition: {x: -2.0000305, y: 2}
   m_SizeDelta: {x: 2, y: -2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3930049810775973716
@@ -2157,6 +2157,9 @@ MonoBehaviour:
   _amountText: {fileID: 1662134353126803291}
   _deleteButton: {fileID: 1277205980772435340}
   _upgradeUI: {fileID: 5935669279809963278}
+  _multiSelectUI: {fileID: 5058702909831646005}
+  _multiSelectCountText: {fileID: 0}
+  _multiDeleteButton: {fileID: 5352382647508848399}
 --- !u!114 &1905103867562953380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2723,10 +2726,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 187212752117467289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -240}
-  m_SizeDelta: {x: 400, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0.14216602}
+  m_AnchoredPosition: {x: 0, y: -33.5}
+  m_SizeDelta: {x: 20, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3541465155213417135
 CanvasRenderer:
@@ -2757,9 +2760,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 88690c22e80c3ff43912e938132555a3, type: 3}
     m_FontSize: 70
-    m_FontStyle: 0
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300

@@ -47,6 +47,16 @@ public class CGoldShopUI : MonoBehaviour
     private static readonly int[] WeaponBoxDiamondAmounts = { 10, 25, 50 };
     private static readonly int[] WeaponBoxDiamondCosts   = { 1000, 2500, 5000 };
 
+    // 아이템 상점 상품 (0~3번 버튼)
+    private static readonly int   HpPotionId         = 1;
+    private static readonly int   ManaPotionId        = 8;
+    private static readonly int   WeaponScrollId      = 2;
+    private static readonly int   HpPotionCost        = 100000;
+    private static readonly int   ManaPotionCost      = 100000;
+    private static readonly int   WeaponScrollCost    = 1000000;
+    private static readonly int   InventoryExpandCost = 1000000;
+    private static readonly int   ItemShopAmount      = 10;
+
     #endregion
 
     #region Inspector Variables
@@ -76,6 +86,12 @@ public class CGoldShopUI : MonoBehaviour
     [Header("무기 상자 버튼별 비용 Text")]
     [SerializeField] private Text[] _weaponShopCostTexts = new Text[6];
 
+    [Header("ItemShopPanel (아이템 탭)")]
+    [SerializeField] private GameObject _itemShopPanel = null;
+
+    [Header("아이템 구매 버튼 4개 (0: HP포션 / 1: 마나포션 / 2: 무기주문서 / 3: 인벤토리 확장)")]
+    [SerializeField] private Button[] _itemShopButtons = new Button[4];
+
     #endregion
 
     #region Private Variables
@@ -96,8 +112,8 @@ public class CGoldShopUI : MonoBehaviour
         RegisterShopItemButtons();
         RegisterWeaponShopButtons();
 
-        // CGoldManager 재화 변경 이벤트 구독 — 재화가 바뀌면 무기 상점 버튼 상태를 즉시 갱신
-        _onGoldChanged    = _ => RefreshWeaponShopButtonStates();
+        // CGoldManager 재화 변경 이벤트 구독 — 재화가 바뀌면 무기/아이템 상점 버튼 상태를 즉시 갱신
+        _onGoldChanged    = _ => { RefreshWeaponShopButtonStates(); RefreshItemShopButtonStates(); };
         _onDiamondChanged = _ => RefreshWeaponShopButtonStates();
         if (CGoldManager.Instance != null)
         {
@@ -106,11 +122,14 @@ public class CGoldShopUI : MonoBehaviour
         }
 
         // 상점 열릴 때 재화 탭이 기본 선택
+        RegisterItemShopButtons();
+
         SelectCategory(0);
         RefreshAllButtonStates();
-        // 무기 상점 버튼은 CGoldManager.Start()가 끝난 뒤 첫 재화 이벤트로 갱신되므로
+        // 무기/아이템 상점 버튼은 CGoldManager.Start()가 끝난 뒤 첫 재화 이벤트로 갱신되므로
         // 여기서는 패널이 비활성이어도 상관없지만, 이미 로드된 경우를 위해 한 번 호출
         RefreshWeaponShopButtonStates();
+        RefreshItemShopButtonStates();
     }
 
     private void OnDestroy()
@@ -138,6 +157,12 @@ public class CGoldShopUI : MonoBehaviour
             if (_weaponShopButtons[i] != null)
                 _weaponShopButtons[i].onClick.RemoveAllListeners();
         }
+
+        for (int i = 0; i < _itemShopButtons.Length; i++)
+        {
+            if (_itemShopButtons[i] != null)
+                _itemShopButtons[i].onClick.RemoveAllListeners();
+        }
     }
 
     #endregion
@@ -150,6 +175,7 @@ public class CGoldShopUI : MonoBehaviour
         SelectCategory(0);
         RefreshAllButtonStates();
         RefreshWeaponShopButtonStates();
+        RefreshItemShopButtonStates();
     }
 
     /// <summary>무기 상자 보유 수량 변경 시 발행됩니다. 인자: 변경 후 보유 수량</summary>
@@ -193,6 +219,13 @@ public class CGoldShopUI : MonoBehaviour
             _weaponShopPanel.SetActive(index == 2);
             if (index == 2)
                 RefreshWeaponShopButtonStates();
+        }
+
+        if (_itemShopPanel != null)
+        {
+            _itemShopPanel.SetActive(index == 3);
+            if (index == 3)
+                RefreshItemShopButtonStates();
         }
     }
 
@@ -299,6 +332,84 @@ public class CGoldShopUI : MonoBehaviour
         OnWeaponBoxCountChanged?.Invoke(data.weaponBoxCount);
         RefreshWeaponShopButtonStates();
         Debug.Log($"[CGoldShopUI] 다이아 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
+    }
+
+    private void RegisterItemShopButtons()
+    {
+        for (int i = 0; i < _itemShopButtons.Length; i++)
+        {
+            if (_itemShopButtons[i] == null) continue;
+            int captured = i;
+            _itemShopButtons[i].onClick.AddListener(() => OnItemShopButtonClicked(captured));
+        }
+    }
+
+    private void OnItemShopButtonClicked(int index)
+    {
+        switch (index)
+        {
+            case 0: TryBuyItemWithGold(HpPotionId,    HpPotionCost,        ItemShopAmount, "HP 포션");        break;
+            case 1: TryBuyItemWithGold(ManaPotionId,   ManaPotionCost,      ItemShopAmount, "마나 포션");      break;
+            case 2: TryBuyItemWithGold(WeaponScrollId, WeaponScrollCost,    ItemShopAmount, "무기 주문서");    break;
+            case 3: TryBuyInventoryExpand();                                                                   break;
+        }
+    }
+
+    /// <summary>골드로 아이템을 구매해 인벤토리에 지급합니다. 포션·스크롤은 기존 슬롯에 스택되므로 새 슬롯이 필요할 때만 인벤토리 여유 공간을 확인합니다.</summary>
+    private void TryBuyItemWithGold(int itemId, int cost, int amount, string itemName)
+    {
+        if (CGoldManager.Instance == null)
+        {
+            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            return;
+        }
+
+        if (CGoldManager.Instance.Gold < cost)
+        {
+            Debug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {cost:N0})");
+            return;
+        }
+
+        // 포션·스크롤은 이미 슬롯이 있으면 스택 가능 — 새 슬롯이 필요한 경우만 공간 체크
+        bool existsInInventory = CInventorySystemJ.Instance._inventory
+            .Find(i => i._itemData != null && i._itemData.Id == itemId) != null;
+
+        if (!existsInInventory && CInventorySystemJ.Instance.IsFull)
+        {
+            Debug.Log($"[CGoldShopUI] 인벤토리가 가득 차 {itemName}을(를) 지급할 수 없습니다.");
+            CInventorySystemJ.Instance.NotifyInventoryFull();
+            return;
+        }
+
+        bool success = CGoldManager.Instance.SpendGold(cost);
+        if (!success) return;
+
+        CInventorySystemJ.Instance.AddItem(itemId, amount);
+        RefreshItemShopButtonStates();
+        Debug.Log($"[CGoldShopUI] 골드 {cost:N0} 소모 → {itemName} {amount}개 지급");
+    }
+
+    /// <summary>골드로 인벤토리 25칸을 확장합니다.</summary>
+    private void TryBuyInventoryExpand()
+    {
+        if (CGoldManager.Instance == null)
+        {
+            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            return;
+        }
+
+        if (CGoldManager.Instance.Gold < InventoryExpandCost)
+        {
+            Debug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {InventoryExpandCost:N0})");
+            return;
+        }
+
+        bool success = CGoldManager.Instance.SpendGold(InventoryExpandCost);
+        if (!success) return;
+
+        CInventorySystemJ.Instance.ExpandCapacity();
+        RefreshItemShopButtonStates();
+        Debug.Log($"[CGoldShopUI] 골드 {InventoryExpandCost:N0} 소모 → 인벤토리 25칸 확장 (현재 {CInventorySystemJ.Instance.MaxCapacity}칸)");
     }
 
     /// <summary>주간 다이아 상품 구매 (0~3번 버튼)</summary>
@@ -489,6 +600,39 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (index >= _weaponShopCostTexts.Length || _weaponShopCostTexts[index] == null) return;
         _weaponShopCostTexts[index].color = insufficient ? Color.red : Color.yellow;
+    }
+
+    /// <summary>아이템 상점 버튼 4개의 interactable 상태와 비용 텍스트 색깔을 갱신합니다.</summary>
+    private void RefreshItemShopButtonStates()
+    {
+        if (CGoldManager.Instance == null) return;
+
+        int   gold       = CGoldManager.Instance.Gold;
+        int[] costs      = { HpPotionCost, ManaPotionCost, WeaponScrollCost, InventoryExpandCost };
+
+        for (int i = 0; i < _itemShopButtons.Length; i++)
+        {
+            bool canAfford = gold >= costs[i];
+            SetItemShopButtonState(i, canAfford);
+            SetItemShopCostTextColor(i, !canAfford);
+        }
+    }
+
+    private void SetItemShopButtonState(int index, bool interactable)
+    {
+        if (index >= _itemShopButtons.Length || _itemShopButtons[index] == null) return;
+        _itemShopButtons[index].interactable = interactable;
+        ColorBlock cb = _itemShopButtons[index].colors;
+        cb.disabledColor = Color.white;
+        _itemShopButtons[index].colors = cb;
+    }
+
+    private void SetItemShopCostTextColor(int index, bool insufficient)
+    {
+        if (index >= _itemShopButtons.Length || _itemShopButtons[index] == null) return;
+        Text costText = _itemShopButtons[index].GetComponentInChildren<Text>();
+        if (costText == null) return;
+        costText.color = insufficient ? Color.red : Color.yellow;
     }
 
     #endregion
