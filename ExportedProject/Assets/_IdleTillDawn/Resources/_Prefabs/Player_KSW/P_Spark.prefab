@@ -204,7 +204,7 @@ MonoBehaviour:
   _scanRadius: 5
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 448
   _scanInterval: 0.2
   _entityName: 
   _description: 
@@ -222,6 +222,7 @@ MonoBehaviour:
   _bulletSpeed: 10
   _useTestWeaponOverride: 0
   _testWeaponData: {fileID: 0}
+  _weaponVisualObj: {fileID: 0}
   _preventTime: 1.5
   _blinkInterval: 0.1
 --- !u!114 &-7859340508443334934
