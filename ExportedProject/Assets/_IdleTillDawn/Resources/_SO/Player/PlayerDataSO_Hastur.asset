@@ -18,7 +18,7 @@ MonoBehaviour:
   _description: "\uC8FC\uAE30\uC801\uC73C\uB85C \uC801\uC5D0\uAC8C 30\uB370\uBBF8\uC9C0\uB97C
     \uC8FC\uB294 \uCD09\uC218\uB97C \uC18C\uD658\uD569\uB2C8\uB2E4."
   _characterPortrait: {fileID: 21300000, guid: ccc3084cc10ce324e8397c0a855720f4, type: 3}
-  _uniqueTrait: {fileID: 0}
+  _uniqueTrait: {fileID: 11400000, guid: c39d74c1e94e58a4ba9cce3912850e61, type: 2}
   _statSettings:
   - StatType: 0
     BaseValue: 10000
