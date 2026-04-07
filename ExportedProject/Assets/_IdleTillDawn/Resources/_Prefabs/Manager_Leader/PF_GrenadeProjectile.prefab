@@ -56,6 +56,7 @@ MonoBehaviour:
   kb: {fileID: 114323477868669540}
   move: {fileID: 114933314071086218}
   trail: {fileID: 3673968081677559803}
+  damagable: 0
   bounce: 0
   piercing: 0
   _fogImpactOuterRadius: 4
@@ -155,7 +156,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.05
+  m_Radius: 0.3
 --- !u!114 &114943608188986817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,6 +184,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 2
+  explosable: 1
+  explosionPrefab: {fileID: 464358072917401599, guid: 548e1d43da395634ca50cd7396c70621,
+    type: 3}
   willDestroy: 0
 --- !u!114 &114863579359868585
 MonoBehaviour:

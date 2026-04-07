@@ -262,7 +262,7 @@ public class CSkillSystem : MonoBehaviour
 
         spawnPos.z = 0;
 
-        int levelIndex = GetSkillLevel(8) - 1;
+        int level = GetSkillLevel(8);
 
         Transform target = GetNearestEnemy();
         float baseAngle = playerObj.transform.eulerAngles.z;
@@ -289,7 +289,7 @@ public class CSkillSystem : MonoBehaviour
 
             foreach (var effect in effects)
             {
-                effect.Init(data, levelIndex);
+                effect.Init(data, level);
             }
         }
 
