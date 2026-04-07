@@ -810,7 +810,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C\uAC00\uB098\uB2E4\uB77C."
+  m_Text: '-'
 --- !u!1 &2411537736459045632
 GameObject:
   m_ObjectHideFlags: 0
@@ -2325,7 +2325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -184}
+  m_AnchoredPosition: {x: 15, y: -114}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7081767630916431565
@@ -2637,6 +2637,8 @@ MonoBehaviour:
   _verticalLayout: {fileID: 6291755094896709387}
   _tableRowPrefab: {fileID: 1197271495041890460, guid: 319450dc7b0e39a4ca45ab08b52aa9c1,
     type: 3}
+  _xOffset: 40
+  _yOffset: 40
 --- !u!1 &6363186713169588303
 GameObject:
   m_ObjectHideFlags: 0
@@ -3516,9 +3518,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 10
+    m_Left: 15
     m_Right: 5
-    m_Top: 10
+    m_Top: 20
     m_Bottom: 10
   m_ChildAlignment: 0
   m_Spacing: 10

@@ -119,7 +119,8 @@ namespace flanne
             {
                 if (bounce == 0)
                 {
-                    gameObject.SetActive(false);
+                    DetachTrail();
+                    Destroy(gameObject);
                     return;
                 }
 
@@ -156,6 +157,16 @@ namespace flanne
             if (trail != null)
             {
                 trail.widthMultiplier = size;
+            }
+        }
+
+        private void DetachTrail()
+        {
+            if (trail != null)
+            {
+                trail.transform.SetParent(null);
+                trail.emitting = false;
+                Destroy(trail.gameObject, trail.time);
             }
         }
     }

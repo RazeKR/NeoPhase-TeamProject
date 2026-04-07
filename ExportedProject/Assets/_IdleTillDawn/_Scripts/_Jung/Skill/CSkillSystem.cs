@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -98,7 +99,6 @@ public class CSkillSystem : MonoBehaviour
     private void Start()
     {
         OnSkillChanged += RefreshPassiveSkill;
-        RefreshPassiveSkill();
 
         if (CJsonManager.Instance != null)
         {
@@ -142,7 +142,6 @@ public class CSkillSystem : MonoBehaviour
     {
         GameObject playerObj = FindObjectOfType<CPlayerStatManager>()?.gameObject;
 
-        // 플레이어가 아직 씬에 없으면(메인메뉴, 초기화 타이밍 등) 조용히 종료
         if (playerObj == null) return;
 
         CPlayerController ctr = playerObj.GetComponent<CPlayerController>();
@@ -200,7 +199,7 @@ public class CSkillSystem : MonoBehaviour
 
             if (ctr != null)
             {
-                ctr.BulletScaleBonus = 0.4f * level;
+                ctr.BulletScaleBonus = 0.04f * level;
             }            
 
             smg.SetPassiveStatUpgrade(EPlayerStatType.Damage, data.PassiveLevelDatas[level - 1].statAmount);
@@ -674,6 +673,20 @@ public class CSkillSystem : MonoBehaviour
         RefreshAllNodes();
 
         if (CSkillUI.Instance != null) CSkillUI.Instance.UpdateUIState();
+
+        StartCoroutine(CoRefreshPassive());
+    }
+
+    private IEnumerator CoRefreshPassive()
+    {
+        CPlayerStatManager smg = null;
+        while (smg == null)
+        {
+            smg = FindObjectOfType<CPlayerStatManager>();
+            yield return null;
+        }
+
+        RefreshPassiveSkill();
     }
 
     #endregion

@@ -21,7 +21,8 @@ public class CPlayerController : CEntityBase, IHealable
 
     [Header("공격 기본 옵션")]
     [SerializeField] private float _defaultAttackRange = 0.1f;
-    [SerializeField] private float _bulletSpeed = 10f;
+    //[SerializeField] private float _bulletSpeed = 10f;
+    // SO -> ProjectileSpeed
 
     [Header("테스트용 무기 직접 참조")]
     [Tooltip("true로 켜면 CInventoryManager를 무시하고 아래 SO를 직접 사용합니다.\n인스펙터에서 FireRate 등을 바로 조정할 때 사용하세요.")]
@@ -384,11 +385,39 @@ public class CPlayerController : CEntityBase, IHealable
         Vector3 spawnPos = CWeaponEquip.Instance != null
             ? CWeaponEquip.Instance.MuzzleWorldPosition
             : transform.position;
-        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, Quaternion.Euler(0f, 0f, rotZ));
-        bulletObj.transform.localScale *= (1 + _bulletScaleBonus);
-        float finalDamage = _statManager != null
-                                    ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
-                                    : weaponData.WeaponDamage;
+
+        int count = CWeaponEquip.Instance.GetProjectileAmount();
+
+        Debug.Log(count);
+
+        float step = 15f;
+        float startAngle = rotZ - (step * (count - 1) / 2f);
+
+        for (int i = 0; i < count; i++)
+        {
+            float currenAngle = startAngle + i * step;
+            Quaternion rot = Quaternion.Euler(0, 0, currenAngle);
+
+            GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, rot);
+            float finalDamage = _statManager != null
+                                        ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
+                                        : weaponData.WeaponDamage;
+
+            // flanne.Projectile 계열 투사체
+            flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
+            if (proj != null)
+            {
+                proj.damage = finalDamage;
+                proj.vector = (rot * Vector3.right) * weaponData.ProjectileSpeed;
+                proj.owner = gameObject;
+                proj.size = 1f + _bulletScaleBonus;
+
+                // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
+                flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();
+                if (ttl != null)
+                    ttl.SetLifetime(weaponData.LifeTime);
+            }
+        }        
 
         // 총구화염 재생
         CWeaponEquip.Instance?.ShowMuzzleFlash();
@@ -396,21 +425,7 @@ public class CPlayerController : CEntityBase, IHealable
         // 발사 사운드 재생
         CAudioManager.Instance?.Play(weaponData.FireSFX, spawnPos);
 
-        OnPlayerAttack?.Invoke();
-
-        // flanne.Projectile 계열 투사체
-        flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
-        if (proj != null)
-        {
-            proj.damage = finalDamage;
-            proj.vector = dir * _bulletSpeed;
-            proj.owner = gameObject;
-
-            // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
-            flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();
-            if (ttl != null)
-                ttl.SetLifetime(weaponData.LifeTime);
-        }
+        OnPlayerAttack?.Invoke();        
 
         OnShot?.Invoke();
     }
