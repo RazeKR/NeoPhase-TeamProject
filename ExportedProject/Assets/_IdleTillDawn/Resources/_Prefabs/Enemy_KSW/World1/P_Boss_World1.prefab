@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 6603583526801275652}
   - component: {fileID: 5919011733267094778}
   - component: {fileID: 6393696864548089124}
+  - component: {fileID: 7543833152314546726}
   m_Layer: 6
   m_Name: P_Boss_World1
   m_TagString: Enemy
@@ -230,7 +231,6 @@ MonoBehaviour:
   _hitFlashDuration: 0.1
   _hitFlashMaterial: {fileID: 2100000, guid: 99f40263e839e68459c4e85288f49349, type: 2}
   _enemyData: {fileID: 11400000, guid: 055ec93b603deb240b2650415311fcb9, type: 2}
-  _animator: {fileID: 0}
   _paramSpeed: aSpeed
   _paramAttack: tAttack
   _dashForce: 10
@@ -241,3 +241,15 @@ MonoBehaviour:
   _spawnInterval: 1
   _spawnRadiusMin: 1
   _spawnRadiusMax: 2
+--- !u!114 &7543833152314546726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2902471189535920714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8726a22553c1ae844a5e73b124c95cd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

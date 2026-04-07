@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 77544618615040424}
   - component: {fileID: 3775951802548029952}
   - component: {fileID: 6042292700744096598}
+  - component: {fileID: 8307499498060347779}
   m_Layer: 6
   m_Name: P_Boss_Middle
   m_TagString: Enemy
@@ -136,7 +137,6 @@ MonoBehaviour:
   _hitFlashDuration: 0.1
   _hitFlashMaterial: {fileID: 2100000, guid: 99f40263e839e68459c4e85288f49349, type: 2}
   _enemyData: {fileID: 11400000, guid: 8e8de08b4b4679b438c43125bbd85856, type: 2}
-  _animator: {fileID: 0}
   _paramSpeed: aSpeed
   _paramAttack: tAttack
   _dashForce: 10
@@ -205,3 +205,15 @@ CapsuleCollider2D:
   m_Offset: {x: -0.04, y: 0.02}
   m_Size: {x: 1.7, y: 1}
   m_Direction: 1
+--- !u!114 &8307499498060347779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372230758617115628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8726a22553c1ae844a5e73b124c95cd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

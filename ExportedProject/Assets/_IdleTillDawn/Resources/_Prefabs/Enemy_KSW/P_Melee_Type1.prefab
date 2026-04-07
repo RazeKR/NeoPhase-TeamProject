@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1863410779067418201}
   - component: {fileID: 9184456887053811030}
   - component: {fileID: 3523627307637977451}
+  - component: {fileID: -273620807818773846}
   m_Layer: 6
   m_Name: P_Melee_Type1
   m_TagString: Enemy
@@ -201,3 +202,15 @@ MonoBehaviour:
   _knockBackForce: 5
   _knockBackTime: 0.2
   _knockBackLayer: Enemy_KnockBack
+--- !u!114 &-273620807818773846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869001611694354567}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8726a22553c1ae844a5e73b124c95cd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

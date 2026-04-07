@@ -382,8 +382,6 @@ public class CPlayerController : CEntityBase, IHealable
 
         int count = CWeaponEquip.Instance.GetProjectileAmount();
 
-        Debug.Log(count);
-
         float step = 15f;
         float startAngle = rotZ - (step * (count - 1) / 2f);
 
