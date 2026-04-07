@@ -9,7 +9,7 @@ namespace flanne
         [SerializeField]
         private bool explosable;
         [SerializeField]
-        private GameObject explosionPrefab;        
+        private CProjectileExplosion explosionPrefab;        
 
         [SerializeField]
         private bool willDestroy;
@@ -39,7 +39,10 @@ namespace flanne
         {
             if (explosable && explosionPrefab != null)
             {
-                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                var explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+                float damage = GetComponent<flanne.Projectile>().damage;
+                float scale = transform.localScale.x;
+                explosion.Init(damage, gameObject, scale);
             }
 
             if (willDestroy)

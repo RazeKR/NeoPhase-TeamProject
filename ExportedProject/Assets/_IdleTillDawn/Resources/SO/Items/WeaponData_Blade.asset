@@ -17,11 +17,23 @@ MonoBehaviour:
   _itemName: Blade
   _type: 0
   _sprite: {fileID: 21300000, guid: e9a8fcc231ada564bab64125aa56fc86, type: 3}
-  _weaponDamage: 100
-  _weaponFireRate: 10
-  _weaponRange: 20
-  _bulletPrefab: {fileID: 1848884527762117, guid: caee3bafe8ddac549ae04810beeff6ac,
+  _weaponDamage: 25
+  _weaponFireRate: 0.1
+  _weaponRange: 5
+  _bulletPrefab: {fileID: 1848884527762117, guid: ece0be26f589faa458499300f655d728,
     type: 3}
-  _lifeTime: 1
+  _lifeTime: 0.3
   _damagePerRank: 0
   _isMelee: 1
+  _projectileAmount: 1
+  _projectileSpeed: 20
+  _fireSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

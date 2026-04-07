@@ -21,6 +21,10 @@ public class CWeaponEquip : MonoBehaviour
     [SerializeField] private float  _muzzleOffsetAdjust = 0f;    // 스프라이트 오른쪽 끝에서 추가 보정(양수=앞, 음수=뒤)
     [SerializeField] private float  _muzzleFlashDuration = 0.08f; // 화염 표시 시간(초)
 
+    [Header("Melee Attack Swing")]
+    [SerializeField] private float _swingArc = 200f;
+    [SerializeField] private float _duration = 0.3f;
+
     [Header("총구 포그 플래시 (안개 밝기 연출)")]
     [Tooltip("발사 시 총구 위치에서 밝아지는 외곽 반경 (월드 유닛) — 플레이어 고유 반경보다 크게 설정 권장")]
     [SerializeField] private float _fogMuzzleOuterRadius   = 6f;
@@ -43,6 +47,11 @@ public class CWeaponEquip : MonoBehaviour
     // 총구 포그 플래시 — 비주얼 화염과 별개로 항상 동작하는 안개 광원
     private GameObject      _fogMuzzleObj;
     private CFogFlashSource _muzzleFogSource;
+
+    // Melee Attack Swing
+    private float _swingOffset = 0f;
+    private bool _isSwinging = false;
+    private float _lastAimAngle;
 
     #endregion
 
@@ -130,28 +139,50 @@ public class CWeaponEquip : MonoBehaviour
     {
         if (_targetObject == null || _playerController == null) return;
 
-        Transform weaponTransform = _targetObject.transform;
-        Transform target = _playerController.CurrentTarget;
+        float meleeOffset = 0;
 
+        if ((_itemDataSO as CWeaponDataSO).IsMelee) meleeOffset = -90f;
+
+        if (_isSwinging)
+        {
+            ApplyRotation(_lastAimAngle + _swingOffset + meleeOffset);
+            return;
+        }
+                
+        Transform target = _playerController.CurrentTarget;        
         if (target == null) return;
 
+        
+
         // 적까지의 월드 방향
-        Vector2 worldDir = (target.position - weaponTransform.position).normalized;
+        Vector2 worldDir = (target.position - _targetObject.transform.position).normalized;
         float worldAngle = Mathf.Atan2(worldDir.y, worldDir.x) * Mathf.Rad2Deg;
+
+        _lastAimAngle = worldAngle;
+
+        ApplyRotation(worldAngle + _swingOffset + meleeOffset);        
+    }
+
+    private void ApplyRotation(float angle)
+    {
+        Transform weaponTransform = _targetObject.transform;
 
         // lossyScale.x : 부모 계층 전체 X scale의 곱
         // 음수이면 스프라이트가 X 미러링된 상태 → localAngle = 180 - worldAngle 로 역보정
         bool isParentFlipped = weaponTransform.lossyScale.x < 0f;
-        float localAngle = isParentFlipped ? 180f - worldAngle : worldAngle;
+        
+        float localAngle = isParentFlipped ? 180f - angle : angle;
+
         weaponTransform.localRotation = Quaternion.Euler(0f, 0f, localAngle);
 
         // 총구가 왼쪽을 향할 때(|worldAngle| > 90) 스프라이트 Y 반전
         // 반전하지 않으면 총이 위아래 뒤집어진 채로 보임
-        bool pointingLeft = Mathf.Abs(worldAngle) > 90f;
+        bool pointingLeft = Mathf.Abs(angle) > 90f;
         weaponTransform.localScale = new Vector3(1f, pointingLeft ? -1f : 1f, 1f);
 
         // 씬 뷰 디버그 — 빨간선이 적을 향하지 않으면 CurrentTarget 또는 Layer 설정 문제
-        Debug.DrawRay(weaponTransform.position, worldDir * 1.5f, Color.red);
+        // Vector2 worldDir = (target.position - _targetObject.transform.position).normalized;
+        // Debug.DrawRay(weaponTransform.position, worldDir * 1.5f, Color.red);
     }
 
     private void LoadEquippedWeapon()
@@ -342,6 +373,36 @@ public class CWeaponEquip : MonoBehaviour
         CWeaponDataSO data = _itemDataSO as CWeaponDataSO;
         return data.ProjectileAmount;
     }
+
+
+    public void PlaySwingAnimation()
+    {
+        if (_isSwinging) return;
+        StartCoroutine(SwingCoroutine());
+    }
+
+    private IEnumerator SwingCoroutine()
+    {
+        _isSwinging = true;
+        float elapsed = 0f;        
+        float start = _swingArc / 2f;
+        float end = -_swingArc / 2f;
+
+        while (elapsed < _duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / _duration;
+
+            float curveT = t * (2 - t);
+            _swingOffset = Mathf.Lerp(start, end, curveT);
+
+            yield return null;
+        }
+
+        _swingOffset = 0f;
+        _isSwinging = false;
+    }
+
 
     #endregion
 

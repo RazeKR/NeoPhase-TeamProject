@@ -409,7 +409,11 @@ public class CPlayerController : CEntityBase, IHealable
                 if (ttl != null)
                     ttl.SetLifetime(weaponData.LifeTime);
             }
-        }        
+        }
+
+        // Swing when Melee weapon
+        if (weaponData.IsMelee)
+        CWeaponEquip.Instance?.PlaySwingAnimation();
 
         // 총구화염 재생
         CWeaponEquip.Instance?.ShowMuzzleFlash();

@@ -17,7 +17,7 @@ MonoBehaviour:
   _itemName: Grenade Launcher
   _type: 0
   _sprite: {fileID: 21300000, guid: 7bff7e4215127e04db873f56a2d1793d, type: 3}
-  _weaponDamage: 50
+  _weaponDamage: 15
   _weaponFireRate: 0.1
   _weaponRange: 5
   _bulletPrefab: {fileID: 1848884527762117, guid: 334fbd4e37972f9408dc108bf8f8f648,

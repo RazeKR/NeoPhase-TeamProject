@@ -17,6 +17,9 @@ namespace flanne
         [SerializeField]
         protected TrailRenderer trail;
 
+        [SerializeField]
+        protected GameObject effect;
+
         public bool damagable = true;
 
         public int bounce;
@@ -123,7 +126,7 @@ namespace flanne
             {
                 if (bounce == 0)
                 {
-                    DetachTrail();
+                    DetachEffects();
                     Destroy(gameObject);
                     return;
                 }
@@ -164,13 +167,19 @@ namespace flanne
             }
         }
 
-        private void DetachTrail()
+        private void DetachEffects()
         {
             if (trail != null)
             {
                 trail.transform.SetParent(null);
                 trail.emitting = false;
                 Destroy(trail.gameObject, trail.time);
+            }
+
+            if (effect != null)
+            {
+                effect.transform.SetParent(null);
+                Destroy(effect, 0.5f);
             }
         }
     }
