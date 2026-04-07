@@ -336,6 +336,12 @@ public class CWeaponEquip : MonoBehaviour
 
         StartCoroutine(CoBulletLifeTime(a, (_itemDataSO as CWeaponDataSO).LifeTime));
     }
+        
+    public int GetProjectileAmount()
+    {
+        CWeaponDataSO data = _itemDataSO as CWeaponDataSO;
+        return data.ProjectileAmount;
+    }
 
     #endregion
 

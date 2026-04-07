@@ -384,11 +384,37 @@ public class CPlayerController : CEntityBase, IHealable
         Vector3 spawnPos = CWeaponEquip.Instance != null
             ? CWeaponEquip.Instance.MuzzleWorldPosition
             : transform.position;
-        GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, Quaternion.Euler(0f, 0f, rotZ));
-        bulletObj.transform.localScale *= (1 + _bulletScaleBonus);
-        float finalDamage = _statManager != null
-                                    ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
-                                    : weaponData.WeaponDamage;
+
+        int count = CWeaponEquip.Instance.GetProjectileAmount();
+
+        float step = 15f;
+        float startAngle = rotZ - (step * (count - 1) / 2f);
+
+        for (int i = 0; i < count; i++)
+        {
+            float currenAngle = startAngle + i * step;
+            Quaternion rot = Quaternion.Euler(0, 0, currenAngle);
+
+            GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, Quaternion.Euler(0f, 0f, rotZ));
+            bulletObj.transform.localScale *= (1 + _bulletScaleBonus);
+            float finalDamage = _statManager != null
+                                        ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
+                                        : weaponData.WeaponDamage;
+
+            // flanne.Projectile 계열 투사체
+            flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
+            if (proj != null)
+            {
+                proj.damage = finalDamage;
+                proj.vector = dir * _bulletSpeed;
+                proj.owner = gameObject;
+
+                // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
+                flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();
+                if (ttl != null)
+                    ttl.SetLifetime(weaponData.LifeTime);
+            }
+        }        
 
         // 총구화염 재생
         CWeaponEquip.Instance?.ShowMuzzleFlash();
@@ -396,21 +422,7 @@ public class CPlayerController : CEntityBase, IHealable
         // 발사 사운드 재생
         CAudioManager.Instance?.Play(weaponData.FireSFX, spawnPos);
 
-        OnPlayerAttack?.Invoke();
-
-        // flanne.Projectile 계열 투사체
-        flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
-        if (proj != null)
-        {
-            proj.damage = finalDamage;
-            proj.vector = dir * _bulletSpeed;
-            proj.owner = gameObject;
-
-            // SO의 LifeTime으로 프리팹 내 TimeToLive를 덮어씀 (중복 제거)
-            flanne.TimeToLive ttl = bulletObj.GetComponent<flanne.TimeToLive>();
-            if (ttl != null)
-                ttl.SetLifetime(weaponData.LifeTime);
-        }
+        OnPlayerAttack?.Invoke();        
 
         OnShot?.Invoke();
     }
