@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: PlayerDataSO_Hastur
   m_EditorClassIdentifier: 
   _id: 0
+  _characterType: 1
   _characterName: "\uD558\uC2A4\uD130"
   _description: "\uC8FC\uAE30\uC801\uC73C\uB85C \uC801\uC5D0\uAC8C 30\uB370\uBBF8\uC9C0\uB97C
     \uC8FC\uB294 \uCD09\uC218\uB97C \uC18C\uD658\uD569\uB2C8\uB2E4."
   _characterPortrait: {fileID: 21300000, guid: ccc3084cc10ce324e8397c0a855720f4, type: 3}
+  _uniqueTrait: {fileID: 0}
   _statSettings:
   - StatType: 0
     BaseValue: 10000
@@ -43,3 +45,13 @@ MonoBehaviour:
     BaseValue: 20
     GrowthPerLevel: 0
   _prefab: {fileID: 5717717816164410344, guid: d4447a631e0a30c48a0aba016693818b, type: 3}
+  _hitSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

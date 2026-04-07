@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -126,6 +126,9 @@ public class CCharacterSelectUI : MonoBehaviour
 
             // 선택한 캐릭터 저장
             saveData.playerStatId = _focusedButton.Data.Id;
+
+            // 선택한 캐릭터 타입 저장
+            saveData.characterType = _focusedButton.Data.CharacterType;
 
             // 기본 무기 미지급 상태면 Revolver(id=6) 인벤토리에 추가 + 장착
             if (saveData.equippedWeaponId == 0)

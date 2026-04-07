@@ -37,6 +37,7 @@ public class CPlayerDataSO : CBaseDataSO
     #region InspectorVariables
 
     [Header("기본 정보")]
+    [SerializeField] private EPlayerType _characterType;
     [SerializeField] private string _characterName = "Character Name";      // 캐릭터 이름
     [SerializeField] private string _description = "Character Description"; // 캐릭터 설명
     [SerializeField] private Sprite _characterPortrait = null;               // 캐릭터 초상화
@@ -57,6 +58,7 @@ public class CPlayerDataSO : CBaseDataSO
 
     #region Properties
 
+    public EPlayerType CharacterType => _characterType;
     public string     CharacterName     => _characterName;
     public string     Description       => _description;
     public Sprite     CharacterPortrait => _characterPortrait;

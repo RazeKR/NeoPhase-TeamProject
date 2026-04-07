@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: PlayerDataSO_Spark
   m_EditorClassIdentifier: 
   _id: 2
+  _characterType: 2
   _characterName: "\uC2A4\uD30C\uD06C"
   _description: "\uACF5\uACA9 \uC2DC 50%\uC758 \uD655\uB960\uB85C 5 \uD53C\uD574\uB97C
     \uAC00\uD558\uB294 \uBC88\uAC1C\uB97C \uB0B4\uB9AC\uCE69\uB2C8\uB2E4."
   _characterPortrait: {fileID: 21300000, guid: 92f8f5e3c9162aa4983bc138de2852ec, type: 3}
+  _uniqueTrait: {fileID: 11400000, guid: 2637ae1483540da4693dc73eb6f49af1, type: 2}
   _statSettings:
   - StatType: 0
     BaseValue: 10000
@@ -37,9 +39,19 @@ MonoBehaviour:
     BaseValue: 0
     GrowthPerLevel: 0
   - StatType: 6
-    BaseValue: 0
+    BaseValue: 5
     GrowthPerLevel: 0
   - StatType: 7
     BaseValue: 0
     GrowthPerLevel: 0
   _prefab: {fileID: 8493900152578435068, guid: c5ccd3f7f3565cd4585e803b45766884, type: 3}
+  _hitSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

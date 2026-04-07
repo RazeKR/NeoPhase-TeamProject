@@ -25,7 +25,7 @@ public class CPlayerSpawner : MonoBehaviour
 
     #endregion
 
-    void Start()
+    void Awake()
     {
         SpawnPlayer();
     }
@@ -62,6 +62,15 @@ public class CPlayerSpawner : MonoBehaviour
         }
 
         CPlayerDataSO playerData = CDataManager.Instance.GetPlayerData(playerId);
+        GameObject playerObj = Instantiate(playerData.Prefab, spawnPoint, Quaternion.identity);
+
+        if (playerObj.TryGetComponent(out CPlayerController playerController))
+        {
+            if (playerData.UniqueTrait != null)
+            {
+                playerData.UniqueTrait.ApplyTrait(playerController);
+            }
+        }
 
         if (playerData == null || playerData.Prefab == null)
         {
@@ -71,7 +80,6 @@ public class CPlayerSpawner : MonoBehaviour
 
         Debug.Log($"[CPlayerSpawner] 캐릭터 스폰: {playerData.CharacterName} (id={playerId})");
 
-        GameObject playerObj = Instantiate(playerData.Prefab, spawnPoint, Quaternion.identity);
         SetPlayerTarget(playerObj.transform);
 
         // 항상 실행 — Co_GrantDefaultWeapon 내부에서 인벤토리 상태를 보고 필요할 때만 지급
