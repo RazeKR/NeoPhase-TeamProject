@@ -305,6 +305,12 @@ MonoBehaviour:
   _fadeInDuration: 0.8
   _bgmSource: {fileID: 0}
   _sfxSource: {fileID: 0}
+  _initialPoolSize: 16
+  _maxPoolSize: 32
+  _maxConcurrentSFX: 8
+  _minDuckMultiplier: 0.3
+  _sfxMixerGroup: {fileID: 0}
+  _bgmMixerGroup: {fileID: 0}
 --- !u!82 &41699093
 AudioSource:
   m_ObjectHideFlags: 0
@@ -972,6 +978,7 @@ MonoBehaviour:
   _playerSelectCG: {fileID: 1866440504}
   _fadeDuration: 0.3
   _optionUI: {fileID: 1646912045}
+  _characterSelectUI: {fileID: 247584968}
   _firstStageSceneName: Stage1_KSH
 --- !u!114 &247584968
 MonoBehaviour:
@@ -2222,6 +2229,7 @@ MonoBehaviour:
   _playerSelectCG: {fileID: 1866440504}
   _fadeDuration: 0.3
   _optionUI: {fileID: 0}
+  _characterSelectUI: {fileID: 0}
   _firstStageSceneName: Stage1_KSH
 --- !u!114 &984628430
 MonoBehaviour:

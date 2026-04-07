@@ -26,6 +26,10 @@ public class CMainMenuUI : MonoBehaviour
     [Header("옵션 UI")]
     [SerializeField] private COptionUI _optionUI;
 
+    [Header("캐릭터 선택 UI")]
+    [Tooltip("선택된 캐릭터 ID를 읽어오기 위한 CCharacterSelectUI 참조")]
+    [SerializeField] private CCharacterSelectUI _characterSelectUI;
+
     [Header("씬 이름")]
     [SerializeField] private string _firstStageSceneName = "Stage1_KSH";
 
@@ -104,7 +108,8 @@ public class CMainMenuUI : MonoBehaviour
     /// </summary>
     public void OnClickEnterGame()
     {
-        CGameManager.Instance.MarkGameEntered();
+        int selectedId = _characterSelectUI != null ? _characterSelectUI.SelectedCharacterId : -1;
+        CGameManager.Instance.MarkGameEntered(selectedId);
         SceneManager.LoadScene(_firstStageSceneName);
     }
 

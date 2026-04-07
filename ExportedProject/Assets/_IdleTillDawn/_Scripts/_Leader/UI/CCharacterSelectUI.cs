@@ -60,6 +60,9 @@ public class CCharacterSelectUI : MonoBehaviour
     #region Private
 
     private CCharacterSelectButton _focusedButton;  // 현재 포커스된 버튼
+
+    /// <summary>현재 선택(포커스)된 캐릭터 ID. 선택 전이면 -1을 반환합니다.</summary>
+    public int SelectedCharacterId => _focusedButton != null ? _focusedButton.Data.Id : -1;
     private Vector2   _portraitOrigin;
     private Coroutine _bobCoroutine;
 

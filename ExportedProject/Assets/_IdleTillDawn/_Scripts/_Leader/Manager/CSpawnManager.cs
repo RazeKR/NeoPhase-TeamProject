@@ -244,6 +244,8 @@ public class CSpawnManager : MonoBehaviour
     /// <summary>플레이어 주변 링(도넛) 영역 내 무작위 스폰 위치를 반환한다</summary>
     private Vector3 GetRandomSpawnPosition()
     {
+        if (_player == null) return Vector3.zero; // 플레이어가 아직 설정되지 않은 경우 원점 반환
+
         float   angle  = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
         float   radius = UnityEngine.Random.Range(_spawnMinRadius, _spawnMaxRadius);
         Vector2 offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;

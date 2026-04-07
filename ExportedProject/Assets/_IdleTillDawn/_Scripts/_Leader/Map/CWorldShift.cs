@@ -145,6 +145,8 @@ public class CWorldShift : MonoBehaviour
     /// </summary>
     private void CheckAndShift()
     {
+        if (_player == null) return; // 플레이어가 아직 스폰되지 않았으면 건너뜀
+
         // 플레이어 월드 좌표 → WorldRoot 로컬 좌표 변환 (WorldRoot 이동에 자동 추적)
         Vector3 localPos    = _worldRoot.InverseTransformPoint(_player.position);
         Vector3 shiftOffset = Vector3.zero;

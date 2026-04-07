@@ -25,7 +25,7 @@ public class CPlayerSpawner : MonoBehaviour
 
     #endregion
 
-    void Awake()
+    void Start()
     {
         SpawnPlayer();
     }
@@ -34,7 +34,8 @@ public class CPlayerSpawner : MonoBehaviour
     {
         Vector3 spawnPoint = transform.position;
 
-        CSaveData saveData = CJsonManager.Instance.Load();
+        // CJsonManager.Instance가 null일 수 있음 (씬 직접 실행 또는 Script Execution Order 문제)
+        CSaveData saveData = CJsonManager.Instance != null ? CJsonManager.Instance.Load() : null;
 
         // ── 캐릭터 ID 결정 우선순위 ──────────────────────────────────────
         // 1순위: CGameManager 메모리 (_selectedPlayerId) — 이번 세션 선택 또는 PlayerPrefs 복원
@@ -44,12 +45,12 @@ public class CPlayerSpawner : MonoBehaviour
         int playerId = 0;
         int managerSelectedId = CGameManager.Instance != null ? CGameManager.Instance.SelectedPlayerId : -1;
 
-        if (managerSelectedId >= 0 && CDataManager.Instance.GetPlayerData(managerSelectedId) != null)
+        if (managerSelectedId >= 0 && CDataManager.Instance != null && CDataManager.Instance.GetPlayerData(managerSelectedId) != null)
         {
             // 1순위: 메모리 (이번 세션 선택 or PlayerPrefs 복원)
             playerId = managerSelectedId;
         }
-        else if (saveData != null && CDataManager.Instance.GetPlayerData(saveData.playerStatId) != null)
+        else if (saveData != null && CDataManager.Instance != null && CDataManager.Instance.GetPlayerData(saveData.playerStatId) != null)
         {
             // 2순위: JSON 파일
             playerId = saveData.playerStatId;
@@ -61,7 +62,21 @@ public class CPlayerSpawner : MonoBehaviour
             Debug.LogWarning("[CPlayerSpawner] 유효한 캐릭터 ID를 찾지 못해 기본값(0)으로 폴백합니다.");
         }
 
+        if (CDataManager.Instance == null)
+        {
+            Debug.LogError("[CPlayerSpawner] CDataManager.Instance가 null입니다. 플레이어를 스폰할 수 없습니다.");
+            return;
+        }
+
         CPlayerDataSO playerData = CDataManager.Instance.GetPlayerData(playerId);
+
+        // null 체크를 Instantiate 호출 전에 수행
+        if (playerData == null || playerData.Prefab == null)
+        {
+            Debug.LogError($"CPlayerSpawner : {playerId}의 데이터 또는 프리팹 없음");
+            return;
+        }
+
         GameObject playerObj = Instantiate(playerData.Prefab, spawnPoint, Quaternion.identity);
 
         if (playerObj.TryGetComponent(out CPlayerController playerController))
@@ -70,12 +85,6 @@ public class CPlayerSpawner : MonoBehaviour
             {
                 playerData.UniqueTrait.ApplyTrait(playerController);
             }
-        }
-
-        if (playerData == null || playerData.Prefab == null)
-        {
-            Debug.LogError($"CPlayerSpawner : {playerId}의 데이터 또는 프리팹 없음");
-            return;
         }
 
         Debug.Log($"[CPlayerSpawner] 캐릭터 스폰: {playerData.CharacterName} (id={playerId})");
