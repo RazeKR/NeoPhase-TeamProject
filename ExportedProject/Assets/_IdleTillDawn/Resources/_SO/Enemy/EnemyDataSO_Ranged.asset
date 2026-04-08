@@ -17,7 +17,7 @@ MonoBehaviour:
   _description: Character Description
   _baseHealth: 50
   _baseDamage: 10
-  _attackCooltime: 3
+  _attackCooltime: 10
   _moveSpeed: 3
   _attackRange: 12
   _healthGrowthPerStage: 10

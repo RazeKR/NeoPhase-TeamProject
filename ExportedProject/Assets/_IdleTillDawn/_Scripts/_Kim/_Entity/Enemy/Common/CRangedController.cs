@@ -6,7 +6,6 @@ public class CRangedController : CEnemyBase
 {
     #region 인스펙터
     [Header("참조")]
-    [SerializeField] private GameObject _projectilePrefab;
     [SerializeField] private Transform _firePoint;
     #endregion
 
@@ -55,7 +54,7 @@ public class CRangedController : CEnemyBase
 
     protected override void ExecuteAttack()
     {
-        if (_projectilePrefab == null || CurrentTarget == null) return;
+        if (CurrentTarget == null) return;
 
         Vector2 dir = (CurrentTarget.position - transform.position).normalized;
 
@@ -63,9 +62,8 @@ public class CRangedController : CEnemyBase
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         Vector3 spawnPos = _firePoint != null ? _firePoint.position : transform.position;
-        GameObject obj = Instantiate(_projectilePrefab, spawnPos, rotation);
 
-        CProjectileTest projectile = obj.GetComponent<CProjectileTest>();
+        CProjectileTest projectile = CRangedProjectilePoolManager.Instance.SpawnProjectile(spawnPos, rotation);
 
         if (projectile != null)
         {

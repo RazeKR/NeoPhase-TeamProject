@@ -14,6 +14,19 @@ public class CProjectileTest : MonoBehaviour
     private float _spawnTime;
     #endregion
 
+    #region 이벤트
+    public static event System.Action<CProjectileTest> OnProjectileReturned;
+    #endregion
+
+    private void OnDisable()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+        }
+    }
+
     public void Init(float damage, Vector2 direction)
     {
         _damage    = damage;
@@ -27,7 +40,9 @@ public class CProjectileTest : MonoBehaviour
     private void Update()
     {
         if (Time.time - _spawnTime >= _lifeTime)
-            Destroy(gameObject);
+        {
+            ReturnToPool();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -39,7 +54,12 @@ public class CProjectileTest : MonoBehaviour
         if (target != null)
         {
             target.TakeDamage(_damage);
-            Destroy(gameObject);
+            ReturnToPool();
         }
+    }
+
+    private void ReturnToPool()
+    {
+        OnProjectileReturned?.Invoke(this);
     }
 }
