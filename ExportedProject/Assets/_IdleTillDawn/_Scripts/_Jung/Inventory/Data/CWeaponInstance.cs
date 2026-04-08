@@ -30,6 +30,6 @@ public class CWeaponInstance : CItemInstance
 
     public float GetActualDamage()
     {
-        return _data.WeaponDamage[_upgrade] * (1 + _upgrade * _data.DamagePerRank);
+        return _data.WeaponDamage[_upgrade] * (1 + _rank * _data.DamagePerRank);
     }
 }

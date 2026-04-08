@@ -229,7 +229,6 @@ public class CInventorySystemJ : MonoBehaviour
 
         if (weapon == null)
         {
-            Debug.Log("��ȭ�� ���⸦ ã�� �� �����ϴ�.");
             return;
         }
 
@@ -237,13 +236,12 @@ public class CInventorySystemJ : MonoBehaviour
 
         if (scroll != null)
         {
-            CWeaponUpgrade.Instance.TryUpgrade(weapon);
+            if (CWeaponUpgrade.Instance.TryUpgrade(weapon))     // true = weapon Broken
+            {
+                Debug.Log("Weapon Broken!");
+            }
 
             RemoveItem(scroll._instanceID, 1);            
-        }
-        else
-        {
-            Debug.Log("�Ҹ��� ��ũ���� �κ��丮�� �����ϴ�.");
         }
 
         SyncAndSave();
