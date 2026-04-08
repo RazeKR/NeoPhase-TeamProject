@@ -23,7 +23,7 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 1848884527762117, guid: 334fbd4e37972f9408dc108bf8f8f648,
     type: 3}
   _lifeTime: 1
-  _damagePerRank: 0
+  _damagePerRank: 0.1
   _isMelee: 0
   _projectileAmount: 1
   _projectileSpeed: 12
