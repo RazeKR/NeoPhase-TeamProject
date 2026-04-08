@@ -64,6 +64,17 @@ MonoBehaviour:
   effectPrefab: {fileID: 5840033563634840676, guid: 0edaea73303d4504ebda66c031f0af43,
     type: 3}
   _castSFX:
+    _clips:
+    - {fileID: 8300000, guid: ad2beb7bc481da94c82f122af8b79c82, type: 3}
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
+  _areaSFX:
     _clips: []
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}

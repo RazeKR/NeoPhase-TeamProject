@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 2181084217544060347}
   - component: {fileID: 7895358414569010358}
   - component: {fileID: -3515886461289812710}
+  - component: {fileID: -4447877900829561409}
   m_Layer: 0
   m_Name: Skill_AftershockPrefab
   m_TagString: Untagged
@@ -235,6 +236,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  instantDeath: 0
 --- !u!50 &2181084217544060347
 Rigidbody2D:
   serializedVersion: 4
@@ -309,3 +311,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535b747474bc8cc449220b21225d397d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-4447877900829561409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7223285654047631799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 1

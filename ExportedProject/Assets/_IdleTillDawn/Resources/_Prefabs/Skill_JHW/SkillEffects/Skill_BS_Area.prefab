@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7770029038683669574}
   - component: {fileID: 2678976791867930431}
   - component: {fileID: 4449979261705694640}
+  - component: {fileID: -1448264690538791987}
   m_Layer: 0
   m_Name: Skill_BS_Area
   m_TagString: Untagged
@@ -195,6 +196,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-1448264690538791987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2374544731619741147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 1
 --- !u!1 &7381214818091356761
 GameObject:
   m_ObjectHideFlags: 0

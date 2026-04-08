@@ -4844,6 +4844,7 @@ GameObject:
   - component: {fileID: 2660268100968846493}
   - component: {fileID: 5713035325564713268}
   - component: {fileID: 7836710168778595993}
+  - component: {fileID: 3859031768924263943}
   m_Layer: 0
   m_Name: Skill_IceShardPrefab
   m_TagString: Untagged
@@ -5035,3 +5036,16 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &3859031768924263943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6094829181732757940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0

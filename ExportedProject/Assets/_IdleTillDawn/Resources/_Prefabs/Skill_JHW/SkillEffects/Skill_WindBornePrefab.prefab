@@ -4951,6 +4951,7 @@ GameObject:
   - component: {fileID: 7429335934087281970}
   - component: {fileID: -4099264492174989860}
   - component: {fileID: 27130975136273745}
+  - component: {fileID: 7943805050448415327}
   m_Layer: 0
   m_Name: Skill_WindBornePrefab
   m_TagString: Untagged
@@ -5064,6 +5065,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  instantDeath: 0
 --- !u!114 &7429335934087281970
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5159,3 +5161,16 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.8702425, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &7943805050448415327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8967118725219851522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0

@@ -80,7 +80,7 @@ MonoBehaviour:
   damageInterval: 2
   useScaleMagnification: 1
   scalePreset: 0.25
-  lifeTime: 0
+  lifeTime: 0.3
   areaKnockbackRadius: 0
   areaKnockbackForce: 0
   areaKnockbackDuration: 0
@@ -89,9 +89,20 @@ MonoBehaviour:
     type: 0
     value: 0
     duration: 0
-  effectPrefab: {fileID: 4539359579862691148, guid: ed46cfdf7fd54a245829359fcc800f4a,
+  effectPrefab: {fileID: 280288658733778955, guid: 7854744ca43f8db419f14599842764a7,
     type: 3}
   _castSFX:
+    _clips:
+    - {fileID: 8300000, guid: 5fc48c0fc34ab9949b8ff063dfd51e65, type: 3}
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
+  _areaSFX:
     _clips: []
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}

@@ -6,6 +6,7 @@ public class CSkillAreaSpawner : MonoBehaviour, ISkill
     public GameObject areaPrefab;
     public float spawnInterval = 1f;
     public float areaLifeTime;
+    public bool eternity = false;
 
     private CSkillDataSO _data;
     private int _level;
@@ -17,7 +18,7 @@ public class CSkillAreaSpawner : MonoBehaviour, ISkill
         _level = level;
         _timer = spawnInterval;
 
-        if (data.lifeTime != 0f)
+        if (data.lifeTime != 0f && !eternity)
             Destroy(gameObject, data.lifeTime);
     }
 
@@ -41,10 +42,14 @@ public class CSkillAreaSpawner : MonoBehaviour, ISkill
         if (_data.useScaleMagnification)
             area.transform.localScale *= (1 + (_level - 1) * 0.1f * _data.scalePreset);
 
-        if (area.TryGetComponent(out ISkill iSkill))
+        // ISkill Init
+        ISkill[] effects = area.GetComponents<ISkill>();
+
+        foreach (var effect in effects)
         {
-            iSkill.Init(_data, _level);
+            effect.Init(_data, _level);
         }
+
         Destroy(area, areaLifeTime);
     }
 }

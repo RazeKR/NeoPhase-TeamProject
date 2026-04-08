@@ -4929,6 +4929,7 @@ GameObject:
   - component: {fileID: 167219197852239175}
   - component: {fileID: 7832400056991939276}
   - component: {fileID: 947937426439904527}
+  - component: {fileID: -3738435673520838027}
   m_Layer: 0
   m_Name: Skill_FireballPrefab
   m_TagString: Untagged
@@ -5234,3 +5235,16 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &-3738435673520838027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8709800503564725059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0

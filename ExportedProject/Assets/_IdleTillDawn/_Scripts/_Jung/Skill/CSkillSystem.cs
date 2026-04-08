@@ -242,9 +242,6 @@ public class CSkillSystem : MonoBehaviour
             {
                 effect.Init(data, level - 1);
             }
-
-            // CoolDown
-            StartCooldown(7, data.ActiveLevelDatas[level - 1].coolDown);
         }
 
         ctr.PlayerLocalScale = Vector3.one * finalScaleMult;
@@ -293,6 +290,8 @@ public class CSkillSystem : MonoBehaviour
             }
         }
 
+        CAudioManager.Instance?.Play(data.CastSFX, transform.position);
+
         // CoolDown
         StartCooldown(8, data.ActiveLevelDatas[GetSkillLevel(8) - 1].coolDown);
     }
@@ -314,7 +313,7 @@ public class CSkillSystem : MonoBehaviour
 
             pStat.AddTemporaryBuff(datas.statType, datas.buffAmount, datas.duration);
 
-            Debug.Log("AngerPoint On");
+            CAudioManager.Instance?.Play(data.CastSFX, transform.position);
 
             // CoolDown
             StartCooldown(2, data.ActiveLevelDatas[GetSkillLevel(2) - 1].coolDown);

@@ -94,3 +94,14 @@ MonoBehaviour:
     _maxDistance: 20
     _allowOverlap: 1
     _cooldown: 0.05
+  _areaSFX:
+    _clips:
+    - {fileID: 8300000, guid: 0c21fe9ef60b81848ae4cb0f9398d335, type: 3}
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

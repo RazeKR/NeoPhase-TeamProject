@@ -33,6 +33,8 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
         _data = data;
 
+        _level = level;
+
         _currentSpeed = data.speed;
 
         Destroy(gameObject, data.lifeTime);
@@ -65,6 +67,12 @@ public class CProjectileSkill : MonoBehaviour, ISkill
     {
         if (!other.CompareTag("Enemy")) return;
 
+        if (_data == null)
+        {
+            Debug.Log("데이터가 할당되지 않음");
+            return;
+        }
+
         IDamageable target = other.GetComponentInParent<IDamageable>();
         if (target != null)
         {
@@ -96,9 +104,11 @@ public class CProjectileSkill : MonoBehaviour, ISkill
             {
                 GameObject effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
 
-                if (effect.TryGetComponent(out ISkill skillLogic))
+                ISkill[] skillLogic = effect.GetComponents<ISkill>();
+
+                foreach (ISkill skill in skillLogic)
                 {
-                    skillLogic.Init(_data, _level);
+                    skill.Init(_data, _level);
                 }
             }
 

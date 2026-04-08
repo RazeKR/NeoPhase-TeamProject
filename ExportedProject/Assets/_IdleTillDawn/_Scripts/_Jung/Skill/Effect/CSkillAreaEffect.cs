@@ -28,9 +28,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
 
         if (_data.useScaleMagnification)
             transform.localScale *= (1 + (level - 1) * 0.1f * _data.scalePreset) ;
-
         
-
         _damageInterval = _data.damageInterval;
 
         _timer = _damageInterval - 0.1f;

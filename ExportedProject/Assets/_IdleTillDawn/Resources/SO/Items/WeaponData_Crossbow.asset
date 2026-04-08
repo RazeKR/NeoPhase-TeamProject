@@ -29,7 +29,8 @@ MonoBehaviour:
   _projectileSpeed: 20
   _meleeSpin: {fileID: 0}
   _fireSFX:
-    _clips: []
+    _clips:
+    - {fileID: 8300000, guid: 81c54f49d522a1f45bdbe0400c47c18f, type: 3}
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1

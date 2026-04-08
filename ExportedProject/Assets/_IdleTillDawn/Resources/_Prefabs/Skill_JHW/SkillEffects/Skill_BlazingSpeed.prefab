@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6639142779481664435}
   - component: {fileID: 4174976179374325939}
   - component: {fileID: -5463908688790777165}
+  - component: {fileID: -5005220632133764668}
   m_Layer: 0
   m_Name: Skill_BlazingSpeed
   m_TagString: Untagged
@@ -61,3 +62,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 535b747474bc8cc449220b21225d397d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5005220632133764668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2568841504235296460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0

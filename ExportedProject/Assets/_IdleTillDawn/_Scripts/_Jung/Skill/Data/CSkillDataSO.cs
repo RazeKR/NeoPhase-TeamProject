@@ -74,12 +74,14 @@ public class CSkillDataSO : CBaseDataSO
     public GameObject effectPrefab;
 
     [Header("사운드")]
-    [SerializeField] private CSoundData _castSFX;  // 스킬 시전 시 재생 사운드
+    [SerializeField] private CSoundData _castSFX;   // 스킬 시전 시 재생 사운드
+    [SerializeField] private CSoundData _areaSFX;
 
     #endregion
 
     /// <summary>스킬 시전 시 재생할 사운드 데이터. null이면 무음</summary>
     public CSoundData CastSFX => _castSFX;
+    public CSoundData AreaSFX => _areaSFX;
 }
 
 [Serializable]

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -8834559169345772474}
   - component: {fileID: -1159874785566464473}
   - component: {fileID: 6230316824348155849}
+  - component: {fileID: 3467343324830151341}
   m_Layer: 0
   m_Name: Skill_FanFirePrefab
   m_TagString: Untagged
@@ -234,6 +235,19 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &3467343324830151341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2341659196089596006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0
 --- !u!1 &3160640811360121362
 GameObject:
   m_ObjectHideFlags: 0

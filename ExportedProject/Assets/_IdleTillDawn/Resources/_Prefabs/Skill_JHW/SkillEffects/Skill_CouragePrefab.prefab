@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 20021540529969625}
   - component: {fileID: -1216888379554421131}
   - component: {fileID: 2680708790879327930}
+  - component: {fileID: 792678848991994364}
   m_Layer: 0
   m_Name: Skill_CouragePrefab
   m_TagString: Untagged
@@ -279,3 +280,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.0601213
+--- !u!114 &792678848991994364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3298567962137407249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0

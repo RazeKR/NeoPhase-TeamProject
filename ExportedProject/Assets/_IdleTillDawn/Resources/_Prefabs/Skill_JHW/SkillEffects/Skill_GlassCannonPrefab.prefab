@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 99558430271690870}
   - component: {fileID: 2495600108292185870}
   - component: {fileID: 6150399052921270187}
+  - component: {fileID: 5422501538918251892}
   m_Layer: 0
   m_Name: Skill_GlassCannonPrefab
   m_TagString: Untagged
@@ -219,12 +220,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damagable: 0
   movable: 1
+  acceleration: 0
+  maxSpeed: 20
+  minSpeed: 0
   _visualChild: {fileID: 2011012844348956342}
   destroyOnHit: 0
   effectPrefab: {fileID: 0}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 0
+--- !u!114 &5422501538918251892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4130152711437544586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6659d8b7df90e904698cc99c41873ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sfxType: 0
 --- !u!1 &5109398268188744828
 GameObject:
   m_ObjectHideFlags: 0
