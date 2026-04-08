@@ -71,6 +71,34 @@ public class CRankingAPI
         }
     }
 
+    public static IEnumerator CoDeleteRanking(CRankData data, Action onSuccess, Action<string> onError)
+    {
+        string jsonToUpload = $"{{\"action\":\"delete\", \"uid\":\"{data.uid}\"}}";
+
+        byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonToUpload);
+
+        using (UnityWebRequest request = new UnityWebRequest(WEB_APP_URL, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            request.timeout = 30;
+
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                onSuccess?.Invoke();
+            }
+            else
+            {
+                string koreanError = GetKoreanErrorMessage(request);
+                onError?.Invoke(koreanError);
+            }
+        }
+    }
+
     /// <summary>
     /// 에러 메세지를 한글로 변경하는 메서드
     /// </summary>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -264,6 +264,11 @@ public class CGameManager : MonoBehaviour
             if (_selectedPlayerId >= 0)
                 saveData.playerStatId = _selectedPlayerId;
             CJsonManager.Instance.Save(saveData);
+
+            if (CRankingManager.Instance != null)
+            {
+                CRankingManager.Instance.SaveMyRanking(saveData);
+            }
         }
     }
 
