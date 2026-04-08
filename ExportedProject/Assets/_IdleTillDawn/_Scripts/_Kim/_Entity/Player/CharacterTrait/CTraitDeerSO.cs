@@ -16,7 +16,8 @@ public class CTraitDeerSO : CCharacterTraitSO
     [SerializeField] private float _transformToHumanDuration = 0.5f;
     [SerializeField] private string _transformToHumanTrigger = "tDurationOver";
 
-    [Header("변신 해제 넉백 설정")]
+    [Header("변신 해제 설정")]
+    [SerializeField] private CSoundData _castOffSFX;
     [SerializeField] private float _knockbackRadius = 3f;
     [SerializeField] private float _knockbackForce = 10f;
     [SerializeField] private float _knockbackDuration = 0.3f;
@@ -35,6 +36,8 @@ public class CTraitDeerSO : CCharacterTraitSO
         while (true)
         {
             yield return new WaitForSeconds(_transformInterval);
+
+            PlaySFX(CastSFX, player);
 
             if (originAnimator == null)
             {
@@ -95,6 +98,7 @@ public class CTraitDeerSO : CCharacterTraitSO
             {
                 Debug.Log("사람으로 변신");
                 playerAnimator.SetTrigger(_transformToHumanTrigger);
+                PlaySFX(_castOffSFX, player);
                 yield return new WaitForSeconds(_transformToHumanDuration);
             }
 

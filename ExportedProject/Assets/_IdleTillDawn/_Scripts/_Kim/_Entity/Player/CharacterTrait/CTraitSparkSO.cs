@@ -42,5 +42,6 @@ public class CTraitSparkSO : CCharacterTraitSO
         Transform randomTarget = targetsInRange[randomIndex].transform;
 
         CThunderPoolManager.Instance.ShowThunder(randomTarget.position, Damage, player.TargetLayer);
+        PlaySFX(CastSFX, randomTarget.position);
     }
 }

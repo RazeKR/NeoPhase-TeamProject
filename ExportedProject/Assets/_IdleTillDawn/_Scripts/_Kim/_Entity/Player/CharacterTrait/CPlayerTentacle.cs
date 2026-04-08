@@ -141,10 +141,11 @@ public class CPlayerTentacle : MonoBehaviour
 
         foreach (Collider2D hit in hits)
         {
-            CEntityBase target = hit.GetComponent<CEntityBase>();
+            CEntityBase target = hit.GetComponentInParent<CEntityBase>();
             if (target != null)
             {
                 target.TakeDamage(_damage, Vector2.zero);
+                CFogFlashSource.SpawnImpact(target.transform.position, outerRadius: 2f, peakIntensity: 0.5f);
             }
         }
     }

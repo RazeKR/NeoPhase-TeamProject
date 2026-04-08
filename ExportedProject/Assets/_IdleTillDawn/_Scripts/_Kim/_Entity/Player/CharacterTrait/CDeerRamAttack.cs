@@ -39,11 +39,13 @@ public class CDeerRamAttack : MonoBehaviour
             if (target is CBossBase)
             {
                 target.TakeDamage(Damage, hitDir);
+                CFogFlashSource.SpawnImpact(target.transform.position, outerRadius: 4f, peakIntensity: 1f);
                 Debug.Log($"[사슴 박치기] 보스 '{target.EntityName}'에게 {Damage} 데미지!");
             }
             else
             {
                 target.TakeDamage(Damage * 10000f, hitDir);
+                CFogFlashSource.SpawnImpact(target.transform.position, outerRadius: 2f, peakIntensity: 0.5f);
                 Debug.Log($"[사슴 박치기] 일반 몬스터 '{target.EntityName}' 즉사!");
             }
         }

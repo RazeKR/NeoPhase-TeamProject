@@ -33,6 +33,8 @@ public class CThunder : MonoBehaviour
             if (col.TryGetComponent(out IDamageable target))
             {
                 Vector2 hitDir = (col.transform.position - transform.position).normalized;
+                Transform targetTr = col.transform;
+                CFogFlashSource.SpawnImpact(targetTr.position, outerRadius: 2f, peakIntensity: 0.5f);
                 target.TakeDamage(_damage, hitDir);
             }
         }

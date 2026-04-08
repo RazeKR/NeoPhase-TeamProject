@@ -39,6 +39,8 @@ public class CTraitTentacleSO : CCharacterTraitSO
 				Vector2 spawnPos = GetRandomSpawnPos(player.transform.position);
 
 				CHasturTentaclePoolManager.Instance.SpawnTentacle(spawnPos, Damage, player.TargetLayer);
+
+				PlaySFX(CastSFX, spawnPos);
 			}
 		}
 	}
