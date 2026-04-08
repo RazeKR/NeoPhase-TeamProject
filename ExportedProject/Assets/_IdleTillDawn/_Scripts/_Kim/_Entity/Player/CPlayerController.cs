@@ -201,7 +201,7 @@ public class CPlayerController : CEntityBase, IHealable
 
         if (InputHandler != null)
         {
-            _inputHandler.OnSkillInput += ExecuteManualSkill;
+            InputHandler.OnSkillInput += ExecuteManualSkill;
         }
 
         if (_statManager != null)
@@ -213,9 +213,9 @@ public class CPlayerController : CEntityBase, IHealable
 
     protected override void OnDisable()
     {
-        if (CPlayerInputHandler.Instance != null)
+        if (InputHandler != null)
         {
-            _inputHandler.OnSkillInput -= ExecuteManualSkill;
+            InputHandler.OnSkillInput -= ExecuteManualSkill;
         }
 
         if (_statManager != null)
