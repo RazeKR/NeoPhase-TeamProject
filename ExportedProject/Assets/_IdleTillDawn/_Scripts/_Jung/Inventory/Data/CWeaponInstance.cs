@@ -27,4 +27,9 @@ public class CWeaponInstance : CItemInstance
     {
         this._instanceID = savedID;
     }
+
+    public float GetActualDamage()
+    {
+        return _data.WeaponDamage[_upgrade] * (1 + _upgrade * _data.DamagePerRank);
+    }
 }

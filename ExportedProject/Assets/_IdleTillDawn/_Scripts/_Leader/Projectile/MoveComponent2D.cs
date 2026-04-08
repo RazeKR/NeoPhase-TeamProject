@@ -16,6 +16,8 @@ namespace flanne
 
         public bool rotateTowardsMove;
 
+        public bool movable = true;
+
         public Vector2 vector
         {
             get
@@ -32,6 +34,8 @@ namespace flanne
         private void FixedUpdate()
         {
             if (_vector == Vector2.zero) return;
+
+            if (!movable) return;
 
             if (drag > 0)
             {

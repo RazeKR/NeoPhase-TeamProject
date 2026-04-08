@@ -17,7 +17,7 @@ MonoBehaviour:
   _itemName: Grenade Launcher
   _type: 0
   _sprite: {fileID: 21300000, guid: 7bff7e4215127e04db873f56a2d1793d, type: 3}
-  _weaponDamage: 15
+  _weaponDamage: 0f000000100000001100000012000000130000001400000015000000160000001700000018000000190000001a0000001b0000001c0000001e0000002000000022000000240000002600000028000000
   _weaponFireRate: 0.1
   _weaponRange: 5
   _bulletPrefab: {fileID: 1848884527762117, guid: 334fbd4e37972f9408dc108bf8f8f648,
@@ -27,6 +27,7 @@ MonoBehaviour:
   _isMelee: 0
   _projectileAmount: 1
   _projectileSpeed: 12
+  _meleeSpin: {fileID: 0}
   _fireSFX:
     _clips: []
     _volume: 1

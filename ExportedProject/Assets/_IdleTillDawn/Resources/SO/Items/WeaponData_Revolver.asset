@@ -17,7 +17,7 @@ MonoBehaviour:
   _itemName: Revolver
   _type: 0
   _sprite: {fileID: 21300000, guid: 10998547883c4ab41be6dec76d5057b5, type: 3}
-  _weaponDamage: 20
+  _weaponDamage: 190000001a0000001b0000001c0000001d0000001e0000001f00000020000000210000002200000023000000240000002500000026000000280000002a0000002c0000002e0000003000000032000000
   _weaponFireRate: 0.15
   _weaponRange: 10
   _bulletPrefab: {fileID: 1848884527762117, guid: caee3bafe8ddac549ae04810beeff6ac,
@@ -27,6 +27,7 @@ MonoBehaviour:
   _isMelee: 0
   _projectileAmount: 1
   _projectileSpeed: 10
+  _meleeSpin: {fileID: 0}
   _fireSFX:
     _clips:
     - {fileID: 8300000, guid: 0b3b02c677903fc428abb5b90239a767, type: 3}

@@ -27,7 +27,7 @@ public class CPlayerController : CEntityBase, IHealable
     [Header("테스트용 무기 직접 참조")]
     [Tooltip("true로 켜면 CInventoryManager를 무시하고 아래 SO를 직접 사용합니다.\n인스펙터에서 FireRate 등을 바로 조정할 때 사용하세요.")]
     [SerializeField] private bool _useTestWeaponOverride = false;
-    [SerializeField] private CWeaponDataSO _testWeaponData = null;
+    [SerializeField] private CWeaponInstance _testWeaponData = null;
 
     [Header("무기 오브젝트")]
     [SerializeField] private GameObject _weaponVisualObj;
@@ -57,6 +57,8 @@ public class CPlayerController : CEntityBase, IHealable
     private float _traitSpeedMultiplier = 1.0f;
 
     private float _bulletScaleBonus;    // for Passive Skill
+
+    private int _meleeSpinCount;        // for Melee Weapon Special Attack Counting
 
     #endregion
 
@@ -109,7 +111,7 @@ public class CPlayerController : CEntityBase, IHealable
         {
             if (IsWeaponDisabled) return _defaultAttackRange;
 
-            CWeaponDataSO data = GetEquippedWeaponData();
+            CWeaponDataSO data = GetEquippedWeaponData()._data;
             return data != null ? data.WeaponRange : _defaultAttackRange;
         }
     }
@@ -119,7 +121,7 @@ public class CPlayerController : CEntityBase, IHealable
     {
         get
         {
-            CWeaponDataSO data = GetEquippedWeaponData();
+            CWeaponDataSO data = GetEquippedWeaponData()._data;
             return BaseAttackSpeed * (data != null ? data.WeaponFireRate : 1.0f);
         }
     }
@@ -354,8 +356,9 @@ public class CPlayerController : CEntityBase, IHealable
         if (CurrentTarget == null) return;
 
         // 무기 데이터를 한 번만 가져온다 (이후 재호출 없음)
-        CWeaponDataSO weaponData = GetEquippedWeaponData();
-        if (weaponData == null || weaponData.BulletPrefab == null) return;
+        CWeaponInstance weaponInstance = GetEquippedWeaponData();
+        CWeaponDataSO weaponData = weaponInstance._data;
+        if (weaponInstance == null || weaponData.BulletPrefab == null) return;
 
         float distance = Vector2.Distance(transform.position, CurrentTarget.position);
         if (distance > CurrentAttackRange) return;
@@ -390,10 +393,23 @@ public class CPlayerController : CEntityBase, IHealable
             float currenAngle = startAngle + i * step;
             Quaternion rot = Quaternion.Euler(0, 0, currenAngle);
 
-            GameObject bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, rot);
+            GameObject bulletObj = null;
+
+            // melee bifurcation
+            if (weaponData.IsMelee && _meleeSpinCount >= 2)
+            {
+                bulletObj = Instantiate(weaponData.MeleeSpin, spawnPos, rot);
+                _meleeSpinCount = 0;
+            }
+            else
+            {
+                bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, rot);                
+                _meleeSpinCount++;
+            }
+
             float finalDamage = _statManager != null
-                                        ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponData.WeaponDamage
-                                        : weaponData.WeaponDamage;
+                                          ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponInstance.GetActualDamage()
+                                          : weaponInstance.GetActualDamage();
 
             // flanne.Projectile 계열 투사체
             flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
@@ -411,9 +427,11 @@ public class CPlayerController : CEntityBase, IHealable
             }
         }
 
+        
+
         // Swing when Melee weapon
         if (weaponData.IsMelee)
-        CWeaponEquip.Instance?.PlaySwingAnimation();
+            CWeaponEquip.Instance?.PlaySwingAnimation();
 
         // 총구화염 재생
         CWeaponEquip.Instance?.ShowMuzzleFlash();
@@ -491,7 +509,7 @@ public class CPlayerController : CEntityBase, IHealable
     /// 현재 장착된 무기 SO를 반환한다.
     /// _useTestWeaponOverride가 true이면 인벤토리를 무시하고 _testWeaponData를 반환한다.
     /// </summary>
-    private CWeaponDataSO GetEquippedWeaponData()
+    private CWeaponInstance GetEquippedWeaponData()
     {
         // 테스트 오버라이드가 켜져 있으면 인벤토리 완전 무시
         if (_useTestWeaponOverride)
@@ -501,7 +519,7 @@ public class CPlayerController : CEntityBase, IHealable
         {
             CWeaponInstance weapon = CInventorySystemJ.Instance.EquippedWeapon;
             if (weapon != null)
-                return weapon._itemData as CWeaponDataSO;
+                return weapon;
         }
 
         return _testWeaponData;
