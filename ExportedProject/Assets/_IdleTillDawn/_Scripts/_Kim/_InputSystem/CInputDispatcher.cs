@@ -12,6 +12,7 @@ public class CInputDispatcher : MonoBehaviour
     [SerializeField] private InputActionReference _option;
     [SerializeField] private InputActionReference _shop;
     [SerializeField] private InputActionReference _inventory;
+    [SerializeField] private InputActionReference _skillTree;
 
     [Header("디버깅")]
     [SerializeField] private bool _logInput = true;
@@ -24,6 +25,7 @@ public class CInputDispatcher : MonoBehaviour
     public event Action OnOption;
     public event Action OnShop;
     public event Action OnInventory;
+    public event Action OnSkillTree;
 
     // 중복 방지용 변수
     private bool _isReady = false;
@@ -104,6 +106,11 @@ public class CInputDispatcher : MonoBehaviour
             _inventory.action.performed += OnInventoryPerformed;
         }
 
+        if (_skillTree != null && _skillTree.action != null)
+        {
+            _skillTree.action.performed += OnSkillTreePerformed;
+        }
+
         _isReady = true;
 
         if (_logInput)
@@ -150,6 +157,11 @@ public class CInputDispatcher : MonoBehaviour
             _inventory.action.performed -= OnInventoryPerformed;
         }
 
+        if (_skillTree != null && _skillTree.action != null)
+        {
+            _skillTree.action.performed -= OnSkillTreePerformed;
+        }
+
         _isReady = false;
 
         if (_logInput)
@@ -163,9 +175,7 @@ public class CInputDispatcher : MonoBehaviour
         if (!_isReady) return;
 
         if (enable)
-        {
-            _move.action.Enable();
-            
+        {    
             foreach (var skill in _skills)
             {
                 if (skill != null && skill.action != null)
@@ -174,14 +184,14 @@ public class CInputDispatcher : MonoBehaviour
                 }
             }
 
-            _option.action.Enable();
-            _shop.action.Enable();
-            _inventory.action.Enable();
+            if (_move != null && _move.action != null) _move.action.Enable();
+            if (_option != null && _option.action != null) _option.action.Enable();
+            if (_shop != null && _shop.action != null) _shop.action.Enable();
+            if (_inventory != null && _inventory.action != null) _inventory.action.Enable();
+            if (_skillTree != null && _skillTree.action != null) _skillTree.action.Enable();
         }
         else
         {
-            _move.action.Disable();
-
             foreach (var skill in _skills)
             {
                 if (skill != null && skill.action != null)
@@ -190,9 +200,11 @@ public class CInputDispatcher : MonoBehaviour
                 }
             }
 
-            _option.action.Disable();
-            _shop.action.Disable();
-            _inventory.action.Disable();
+            if (_move != null && _move.action != null) _move.action.Disable();
+            if (_option != null && _option.action != null) _option.action.Disable();
+            if (_shop != null && _shop.action != null) _shop.action.Disable();
+            if (_inventory != null && _inventory.action != null) _inventory.action.Disable();
+            if (_skillTree != null && _skillTree.action != null) _skillTree.action.Disable();
         }
     }
 
@@ -234,4 +246,5 @@ public class CInputDispatcher : MonoBehaviour
     private void OnOptionPerformed(InputAction.CallbackContext ctx) => OnOption?.Invoke();
     private void OnShopPerformed(InputAction.CallbackContext ctx) => OnShop?.Invoke();
     private void OnInventoryPerformed(InputAction.CallbackContext ctx) => OnInventory?.Invoke();
+    private void OnSkillTreePerformed(InputAction.CallbackContext ctx) => OnSkillTree?.Invoke();
 }

@@ -82,6 +82,7 @@ MonoBehaviour:
   Rb: {fileID: 50681549671693459}
   knockbackImmune: 0
   rotateTowardsMove: 0
+  movable: 1
 --- !u!50 &50681549671693459
 Rigidbody2D:
   serializedVersion: 4

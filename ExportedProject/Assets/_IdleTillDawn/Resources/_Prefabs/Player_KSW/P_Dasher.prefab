@@ -96,7 +96,6 @@ GameObject:
   - component: {fileID: 3722675710176299580}
   - component: {fileID: 8864357608546106431}
   - component: {fileID: -5797947150661911741}
-  - component: {fileID: 7351052588678962930}
   - component: {fileID: 7185440666562565157}
   - component: {fileID: 2160385164997705626}
   - component: {fileID: -4221088072868245136}
@@ -225,18 +224,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &7351052588678962930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3993902716402548796}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd97b33606d72814ca6cd162175084ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7185440666562565157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -272,7 +259,12 @@ MonoBehaviour:
   _paramSpeed: aSpeed
   _defaultAttackRange: 0.05
   _useTestWeaponOverride: 0
-  _testWeaponData: {fileID: 0}
+  _testWeaponData:
+    _instanceID: 
+    _itemData: {fileID: 0}
+    _rank: 0
+    _isEquipped: 0
+    _upgrade: 0
   _weaponVisualObj: {fileID: 251442076396267112}
   _preventTime: 1.5
   _blinkInterval: 0.1

@@ -56,6 +56,8 @@ MonoBehaviour:
   kb: {fileID: 114323477868669540}
   move: {fileID: 114933314071086218}
   trail: {fileID: 3673968081677559803}
+  effect: {fileID: 0}
+  damagable: 1
   bounce: 0
   piercing: 0
   _fogImpactOuterRadius: 4
@@ -80,6 +82,7 @@ MonoBehaviour:
   Rb: {fileID: 50681549671693459}
   knockbackImmune: 0
   rotateTowardsMove: 0
+  movable: 1
 --- !u!50 &50681549671693459
 Rigidbody2D:
   serializedVersion: 4
@@ -183,6 +186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 2
+  explosable: 0
+  explosionPrefab: {fileID: 0}
   willDestroy: 0
 --- !u!114 &114863579359868585
 MonoBehaviour:

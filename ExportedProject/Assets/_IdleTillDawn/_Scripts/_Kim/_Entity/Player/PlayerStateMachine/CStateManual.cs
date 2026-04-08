@@ -24,6 +24,8 @@ public class CStateManual : IPlayerState
 
     public void Update()
     {
+        if (_player.InputHandler == null) return;
+
         if (_player.InputHandler.IsManualMove)
         {
             _idleTimer = 0f;
@@ -41,6 +43,8 @@ public class CStateManual : IPlayerState
 
     public void FixedUpdate()
     {
+        if (_player.InputHandler == null) return;
+
         _player.Rb.velocity = _player.InputHandler.MoveInput * _player.MoveSpeed;
     }
 }

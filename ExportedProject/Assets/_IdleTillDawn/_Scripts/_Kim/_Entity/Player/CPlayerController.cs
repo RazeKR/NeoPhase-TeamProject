@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(CPlayerInputHandler))]
 public class CPlayerController : CEntityBase, IHealable
 {
     #region 인스펙터
@@ -66,7 +65,7 @@ public class CPlayerController : CEntityBase, IHealable
     public float EvadeRadius => _evadeRadius;
     public LayerMask HazardLayer => _hazardLayer;
     public float AutoModeDelay => _autoModeDelay;
-    public CPlayerInputHandler InputHandler => _inputHandler;
+    public CPlayerInputHandler InputHandler => CPlayerInputHandler.Instance;
 
     public RuntimeAnimatorController CurrentAnimator => _animator != null ? _animator.runtimeAnimatorController : null;
     public bool IsWeaponDisabled
@@ -91,6 +90,7 @@ public class CPlayerController : CEntityBase, IHealable
     public CStateAutoEvade StateAutoEvade { get; private set; }
 
     public float BulletScaleBonus { get{ return _bulletScaleBonus; } set { _bulletScaleBonus = value; } } // for Passive Skill
+
     #endregion
 
     #region Event
@@ -161,11 +161,6 @@ public class CPlayerController : CEntityBase, IHealable
     protected override void Awake()
     {
         base.Awake();
-        
-        if (_inputHandler == null)
-        {
-            _inputHandler = GetComponent<CPlayerInputHandler>();
-        }
 
         if (_animator == null)
         {
@@ -204,7 +199,7 @@ public class CPlayerController : CEntityBase, IHealable
         IsWeaponDisabled = false;
         IsAutoEvadeDisabled = false;
 
-        if (_inputHandler != null)
+        if (InputHandler != null)
         {
             _inputHandler.OnSkillInput += ExecuteManualSkill;
         }
@@ -218,7 +213,7 @@ public class CPlayerController : CEntityBase, IHealable
 
     protected override void OnDisable()
     {
-        if (_inputHandler != null)
+        if (CPlayerInputHandler.Instance != null)
         {
             _inputHandler.OnSkillInput -= ExecuteManualSkill;
         }

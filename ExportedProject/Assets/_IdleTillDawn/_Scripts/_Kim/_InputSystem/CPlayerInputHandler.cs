@@ -5,6 +5,8 @@ using UnityEngine;
 public class CPlayerInputHandler : MonoBehaviour
 {
     #region 내부 변수
+    public static CPlayerInputHandler Instance { get; private set; }
+
     public Vector2 MoveInput { get; private set; }
     public event Action<int> OnSkillInput;
     public bool IsManualMove => MoveInput.sqrMagnitude > 0.001f;
@@ -12,6 +14,16 @@ public class CPlayerInputHandler : MonoBehaviour
 
     private Coroutine _bindCo;
     #endregion
+
+    private void Awake()
+    {
+        if (Instance != null && Instance!= this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     private void OnEnable()
     {
@@ -36,6 +48,14 @@ public class CPlayerInputHandler : MonoBehaviour
         {
             CInputDispatcher.Instance.OnMove -= HandleMove;
             CInputDispatcher.Instance.OnSkill -= HandleSkill;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
         }
     }
 
