@@ -56,13 +56,14 @@ MonoBehaviour:
   kb: {fileID: 114323477868669540}
   move: {fileID: 114933314071086218}
   trail: {fileID: 3673968081677559803}
+  effect: {fileID: 0}
   damagable: 0
   bounce: 0
   piercing: 0
-  _fogImpactOuterRadius: 4
-  _fogImpactInnerRatio: 0.3
-  _fogImpactPeakIntensity: 1
-  _fogImpactFadeOutDuration: 0.3
+  _fogImpactOuterRadius: 0
+  _fogImpactInnerRatio: 0
+  _fogImpactPeakIntensity: 0
+  _fogImpactFadeOutDuration: 0
   dontRotateOnBounce: 0
 --- !u!114 &114933314071086218
 MonoBehaviour:

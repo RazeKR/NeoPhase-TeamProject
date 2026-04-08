@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1431279247815952587}
   - component: {fileID: 4406923031723772007}
   - component: {fileID: -2799884154056891162}
+  - component: {fileID: -6280322536442893754}
   m_Layer: 0
   m_Name: GrenadeExplosion
   m_TagString: Untagged
@@ -187,3 +188,22 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &-6280322536442893754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464358072917401599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb06c0048cb45104183dde83fda9e9a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outerRadius: 3
+  _innerRatio: 0.5
+  _intensity: 1
+  _flashOuterRadius: 4
+  _flashInnerRatio: 0.35
+  _flashPeakIntensity: 1
+  _fadeOutDuration: 1
