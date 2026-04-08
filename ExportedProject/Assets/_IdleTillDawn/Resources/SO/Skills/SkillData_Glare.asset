@@ -80,7 +80,7 @@ MonoBehaviour:
   damageInterval: 2
   useScaleMagnification: 1
   scalePreset: 0.25
-  lifeTime: 0.3
+  lifeTime: 0.1
   areaKnockbackRadius: 0
   areaKnockbackForce: 0
   areaKnockbackDuration: 0
