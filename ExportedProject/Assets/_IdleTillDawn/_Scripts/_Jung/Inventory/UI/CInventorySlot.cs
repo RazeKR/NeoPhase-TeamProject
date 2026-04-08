@@ -86,11 +86,8 @@ public class CInventorySlot : MonoBehaviour
     {
         if (CInventoryUI.Instance.IsChoiceUpgrade)
         {
-            Debug.Log("��ũ�� Ŭ�� ���� Ȯ�ε�");
-
             if (_item is CWeaponInstance weapon)
             {
-                Debug.Log("��ȭ");
 
                 CInventorySystemJ.Instance.UseScroll(weapon._instanceID);
 
@@ -100,7 +97,6 @@ public class CInventorySlot : MonoBehaviour
             }
             else
             {
-                Debug.Log("���� �� �ٸ� ������ ����");
                 CInventoryUI.Instance.IsChoiceUpgrade = false;
             }
             return;
@@ -122,8 +118,6 @@ public class CInventorySlot : MonoBehaviour
         {
             CInventoryUI.Instance.ClearMultiSelect();
         }
-
-        Debug.Log("���Կ� ����� ���� ����");
         CInventoryUI.Instance.Item = _item;
     }
 
