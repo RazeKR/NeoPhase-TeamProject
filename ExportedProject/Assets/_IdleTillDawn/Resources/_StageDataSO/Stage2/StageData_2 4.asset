@@ -15,14 +15,7 @@ MonoBehaviour:
   _id: 14
   _world: 2
   _stageNumber: 4
-  _stageName: "\uC2E0\uC804"
-  _spawnMonsterIds: 010000000200000004000000
   _killGoal: 10
-  _maxActiveCount: 100
+  _maxActiveCount: 250
   _spawnInterval: 2
   _bossId: 9
-  _bossHpMultiplier: 100
-  _bossAtkMultiplier: 10
-  _rewardItemIds: 
-  _clearExpReward: 100
-  _clearGoldReward: 200
