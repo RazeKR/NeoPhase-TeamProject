@@ -96,6 +96,10 @@ public class CUIInputHandler : MonoBehaviour
                 }
             }
         }
+        else
+        {
+            Debug.LogWarning("CUIInputHandler : CShopUI.Instance를 찾을 수 없음");
+        }
     }
 
     private void HandleSkillTreeInput()
