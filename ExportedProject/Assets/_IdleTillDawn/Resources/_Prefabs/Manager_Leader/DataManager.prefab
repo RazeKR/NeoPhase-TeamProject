@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7978546095363146872}
   - component: {fileID: 4574800294012894296}
-  - component: {fileID: 3389699983628182321}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -85,17 +84,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3fbb60a751a630742bc04146290030c9, type: 2}
   - {fileID: 11400000, guid: 8fdc7161402ecab4b9ab5f7ace677758, type: 2}
   - {fileID: 11400000, guid: 2996903fd9140fc4fb9e4abdbf11222b, type: 2}
---- !u!114 &3389699983628182321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4829643344037254125}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6fc5c15c87aefa44ea6f30ef5ecbafec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _saveFileName: save_data.dat
-  _prettyPrint: 0

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 344424968031287394}
   - component: {fileID: 6836445097533004366}
+  - component: {fileID: 2469163721615239967}
   m_Layer: 0
   m_Name: GameManager_KSH
   m_TagString: Untagged
@@ -44,37 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31508a6d74dd1c648bbf78ddc9e19709, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allStageData:
-  - {fileID: 11400000, guid: 27168f5fb1aed394dbb80acdccf10d3a, type: 2}
-  - {fileID: 11400000, guid: 0a06f7c5d21ed9c44a2190ef307760f0, type: 2}
-  - {fileID: 11400000, guid: 4366a454818439040a7e450796f89349, type: 2}
-  - {fileID: 11400000, guid: f26c0f1ea6dda614b93c9322d021a259, type: 2}
-  - {fileID: 11400000, guid: fe4fd457be5775845b841222bb732b02, type: 2}
-  - {fileID: 11400000, guid: 6929b06631c8f88418c0a6830f91ee49, type: 2}
-  - {fileID: 11400000, guid: 512df2f93c34b3c4b8e65f2729bd9626, type: 2}
-  - {fileID: 11400000, guid: 4a04aec161b702842ae15ad1f447b3ba, type: 2}
-  - {fileID: 11400000, guid: ab81daf3bcf80df468e5b9e2ebde4331, type: 2}
-  - {fileID: 11400000, guid: 77770581ce21cce4195cffcd45d8cdce, type: 2}
-  - {fileID: 11400000, guid: 0c2c8a38ad9b4334f9d545cc45e8cf3e, type: 2}
-  - {fileID: 11400000, guid: e8d9fc8191081fa4dbee0c5437d75ab5, type: 2}
-  - {fileID: 11400000, guid: 60a824ec6f166eb41a7d1fdfe3819238, type: 2}
-  - {fileID: 11400000, guid: a4ecf4513ffa4bf4d939e53b1dba22fd, type: 2}
-  - {fileID: 11400000, guid: 18fb302208985384784bfb42e08b801c, type: 2}
-  - {fileID: 11400000, guid: b1b60fcd736b7ad41ad21739d8046d14, type: 2}
-  - {fileID: 11400000, guid: fe595e5242894894faa7fd8f428da258, type: 2}
-  - {fileID: 11400000, guid: 2bf05049ff9e1db44a303b805ccfcbcd, type: 2}
-  - {fileID: 11400000, guid: a6f3d6408d745f74e972376c0e942c48, type: 2}
-  - {fileID: 11400000, guid: 9f39626cee7ab7f43b9ea4266763e7aa, type: 2}
-  - {fileID: 11400000, guid: b5f91715553eb144e8f015180e820b03, type: 2}
-  - {fileID: 11400000, guid: 9e837bde5dd209b49812f85915cf5503, type: 2}
-  - {fileID: 11400000, guid: 5b11f7055d9e1b04bb91a8f6b07e3c40, type: 2}
-  - {fileID: 11400000, guid: 2a3c514c60f817743b0061ebc977ca90, type: 2}
-  - {fileID: 11400000, guid: 189e54240bbf4284a87ec6dcb917c493, type: 2}
-  - {fileID: 11400000, guid: 189e54240bbf4284a87ec6dcb917c493, type: 2}
-  - {fileID: 11400000, guid: 189e54240bbf4284a87ec6dcb917c493, type: 2}
-  - {fileID: 11400000, guid: 189e54240bbf4284a87ec6dcb917c493, type: 2}
-  - {fileID: 11400000, guid: 189e54240bbf4284a87ec6dcb917c493, type: 2}
-  - {fileID: 11400000, guid: 189e54240bbf4284a87ec6dcb917c493, type: 2}
+  _mainMenuSceneName: MainMenu_KSH
   _worldSceneNames:
   - Stage1_KSH
   - Stage2_KSH
@@ -85,3 +56,17 @@ MonoBehaviour:
   _baseDropChance: 5
   _maxDropChance: 25
   _growthRate: 0.005
+--- !u!114 &2469163721615239967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8230997245667025029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fc5c15c87aefa44ea6f30ef5ecbafec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _saveFileName: save_data.dat
+  _prettyPrint: 0
