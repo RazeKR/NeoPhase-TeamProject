@@ -47,6 +47,7 @@ public class CSaveData
     /// → 각 아이템이 가지는 고유 정보가 다르기 때문에 구분을 위해서 별도로 데이터화
     /// </summary>
     public CInventorySaveData inventorySaveData = new();
+    public List<int> equippedPotionIds = new() { 0, 0 };    // Postion QuickSlot ID, (0 = empty)
 
     // ── 스킬 ──────────────────────────────────────────────────────────────
     public int       skillPoints          = 0;              // 보유 스킬 포인트
@@ -118,6 +119,25 @@ public class CSaveData
         {
             equippedSkillIds[i] = skillIds[i];
         }        
+    }
+
+    /// <summary>인덱스로 해당 인덱스에 저장된 id를 가져옵니다. 인덱스 범위 밖이면 0을 반환합니다./// </summary>
+    public int GetEquippedPotion(int Index)
+    {
+        if (equippedPotionIds == null || Index < 0 || Index >= equippedPotionIds.Count)
+            return 0;
+        return equippedPotionIds[Index];
+    }
+
+    /// <summary>장착 포션 리스트를 저장합니다. 길이가 다를 경우 취소합니다./// </summary>
+    public void SetEquippedPotion(List<int> potionIds)
+    {
+        if (skillIds.Count != potionIds.Count) return;
+
+        for (int i = 0; i < potionIds.Count; i++)
+        {
+            equippedPotionIds[i] = potionIds[i];
+        }
     }
 
     /// <summary>아이템 ID로 현재 보유 수량을 반환합니다. 없으면 0을 반환합니다.</summary>
