@@ -34,6 +34,11 @@ public class CPlayerController : CEntityBase, IHealable
     [Header("피격 연출 옵션")]
     [SerializeField] private float _preventTime = 1.5f;
     [SerializeField] private float _blinkInterval = 0.1f;
+
+    [Header("피격 넉백 옵션")]
+    [SerializeField] private float _damageKnockbackRadius   = 3f;
+    [SerializeField] private float _damageKnockbackForce    = 10f;
+    [SerializeField] private float _damageKnockbackDuration = 0.3f;
     #endregion
 
     #region 내부 변수
@@ -472,6 +477,14 @@ public class CPlayerController : CEntityBase, IHealable
     /// </summary>
     public override void Die()
     {
+        // 킬카운트 초기화
+        CStageManager stageManager = UnityEngine.Object.FindObjectOfType<CStageManager>();
+        if (stageManager != null)
+            stageManager.ResetKillCountOnDeath();
+
+        // 경험치 20% 패널티 적용 (UI 이벤트도 함께 발생)
+        _statManager.ApplyDeathExpPenalty();
+
         if (CJsonManager.Instance != null)
         {
             CSaveData currentData = CJsonManager.Instance.GetOrCreateSaveData();
@@ -584,6 +597,8 @@ public class CPlayerController : CEntityBase, IHealable
 
         base.TakeDamage(damage);
 
+        CAudioManager.Instance?.Play(_characterData.HitSFX, transform.position);
+
         Debug.Log($"{gameObject.name} 데미지를 입음 : 데미지 {damage}");
 
         if (CurrentHealth <= 0) return; // 사망 처리는 Die()에 위임, 코루틴 불필요
@@ -594,7 +609,25 @@ public class CPlayerController : CEntityBase, IHealable
         if (_preventCoroutine != null) StopCoroutine(_preventCoroutine);
         _preventCoroutine = StartCoroutine(CoPreventDamage());
 
+        ApplyDamageKnockback();
+
         OnDamaged?.Invoke();
+    }
+
+    /// <summary>
+    /// 피격 시 주변 적을 원형으로 넉백시킨다. 데미지는 주지 않는다.
+    /// </summary>
+    private void ApplyDamageKnockback()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, _damageKnockbackRadius, TargetLayer);
+        foreach (Collider2D col in hits)
+        {
+            if (col.TryGetComponent(out CEntityBase entity))
+            {
+                Vector2 dir = (col.transform.position - transform.position).normalized;
+                entity.ApplyKnockback(dir * _damageKnockbackForce, _damageKnockbackDuration);
+            }
+        }
     }
 
     private IEnumerator CoPreventDamage()

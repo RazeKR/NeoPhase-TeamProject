@@ -15,13 +15,13 @@ MonoBehaviour:
   _id: 3
   _enemyName: PumpkinMonster
   _description: Character Description
-  _baseHealth: 1200
-  _baseDamage: 200
+  _baseHealth: 3000
+  _baseDamage: 400
   _attackCooltime: 1.5
   _moveSpeed: 3
   _attackRange: 1
-  _healthGrowthPerStage: 50
-  _damageGrowthPerStage: 10
+  _healthGrowthPerStage: 150
+  _damageGrowthPerStage: 15
   _prefab: {fileID: 5783598445379814239, guid: 42099371a0da45043b1b7b8bbe8b3ea2, type: 3}
   _dropItemId: 1
   _dropChance: 0.1

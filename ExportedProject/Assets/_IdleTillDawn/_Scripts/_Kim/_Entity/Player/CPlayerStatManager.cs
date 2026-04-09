@@ -31,6 +31,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     public float CurrentMana { get; private set; }
     public float MaxHealth => GetFinalStat(EPlayerStatType.Health);
     public float MaxMana => GetFinalStat(EPlayerStatType.Mana);
+    public bool IsInitialized { get; private set; } = false;
     #endregion
 
     #region 이벤트
@@ -55,6 +56,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         SetModifier(CurrentLevel);
 
         CurrentMana = MaxMana;
+        IsInitialized = true;
     }
 
     /// <summary>
@@ -76,6 +78,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         SetModifier(CurrentLevel);
 
         CurrentMana = data.currentMana;
+        IsInitialized = true;
     }
 
     /// <summary>
@@ -181,6 +184,15 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
             Debug.Log($"레벨업 : 현재 레벨 {CurrentLevel}");
             Debug.Log($"현재 공격력 {GetFinalStat(EPlayerStatType.Damage)}");
         }
+    }
+
+    /// <summary>
+    /// 사망 패널티: 현재 경험치의 20%를 차감하고 UI 이벤트를 발생시킨다.
+    /// </summary>
+    public void ApplyDeathExpPenalty()
+    {
+        CurrentExp *= 0.8f;
+        OnExpChanged?.Invoke(CurrentExp, GetRequiredExp(CurrentLevel));
     }
 
     public float GetRequiredExp(int currentLevel)

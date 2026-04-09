@@ -46,7 +46,8 @@ MonoBehaviour:
     GrowthPerLevel: 0
   _prefab: {fileID: 8493900152578435068, guid: c5ccd3f7f3565cd4585e803b45766884, type: 3}
   _hitSFX:
-    _clips: []
+    _clips:
+    - {fileID: 8300000, guid: d586abe96ccbde0429d1442711366915, type: 3}
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1

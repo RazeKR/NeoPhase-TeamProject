@@ -10,6 +10,9 @@ public class CStatusOrb : MonoBehaviour
     [SerializeField] private Image imgEXP;
     [SerializeField] private float lerpSpeed = 5f;
 
+    [Header("Level Text")]
+    [SerializeField] private Text txtLevel;
+
     private Coroutine hpCo;
     private Coroutine mpCo;
     private Coroutine expCo;
@@ -24,8 +27,8 @@ public class CStatusOrb : MonoBehaviour
     {
         if (imgHP != null) orbMatHP = imgHP.material;
         if (imgMP != null) orbMatMP = imgMP.material;
-                        
-        StartCoroutine(CoFindPlayer());       
+
+        StartCoroutine(CoFindPlayer());
     }
     private IEnumerator CoFindPlayer()
     {
@@ -44,6 +47,12 @@ public class CStatusOrb : MonoBehaviour
         playerHPClass = playerObj.GetComponent<CEntityBase>();
         playerMPClass = playerObj.GetComponent<CPlayerStatManager>();   // == EXPClass
 
+        // _baseData 초기화 완료까지 대기 (InitBaseData / SyncWithSaveData 호출 시점 보장)
+        while (!playerMPClass.IsInitialized)
+        {
+            yield return null;
+        }
+
         if (playerHPClass != null)
         {
             Debug.Log("playerHPClass");
@@ -58,11 +67,17 @@ public class CStatusOrb : MonoBehaviour
             playerMPClass.OnManaChanged -= SetMana;
             playerMPClass.OnExpChanged -= SetExp;
             playerMPClass.OnLevelUp   -= ResetExpBar;
+            playerMPClass.OnLevelUp   -= SetLevel;
             playerMPClass.OnManaChanged += SetMana;
             playerMPClass.OnExpChanged += SetExp;
             playerMPClass.OnLevelUp   += ResetExpBar;
+            playerMPClass.OnLevelUp   += SetLevel;
             SetMana(playerMPClass.CurrentMana, playerMPClass.MaxMana);
-            SetExp(playerMPClass.CurrentExp, playerMPClass.GetRequiredExp(playerMPClass.CurrentLevel));
+            SetLevel(playerMPClass.CurrentLevel);
+
+            // 초기 경험치 바는 애니메이션 없이 즉시 현재 값으로 설정
+            float expRatio = Mathf.Clamp01(playerMPClass.CurrentExp / playerMPClass.GetRequiredExp(playerMPClass.CurrentLevel));
+            if (imgEXP != null) imgEXP.fillAmount = expRatio;
         }
     }
 
@@ -74,6 +89,7 @@ public class CStatusOrb : MonoBehaviour
             playerMPClass.OnManaChanged -= SetMana;
             playerMPClass.OnExpChanged -= SetExp;
             playerMPClass.OnLevelUp   -= ResetExpBar;
+            playerMPClass.OnLevelUp   -= SetLevel;
         }
     }
 
@@ -103,6 +119,12 @@ public class CStatusOrb : MonoBehaviour
 
         if (expCo != null) StopCoroutine(expCo);
         imgEXP.fillAmount = 0f;
+    }
+
+    private void SetLevel(int level)
+    {
+        if (txtLevel == null) return;
+        txtLevel.text = $"Lev. {level}";
     }
 
     private void SetExp(float currentEXP, float MaxEXP)

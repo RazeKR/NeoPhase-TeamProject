@@ -23,7 +23,7 @@ MonoBehaviour:
   _uniqueTrait: {fileID: 11400000, guid: 3fdc8ca40bfb0924ea6b217dbedfd3ff, type: 2}
   _statSettings:
   - StatType: 0
-    BaseValue: 100
+    BaseValue: 70
     GrowthPerLevel: 150
   - StatType: 1
     BaseValue: 100
@@ -49,7 +49,7 @@ MonoBehaviour:
   _prefab: {fileID: 3993902716402548796, guid: 4a3c73950f13c67498f51cb36d31a8e3, type: 3}
   _hitSFX:
     _clips:
-    - {fileID: 0}
+    - {fileID: 8300000, guid: d586abe96ccbde0429d1442711366915, type: 3}
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1

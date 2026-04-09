@@ -232,6 +232,19 @@ public class CStageManager : MonoBehaviour
         CJsonManager.Instance.GetOrCreateSaveData().currentKillCount = currentKillCount;
     }
 
+    /// <summary>플레이어 사망 시 현재 스테이지 킬카운트를 0으로 초기화하고 UI와 파일을 갱신한다.</summary>
+    public void ResetKillCountOnDeath()
+    {
+        currentKillCount = 0;
+        OnKillCountChanged?.Invoke(currentKillCount, stageData != null ? stageData.KillGoal : 0);
+        if (CJsonManager.Instance != null)
+        {
+            CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+            data.currentKillCount = 0;
+            CJsonManager.Instance.Save(data);
+        }
+    }
+
     /// <summary>다음 스테이지 시작을 위해 킬카운트를 0으로 초기화하고 파일에 저장한다.</summary>
     private void SaveKillCountReset()
     {
