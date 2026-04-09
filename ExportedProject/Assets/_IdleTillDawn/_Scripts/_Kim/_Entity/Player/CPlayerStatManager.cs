@@ -185,7 +185,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
     public float GetRequiredExp(int currentLevel)
     {
-        return 10000f + (currentLevel * 10000f);
+        return 20000f + (currentLevel * 20000f);
     }
 
     /// <summary>
