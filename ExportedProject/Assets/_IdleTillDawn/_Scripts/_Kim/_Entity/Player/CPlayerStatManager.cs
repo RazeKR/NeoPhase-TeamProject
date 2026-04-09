@@ -36,6 +36,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     #region 이벤트
     public event Action<int> OnLevelUp;
     public event Action OnStatUpgraded;
+    public event Action<float, float> OnManaChanged;
     #endregion
 
     private void Awake()
@@ -199,6 +200,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     {
         CurrentMana = Mathf.Min(MaxMana, CurrentMana + amount);
         Debug.Log($"CPlayerStatManager : 마나 회복 (현재 : {CurrentMana}/{MaxMana}");
+        OnManaChanged?.Invoke(CurrentMana, MaxMana);
     }
 
     public bool ConsumeMana(float amount)
@@ -208,6 +210,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         CurrentMana -= amount;
         Debug.Log($"CPlayerStatManager : 마나 사용 (사용량 : {amount}");
 
+        OnManaChanged?.Invoke(CurrentMana, MaxMana);
         return true;
     }
     #endregion
