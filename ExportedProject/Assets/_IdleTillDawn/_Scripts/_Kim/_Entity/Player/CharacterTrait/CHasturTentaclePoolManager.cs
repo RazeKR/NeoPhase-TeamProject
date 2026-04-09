@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CHasturTentaclePoolManager : MonoBehaviour
 {
@@ -34,11 +35,15 @@ public class CHasturTentaclePoolManager : MonoBehaviour
     private void OnEnable()
     {
         CPlayerTentacle.OnPlayerTentacleReturned += ReturnTentacleToPool;
+
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
     private void OnDisable()
     {
         CPlayerTentacle.OnPlayerTentacleReturned -= ReturnTentacleToPool;
+
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
     }
 
     public void SpawnTentacle(Vector2 position, float damage, LayerMask enemyLayer)
@@ -70,6 +75,24 @@ public class CHasturTentaclePoolManager : MonoBehaviour
         CurrentTentacleCount = Mathf.Max(0, CurrentTentacleCount - 1);
     }
 
+    private void ReturnAllTentacles()
+    {
+        _tentaclePool.Clear();
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            CPlayerTentacle tentacle = transform.GetChild(i).GetComponent<CPlayerTentacle>();
+
+            if (tentacle != null)
+            {
+                tentacle.gameObject.SetActive(false);
+                _tentaclePool.Enqueue(tentacle);
+            }
+        }
+
+        CurrentTentacleCount = 0;
+    }
+
     private CPlayerTentacle GetFromPool()
     {
         if (_tentaclePool.Count > 0)
@@ -77,5 +100,10 @@ public class CHasturTentaclePoolManager : MonoBehaviour
             return _tentaclePool.Dequeue();
         }
         return Instantiate(_tentaclePrefab, transform);
+    }
+
+    private void OnSceneUnloaded(Scene currentScene)
+    {
+        ReturnAllTentacles();
     }
 }
