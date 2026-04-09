@@ -7,6 +7,7 @@ public class CStatusOrb : MonoBehaviour
     [Header("Image (Contain Material)")]
     [SerializeField] private Image imgHP;
     [SerializeField] private Image imgMP;
+    [SerializeField] private Image imgEXP;
     [SerializeField] private float lerpSpeed = 5f;
 
     private Coroutine hpCo;
@@ -40,7 +41,7 @@ public class CStatusOrb : MonoBehaviour
         }
 
         playerHPClass = playerObj.GetComponent<CEntityBase>();
-        playerMPClass = playerObj.GetComponent<CPlayerStatManager>();
+        playerMPClass = playerObj.GetComponent<CPlayerStatManager>();   // == EXPClass
 
         if (playerHPClass != null)
         {
@@ -54,15 +55,22 @@ public class CStatusOrb : MonoBehaviour
         {
             Debug.Log("playerMPClass");
             playerMPClass.OnManaChanged -= SetMana;
+            playerMPClass.OnExpChanged -= SetExp;
             playerMPClass.OnManaChanged += SetMana;
+            playerMPClass.OnExpChanged += SetExp;
             SetMana(playerMPClass.CurrentMana, playerMPClass.MaxMana);
+            SetExp(playerMPClass.CurrentExp, playerMPClass.GetRequiredExp(playerMPClass.CurrentLevel));
         }
     }
 
     private void OnDestroy()
     {
         if (playerHPClass != null) playerHPClass.OnHealthChanged -= SetHealth;
-        if (playerMPClass != null) playerMPClass.OnManaChanged -= SetMana;
+        if (playerMPClass != null)
+        {
+            playerMPClass.OnManaChanged -= SetMana;
+            playerMPClass.OnExpChanged -= SetExp;
+        }
     }
 
     private void SetHealth(float currentHP, float MaxHP)
@@ -83,6 +91,14 @@ public class CStatusOrb : MonoBehaviour
 
         if (mpCo != null) StopCoroutine(mpCo);
         mpCo = StartCoroutine(CoLerpFill(orbMatMP, targetFill));
+    }
+
+    private void SetExp(float currentEXP, float MaxEXP)
+    {
+        if (imgEXP == null) return;
+
+        float fillValue = Mathf.Clamp01(currentEXP / MaxEXP);
+        imgEXP.fillAmount = fillValue;
     }
 
     private IEnumerator CoLerpFill(Material mat, float targetFill)

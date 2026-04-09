@@ -51,6 +51,9 @@ MonoBehaviour:
   - {fileID: -4141319017136968728, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
   - {fileID: -7437280297623887098, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
   - {fileID: -1711143505723866001, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
+  _items:
+  - {fileID: 6673307094543622297, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
+  - {fileID: 2341765486479934877, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
   _option: {fileID: -8346195201105669699, guid: c64b86f70fab656479be6b4c4ee91248,
     type: 3}
   _shop: {fileID: -4018336170871505376, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}

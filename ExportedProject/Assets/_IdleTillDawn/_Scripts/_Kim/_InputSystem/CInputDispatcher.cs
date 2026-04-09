@@ -9,6 +9,7 @@ public class CInputDispatcher : MonoBehaviour
     [Header("액션 참조")]
     [SerializeField] private InputActionReference _move;
     [SerializeField] private InputActionReference[] _skills = new InputActionReference[3];
+    [SerializeField] private InputActionReference[] _items = new InputActionReference[2];
     [SerializeField] private InputActionReference _option;
     [SerializeField] private InputActionReference _shop;
     [SerializeField] private InputActionReference _inventory;
@@ -22,6 +23,7 @@ public class CInputDispatcher : MonoBehaviour
     public static CInputDispatcher Instance { get; private set; }
     public event Action<Vector2> OnMove;
     public event Action<int> OnSkill;
+    public event Action<int> OnItemUse;
     public event Action OnOption;
     public event Action OnShop;
     public event Action OnInventory;
@@ -31,6 +33,8 @@ public class CInputDispatcher : MonoBehaviour
     private bool _isReady = false;
     // 스킬 인덱스 저장
     private Dictionary<InputAction, int> _skillIndexMap = new Dictionary<InputAction, int>();
+    // 아이템 인덱스 저장
+    private Dictionary<InputAction, int> _itemIndexMap = new Dictionary<InputAction, int>();
     #endregion
 
     private void Awake()
@@ -91,6 +95,18 @@ public class CInputDispatcher : MonoBehaviour
             }
         }
 
+        if (_items.Length > 0)
+        {
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null && _items[i].action != null)
+                {
+                    _itemIndexMap[_items[i].action] = i;
+                    _items[i].action.performed += OnItemPerformed;
+                }
+            }
+        }
+
         if (_option != null && _option.action != null)
         {
             _option.action.performed += OnOptionPerformed;
@@ -140,6 +156,18 @@ public class CInputDispatcher : MonoBehaviour
                 }
             }
             _skillIndexMap.Clear();
+        }
+
+        if (_items.Length > 0)
+        {
+            for (int i = 0; i < _items.Length; i++)
+            {
+                if (_items[i] != null && _items[i].action != null)
+                {
+                    _items[i].action.performed -= OnItemPerformed;
+                }
+            }
+            _itemIndexMap.Clear();
         }
 
         if (_option != null && _option.action != null)
@@ -239,6 +267,19 @@ public class CInputDispatcher : MonoBehaviour
             if (_logInput)
             {
                 Debug.Log($"{index + 1}번 슬롯 스킬 사용");
+            }
+        }
+    }
+
+    private void OnItemPerformed(InputAction.CallbackContext ctx)
+    {
+        if (_itemIndexMap.TryGetValue(ctx.action, out int index))
+        {
+            OnItemUse?.Invoke(index);
+
+            if (_logInput)
+            {
+                Debug.Log($"{index + 1}번 아이템 슬롯 사용");
             }
         }
     }

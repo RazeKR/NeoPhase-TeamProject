@@ -37,6 +37,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     public event Action<int> OnLevelUp;
     public event Action OnStatUpgraded;
     public event Action<float, float> OnManaChanged;
+    public event Action<float, float> OnExpChanged;
     #endregion
 
     private void Awake()
@@ -164,6 +165,8 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         {
             Debug.Log($"경험치 획득 {finalExp}, 현재 경험치 {CurrentExp}/{requiredExp}");
         }
+
+        OnExpChanged?.Invoke(CurrentExp, requiredExp);
     }
 
     public void ProcessLevelUp()

@@ -31,14 +31,19 @@ Shader "Custom/StatusOrb"
             }
 
             fixed4 frag (v2f i) : SV_Target {
+
+                float pixelScale = 32.0;
+
+                float2 steppedUV = floor(i.uv * pixelScale) / pixelScale;
+
                 // 물결 계산 (Sine 함수 사용)
-                float wave = sin(i.uv.x * 10.0 + _Time.y * _WaveSpeed) * _WaveAmp;
+                float wave = sin(steppedUV.x * 10.0 + _Time.y * _WaveSpeed) * _WaveAmp;
                 
                 // 마스크 이미지 (원형)
-                fixed4 mask = tex2D(_MainTex, i.uv);
+                fixed4 mask = tex2D(_MainTex, steppedUV);
                 
                 // 채우기 로직 (Y축 기준)
-                float fill = step(i.uv.y, _FillAmount + wave);
+                float fill = step(steppedUV.y, _FillAmount + wave);
                 
                 fixed4 col = _Color;
                 col.a = fill * mask.a; // 원형 마스크 안에서만 보이게 함

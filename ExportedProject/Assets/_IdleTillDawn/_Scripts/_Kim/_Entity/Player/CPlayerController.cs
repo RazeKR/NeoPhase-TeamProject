@@ -39,7 +39,6 @@ public class CPlayerController : CEntityBase, IHealable
     #region 내부 변수
     private CPlayerDataSO _characterData;
 
-    private CPlayerInputHandler _inputHandler;
     private float _lastAttackTime = 0f;
     private int   _hashSpeed;
 
@@ -202,6 +201,7 @@ public class CPlayerController : CEntityBase, IHealable
         if (InputHandler != null)
         {
             InputHandler.OnSkillInput += ExecuteManualSkill;
+            InputHandler.OnItemUseInput += ExecuteItemUse;
         }
 
         if (_statManager != null)
@@ -216,6 +216,7 @@ public class CPlayerController : CEntityBase, IHealable
         if (InputHandler != null)
         {
             InputHandler.OnSkillInput -= ExecuteManualSkill;
+            InputHandler.OnItemUseInput -= ExecuteItemUse;
         }
 
         if (_statManager != null)
@@ -560,6 +561,18 @@ public class CPlayerController : CEntityBase, IHealable
         else
         {
             Debug.LogWarning("CSkillSystem이 씬에 없음");
+        }
+    }
+
+    private void ExecuteItemUse(int index)
+    {
+        if (CInventorySystemJ.Instance != null)
+        {
+            CInventorySystemJ.Instance.UseBindPotion(index);
+        }
+        else
+        {
+            Debug.LogWarning("CInventorySystemJ이 씬에 없음");
         }
     }
 
