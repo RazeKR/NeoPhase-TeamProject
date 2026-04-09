@@ -588,6 +588,9 @@ public class CPlayerController : CEntityBase, IHealable
     private void HandleLevelUp(int newLevel)
     {
         RefreshStats();
+
+        int skillPointsToAdd = (newLevel == CPlayerStatManager.MaxLevel) ? 7 : 2;
+        CSkillSystem.Instance?.AddSkillPoint(skillPointsToAdd);
     }
 
     private void RefreshStats()

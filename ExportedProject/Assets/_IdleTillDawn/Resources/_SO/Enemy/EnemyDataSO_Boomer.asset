@@ -16,16 +16,16 @@ MonoBehaviour:
   _enemyName: Boomer
   _description: "\uC8FD\uC73C\uBA74 \uC8FC\uBCC0 \uBC94\uC704\uC5D0 \uD53C\uD574\uB97C
     \uC900\uB2E4."
-  _baseHealth: 1
-  _baseDamage: 10
+  _baseHealth: 10
+  _baseDamage: 30
   _attackCooltime: 1.5
   _moveSpeed: 3
   _attackRange: 1
   _healthGrowthPerStage: 10
-  _damageGrowthPerStage: 1
+  _damageGrowthPerStage: 10
   _prefab: {fileID: 1394497009925343553, guid: 6f33b9f5b1fd64442b07a142159c9b8c, type: 3}
-  _dropItemId: 0
-  _dropChance: 0.1
+  _dropItemId: 8
+  _dropChance: 0.05
   _expReward: 10
   _minGoldDrop: 50
   _maxGoldDrop: 70

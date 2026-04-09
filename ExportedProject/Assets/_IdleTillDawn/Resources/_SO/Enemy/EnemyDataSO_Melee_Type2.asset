@@ -15,16 +15,16 @@ MonoBehaviour:
   _id: 2
   _enemyName: Lamprey
   _description: Character Description
-  _baseHealth: 50
-  _baseDamage: 10
+  _baseHealth: 600
+  _baseDamage: 100
   _attackCooltime: 1.5
   _moveSpeed: 3
   _attackRange: 1
-  _healthGrowthPerStage: 10
-  _damageGrowthPerStage: 1
+  _healthGrowthPerStage: 50
+  _damageGrowthPerStage: 10
   _prefab: {fileID: 7039098912928153757, guid: ca4a145ac56391846ae81c6c47aa8af6, type: 3}
-  _dropItemId: 0
-  _dropChance: 0.1
+  _dropItemId: 1
+  _dropChance: 0.05
   _expReward: 10
   _minGoldDrop: 200
   _maxGoldDrop: 250

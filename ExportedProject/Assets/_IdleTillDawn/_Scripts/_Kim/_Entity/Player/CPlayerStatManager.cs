@@ -137,14 +137,18 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         return (baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index]) * ( 1 + _passiveModifiers[index]);
     }
 
+    public const int MaxLevel = 40;
+
     public void AddExp(float amount)
     {
+        if (CurrentLevel >= MaxLevel) return;
+
         float finalExp = amount * GetFinalStat(EPlayerStatType.ExpMultiplier);
         CurrentExp += finalExp;
 
         float requiredExp = GetRequiredExp(CurrentLevel);
 
-        while (CurrentExp >= requiredExp)
+        while (CurrentExp >= requiredExp && CurrentLevel < MaxLevel)
         {
             CurrentExp -= requiredExp;
 
@@ -152,6 +156,9 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
             requiredExp = GetRequiredExp(CurrentLevel);
         }
+
+        if (CurrentLevel >= MaxLevel)
+            CurrentExp = 0f;
 
         if (_isPrintLog)
         {
@@ -175,7 +182,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
     public float GetRequiredExp(int currentLevel)
     {
-        return 100f + (currentLevel * 100f);
+        return 10000f + (currentLevel * 10000f);
     }
 
     /// <summary>

@@ -36,18 +36,14 @@ public class CDeerRamAttack : MonoBehaviour
         {
             Vector2 hitDir = (target.transform.position - transform.position).normalized;
 
-            if (target is CBossBase)
-            {
-                target.TakeDamage(Damage, hitDir);
-                CFogFlashSource.SpawnImpact(target.transform.position, outerRadius: 4f, peakIntensity: 1f);
-                Debug.Log($"[사슴 박치기] 보스 '{target.EntityName}'에게 {Damage} 데미지!");
-            }
-            else
-            {
-                target.TakeDamage(Damage * 10000f, hitDir);
-                CFogFlashSource.SpawnImpact(target.transform.position, outerRadius: 2f, peakIntensity: 0.5f);
-                Debug.Log($"[사슴 박치기] 일반 몬스터 '{target.EntityName}' 즉사!");
-            }
+            float fixedDamage = 100f;
+            bool isBoss = target is CBossBase;
+
+            target.TakeDamage(fixedDamage, hitDir);
+            CFogFlashSource.SpawnImpact(target.transform.position,
+                outerRadius: isBoss ? 4f : 2f,
+                peakIntensity: isBoss ? 1f : 0.5f);
+            Debug.Log($"[사슴 박치기] '{target.EntityName}'에게 {fixedDamage} 고정 데미지!");
         }
     }
 }

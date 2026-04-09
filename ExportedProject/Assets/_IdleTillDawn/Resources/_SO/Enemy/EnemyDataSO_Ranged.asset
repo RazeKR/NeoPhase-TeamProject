@@ -20,11 +20,11 @@ MonoBehaviour:
   _attackCooltime: 10
   _moveSpeed: 3
   _attackRange: 12
-  _healthGrowthPerStage: 10
-  _damageGrowthPerStage: 1
+  _healthGrowthPerStage: 50
+  _damageGrowthPerStage: 10
   _prefab: {fileID: 8450485299668139288, guid: 5ef52a10bbae3a341a3e51f81f0a5433, type: 3}
-  _dropItemId: 0
-  _dropChance: 0.1
+  _dropItemId: 8
+  _dropChance: 0.05
   _expReward: 10
   _minGoldDrop: 200
   _maxGoldDrop: 250
