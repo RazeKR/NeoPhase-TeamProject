@@ -9,6 +9,7 @@ public class CPlayerInputHandler : MonoBehaviour
 
     public Vector2 MoveInput { get; private set; }
     public event Action<int> OnSkillInput;
+    public event Action<int> OnItemUseInput;
     public bool IsManualMove => MoveInput.sqrMagnitude > 0.001f;
     public bool CanControl { get; set; } = true;
 
@@ -48,6 +49,7 @@ public class CPlayerInputHandler : MonoBehaviour
         {
             CInputDispatcher.Instance.OnMove -= HandleMove;
             CInputDispatcher.Instance.OnSkill -= HandleSkill;
+            CInputDispatcher.Instance.OnItemUse -= HandleItemUse;
         }
     }
 
@@ -66,6 +68,7 @@ public class CPlayerInputHandler : MonoBehaviour
 
         CInputDispatcher.Instance.OnMove += HandleMove;
         CInputDispatcher.Instance.OnSkill += HandleSkill;
+        CInputDispatcher.Instance.OnItemUse += HandleItemUse;
 
         Debug.Log("CPlayerMoveHandler : 구독 완료");
     }
@@ -88,5 +91,13 @@ public class CPlayerInputHandler : MonoBehaviour
         if (!CanControl) return;
 
         OnSkillInput?.Invoke(index);
+    }
+
+    // 아이템 슬롯 입력이 들어올 때 실행
+    private void HandleItemUse(int index)
+    {
+        if (!CanControl) return;
+
+        OnItemUseInput?.Invoke(index);
     }
 }
