@@ -52,7 +52,8 @@ public class CPlayerDataSO : CBaseDataSO
     [SerializeField] private GameObject _prefab; // 플레이어 프리팹
 
     [Header("사운드")]
-    [SerializeField] private CSoundData _hitSFX; // 플레이어 피격 시 재생 사운드
+    [SerializeField] private CSoundData _hitSFX;       // 플레이어 피격 시 재생 사운드
+    [SerializeField] private CSoundData _footstepSFX; // 플레이어 이동 시 재생 사운드
 
     #endregion
 
@@ -66,6 +67,9 @@ public class CPlayerDataSO : CBaseDataSO
 
     /// <summary>플레이어 피격 시 재생할 사운드 데이터. null이면 무음</summary>
     public CSoundData HitSFX            => _hitSFX;
+
+    /// <summary>플레이어 이동 시 재생할 발걸음 사운드 데이터. null이면 무음</summary>
+    public CSoundData FootstepSFX       => _footstepSFX;
 
     public CCharacterTraitSO UniqueTrait => _uniqueTrait;
 

@@ -24,6 +24,8 @@ public abstract class CBossBase : CEnemyBase
 
     #region 프로퍼티
     public bool IsAttacking { get; set; } = false;
+    public bool DashDamageDealt { get; set; } = false;
+    public CEnemyDataSO BossEnemyData => EnemyData;
     #endregion
 
     #region 이벤트
@@ -121,13 +123,21 @@ public abstract class CBossBase : CEnemyBase
         StopAttack();
     }
 
+    public override void ApplyKnockback(Vector2 force, float duration)
+    {
+        // 돌진(공격) 중에는 넉백을 무시하여 플레이어 추격을 방해받지 않도록 한다
+        if (IsAttacking) return;
+
+        base.ApplyKnockback(force, duration);
+    }
+
     public override void Die()
     {
         StopAttack();
 
         OnDefeated?.Invoke();
 
-        base.Die();
+        base.Die(); // CEnemyBase.Die()에서 EnemyData.DieSFX 재생
     }
 
     protected override void HandleMovement()
@@ -168,6 +178,8 @@ public abstract class CBossBase : CEnemyBase
 
         yield return StartCoroutine(CoTelegraph());
 
+        if (EnemyData is CBossDataSO bd && bd.AttackSFX != null)
+            CAudioManager.Instance?.Play(bd.AttackSFX, transform.position);
 
         yield return StartCoroutine(CoProcessPattern());
 

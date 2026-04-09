@@ -39,6 +39,9 @@ public class CPlayerController : CEntityBase, IHealable
     [SerializeField] private float _damageKnockbackRadius   = 3f;
     [SerializeField] private float _damageKnockbackForce    = 10f;
     [SerializeField] private float _damageKnockbackDuration = 0.3f;
+
+    [Header("발걸음 소리")]
+    [SerializeField] private float _footstepInterval = 0.35f;
     #endregion
 
     #region 내부 변수
@@ -63,6 +66,8 @@ public class CPlayerController : CEntityBase, IHealable
 
     private int _meleeSpinCount;        // for Melee Weapon Special Attack Counting
 
+    private int   _footstepIndex = 0;
+    private float _footstepTimer = 0f;
     #endregion
 
     #region 프로퍼티
@@ -367,6 +372,27 @@ public class CPlayerController : CEntityBase, IHealable
         float speed = Rb.velocity.magnitude;
         _animator.SetFloat(_hashSpeed, speed);
         FlipCharacter(Rb.velocity.x);
+
+        HandleFootstep(speed);
+    }
+
+    private void HandleFootstep(float speed)
+    {
+        if (_characterData == null || _characterData.FootstepSFX == null) return;
+
+        if (speed > 0.1f)
+        {
+            _footstepTimer -= Time.fixedDeltaTime;
+            if (_footstepTimer <= 0f)
+            {
+                CAudioManager.Instance?.Play(_characterData.FootstepSFX, transform.position);
+                _footstepTimer = _footstepInterval;
+            }
+        }
+        else
+        {
+            _footstepTimer = 0f;
+        }
     }
 
     /// <summary>

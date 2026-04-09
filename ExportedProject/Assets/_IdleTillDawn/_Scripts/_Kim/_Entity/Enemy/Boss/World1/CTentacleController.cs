@@ -19,6 +19,9 @@ public class CTentacleController : CEnemyBase
     [SerializeField] private string _paramAttack = "tAttack";
     [SerializeField] private string _indicatorAnimation = "A_Tentacle_Indicator";
 
+    [Header("사운드")]
+    [SerializeField] private CSoundData _attackSFX;  // 촉수 공격 시 재생 사운드 (피격·사망음은 EnemyDataSO_Tentacle에서 설정)
+
     #endregion
 
     #region 내부 변수
@@ -157,6 +160,9 @@ public class CTentacleController : CEnemyBase
 
         _indicatorAnimator.Play(_indicatorAnimation, 0, 1f);
         _tentacleAnimator.SetTrigger(_hashAttack);
+
+        if (_attackSFX != null)
+            CAudioManager.Instance?.Play(_attackSFX, transform.position);
 
         ApplyDamage();
 

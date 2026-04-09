@@ -14,8 +14,13 @@ public class CWorldBossType3Controller : CBossBase
     [Header("공격 설정")]
     [SerializeField] private CParabolaProjectile _projectilePrefab;
     [SerializeField] private float _bombardmentCooldown = 5f;
-    [SerializeField] private int _projectileCount = 5;
-    [SerializeField] private float _bombardmentRadius = 2f;
+    [SerializeField] private int _projectileCount = 8;
+    [SerializeField] private float _bombardmentRadius = 4f;
+    [SerializeField] private float _detectionRange = 10f;
+
+    [Header("접촉 데미지")]
+    [SerializeField] private float _contactDamageRange = 1.5f;
+    [SerializeField] private float _contactDamageCooldown = 1f;
     #endregion
 
     #region 내부 변수
@@ -23,6 +28,7 @@ public class CWorldBossType3Controller : CBossBase
 
     private float _lastBombardmentTime = 0f;
     private bool _isBombarding = false;
+    private float _lastContactDamageTime = -999f;
     #endregion
 
     protected override void Start()
@@ -47,6 +53,22 @@ public class CWorldBossType3Controller : CBossBase
         else
         {
             Rb.velocity = Vector2.zero;
+        }
+    }
+
+    protected override void HandleAttack()
+    {
+        base.HandleAttack(); // CheckPlayerKilled()
+
+        if (CurrentTarget == null) return;
+        if (Time.time < _lastContactDamageTime + _contactDamageCooldown) return;
+
+        float dist = Vector2.Distance(transform.position, CurrentTarget.position);
+        if (dist <= _contactDamageRange)
+        {
+            IDamageable damageable = CurrentTarget.GetComponent<IDamageable>();
+            damageable?.TakeDamage(AttackDamage);
+            _lastContactDamageTime = Time.time;
         }
     }
 
@@ -77,8 +99,10 @@ public class CWorldBossType3Controller : CBossBase
         CNode checkBombardment = new CConditionDelegateNode(() =>
         {
             if (_isBombarding) return true;
+            if (CurrentTarget == null) return false;
 
-            return Time.time >= _lastBombardmentTime + _bombardmentCooldown && !_isBombarding;
+            float dist = Vector2.Distance(transform.position, CurrentTarget.position);
+            return dist <= _detectionRange && Time.time >= _lastBombardmentTime + _bombardmentCooldown;
         });
 
         CNode fireBombardment = new CActionDelegateNode(EvaluateBombardment);
@@ -142,10 +166,21 @@ public class CWorldBossType3Controller : CBossBase
 
         _bossSprite.localScale = originScale;
 
+        if (EnemyData is CBossDataSO bd && bd.AttackSFX != null)
+            CAudioManager.Instance?.Play(bd.AttackSFX, transform.position);
+
+        // 투사체 1개는 플레이어 좌표로 고정 발사
+        CParabolaProjectile trackedProjectile = Instantiate(_projectilePrefab, _bossSprite.position, Quaternion.identity);
+        trackedProjectile.Fire(_bossSprite.position, CurrentTarget.position, AttackDamage);
+
+        float sectorSize = 360f / _projectileCount;
         for (int i = 0; i < _projectileCount; i++)
         {
-            Vector2 randomTargetOffset = Random.insideUnitCircle * _bombardmentRadius;
-            Vector2 targetPosition = (Vector2)CurrentTarget.transform.position + randomTargetOffset;
+            float sectorStart = sectorSize * i;
+            float angle = sectorStart + Random.Range(0f, sectorSize);
+            float radius = Mathf.Sqrt(Random.Range(0f, 1f)) * _bombardmentRadius;
+            Vector2 dir = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+            Vector2 targetPosition = (Vector2)transform.position + dir * radius;
 
             CParabolaProjectile projectile = Instantiate(_projectilePrefab, _bossSprite.position, Quaternion.identity);
             projectile.Fire(_bossSprite.position, targetPosition, AttackDamage);

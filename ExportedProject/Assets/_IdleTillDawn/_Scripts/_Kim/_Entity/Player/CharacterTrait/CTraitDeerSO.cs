@@ -16,6 +16,10 @@ public class CTraitDeerSO : CCharacterTraitSO
     [SerializeField] private float _transformToHumanDuration = 0.5f;
     [SerializeField] private string _transformToHumanTrigger = "tDurationOver";
 
+    [Header("박치기 넉백 설정")]
+    [SerializeField] private float _ramKnockbackForce = 8f;
+    [SerializeField] private float _ramKnockbackDuration = 0.2f;
+
     [Header("변신 해제 설정")]
     [SerializeField] private CSoundData _castOffSFX;
     [SerializeField] private float _knockbackRadius = 3f;
@@ -72,6 +76,8 @@ public class CTraitDeerSO : CCharacterTraitSO
             CDeerRamAttack ramAttack = ramObj.gameObject.AddComponent<CDeerRamAttack>();
             ramAttack.Damage = Damage;
             ramAttack.EnemyLayer = player.TargetLayer;
+            ramAttack.KnockbackForce = _ramKnockbackForce;
+            ramAttack.KnockbackDuration = _ramKnockbackDuration;
 
             yield return new WaitForSeconds(_duration);
 

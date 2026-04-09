@@ -37,7 +37,8 @@ public class CEnemyDataSO : CBaseDataSO
     [SerializeField] private int _maxGoldDrop = 15;     // 처치 시 최대 골드 드롭량
 
     [Header("사운드")]
-    [SerializeField] private CSoundData _hitSFX;        // 피격 시 재생 사운드
+    [SerializeField] private CSoundData _hitSFX;   // 피격 시 재생 사운드
+    [SerializeField] private CSoundData _dieSFX;   // 사망 시 재생 사운드
 
     #endregion
 
@@ -59,8 +60,8 @@ public class CEnemyDataSO : CBaseDataSO
     public int       MinGoldDrop           => _minGoldDrop;
     public int       MaxGoldDrop           => _maxGoldDrop;
 
-    /// <summary>몬스터 피격 시 재생할 사운드 데이터. null이면 무음</summary>
-    public CSoundData HitSFX              => _hitSFX;
+    public CSoundData HitSFX => _hitSFX;
+    public CSoundData DieSFX => _dieSFX;
 
     #endregion
 

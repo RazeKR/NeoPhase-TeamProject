@@ -58,3 +58,16 @@ MonoBehaviour:
     _maxDistance: 20
     _allowOverlap: 1
     _cooldown: 0.05
+  _footstepSFX:
+    _clips:
+    - {fileID: 8300000, guid: 7a3380ff7760a78409c7c1c8c9be6010, type: 3}
+    - {fileID: 8300000, guid: 91ef9282c5069c8409f8c7041f00f364, type: 3}
+    - {fileID: 8300000, guid: 5aaa881c8a142cc4c9c82d9c6c1db624, type: 3}
+    _volume: 0.1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

@@ -7,6 +7,8 @@ public class CDeerRamAttack : MonoBehaviour
 	#region 프로퍼티
 	public float Damage { get; set; }
 	public LayerMask EnemyLayer { get; set; }
+	public float KnockbackForce { get; set; }
+	public float KnockbackDuration { get; set; }
     #endregion
 
     private void Awake()
@@ -40,6 +42,7 @@ public class CDeerRamAttack : MonoBehaviour
             bool isBoss = target is CBossBase;
 
             target.TakeDamage(fixedDamage, hitDir);
+            target.ApplyKnockback(hitDir * KnockbackForce, KnockbackDuration);
             CFogFlashSource.SpawnImpact(target.transform.position,
                 outerRadius: isBoss ? 4f : 2f,
                 peakIntensity: isBoss ? 1f : 0.5f);

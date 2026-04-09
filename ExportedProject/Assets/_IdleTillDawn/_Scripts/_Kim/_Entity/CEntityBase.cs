@@ -409,6 +409,7 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     /// <param name="duration">넉백 지속 시간</param>
     public virtual void ApplyKnockback(Vector2 force, float duration)
     {
+        if (!isActiveAndEnabled) return;
         if (HasStatus(EStatusEffect.Knockback)) return;
 
         _knockbackCoroutine = StartCoroutine(CoKnockbackRoutine(force, duration));

@@ -117,8 +117,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2340857923620523973}
   - {fileID: 7995438715037353370}
+  - {fileID: 2340857923620523973}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3984182542683263518
@@ -137,7 +137,7 @@ MonoBehaviour:
   _maxHealth: 0
   _currentHealth: 0
   _moveSpeed: 0
-  _scanRadius: 10
+  _scanRadius: 4
   _targetLayer:
     serializedVersion: 2
     m_Bits: 0
@@ -151,14 +151,17 @@ MonoBehaviour:
   _paramSpeed: aSpeed
   _paramAttack: tAttack
   _bossSprite: {fileID: 7995438715037353370}
-  _hoverSpeed: 3
+  _hoverSpeed: 5
   _hoverHeight: 0.2
   _hoveringSharpness: 10
   _projectilePrefab: {fileID: 3674075436809364576, guid: 5f561e20bc59da24685baae80a95e6ba,
     type: 3}
-  _bombardmentCooldown: 5
-  _projectileCount: 20
-  _bombardmentRadius: 2
+  _bombardmentCooldown: 0.8
+  _projectileCount: 60
+  _bombardmentRadius: 10
+  _detectionRange: 4
+  _contactDamageRange: 1.5
+  _contactDamageCooldown: 1
 --- !u!50 &566332770441042721
 Rigidbody2D:
   serializedVersion: 4

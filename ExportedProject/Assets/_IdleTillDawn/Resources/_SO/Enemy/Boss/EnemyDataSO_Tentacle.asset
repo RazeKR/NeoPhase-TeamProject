@@ -15,14 +15,38 @@ MonoBehaviour:
   _id: 5
   _enemyName: Tentacle
   _description: Character Description
-  _baseHealth: 10
-  _baseDamage: 10
+  _baseHealth: 100
+  _baseDamage: 50
   _attackCooltime: 1.5
-  _moveSpeed: 3
+  _moveSpeed: 5
   _attackRange: 3
   _healthGrowthPerStage: 10
   _damageGrowthPerStage: 1
   _prefab: {fileID: 4917472704930818003, guid: 68a0e7d8cb8e1794b8a6846a8f41b124, type: 3}
   _dropItemId: 0
-  _dropChance: 0.1
-  _expReward: 10
+  _dropChance: 0
+  _expReward: 100
+  _minGoldDrop: 50
+  _maxGoldDrop: 100
+  _hitSFX:
+    _clips:
+    - {fileID: 8300000, guid: 14e046274192e7040afbf0038d6f260c, type: 3}
+    _volume: 0.5
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
+  _dieSFX:
+    _clips:
+    - {fileID: 8300000, guid: 92b488a316430c848bc9a790ac17aad5, type: 3}
+    _volume: 0.5
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

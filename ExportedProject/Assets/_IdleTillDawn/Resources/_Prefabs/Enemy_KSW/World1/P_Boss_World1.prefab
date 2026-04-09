@@ -235,12 +235,13 @@ MonoBehaviour:
   _paramAttack: tAttack
   _dashForce: 10
   _slidingTime: 1
+  _dashHitRange: 1.5
   _dashLayer: Dash_Layer
   _tentaclePoolKey: Tentacle
   _maxTentacleCount: 15
   _spawnInterval: 1
-  _spawnRadiusMin: 1
-  _spawnRadiusMax: 2
+  _spawnRadiusMin: 0.5
+  _spawnRadiusMax: 1
 --- !u!114 &7543833152314546726
 MonoBehaviour:
   m_ObjectHideFlags: 0

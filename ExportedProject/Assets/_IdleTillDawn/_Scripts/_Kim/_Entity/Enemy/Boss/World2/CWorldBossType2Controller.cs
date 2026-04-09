@@ -49,9 +49,23 @@ public class CWorldBossType2Controller : CBossBase, ILaserCaster
 		ConstructBehaviourTree();
     }
 
+    protected override void HandleAttack()
+    {
+        base.HandleAttack(); // CheckPlayerKilled()
+
+        if (CurrentTarget == null) return;
+
+        float dist = Vector2.Distance(transform.position, CurrentTarget.position);
+        if (dist <= AttackRange && Time.time >= LastAttackTime + AttackCooltime)
+        {
+            TargetDamageable?.TakeDamage(AttackDamage);
+            LastAttackTime = Time.time;
+        }
+    }
+
     protected override void ExecuteAttack()
     {
-        
+
     }
 
     protected override void HandleMovement()
@@ -106,6 +120,9 @@ public class CWorldBossType2Controller : CBossBase, ILaserCaster
 		{
 			_laserAnimator.SetTrigger(_fireParam);
 		}
+
+		if (EnemyData is CBossDataSO bd && bd.AttackSFX != null)
+			CAudioManager.Instance?.Play(bd.AttackSFX, transform.position);
 
 		timer = 0f;
 		float actualFireDuration = duration - _readyTime - _disappearTime;

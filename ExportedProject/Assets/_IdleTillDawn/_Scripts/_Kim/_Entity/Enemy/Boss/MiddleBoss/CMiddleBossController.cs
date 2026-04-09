@@ -9,6 +9,7 @@ public class CMiddleBossController : CBossBase
     [SerializeField] private float _dashForce = 10f;
     [SerializeField] private float _prepareTime = 1.5f;
     [SerializeField] private float _slidingTime = 0.8f;
+    [SerializeField] private float _dashHitRange = 1.5f;
     [SerializeField] private string _dashLayer = "Dash_Layer";
     #endregion
 
@@ -41,6 +42,7 @@ public class CMiddleBossController : CBossBase
             _prepareTime,
             _slidingTime,
             _dashForce,
+            _dashHitRange,
             LayerMask.NameToLayer(_dashLayer),
             _originLayer
         );

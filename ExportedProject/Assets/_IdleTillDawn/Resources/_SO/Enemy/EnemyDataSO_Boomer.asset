@@ -30,8 +30,20 @@ MonoBehaviour:
   _minGoldDrop: 50
   _maxGoldDrop: 70
   _hitSFX:
-    _clips: []
-    _volume: 1
+    _clips:
+    - {fileID: 8300000, guid: 14e046274192e7040afbf0038d6f260c, type: 3}
+    _volume: 0.5
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
+  _dieSFX:
+    _clips:
+    - {fileID: 8300000, guid: 5210e1f0d5b5daa4cb95c0b3745cde48, type: 3}
+    _volume: 0.4
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1
     _spatialBlend: 1

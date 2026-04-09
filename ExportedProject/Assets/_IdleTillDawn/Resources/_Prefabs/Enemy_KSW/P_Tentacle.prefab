@@ -317,13 +317,24 @@ MonoBehaviour:
   _hitFlashMaterial: {fileID: 2100000, guid: 99f40263e839e68459c4e85288f49349, type: 2}
   _enemyData: {fileID: 11400000, guid: a8d9f9c9885d9dc4eb2ea321d320c4d5, type: 2}
   _orbitDistance: 1
-  _chargeTime: 1
+  _chargeTime: 0.6
   _indicatorObj: {fileID: 3123114327578885522}
   _indicatorCollider: {fileID: 1181375899511160250}
   _tentacleAnimator: {fileID: 1590968207241467401}
   _indicatorAnimator: {fileID: 1268945947166024977}
   _paramAttack: tAttack
   _indicatorAnimation: A_Tentacle_Indicator
+  _attackSFX:
+    _clips:
+    - {fileID: 8300000, guid: 7f484ca2654f74d489dd259fcc27e07e, type: 3}
+    _volume: 0.5
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
 --- !u!61 &1334217442741157645
 BoxCollider2D:
   m_ObjectHideFlags: 0

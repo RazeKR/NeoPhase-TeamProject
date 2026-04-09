@@ -16,16 +16,20 @@ public class CDashActionNode : CNode
     private float _prepareTime;
     private float _slidingTime;
     private float _dashForce;
+    private float _dashHitRange;
     private int _dashLayer;
     private int _originLayer;
 
-    public CDashActionNode(CBossBase boss, Animator animator, float prepareTime, float slidingTime, float dashForce, int dashLayer, int originLayer)
+    private Vector2 _dashDirection;
+
+    public CDashActionNode(CBossBase boss, Animator animator, float prepareTime, float slidingTime, float dashForce, float dashHitRange, int dashLayer, int originLayer)
     {
         _boss = boss;
         _animator = animator;
         _prepareTime = prepareTime;
         _slidingTime = slidingTime;
         _dashForce = dashForce;
+        _dashHitRange = dashHitRange;
         _dashLayer = dashLayer;
         _originLayer = originLayer;
     }
@@ -38,6 +42,7 @@ public class CDashActionNode : CNode
             {
                 _animator.SetTrigger("tAttack");
                 _boss.IsAttacking = true;
+                _boss.DashDamageDealt = false;
             }
 
             _boss.Rb.velocity = Vector2.zero;
@@ -50,14 +55,32 @@ public class CDashActionNode : CNode
 
                 SetLayerRecursively(_boss.gameObject, _dashLayer);
 
-                Vector2 dashDir = (_boss.CurrentTarget.position - _boss.transform.position).normalized;
-                _boss.Rb.AddForce(dashDir * _dashForce, ForceMode2D.Impulse);
+                if (_boss.BossEnemyData is CBossDataSO bd && bd.AttackSFX != null)
+                    CAudioManager.Instance?.Play(bd.AttackSFX, _boss.transform.position);
+
+                _dashDirection = (_boss.CurrentTarget.position - _boss.transform.position).normalized;
+                _boss.Rb.velocity = _dashDirection * _dashForce;
             }
             State = ENodeState.Running;
             return State;
         }
         else if (_currentState == DashState.Dashing)
         {
+            // 투사체 충돌 등으로 velocity가 변경되지 않도록 매 프레임 대시 방향으로 고정
+            _boss.Rb.velocity = _dashDirection * _dashForce;
+
+            // 거리 기반 피격 판정 (이 게임은 물리 충돌 콜백 대신 거리 체크 방식 사용)
+            if (!_boss.DashDamageDealt && _boss.CurrentTarget != null)
+            {
+                float dist = Vector2.Distance(_boss.transform.position, _boss.CurrentTarget.position);
+                if (dist <= _dashHitRange)
+                {
+                    IDamageable damageable = _boss.CurrentTarget.GetComponent<IDamageable>();
+                    damageable?.TakeDamage(_boss.AttackDamage);
+                    _boss.DashDamageDealt = true;
+                }
+            }
+
             _timer += Time.fixedDeltaTime;
 
             if (_timer >= _slidingTime)

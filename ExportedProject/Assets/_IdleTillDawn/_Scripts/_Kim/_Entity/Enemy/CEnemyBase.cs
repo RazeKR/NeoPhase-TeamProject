@@ -51,6 +51,9 @@ public abstract class CEnemyBase : CEntityBase
     {
         base.TakeDamage(damage, hitDir);
 
+        if (_enemyData != null && _enemyData.HitSFX != null)
+            CAudioManager.Instance?.Play(_enemyData.HitSFX, transform.position);
+
         // 콜라이더 평균 반경 계산 (원형·박스 모두 대응)
         float radius = _selfCollider != null
             ? (_selfCollider.bounds.extents.x + _selfCollider.bounds.extents.y) * 0.5f
@@ -154,6 +157,9 @@ public abstract class CEnemyBase : CEntityBase
     {
         if (_isDead) return; // 중복 호출 방지
         _isDead = true;
+
+        if (_enemyData?.DieSFX != null)
+            CAudioManager.Instance?.Play(_enemyData.DieSFX, transform.position);
 
         if (CJsonManager.Instance != null)
             CJsonManager.Instance.AddTotalKillCount(1);
