@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 11
   _enemyName: BossLaser
   _description: Description
-  _baseHealth: 20000
+  _baseHealth: 200000
   _baseDamage: 70
   _attackCooltime: 1.5
   _moveSpeed: 3

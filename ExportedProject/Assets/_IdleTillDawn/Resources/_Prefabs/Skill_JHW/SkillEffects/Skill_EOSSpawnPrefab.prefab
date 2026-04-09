@@ -54,7 +54,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  instantDeath: 1
+  instantDeath: 0
 --- !u!50 &6604102292059942530
 Rigidbody2D:
   serializedVersion: 4

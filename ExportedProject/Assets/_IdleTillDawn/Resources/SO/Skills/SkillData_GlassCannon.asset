@@ -31,70 +31,70 @@ MonoBehaviour:
     projectileAmount: 0
   - damage: 0
     coolDown: 23
-    requiredMana: 16
+    requiredMana: 17
     projectileAmount: 0
   - damage: 0
     coolDown: 22
-    requiredMana: 16
+    requiredMana: 18
     projectileAmount: 0
   - damage: 0
     coolDown: 21
-    requiredMana: 16
+    requiredMana: 19
     projectileAmount: 0
   - damage: 0
     coolDown: 20
-    requiredMana: 16
+    requiredMana: 20
     projectileAmount: 0
   - damage: 0
     coolDown: 19
-    requiredMana: 16
+    requiredMana: 21
     projectileAmount: 0
   - damage: 0
     coolDown: 18
-    requiredMana: 16
+    requiredMana: 22
     projectileAmount: 0
   - damage: 0
     coolDown: 17
-    requiredMana: 16
+    requiredMana: 23
     projectileAmount: 0
   - damage: 0
     coolDown: 16
-    requiredMana: 16
+    requiredMana: 24
     projectileAmount: 0
   - damage: 0
     coolDown: 15
-    requiredMana: 16
+    requiredMana: 25
     projectileAmount: 0
   BuffLevelsDatas:
-  - statType: 2
-    buffAmount: 6
-    duration: 10
-  - statType: 2
-    buffAmount: 7
-    duration: 10
-  - statType: 2
-    buffAmount: 8
-    duration: 10
-  - statType: 2
-    buffAmount: 9
-    duration: 10
   - statType: 2
     buffAmount: 10
     duration: 10
   - statType: 2
-    buffAmount: 11
+    buffAmount: 20
     duration: 10
   - statType: 2
-    buffAmount: 12
+    buffAmount: 30
     duration: 10
   - statType: 2
-    buffAmount: 13
+    buffAmount: 40
     duration: 10
   - statType: 2
-    buffAmount: 14
+    buffAmount: 50
     duration: 10
   - statType: 2
-    buffAmount: 15
+    buffAmount: 60
+    duration: 10
+  - statType: 2
+    buffAmount: 70
+    duration: 10
+  - statType: 2
+    buffAmount: 80
+    duration: 10
+  - statType: 2
+    buffAmount: 90
+    duration: 10
+  - statType: 2
+    buffAmount: 100
     duration: 10
   spreadAngle: 0
   speed: 0

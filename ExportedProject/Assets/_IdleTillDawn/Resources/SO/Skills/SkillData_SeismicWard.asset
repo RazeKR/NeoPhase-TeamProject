@@ -19,30 +19,30 @@ MonoBehaviour:
   skillType: 1
   icon: {fileID: 21300000, guid: 5d78ef062a461c2438c55eb86207374a, type: 2}
   maxLevel: 5
-  requiredPoints: 2
+  requiredPoints: 1
   prerequisiteSkills:
   - skill: {fileID: 11400000, guid: 6f45362229aa9d448bbf0281cef9c5e6, type: 2}
     level: 10
   PassiveLevelDatas: []
   ActiveLevelDatas:
-  - damage: 20
+  - damage: 200
     coolDown: 18
     requiredMana: 20
     projectileAmount: 0
-  - damage: 20
+  - damage: 400
     coolDown: 17
     requiredMana: 22
     projectileAmount: 0
-  - damage: 25
+  - damage: 600
     coolDown: 16
     requiredMana: 24
     projectileAmount: 0
-  - damage: 25
+  - damage: 800
     coolDown: 15
     requiredMana: 26
     projectileAmount: 0
-  - damage: 30
-    coolDown: 14
+  - damage: 1000
+    coolDown: 10
     requiredMana: 28
     projectileAmount: 0
   BuffLevelsDatas: []

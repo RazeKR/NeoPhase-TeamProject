@@ -19,8 +19,8 @@ MonoBehaviour:
     \uC989\uC0AC\uC2DC\uD0B5\uB2C8\uB2E4."
   skillType: 0
   icon: {fileID: 21300000, guid: 1eceee58dea10b942829b3a7dbb82fe7, type: 2}
-  maxLevel: 1
-  requiredPoints: 5
+  maxLevel: 5
+  requiredPoints: 1
   prerequisiteSkills:
   - skill: {fileID: 11400000, guid: 88f1c8eb8ebdcaf43bf72ef8bdfec4fb, type: 2}
     level: 10
@@ -34,7 +34,23 @@ MonoBehaviour:
     level: 5
   PassiveLevelDatas: []
   ActiveLevelDatas:
-  - damage: 0
+  - damage: 200
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 250
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 300
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 350
+    coolDown: 0
+    requiredMana: 0
+    projectileAmount: 0
+  - damage: 400
     coolDown: 0
     requiredMana: 0
     projectileAmount: 0

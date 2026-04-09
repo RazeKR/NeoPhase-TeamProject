@@ -26,44 +26,44 @@ MonoBehaviour:
     level: 10
   PassiveLevelDatas: []
   ActiveLevelDatas:
-  - damage: 10
+  - damage: 40
     coolDown: 15
     requiredMana: 15
     projectileAmount: 1
-  - damage: 12
+  - damage: 45
     coolDown: 15
     requiredMana: 16
     projectileAmount: 1
-  - damage: 14
+  - damage: 50
     coolDown: 15
     requiredMana: 17
     projectileAmount: 1
-  - damage: 16
+  - damage: 55
     coolDown: 15
     requiredMana: 18
     projectileAmount: 1
-  - damage: 18
+  - damage: 60
     coolDown: 15
     requiredMana: 19
     projectileAmount: 1
-  - damage: 20
+  - damage: 65
     coolDown: 15
     requiredMana: 20
     projectileAmount: 1
-  - damage: 22
+  - damage: 70
     coolDown: 15
     requiredMana: 21
     projectileAmount: 1
-  - damage: 24
+  - damage: 75
     coolDown: 15
     requiredMana: 22
     projectileAmount: 1
-  - damage: 26
+  - damage: 80
     coolDown: 15
     requiredMana: 23
     projectileAmount: 1
-  - damage: 28
-    coolDown: 15
+  - damage: 85
+    coolDown: 10
     requiredMana: 24
     projectileAmount: 1
   BuffLevelsDatas: []

@@ -23,50 +23,50 @@ MonoBehaviour:
   prerequisiteSkills: []
   PassiveLevelDatas: []
   ActiveLevelDatas:
-  - damage: 10
+  - damage: 50
     coolDown: 12
     requiredMana: 10
     projectileAmount: 1
-  - damage: 12
-    coolDown: 12
-    requiredMana: 10
-    projectileAmount: 1
-  - damage: 14
-    coolDown: 12
-    requiredMana: 11
-    projectileAmount: 1
-  - damage: 16
-    coolDown: 12
-    requiredMana: 11
-    projectileAmount: 1
-  - damage: 18
+  - damage: 60
     coolDown: 12
     requiredMana: 12
     projectileAmount: 1
-  - damage: 20
-    coolDown: 12
-    requiredMana: 12
-    projectileAmount: 1
-  - damage: 22
-    coolDown: 12
-    requiredMana: 13
-    projectileAmount: 1
-  - damage: 23
-    coolDown: 12
-    requiredMana: 13
-    projectileAmount: 1
-  - damage: 24
+  - damage: 70
     coolDown: 12
     requiredMana: 14
     projectileAmount: 1
-  - damage: 25
+  - damage: 80
     coolDown: 12
-    requiredMana: 15
+    requiredMana: 16
     projectileAmount: 1
+  - damage: 90
+    coolDown: 12
+    requiredMana: 18
+    projectileAmount: 1
+  - damage: 100
+    coolDown: 12
+    requiredMana: 20
+    projectileAmount: 1
+  - damage: 110
+    coolDown: 12
+    requiredMana: 22
+    projectileAmount: 1
+  - damage: 120
+    coolDown: 12
+    requiredMana: 24
+    projectileAmount: 1
+  - damage: 130
+    coolDown: 12
+    requiredMana: 26
+    projectileAmount: 1
+  - damage: 150
+    coolDown: 10
+    requiredMana: 28
+    projectileAmount: 6
   BuffLevelsDatas: []
   spreadAngle: 0
-  speed: 7
-  circularSpread: 0
+  speed: 10
+  circularSpread: 1
   damageInterval: 1
   useScaleMagnification: 1
   scalePreset: 0.5

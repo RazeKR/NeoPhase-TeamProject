@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 12
   _enemyName: BossBombard
   _description: Description
-  _baseHealth: 30000
+  _baseHealth: 300000
   _baseDamage: 90
   _attackCooltime: 1.5
   _moveSpeed: 3

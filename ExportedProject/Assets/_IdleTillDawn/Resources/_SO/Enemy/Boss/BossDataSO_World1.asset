@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 10
   _enemyName: BossHastur
   _description: Character Description
-  _baseHealth: 10000
+  _baseHealth: 100000
   _baseDamage: 50
   _attackCooltime: 1.5
   _moveSpeed: 3

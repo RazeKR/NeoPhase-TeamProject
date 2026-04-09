@@ -19,7 +19,7 @@ MonoBehaviour:
   skillType: 0
   icon: {fileID: 21300000, guid: 80f75358e92b9a34a86bf1247bbc3368, type: 2}
   maxLevel: 5
-  requiredPoints: 2
+  requiredPoints: 1
   prerequisiteSkills:
   - skill: {fileID: 11400000, guid: 76b4cce7ff8fd42438bae371fc49644b, type: 2}
     level: 10
@@ -47,19 +47,19 @@ MonoBehaviour:
     projectileAmount: 0
   BuffLevelsDatas:
   - statType: 2
-    buffAmount: 10
-    duration: 15
-  - statType: 2
     buffAmount: 15
     duration: 15
   - statType: 2
-    buffAmount: 18
+    buffAmount: 30
     duration: 15
   - statType: 2
-    buffAmount: 22
+    buffAmount: 45
     duration: 15
   - statType: 2
-    buffAmount: 25
+    buffAmount: 60
+    duration: 15
+  - statType: 2
+    buffAmount: 75
     duration: 15
   spreadAngle: 0
   speed: 0

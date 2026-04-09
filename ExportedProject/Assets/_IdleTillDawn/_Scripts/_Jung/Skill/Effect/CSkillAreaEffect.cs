@@ -67,22 +67,7 @@ public class CSkillAreaEffect : MonoBehaviour, ISkill
             if (target is MonoBehaviour mb)
                 hitDir = ((Vector2)(mb.transform.position - transform.position)).normalized;
 
-            if (instantDeath)
-            {
-                // CBossBase를 가진 유닛 제외
-                bool isBoss = false;
-                if (target is MonoBehaviour enemyMb)
-                {
-                    isBoss = enemyMb.GetComponent<CBossBase>() != null;
-                }
-                
-                if (!isBoss) target.Die();
-
-                else target.TakeDamage(_damage, hitDir);
-            }
-                
-            else
-                target.TakeDamage(_damage, hitDir);
+            target.TakeDamage(_damage, hitDir);
 
             if (_data.useSkillEffect)
             {

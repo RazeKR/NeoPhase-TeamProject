@@ -29,39 +29,39 @@ MonoBehaviour:
     projectileAmount: 6
   - damage: 60
     coolDown: 10
-    requiredMana: 10
+    requiredMana: 15
     projectileAmount: 1
   - damage: 70
     coolDown: 8
-    requiredMana: 10
+    requiredMana: 20
     projectileAmount: 1
   - damage: 80
     coolDown: 9
-    requiredMana: 10
+    requiredMana: 25
     projectileAmount: 1
   - damage: 90
     coolDown: 8
-    requiredMana: 10
+    requiredMana: 30
     projectileAmount: 1
   - damage: 100
     coolDown: 8
-    requiredMana: 10
+    requiredMana: 35
     projectileAmount: 1
   - damage: 110
     coolDown: 8
-    requiredMana: 10
+    requiredMana: 40
     projectileAmount: 1
   - damage: 120
     coolDown: 7
-    requiredMana: 10
+    requiredMana: 45
     projectileAmount: 1
   - damage: 130
     coolDown: 7
-    requiredMana: 10
+    requiredMana: 50
     projectileAmount: 1
-  - damage: 200
+  - damage: 150
     coolDown: 7
-    requiredMana: 10
+    requiredMana: 55
     projectileAmount: 1
   BuffLevelsDatas: []
   spreadAngle: 0
