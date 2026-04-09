@@ -212,6 +212,14 @@ public class CInputDispatcher : MonoBehaviour
                 }
             }
 
+            foreach (var item in _items)
+            {
+                if (item != null && item.action != null)
+                {
+                    item.action.Enable();
+                }
+            }
+
             if (_move != null && _move.action != null) _move.action.Enable();
             if (_option != null && _option.action != null) _option.action.Enable();
             if (_shop != null && _shop.action != null) _shop.action.Enable();
@@ -225,6 +233,14 @@ public class CInputDispatcher : MonoBehaviour
                 if (skill != null && skill.action != null)
                 {
                     skill.action.Disable();
+                }
+            }
+
+            foreach (var item in _items)
+            {
+                if (item != null && item.action != null)
+                {
+                    item.action.Disable();
                 }
             }
 
