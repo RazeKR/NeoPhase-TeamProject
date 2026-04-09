@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /// �κ��丮 �Ŵ����� ������ �޾ƿͼ� UI�� �ݿ��մϴ�.
 /// </summary>
 
-public class CInventorySlot : MonoBehaviour
+public class CInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     #region Inspectors & PrivateVariables
 
@@ -19,15 +19,11 @@ public class CInventorySlot : MonoBehaviour
     [SerializeField] private Image _selectedHighlight = null;       // 다중선택 하이라이트 이미지
 
     private CItemInstance _item;
-
+    private GameObject _dragIcon;
     #endregion
 
     #region PublicMethods
 
-    /// <summary>
-    /// ������ �ν��Ͻ��� �޾ƿ� ������ ������ �����մϴ�.
-    /// �̹���, ��������, ���, ���� ������ ǥ�õ˴ϴ�.
-    /// </summary>
     public void SetSlot(CItemInstance item)
     {
         _itemIcon.sprite = item._itemData.ItemSprite;
@@ -50,7 +46,6 @@ public class CInventorySlot : MonoBehaviour
             }
         }
 
-        // ���� ���� ǥ��
         else if (item is CPotionInstance potion)
         {
             _itemRank.sprite = _itemRanksSprite[0];
@@ -121,5 +116,28 @@ public class CInventorySlot : MonoBehaviour
         CInventoryUI.Instance.Item = _item;
     }
 
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        if (_item._itemData.ItemType != EItemType.Potion) return;
+
+        _dragIcon = CInventorySystemJ.Instance.DragIconVisual;
+        _dragIcon.SetActive(true);
+        _dragIcon.GetComponent<Image>().sprite = _item._itemData.ItemSprite;
+        _dragIcon.GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+        CInventorySystemJ.Instance.CurrenlyDraggingPotion = _item._itemData as CPotionDataSO;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (_dragIcon != null) _dragIcon.transform.position = Input.mousePosition;
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        if (_dragIcon != null) _dragIcon.SetActive(false);
+        CInventorySystemJ.Instance.CurrenlyDraggingPotion = null;
+    }
+        
     #endregion
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 /// <summary>
 /// ID ��� �κ��丮 �ý����Դϴ�.
@@ -41,6 +42,7 @@ public class CInventorySystemJ : MonoBehaviour
     private int _equippedWeaponId = 0;       // ���� ���� ���� ID (0 = ����)
     private CWeaponInstance _equippedWeapon; // ���� ��� ���� ���� ����
     public List<CItemInstance> _inventory = new List<CItemInstance>(); // ���� ������ ���� �κ��丮 ����
+    public List<int> _equippedPotionIds = new List<int> { 0, 0 };
 
     private const int BaseCapacity      = 25;  // 기본 인벤토리 칸 수
     private const int ExpandStep        = 25;  // 1회 확장 칸 수
@@ -49,6 +51,9 @@ public class CInventorySystemJ : MonoBehaviour
     #endregion
 
     #region Properties
+
+    public GameObject DragIconVisual;
+    public CPotionDataSO CurrenlyDraggingPotion;
 
     /// <summary>�̱��� �ν��Ͻ�.</summary>
     public static CInventorySystemJ Instance { get; private set; }
@@ -112,6 +117,69 @@ public class CInventorySystemJ : MonoBehaviour
     #endregion
 
     #region PublicMethods
+
+    public void UseBindPotion(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= _equippedPotionIds.Count) return;
+        int potionId = _equippedPotionIds[slotIndex];
+        if (potionId == 0) return;
+
+        var exist = _inventory.Find(i => i._itemData.Id == potionId) as CPotionInstance;
+        if (exist == null ||  exist._amount <= 0) return;
+
+        CItemDataSO data = exist._itemData;
+        CPotionDataSO potionData = data as CPotionDataSO;
+        if (potionData == null) return;
+
+        if (potionData.HealAmount == 0 && potionData.ManaHealAmount == 0) return;
+
+        CPlayerController player = FindObjectOfType<CPlayerController>();
+        if (player != null)
+        {
+            if (potionData.HealAmount > 0)
+                player.Heal(potionData.HealAmount);
+
+            if (potionData.ManaHealAmount > 0)
+            {
+                CPlayerStatManager statManager = player.GetComponent<CPlayerStatManager>();
+                if (statManager != null)
+                    statManager.RestoreMana(potionData.ManaHealAmount);
+            }
+        }
+
+        Debug.Log("사용 완료");
+
+        RemoveItem(exist._instanceID, 1);
+
+        OnInventoryChanged?.Invoke();
+        return;
+    }
+
+    public bool EquipPotion(CPotionDataSO data, int slotIndex)
+    {
+        if (data.ItemType != EItemType.Potion) return false;
+
+        while (_equippedPotionIds.Count <= slotIndex)
+        {
+            _equippedPotionIds.Add(0);
+        }
+
+        for (int i = 0; i < _equippedPotionIds.Count; i++)
+        {
+            if (_equippedPotionIds[i] == data.Id)
+            {
+                _equippedPotionIds[i] = 0;
+            }
+        }
+
+        _equippedPotionIds[slotIndex] = data.Id;
+
+        CJsonManager.Instance.SaveEquippedPotion(_equippedPotionIds);
+
+        OnInventoryChanged?.Invoke();
+        return true;
+
+    }
 
     /// <summary>��ư �Ҵ��Ͽ� �׽�Ʈ �ϴ� �뵵</summary>
     public void AddPotionScroll()
@@ -297,6 +365,7 @@ public class CInventorySystemJ : MonoBehaviour
             data.inventorySaveData.items.Add(sData);
         }
 
+        data.equippedPotionIds   = _equippedPotionIds;
         data.equippedWeaponId    = _equippedWeaponId;
         data.inventoryCapacity   = _maxCapacity;
         CJsonManager.Instance.Save(data);
@@ -354,6 +423,7 @@ public class CInventorySystemJ : MonoBehaviour
             }
         }
 
+        _equippedPotionIds = saveData.equippedPotionIds;
         _equippedWeaponId = saveData.equippedWeaponId;
         if (_equippedWeaponId != 0)
             _equippedWeapon = _inventory.Find(i => i is CWeaponInstance w && w._isEquipped) as CWeaponInstance;

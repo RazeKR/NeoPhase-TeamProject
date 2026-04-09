@@ -217,6 +217,14 @@ public class CJsonManager : MonoBehaviour
         Save(CurrentSaveData);
     }
 
+    /// <summary>포션 장착을 업데이트하고 즉시 저장합니다.</summary>
+    public void SaveEquippedPotion(List<int> itemIds)
+    {
+        EnsureSaveDataLoaded();
+        CurrentSaveData.SetEquippedPotion(itemIds);
+        Save(CurrentSaveData);
+    }
+
     /// <summary>스킬 장착을 업데이트하고 즉시 저장합니다.</summary>
     public void SaveEquippedSkill(List<int> skillIds)
     {
