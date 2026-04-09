@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class CPlayerStatManager : MonoBehaviour, IManaUser
 {
+    #region 인스펙터
+    [Header("디버그 설정")]
+    [SerializeField] private bool _isPrintLog = false;
+    #endregion
+
     #region 내부 변수
+    private CPlayerController _player;
     private CPlayerDataSO _baseData;
     // 레벨업 모디파이어
     private float[] _levelModifiers = new float[(int)EPlayerStatType.Count];
@@ -18,7 +24,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
     #region 프로퍼티
     public int CurrentLevel { get; private set; } = 1;
-    public float CurrentExp { get; private set; } = 0f;
+    public float CurrentExp { get; set; } = 0f;
 
     public float[] BonusModifiers => _bonusModifiers;
 
@@ -31,6 +37,11 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     public event Action<int> OnLevelUp;
     public event Action OnStatUpgraded;
     #endregion
+
+    private void Awake()
+    {
+        _player = GetComponent<CPlayerController>();
+    }
 
     /// <summary>
     /// 세이프 파일이 없을 때 SO 데이터만 우선 연결해 주는 초기화 메서드
@@ -135,12 +146,29 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         while (CurrentExp >= requiredExp)
         {
             CurrentExp -= requiredExp;
-            CurrentLevel++;
 
-            SetModifier(CurrentLevel);
-            OnLevelUp?.Invoke(CurrentLevel);
+            ProcessLevelUp();
 
             requiredExp = GetRequiredExp(CurrentLevel);
+        }
+
+        if (_isPrintLog)
+        {
+            Debug.Log($"경험치 획득 {finalExp}, 현재 경험치 {CurrentExp}/{requiredExp}");
+        }
+    }
+
+    public void ProcessLevelUp()
+    {
+        CurrentLevel++;
+        SetModifier(CurrentLevel);
+
+        OnLevelUp?.Invoke(CurrentLevel);
+
+        if (_isPrintLog)
+        {
+            Debug.Log($"레벨업 : 현재 레벨 {CurrentLevel}");
+            Debug.Log($"현재 공격력 {GetFinalStat(EPlayerStatType.Damage)}");
         }
     }
 

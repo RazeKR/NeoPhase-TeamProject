@@ -245,6 +245,11 @@ public class CPlayerController : CEntityBase, IHealable
         {
             InitPlayer(null);
         }
+
+        if (CGameManager.Instance != null)
+        {
+            CGameManager.Instance.RegisterPlayer(this, _statManager);
+        }
     }
 
     private void Update()

@@ -64,6 +64,8 @@ public abstract class CEnemyBase : CEntityBase
     /// </summary>
     public int GetGoldDrop() => _enemyData != null ? _enemyData.GetRandomGoldDrop() : 0;
 
+    public int GetExpReward() => _enemyData != null ? _enemyData.ExpReward : 0;
+
     /// <summary>
     /// 스캔 없이 플레이어를 직접 타겟으로 설정 — CSpawnManager가 스폰 시 호출
     /// </summary>

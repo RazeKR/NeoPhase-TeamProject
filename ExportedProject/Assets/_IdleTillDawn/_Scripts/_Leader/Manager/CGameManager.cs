@@ -72,6 +72,9 @@ public class CGameManager : MonoBehaviour
     private bool _hasEnteredGame;     // 한 번이라도 게임(스테이지)에 진입했으면 true
     private int  _selectedPlayerId = -1; // 캐릭터 선택 화면에서 선택한 플레이어 ID (-1 = 미선택)
 
+    private CPlayerController _cachedPlayer;
+    private CPlayerStatManager _cachedStatManager;
+
     #endregion
 
     #region Properties
@@ -263,6 +266,15 @@ public class CGameManager : MonoBehaviour
             // playerStatId도 항상 최신값으로 동기화 (JSON 단독 읽기 시 대비)
             if (_selectedPlayerId >= 0)
                 saveData.playerStatId = _selectedPlayerId;
+
+            if (_cachedStatManager != null && _cachedPlayer != null)
+            {
+                saveData.playerLevel = _cachedStatManager.CurrentLevel;
+                saveData.playerExp = _cachedStatManager.CurrentExp;
+                saveData.currentHp = _cachedPlayer.CurrentHealth;
+                saveData.currentMana = _cachedStatManager.CurrentMana;
+            }
+
             CJsonManager.Instance.Save(saveData);
 
             if (CRankingManager.Instance != null)
@@ -318,6 +330,12 @@ public class CGameManager : MonoBehaviour
     {
         float failReduction = Mathf.Pow(1f - _growthRate, _currentStageIndex);
         return _maxDropChance - (_maxDropChance - _baseDropChance) * failReduction;
+    }
+
+    public void RegisterPlayer(CPlayerController player, CPlayerStatManager statManager)
+    {
+        _cachedPlayer = player;
+        _cachedStatManager = statManager;
     }
 
     #endregion

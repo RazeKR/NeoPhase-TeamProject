@@ -39,7 +39,7 @@ MonoBehaviour:
     BaseValue: 5
     GrowthPerLevel: 0
   - StatType: 7
-    BaseValue: 0
+    BaseValue: 1
     GrowthPerLevel: 0
   - StatType: 3
     BaseValue: 20

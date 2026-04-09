@@ -213,6 +213,17 @@ public class CSpawnManager : MonoBehaviour
         {
             _stageManager.RegisterKill();
             CGoldManager.Instance?.AddGold(enemy.GetGoldDrop()); // 확정 골드 드롭
+
+            if (_player != null)
+            {
+                CPlayerStatManager statManager = _player.GetComponent<CPlayerStatManager>();
+
+                if (statManager != null)
+                {
+                    //Debug.Log($"CSpawnManager 경험치 획득 : {enemy.GetExpReward()}");
+                    statManager.AddExp(enemy.GetExpReward());
+                }
+            }
         }
 
         enemy.ResetForPool();
