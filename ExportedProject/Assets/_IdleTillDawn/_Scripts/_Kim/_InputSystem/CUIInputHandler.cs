@@ -58,12 +58,44 @@ public class CUIInputHandler : MonoBehaviour
 
     private void HandleOptionInput()
     {
+        COptionUI optionUI = FindAnyObjectByType<COptionUI>();
 
+        if (optionUI != null)
+        {
+            if (optionUI.IsOptionOpen)
+            {
+                optionUI.Hide();
+            }
+            else
+            {
+                optionUI.Show();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("CUIInputHandler : 씬에 COptionUI 없음");
+        }
     }
 
     private void HandleShopInput()
     {
+        if (CShopUI.Instance != null)
+        {
+            if (CShopUI.Instance.IsOpen)
+            {
+                CShopUI.Instance.CloseShop();
+            }
+            else
+            {
+                CShopUI.Instance.OpenShop();
 
+                CGoldShopUI goldShopUI = FindAnyObjectByType<CGoldShopUI>();
+                if (goldShopUI != null)
+                {
+                    goldShopUI.OnShopOpened();
+                }
+            }
+        }
     }
 
     private void HandleSkillTreeInput()

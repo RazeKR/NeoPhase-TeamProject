@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,7 +29,21 @@ public class CShopUI : MonoBehaviour
 
     #endregion
 
+    #region Properties
+    public static CShopUI Instance { get; private set; }
+    public bool IsOpen => _isOpen;
+    #endregion
+
     #region Unity Methods
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        Instance = this;
+    }
 
     private void Start()
     {
