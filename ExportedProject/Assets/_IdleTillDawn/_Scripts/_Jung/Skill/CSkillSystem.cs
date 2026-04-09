@@ -677,10 +677,18 @@ public class CSkillSystem : MonoBehaviour
 
     private IEnumerator CoRefreshPassive()
     {
+        // 1단계: CPlayerStatManager 오브젝트가 씬에 생성될 때까지 대기
         CPlayerStatManager smg = null;
         while (smg == null)
         {
             smg = FindObjectOfType<CPlayerStatManager>();
+            yield return null;
+        }
+
+        // 2단계: CPlayerController.InitPlayer()가 완료되어 _baseData가 세팅될 때까지 대기
+        // MaxHealth가 0이면 아직 초기화 전 상태
+        while (smg.MaxHealth <= 0f)
+        {
             yield return null;
         }
 
