@@ -15,8 +15,8 @@ MonoBehaviour:
   _id: 10
   _enemyName: BossHastur
   _description: Character Description
-  _baseHealth: 10
-  _baseDamage: 10
+  _baseHealth: 10000
+  _baseDamage: 50
   _attackCooltime: 1.5
   _moveSpeed: 3
   _attackRange: 5
@@ -24,14 +24,40 @@ MonoBehaviour:
   _damageGrowthPerStage: 1
   _prefab: {fileID: 2902471189535920714, guid: df0dc33df636ece4a8255dae971a5fb2, type: 3}
   _dropItemId: 0
-  _dropChance: 0.1
-  _expReward: 10
+  _dropChance: 0
+  _expReward: 1000
+  _minGoldDrop: 4000
+  _maxGoldDrop: 5000
+  _hitSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
   _specialAttackCooldown: 5
   _specialAttackEffect: {fileID: 0}
   _telegraphDuration: 1
   _maxActivePatternCount: 3
   _phase2Threshold: 0.5
   _phase3Threshold: 0.25
-  _rewardItemIds: 
-  _bossExpReward: 500
-  _bossGoldReward: 1000
+  _rewardItems:
+  - ItemId: 1
+    Count: 10
+  - ItemId: 8
+    Count: 10
+  _bossExpReward: 2000
+  _bossGoldReward: 100000
+  _attackSFX:
+    _clips: []
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05

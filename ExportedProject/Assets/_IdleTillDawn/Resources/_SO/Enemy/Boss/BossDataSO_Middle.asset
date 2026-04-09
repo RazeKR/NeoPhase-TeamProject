@@ -16,17 +16,17 @@ MonoBehaviour:
   _enemyName: ShubNiggurath
   _description: "\uAC78\uC5B4\uB2E4\uB2C8\uB2E4\uAC00 \uC900\uBE44\uD0DC\uC138\uC774\uD6C4
     \uD50C\uB808\uC774\uC5B4\uC5D0\uAC8C \uBE60\uB978\uC18D\uB3C4\uB85C \uB3CC\uC9C4\uD55C\uB2E4."
-  _baseHealth: 10
-  _baseDamage: 10
+  _baseHealth: 1000
+  _baseDamage: 30
   _attackCooltime: 1.5
   _moveSpeed: 3
   _attackRange: 3
-  _healthGrowthPerStage: 10
-  _damageGrowthPerStage: 1
+  _healthGrowthPerStage: 1000
+  _damageGrowthPerStage: 30
   _prefab: {fileID: 4372230758617115628, guid: b4f9240c6f7375947afec7ecc2963589, type: 3}
   _dropItemId: 0
-  _dropChance: 0.1
-  _expReward: 10
+  _dropChance: 0
+  _expReward: 1000
   _minGoldDrop: 4000
   _maxGoldDrop: 5000
   _hitSFX:
@@ -45,7 +45,11 @@ MonoBehaviour:
   _maxActivePatternCount: 3
   _phase2Threshold: 0.5
   _phase3Threshold: 0.25
-  _rewardItemIds: 0100000008000000
+  _rewardItems:
+  - ItemId: 1
+    Count: 10
+  - ItemId: 8
+    Count: 10
   _bossExpReward: 500
   _bossGoldReward: 1000
   _attackSFX:

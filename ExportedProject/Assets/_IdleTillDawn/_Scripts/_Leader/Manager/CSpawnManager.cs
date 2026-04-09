@@ -212,7 +212,10 @@ public class CSpawnManager : MonoBehaviour
         if (registerKill)
         {
             _stageManager.RegisterKill();
-            CGoldManager.Instance?.AddGold(enemy.GetGoldDrop()); // 확정 골드 드롭
+
+            float stageBonus = 1f + (currentStageData != null ? currentStageData.StageIndex * 0.1f : 0f); // 스테이지당 10% 증가
+
+            CGoldManager.Instance?.AddGold(Mathf.RoundToInt(enemy.GetGoldDrop() * stageBonus)); // 확정 골드 드롭
 
             if (_player != null)
             {
@@ -221,7 +224,7 @@ public class CSpawnManager : MonoBehaviour
                 if (statManager != null)
                 {
                     //Debug.Log($"CSpawnManager 경험치 획득 : {enemy.GetExpReward()}");
-                    statManager.AddExp(enemy.GetExpReward());
+                    statManager.AddExp(enemy.GetExpReward() * stageBonus);
                 }
             }
         }
@@ -234,22 +237,52 @@ public class CSpawnManager : MonoBehaviour
             pools[key].Enqueue(enemy);
     }
 
-    /// <summary>가중치 기반으로 적 타입을 무작위 선택한다</summary>
+    /// <summary>
+    /// 가중치 비율 기반으로 가장 부족한 타입을 선택한다.
+    /// 각 타입의 목표 수(MaxActiveCount × 비율)와 현재 활성 수의 차이(deficit)가
+    /// 가장 큰 타입을 우선 스폰하여 실제 비율이 가중치에 정확히 수렴하도록 한다.
+    /// </summary>
     private CEnemyPoolConfig GetRandomConfig()
     {
         float total = 0f;
         foreach (CEnemyPoolConfig config in _enemyPoolConfigs)
             total += Mathf.Max(0f, config._spawnWeight);
 
-        float roll = UnityEngine.Random.Range(0f, total);
-        float cumulative = 0f;
-        foreach (CEnemyPoolConfig config in _enemyPoolConfigs)
+        if (total <= 0f) return _enemyPoolConfigs[_enemyPoolConfigs.Length - 1];
+
+        // 타입별 현재 활성 수 집계
+        Dictionary<string, int> activeCountPerType = new Dictionary<string, int>();
+        foreach (CEnemyBase enemy in activeEnemies)
         {
-            cumulative += Mathf.Max(0f, config._spawnWeight);
-            if (roll < cumulative) return config;
+            if (enemyToPoolKey.TryGetValue(enemy, out string key))
+            {
+                if (!activeCountPerType.ContainsKey(key)) activeCountPerType[key] = 0;
+                activeCountPerType[key]++;
+            }
         }
 
-        return _enemyPoolConfigs[_enemyPoolConfigs.Length - 1];
+        int maxActive = currentStageData != null ? currentStageData.MaxActiveCount : 10;
+
+        // deficit(목표 수 - 현재 수)가 가장 큰 타입 선택
+        CEnemyPoolConfig best = null;
+        float bestDeficit = float.MinValue;
+
+        foreach (CEnemyPoolConfig config in _enemyPoolConfigs)
+        {
+            float ratio = Mathf.Max(0f, config._spawnWeight) / total;
+            float target = ratio * maxActive;
+
+            activeCountPerType.TryGetValue(config._poolKey, out int current);
+            float deficit = target - current;
+
+            if (deficit > bestDeficit)
+            {
+                bestDeficit = deficit;
+                best = config;
+            }
+        }
+
+        return best ?? _enemyPoolConfigs[_enemyPoolConfigs.Length - 1];
     }
 
     /// <summary>플레이어 주변 링(도넛) 영역 내 무작위 스폰 위치를 반환한다</summary>

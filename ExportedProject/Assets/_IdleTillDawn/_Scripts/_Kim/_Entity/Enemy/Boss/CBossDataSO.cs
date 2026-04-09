@@ -1,5 +1,13 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+[Serializable]
+public class CBossRewardItem
+{
+    public int ItemId;
+    [Min(1)] public int Count = 1;
+}
 
 /// <summary>
 /// 보스 몬스터의 패턴 설정, 페이즈 임계값, 보상 정보를 정의하는 ScriptableObject입니다.
@@ -22,9 +30,9 @@ public class CBossDataSO : CEnemyDataSO
     [SerializeField] private float _phase3Threshold = 0.25f;  // 3페이즈 전환 체력 비율 (0~1)
 
     [Header("보상 정보")]
-    [SerializeField] private List<int> _rewardItemIds = new(); // 처치 시 보상 아이템 ID 목록
-    [SerializeField] private int _bossExpReward = 500;          // 처치 시 경험치 보상
-    [SerializeField] private int _bossGoldReward = 1000;        // 처치 시 골드 보상
+    [SerializeField] private List<CBossRewardItem> _rewardItems = new(); // 처치 시 보상 아이템 (ID + 수량)
+    [SerializeField] private int _bossExpReward = 500;                    // 처치 시 경험치 보상
+    [SerializeField] private int _bossGoldReward = 1000;                  // 처치 시 골드 보상
 
     [Header("사운드 (CEnemyDataSO.HitSFX 포함)")]
     [SerializeField] private CSoundData _attackSFX;  // 특수 공격 시전 시 재생 사운드
@@ -39,7 +47,7 @@ public class CBossDataSO : CEnemyDataSO
     public int         MaxActivePatternCount  => _maxActivePatternCount;
     public float       Phase2Threshold        => _phase2Threshold;
     public float       Phase3Threshold        => _phase3Threshold;
-    public List<int>   RewardItemIds          => _rewardItemIds;
+    public List<CBossRewardItem> RewardItems   => _rewardItems;
     public int         BossExpReward          => _bossExpReward;
     public int         BossGoldReward         => _bossGoldReward;
 

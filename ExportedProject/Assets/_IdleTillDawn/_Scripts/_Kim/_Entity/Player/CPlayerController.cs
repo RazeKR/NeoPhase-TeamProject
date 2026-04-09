@@ -250,6 +250,28 @@ public class CPlayerController : CEntityBase, IHealable
         {
             CGameManager.Instance.RegisterPlayer(this, _statManager);
         }
+
+        StartCoroutine(CoRegenLoop());
+    }
+
+    private IEnumerator CoRegenLoop()
+    {
+        WaitForSeconds interval = new WaitForSeconds(10f);
+
+        while (true)
+        {
+            yield return interval;
+
+            if (CurrentHealth <= 0) continue;
+
+            float hpRegen = _statManager.GetFinalStat(EPlayerStatType.HealthRegen);
+            if (hpRegen > 0f)
+                Heal(hpRegen);
+
+            float mpRegen = _statManager.GetFinalStat(EPlayerStatType.ManaRegen);
+            if (mpRegen > 0f)
+                _statManager.RestoreMana(mpRegen);
+        }
     }
 
     private void Update()

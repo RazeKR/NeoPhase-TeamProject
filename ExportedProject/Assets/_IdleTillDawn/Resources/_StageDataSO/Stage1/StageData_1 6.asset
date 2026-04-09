@@ -15,14 +15,7 @@ MonoBehaviour:
   _id: 6
   _world: 1
   _stageNumber: 6
-  _stageName: "\uC554\uD751\uC758 \uC232"
-  _spawnMonsterIds: 000000000100000004000000
   _killGoal: 10
-  _maxActiveCount: 100
+  _maxActiveCount: 350
   _spawnInterval: 2
   _bossId: 9
-  _bossHpMultiplier: 100
-  _bossAtkMultiplier: 10
-  _rewardItemIds: 
-  _clearExpReward: 100
-  _clearGoldReward: 200

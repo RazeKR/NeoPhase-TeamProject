@@ -123,6 +123,17 @@ public class CBossManager : MonoBehaviour
     {
         _electricWall?.Deactivate();
         CGoldManager.Instance?.AddGold(currentBossData?.BossGoldReward ?? 0); // 보스 처치 골드 보상
+
+        int expReward = currentBossData?.BossExpReward ?? 0;
+        if (expReward > 0)
+            _player?.GetComponent<CPlayerStatManager>()?.AddExp(expReward); // 보스 처치 경험치 보상
+
+        if (currentBossData?.RewardItems != null)
+        {
+            foreach (CBossRewardItem reward in currentBossData.RewardItems)
+                CInventorySystemJ.Instance?.AddItem(reward.ItemId, reward.Count); // 보스 처치 아이템 보상
+        }
+
         CleanUpBoss();
         OnBossDefeated?.Invoke();
     }

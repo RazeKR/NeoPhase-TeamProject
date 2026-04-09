@@ -187,7 +187,7 @@ public class CStageManager : MonoBehaviour
             case EStageState.StageClear:
                 _stageCleared = true;
                 SaveKillCountReset(); // 다음 스테이지를 위해 킬카운트 0으로 저장
-                CGoldManager.Instance?.AddGold(stageData.ClearGoldReward);
+
                 OnStageClear?.Invoke();
                 CGameManager.Instance.ProgressToNextStage();
                 break;

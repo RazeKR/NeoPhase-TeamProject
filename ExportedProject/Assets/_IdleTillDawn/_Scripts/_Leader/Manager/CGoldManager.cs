@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 /// [골드 획득 경로]
 ///   - 몬스터 확정 드랍 (CEnemyDataSO의 min~max 범위 랜덤, CSpawnManager 호출)
 ///   - 보스 처치 보상 (CBossDataSO.BossGoldReward, CBossManager 호출)
-///   - 스테이지 클리어 보상 (CStageDataSO.ClearGoldReward, CStageManager 호출)
+
 ///   - 다이아로 골드 구입 (추후 상점 UI에서 BuyGoldWithDiamond 호출)
 ///
 /// [초기화]

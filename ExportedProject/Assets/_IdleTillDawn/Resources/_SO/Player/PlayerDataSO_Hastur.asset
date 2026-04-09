@@ -22,28 +22,28 @@ MonoBehaviour:
   _statSettings:
   - StatType: 0
     BaseValue: 10000
-    GrowthPerLevel: 0
+    GrowthPerLevel: 200
   - StatType: 1
-    BaseValue: 0
-    GrowthPerLevel: 0
+    BaseValue: 100
+    GrowthPerLevel: 100
   - StatType: 2
-    BaseValue: 10
-    GrowthPerLevel: 0
+    BaseValue: 50
+    GrowthPerLevel: 25
   - StatType: 4
-    BaseValue: 0
-    GrowthPerLevel: 0
+    BaseValue: 5
+    GrowthPerLevel: 10
   - StatType: 5
-    BaseValue: 0
-    GrowthPerLevel: 0
+    BaseValue: 5
+    GrowthPerLevel: 10
   - StatType: 6
     BaseValue: 5
-    GrowthPerLevel: 0
+    GrowthPerLevel: 0.1
   - StatType: 7
     BaseValue: 1
     GrowthPerLevel: 0
   - StatType: 3
     BaseValue: 20
-    GrowthPerLevel: 0
+    GrowthPerLevel: 0.01
   _prefab: {fileID: 5717717816164410344, guid: d4447a631e0a30c48a0aba016693818b, type: 3}
   _hitSFX:
     _clips: []
