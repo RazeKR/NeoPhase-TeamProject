@@ -24,6 +24,7 @@ public abstract class CEnemyBase : CEntityBase
     protected Animator _animator;
     private bool       _isDead;
     private Collider2D _selfCollider;     // 피격 FX 위치 계산용 콜라이더 캐시
+    private int        _lastInitializedStage = 0; // 마지막으로 InitEnemy가 호출된 스테이지 번호
     #endregion
 
     #region 프로퍼티
@@ -99,7 +100,8 @@ public abstract class CEnemyBase : CEntityBase
     }
 
     /// <summary>
-    /// 스폰 시 스테이지에 맞게 스탯 초기화
+    /// 스폰 시 스테이지에 맞게 스탯 초기화.
+    /// 이전에 초기화된 이력이 있으면 기존 스탯에 스테이지 차이만큼만 추가하여 이월한다.
     /// </summary>
     /// <param name="currentStage">현재 스테이지 (1-based)</param>
     public virtual void InitEnemy(int currentStage)
@@ -110,13 +112,24 @@ public abstract class CEnemyBase : CEntityBase
         AttackRange    = _enemyData.AttackRange;
         AttackCooltime = _enemyData.AttackCooltime;
 
-        int growthMultiplier = Mathf.Max(1, currentStage) - 1;
+        if (_lastInitializedStage == 0)
+        {
+            // 최초 스폰: 현재 스테이지 기준으로 처음부터 계산
+            int growthMultiplier = Mathf.Max(1, currentStage) - 1;
+            MaxHealth    = _enemyData.BaseHealth + (_enemyData.HealthGrowthPerStage * growthMultiplier);
+            AttackDamage = _enemyData.BaseDamage  + (_enemyData.DamageGrowthPerStage * growthMultiplier);
+        }
+        else if (currentStage > _lastInitializedStage)
+        {
+            // 스테이지 이월: 이전 스탯에 차이만큼만 누적
+            int stageDelta = currentStage - _lastInitializedStage;
+            MaxHealth    += _enemyData.HealthGrowthPerStage * stageDelta;
+            AttackDamage += _enemyData.DamageGrowthPerStage * stageDelta;
+        }
+        // currentStage == _lastInitializedStage: 같은 스테이지 재스폰, 스탯 변경 없음
 
-        float scaledHealth = _enemyData.BaseHealth + (_enemyData.HealthGrowthPerStage * growthMultiplier);
-        MaxHealth    = scaledHealth;
-        CurrentHealth = scaledHealth;
-
-        AttackDamage = _enemyData.BaseDamage + (_enemyData.DamageGrowthPerStage * growthMultiplier);
+        CurrentHealth         = MaxHealth;
+        _lastInitializedStage = currentStage;
     }
 
     /// <summary>
