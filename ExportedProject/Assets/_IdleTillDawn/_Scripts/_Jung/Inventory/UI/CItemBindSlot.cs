@@ -13,9 +13,11 @@ public class CItemBindSlot : MonoBehaviour, IDropHandler
     [SerializeField] private Image _iconImage;
 
     private int _currentItemId = 0;
+    private GameObject _dragIcon;
 
     private void Start()
     {
+        _dragIcon = CInventorySystemJ.Instance.DragIconVisual;
         UpdateSlotUI();
     }
 
@@ -105,6 +107,7 @@ public class CItemBindSlot : MonoBehaviour, IDropHandler
             }
         }
         else ClearSlot();
+        _dragIcon.SetActive(false);
     }
 
     private void ClearSlot()

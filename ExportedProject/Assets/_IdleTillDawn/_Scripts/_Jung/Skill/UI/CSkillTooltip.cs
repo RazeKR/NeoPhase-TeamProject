@@ -58,6 +58,8 @@ public class CSkillTooltip : MonoBehaviour
     {
         if (_data == null || !_window.activeSelf) return;
 
+        _currentLevel = CSkillSystem.Instance.GetSkillLevel(_data.Id);
+
         ClearRows();
 
         _nameText.text = _data.skillName;
