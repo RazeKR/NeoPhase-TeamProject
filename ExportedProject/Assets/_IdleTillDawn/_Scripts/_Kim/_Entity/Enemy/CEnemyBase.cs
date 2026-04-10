@@ -98,6 +98,13 @@ public abstract class CEnemyBase : CEntityBase
         HandleAttack();
     }
 
+    protected virtual void Update()
+    {
+        if (_animator == null) return;
+        // 빙결 상태이면 애니메이션 정지, 해제되면 복구
+        _animator.speed = HasStatus(EStatusEffect.Freeze) ? 0f : 1f;
+    }
+
     protected virtual void Start()
     {
         if (_enemyData == null)
@@ -245,5 +252,42 @@ public abstract class CEnemyBase : CEntityBase
         }
 
         base.ApplyFreeze(duration, slowAmount);
+    }
+
+    // 화상 상태이상 중 활성화할 FogLightSource (동적 생성)
+    private CFogLightSource _burnLight;
+
+    public override void ApplyBurn(float duration, float tickDamage, float tickInterval)
+    {
+        base.ApplyBurn(duration, tickDamage, tickInterval);
+        StartCoroutine(CoBurnLightRoutine(duration));
+    }
+
+    private IEnumerator CoBurnLightRoutine(float duration)
+    {
+        // 이미 붙어있으면 제거 후 재생성 (burn 갱신 시)
+        if (_burnLight != null)
+        {
+            _burnLight.gameObject.SetActive(false);
+            Destroy(_burnLight.gameObject);
+        }
+
+        GameObject lightObj = new GameObject("BurnFogLight");
+        lightObj.transform.SetParent(transform);
+        lightObj.transform.localPosition = Vector3.zero;
+
+        _burnLight = lightObj.AddComponent<CFogLightSource>();
+        _burnLight.SetOuterRadius(2.5f);
+        _burnLight.SetInnerRatio(0.4f);
+        _burnLight.SetIntensity(0.5f);
+
+        yield return new WaitForSeconds(duration);
+
+        if (_burnLight != null)
+        {
+            _burnLight.gameObject.SetActive(false);
+            Destroy(_burnLight.gameObject);
+            _burnLight = null;
+        }
     }
 }

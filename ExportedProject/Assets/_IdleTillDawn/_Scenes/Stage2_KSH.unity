@@ -665,7 +665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17381b9a1a6963742b9d1461d15a3c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _electricWall: {fileID: 370209096}
+  _electricWall: {fileID: 0}
   _spawnMinRadius: 20
   _spawnMaxRadius: 25
 --- !u!4 &54793540
@@ -2884,7 +2884,7 @@ MonoBehaviour:
   _worldRoot: {fileID: 313934374}
   _player: {fileID: 0}
   _grid: {fileID: 1590166531}
-  _spawnManager: {fileID: 0}
+  _spawnManager: {fileID: 134641152}
   _checkInterval: 0.05
 --- !u!4 &313934374
 Transform:
@@ -45541,71 +45541,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 364062076}
   m_CullTransparentMesh: 1
---- !u!1 &370209095
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 370209097}
-  - component: {fileID: 370209096}
-  m_Layer: 10
-  m_Name: ElectricWall
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &370209096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370209095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6d4eef67ec46ed744ba2a90cffaaa3d0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _animFrames:
-  - {fileID: 21300000, guid: 5e9125d701ea2df4c99281a60aa731ca, type: 3}
-  - {fileID: 21300000, guid: 8c55d1f9b7bfc7646949afe4748a6488, type: 3}
-  - {fileID: 21300000, guid: 3c9f7d09b8ba19e45884b2d624ef769f, type: 3}
-  - {fileID: 21300000, guid: 1265a5771f089514ba124b265a9ce20e, type: 3}
-  - {fileID: 21300000, guid: 99da76409b56a5a4cbcdb476d1c5e950, type: 3}
-  - {fileID: 21300000, guid: 3b8dc7c57f965714a9c8fe0238cbb068, type: 3}
-  _animFPS: 10
-  _sortingOrder: 200
-  _tileScale: 3
-  _areaSize: {x: 25, y: 15}
-  _cornerOverlap: 0.05
-  _revealDuration: 1.2
-  _hideDuration: 0.8
-  _damage: 1
-  _knockbackForce: 5
-  _damageInterval: 0.5
-  _detectPadding: 0.3
-  _playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
---- !u!4 &370209097
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370209095}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -31.15144, y: 9.793116, z: -0.54898274}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &383383982
 GameObject:
   m_ObjectHideFlags: 0
@@ -59728,7 +59663,7 @@ PrefabInstance:
         type: 3}
       propertyPath: _worldShift
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 313934373}
     - target: {fileID: 9095837306955672628, guid: aae6e41f4adb6be4485036bb22648835,
         type: 3}
       propertyPath: _bossManager
@@ -63085,7 +63020,6 @@ SceneRoots:
   - {fileID: 507219120}
   - {fileID: 1611867112}
   - {fileID: 1535188199}
-  - {fileID: 370209097}
   - {fileID: 586913200}
   - {fileID: 134641153}
   - {fileID: 1543646165}

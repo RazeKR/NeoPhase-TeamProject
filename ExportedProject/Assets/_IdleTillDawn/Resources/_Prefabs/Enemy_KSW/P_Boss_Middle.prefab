@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3775951802548029952}
   - component: {fileID: 6042292700744096598}
   - component: {fileID: 8307499498060347779}
+  - component: {fileID: 8894290101788194774}
   m_Layer: 6
   m_Name: P_Boss_Middle
   m_TagString: Enemy
@@ -142,6 +143,7 @@ MonoBehaviour:
   _dashForce: 10
   _prepareTime: 0.35
   _slidingTime: 0.9
+  _dashHitRange: 1.5
   _dashLayer: Dash_Layer
 --- !u!50 &3775951802548029952
 Rigidbody2D:
@@ -217,3 +219,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8726a22553c1ae844a5e73b124c95cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8894290101788194774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4372230758617115628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bc10e54e46b9043a4dbbbc24159ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _outerRadius: 4
+  _innerRatio: 0.4
+  _intensity: 0.5

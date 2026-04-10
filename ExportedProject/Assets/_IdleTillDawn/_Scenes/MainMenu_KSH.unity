@@ -535,11 +535,15 @@ MonoBehaviour:
   - {fileID: -4141319017136968728, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
   - {fileID: -7437280297623887098, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
   - {fileID: -1711143505723866001, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
+  _items:
+  - {fileID: 0}
+  - {fileID: 0}
   _option: {fileID: -8346195201105669699, guid: c64b86f70fab656479be6b4c4ee91248,
     type: 3}
   _shop: {fileID: -4018336170871505376, guid: c64b86f70fab656479be6b4c4ee91248, type: 3}
   _inventory: {fileID: 6473781313143616403, guid: c64b86f70fab656479be6b4c4ee91248,
     type: 3}
+  _skillTree: {fileID: 0}
   _logInput: 0
 --- !u!4 &72716948
 Transform:
@@ -2978,7 +2982,7 @@ RectTransform:
   m_AnchorMin: {x: 0.44671535, y: 0.469}
   m_AnchorMax: {x: 0.5558086, y: 0.544}
   m_AnchoredPosition: {x: -2.1938477, y: 0.02318573}
-  m_SizeDelta: {x: -0.99909973, y: -8.5448}
+  m_SizeDelta: {x: 12.662, y: 21.3225}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1263290665
 MonoBehaviour:

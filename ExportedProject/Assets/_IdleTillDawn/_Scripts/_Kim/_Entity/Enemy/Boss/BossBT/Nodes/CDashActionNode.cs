@@ -36,6 +36,14 @@ public class CDashActionNode : CNode
 
     public override ENodeState Evaluate()
     {
+        // 대시 진행 중 빙결 감지 → 즉시 모션캔슬 후 패턴 리셋
+        if (_boss.HasStatus(EStatusEffect.Freeze) && _boss.IsAttacking)
+        {
+            CancelDash();
+            State = ENodeState.Failure;
+            return State;
+        }
+
         if (_currentState == DashState.Telegraph)
         {
             if (_timer == 0f)
@@ -103,6 +111,19 @@ public class CDashActionNode : CNode
 
         State = ENodeState.Failure;
         return State;
+    }
+
+    /// <summary>
+    /// 빙결 등 외부 인터럽트로 대시를 즉시 중단하고 원래 패턴으로 복구
+    /// </summary>
+    private void CancelDash()
+    {
+        _boss.Rb.velocity = Vector2.zero;
+        SetLayerRecursively(_boss.gameObject, _originLayer);
+        _boss.LastAttackTime = Time.time;
+        _boss.IsAttacking = false;
+        _currentState = DashState.Telegraph;
+        _timer = 0f;
     }
 
     /// <summary>

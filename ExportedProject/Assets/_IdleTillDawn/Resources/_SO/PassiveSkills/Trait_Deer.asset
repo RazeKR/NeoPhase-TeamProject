@@ -34,7 +34,7 @@ MonoBehaviour:
   _transformToDeerDuration: 0.5
   _transformToHumanDuration: 0.5
   _transformToHumanTrigger: tDurationOver
-  _ramKnockbackForce: 10
+  _ramKnockbackForce: 20
   _ramKnockbackDuration: 0.5
   _castOffSFX:
     _clips:

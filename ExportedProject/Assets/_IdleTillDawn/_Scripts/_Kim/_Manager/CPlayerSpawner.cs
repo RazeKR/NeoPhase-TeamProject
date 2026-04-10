@@ -158,6 +158,9 @@ public class CPlayerSpawner : MonoBehaviour
     /// </summary>
     private void SetPlayerTarget(Transform playerTransform)
     {
+        if (_cameraController == null)
+            _cameraController = FindObjectOfType<_CPlayerCameraController>();
+
         if (_cameraController != null)
             _cameraController.SetTarget(playerTransform);
         else
