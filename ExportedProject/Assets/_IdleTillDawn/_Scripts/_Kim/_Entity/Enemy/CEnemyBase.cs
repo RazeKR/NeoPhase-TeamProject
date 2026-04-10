@@ -60,6 +60,8 @@ public abstract class CEnemyBase : CEntityBase
             : 0.3f;
 
         CHitImpactPoolManager.Instance?.ShowHitImpact(transform.position, hitDir, radius);
+
+        ApplyKnockback(hitDir * 3f, 0.2f);
     }
 
     /// <summary>
