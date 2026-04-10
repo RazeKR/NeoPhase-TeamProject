@@ -39,7 +39,7 @@ public class CPlayerDataSO : CBaseDataSO
     [Header("기본 정보")]
     [SerializeField] private EPlayerType _characterType;
     [SerializeField] private string _characterName = "Character Name";      // 캐릭터 이름
-    [SerializeField] private string _description = "Character Description"; // 캐릭터 설명
+    [SerializeField][TextArea] private string _description = "Character Description"; // 캐릭터 설명
     [SerializeField] private Sprite _characterPortrait = null;               // 캐릭터 초상화
 
     [Header("고유 특성")]
