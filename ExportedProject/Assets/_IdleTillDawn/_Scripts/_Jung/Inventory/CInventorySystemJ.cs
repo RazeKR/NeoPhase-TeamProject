@@ -439,7 +439,7 @@ public class CInventorySystemJ : MonoBehaviour
     {
         Inventory = Inventory
             .OrderByDescending(i => (i as CWeaponInstance)?._isEquipped ?? false)
-            .ThenBy(i => i._itemData.ItemType)
+            .ThenByDescending(i => i._itemData.ItemType)
             .ThenByDescending(i => (i as CWeaponInstance)?._rank ?? 0)
             .ThenBy(i => i._itemData.Id)
             .ToList();
