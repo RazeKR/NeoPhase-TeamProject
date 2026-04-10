@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -63,6 +64,9 @@ public class CGameManager : MonoBehaviour
     [Range(0f, 100f)][SerializeField] private float _baseDropChance = 5f;    // 기본 드롭 확률
     [Range(0f, 100f)][SerializeField] private float _maxDropChance  = 25f;   // 최대 드롭 확률
     [Range(0f, 1f)]  [SerializeField] private float _growthRate     = 0.005f; // 드롭 증가율
+
+    [Header("자동 저장 설정")]
+    [SerializeField] private float _autoSaveInterval = 300f;
 
     #endregion
 
@@ -131,6 +135,8 @@ public class CGameManager : MonoBehaviour
     private void Start()
     {
         SubscribeDataManager();
+
+        StartCoroutine(CoAutoSave());
     }
 
     private void SubscribeDataManager()
@@ -398,6 +404,25 @@ public class CGameManager : MonoBehaviour
         _currentStageIndex = nextWorldIndex * 10;
         SaveProgress();
         SceneManager.LoadScene(_worldSceneNames[nextWorldIndex]);
+    }
+
+    private IEnumerator CoAutoSave()
+    {
+        WaitForSeconds waitTime = new WaitForSeconds(_autoSaveInterval);
+
+        while (true)
+        {
+            yield return waitTime;
+
+            // 인게임에 진입한 상태일 때만 저장 (메인 메뉴 등에서는 제외)
+            if (_hasEnteredGame)
+            {
+                SaveProgress();
+                Debug.Log($"[CGameManager] {_autoSaveInterval}초 경과 -> 자동 저장 완료");
+
+                // (선택 사항) 화면 한쪽에 "저장 중..." 이라는 작은 UI를 잠깐 띄웠다 끄면 유저가 안심합니다!
+            }
+        }
     }
 
     #endregion
