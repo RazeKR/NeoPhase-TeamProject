@@ -260,7 +260,8 @@ public abstract class CEnemyBase : CEntityBase
     public override void ApplyBurn(float duration, float tickDamage, float tickInterval)
     {
         base.ApplyBurn(duration, tickDamage, tickInterval);
-        StartCoroutine(CoBurnLightRoutine(duration));
+        if (gameObject.activeInHierarchy)
+            StartCoroutine(CoBurnLightRoutine(duration));
     }
 
     private IEnumerator CoBurnLightRoutine(float duration)
