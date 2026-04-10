@@ -275,6 +275,12 @@ public class CGameManager : MonoBehaviour
                 saveData.currentMana = _cachedStatManager.CurrentMana;
             }
 
+            if (CGoldManager.Instance != null)
+            {
+                saveData.gold = CGoldManager.Instance.Gold;
+                saveData.diamond = CGoldManager.Instance.Diamond;
+            }
+
             CJsonManager.Instance.Save(saveData);
 
             if (CRankingManager.Instance != null)

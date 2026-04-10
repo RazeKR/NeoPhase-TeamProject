@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -110,7 +110,6 @@ public class CGoldManager : MonoBehaviour
         if (amount <= 0) return;
         _gold += amount;
         OnGoldChanged?.Invoke(_gold);
-        SaveToData();
     }
 
     /// <summary>
@@ -122,7 +121,6 @@ public class CGoldManager : MonoBehaviour
         if (amount <= 0 || _gold < amount) return false;
         _gold -= amount;
         OnGoldChanged?.Invoke(_gold);
-        SaveToData();
         return true;
     }
 
@@ -136,7 +134,6 @@ public class CGoldManager : MonoBehaviour
         if (amount <= 0) return;
         _diamond += amount;
         OnDiamondChanged?.Invoke(_diamond);
-        SaveToData();
     }
 
     /// <summary>
@@ -148,7 +145,6 @@ public class CGoldManager : MonoBehaviour
         if (amount <= 0 || _diamond < amount) return false;
         _diamond -= amount;
         OnDiamondChanged?.Invoke(_diamond);
-        SaveToData();
         return true;
     }
 
