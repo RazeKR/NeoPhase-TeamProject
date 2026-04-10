@@ -46,6 +46,11 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         _player = GetComponent<CPlayerController>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha4)) AddExp(50000f);
+    }
+
     /// <summary>
     /// 세이프 파일이 없을 때 SO 데이터만 우선 연결해 주는 초기화 메서드
     /// </summary>
@@ -178,6 +183,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         SetModifier(CurrentLevel);
 
         OnLevelUp?.Invoke(CurrentLevel);
+        RestoreMana(MaxMana);
 
         if (_isPrintLog)
         {
