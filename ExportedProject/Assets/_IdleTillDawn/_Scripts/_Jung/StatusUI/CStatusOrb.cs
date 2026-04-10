@@ -5,13 +5,17 @@ using UnityEngine.UI;
 public class CStatusOrb : MonoBehaviour
 {
     [Header("Image (Contain Material)")]
-    [SerializeField] private Image imgHP;
-    [SerializeField] private Image imgMP;
+    [SerializeField] private Image imgHP;    
+    [SerializeField] private Image imgMP;    
     [SerializeField] private Image imgEXP;
+
+    [Header("Gauge Lerp Speed")]
     [SerializeField] private float lerpSpeed = 5f;
 
-    [Header("Level Text")]
+    [Header("Text")]
     [SerializeField] private Text txtLevel;
+    [SerializeField] private Text textHP;
+    [SerializeField] private Text textMP;
 
     private Coroutine hpCo;
     private Coroutine mpCo;
@@ -99,6 +103,8 @@ public class CStatusOrb : MonoBehaviour
 
         float targetFill = Mathf.Clamp01(currentHP / MaxHP);
 
+        textHP.text = $"{currentHP}/{MaxHP}";
+
         if (hpCo != null) StopCoroutine(hpCo);
         hpCo = StartCoroutine(CoLerpFill(orbMatHP, targetFill));
     }
@@ -108,6 +114,8 @@ public class CStatusOrb : MonoBehaviour
         if (orbMatMP == null) return;
 
         float targetFill = Mathf.Clamp01(currentMP / MaxMP);
+
+        textMP.text = $"{currentMP}/{MaxMP}";
 
         if (mpCo != null) StopCoroutine(mpCo);
         mpCo = StartCoroutine(CoLerpFill(orbMatMP, targetFill));
