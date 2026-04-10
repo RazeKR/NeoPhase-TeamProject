@@ -160,7 +160,7 @@ public class CSpawnManager : MonoBehaviour
     {
         if (currentStageData == null)
         {
-            Debug.LogError("[CSpawnManager] currentStageData가 null입니다. StartSpawning에 null이 전달됐습니다.\n" +
+            CDebug.LogError("[CSpawnManager] currentStageData가 null입니다. StartSpawning에 null이 전달됐습니다.\n" +
                            "CStageManager.Start()에서 CGameManager.CurrentStageData가 null을 반환했는지 확인하세요.", this);
             yield break;
         }
@@ -223,7 +223,7 @@ public class CSpawnManager : MonoBehaviour
 
                 if (statManager != null)
                 {
-                    //Debug.Log($"CSpawnManager 경험치 획득 : {enemy.GetExpReward()}");
+                    //CDebug.Log($"CSpawnManager 경험치 획득 : {enemy.GetExpReward()}");
                     statManager.AddExp(enemy.GetExpReward() * stageBonus);
                 }
             }
@@ -316,7 +316,7 @@ public class CSpawnManager : MonoBehaviour
     {
         if (!pools.TryGetValue(poolKey, out Queue<CEnemyBase> pool) || pool.Count == 0)
         {
-            Debug.LogWarning($"{poolKey} 풀이 비었거나 존재하지 않음");
+            CDebug.LogWarning($"{poolKey} 풀이 비었거나 존재하지 않음");
             return null;
         }
 

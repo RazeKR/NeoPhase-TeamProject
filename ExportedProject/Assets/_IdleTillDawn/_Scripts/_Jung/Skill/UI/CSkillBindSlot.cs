@@ -53,7 +53,7 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
         CSkillSystem.Instance.OnSkillEquipped += UpdateSlotUI;
 
         UpdateSlotUI();
-        Debug.Log("슬롯 UI 갱신 완료");
+        CDebug.Log("슬롯 UI 갱신 완료");
     }
 
     private void OnDisable()
@@ -85,26 +85,26 @@ public class CSkillBindSlot : MonoBehaviour, IDropHandler
     {
         if (CSkillSystem.Instance == null)
         {
-            Debug.Log("CSkillSystem 인스턴스가 아직 존재하지 않습니다.");
+            CDebug.Log("CSkillSystem 인스턴스가 아직 존재하지 않습니다.");
             return;
         }
 
         if (CSkillSystem.Instance._equippedSkills ==  null)
         {
             IconImage.enabled = false;
-            Debug.Log("_equippedSkills ==  null");
+            CDebug.Log("_equippedSkills ==  null");
             return;
         }
         if (_slotIndex < 0)
         {
             IconImage.enabled = false;
-            Debug.Log("_slotIndex < 0");
+            CDebug.Log("_slotIndex < 0");
             return;
         }
         if (_slotIndex >= CSkillSystem.Instance._equippedSkills.Count)
         {
             IconImage.enabled = false;
-            Debug.Log("_slotIndex >= CSkillSystem.Instance._equippedSkills.Count");
+            CDebug.Log("_slotIndex >= CSkillSystem.Instance._equippedSkills.Count");
             return;
         }
 

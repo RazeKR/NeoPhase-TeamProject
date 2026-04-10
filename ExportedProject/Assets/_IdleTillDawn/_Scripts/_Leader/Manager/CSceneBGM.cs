@@ -24,7 +24,7 @@ public class CSceneBGM : MonoBehaviour
     {
         if (CAudioManager.Instance == null)
         {
-            Debug.LogWarning("[CSceneBGM] CAudioManager 인스턴스가 없습니다. AudioManager 오브젝트를 씬에 배치하세요.");
+            CDebug.LogWarning("[CSceneBGM] CAudioManager 인스턴스가 없습니다. AudioManager 오브젝트를 씬에 배치하세요.");
             return;
         }
 

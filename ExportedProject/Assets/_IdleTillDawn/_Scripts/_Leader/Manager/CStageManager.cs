@@ -73,7 +73,7 @@ public class CStageManager : MonoBehaviour
 
         if (stageData == null)
         {
-            Debug.LogError(
+            CDebug.LogError(
                 "[CStageManager] CurrentStageData가 null입니다.\n" +
                 "체크리스트:\n" +
                 "  1) CDataManager가 씬에 존재하는지 확인\n" +

@@ -60,7 +60,7 @@ public class CGenerateItem : MonoBehaviour
     {
         if (CJsonManager.Instance == null)
         {
-            Debug.LogError("[CGenerateItem] CJsonManager.Instance가 null입니다.");
+            CDebug.LogError("[CGenerateItem] CJsonManager.Instance가 null입니다.");
             return;
         }
 
@@ -68,13 +68,13 @@ public class CGenerateItem : MonoBehaviour
 
         if (data.weaponBoxCount <= 0)
         {
-            Debug.Log("[CGenerateItem] 무기 상자가 없습니다. 상점에서 구매해주세요.");
+            CDebug.Log("[CGenerateItem] 무기 상자가 없습니다. 상점에서 구매해주세요.");
             return;
         }
 
         if (CInventorySystemJ.Instance.IsFull)
         {
-            Debug.Log("[CGenerateItem] 인벤토리가 가득 차 무기 상자를 열 수 없습니다.");
+            CDebug.Log("[CGenerateItem] 인벤토리가 가득 차 무기 상자를 열 수 없습니다.");
             CInventorySystemJ.Instance.NotifyInventoryFull();
             return;
         }
@@ -97,7 +97,7 @@ public class CGenerateItem : MonoBehaviour
 
         CInventorySystemJ.Instance.AddItem(so.Id, 1, desiredRank);
 
-        Debug.Log($"[CGenerateItem] 무기 소환 완료 (ID:{so.Id}, Rank:{desiredRank}) | 남은 상자: {data.weaponBoxCount}개");
+        CDebug.Log($"[CGenerateItem] 무기 소환 완료 (ID:{so.Id}, Rank:{desiredRank}) | 남은 상자: {data.weaponBoxCount}개");
     }
 
     #endregion

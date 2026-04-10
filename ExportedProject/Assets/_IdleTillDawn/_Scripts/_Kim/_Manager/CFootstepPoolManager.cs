@@ -55,7 +55,7 @@ public class CFootstepPoolManager : MonoBehaviour
     {
         if (_footstepSprites == null || _footstepSprites.Length == 0)
         {
-            Debug.LogWarning("[CFootstepPoolManager] 발자국 스프라이트가 설정되지 않았습니다.", this);
+            CDebug.LogWarning("[CFootstepPoolManager] 발자국 스프라이트가 설정되지 않았습니다.", this);
             return;
         }
 
@@ -94,7 +94,7 @@ public class CFootstepPoolManager : MonoBehaviour
         if (_pool.Count > 0)
             return _pool.Dequeue();
 
-        Debug.LogWarning("[CFootstepPoolManager] 풀 고갈 — 긴급 생성 발생. Inspector의 _poolSize 증가를 권장합니다.", this);
+        CDebug.LogWarning("[CFootstepPoolManager] 풀 고갈 — 긴급 생성 발생. Inspector의 _poolSize 증가를 권장합니다.", this);
         return Instantiate(_prefab, transform);
     }
     #endregion

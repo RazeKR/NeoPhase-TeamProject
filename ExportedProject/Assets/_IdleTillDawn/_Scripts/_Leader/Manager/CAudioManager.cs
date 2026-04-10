@@ -323,7 +323,7 @@ public class CAudioManager : MonoBehaviour
         if (_pool.Count < _maxPoolSize)
             return CreatePooledSource();
 
-        Debug.LogWarning("[CAudioManager] SFX 풀이 꽉 찼습니다. 재생이 스킵됩니다. _maxPoolSize 증가를 고려하세요.");
+        CDebug.LogWarning("[CAudioManager] SFX 풀이 꽉 찼습니다. 재생이 스킵됩니다. _maxPoolSize 증가를 고려하세요.");
         return null;
     }
 

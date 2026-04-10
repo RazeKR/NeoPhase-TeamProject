@@ -295,7 +295,7 @@ public class CPlayerController : CEntityBase, IHealable
 
         if (Input.GetKeyDown(KeyCode.M))
         {
-            Debug.Log($"현재 마나 : {_statManager.CurrentMana}");
+            CDebug.Log($"현재 마나 : {_statManager.CurrentMana}");
         }
 
         if (StateMachine != null)
@@ -326,7 +326,7 @@ public class CPlayerController : CEntityBase, IHealable
 
         if (_characterData == null)
         {
-            Debug.LogError($"CPlayerController : {playerId}의 플레이어 데이터 로드 실패");
+            CDebug.LogError($"CPlayerController : {playerId}의 플레이어 데이터 로드 실패");
             return;
         }
 
@@ -344,14 +344,14 @@ public class CPlayerController : CEntityBase, IHealable
         }
         else
         {
-            Debug.LogWarning("_statManager가 null입니다. 기본 데이터로 초기화합니다.");
+            CDebug.LogWarning("_statManager가 null입니다. 기본 데이터로 초기화합니다.");
             MaxHealth = _characterData.GetStatInfo(EPlayerStatType.Health).BaseValue;
             MoveSpeed = _characterData.GetStatInfo(EPlayerStatType.MoveSpeed).BaseValue;
         }
 
         CurrentHealth = (saveData != null && saveData.currentHp > 0) ? saveData.currentHp : MaxHealth;
 
-        Debug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}, 최대 체력 {MaxHealth}");
+        CDebug.Log($"{gameObject.name} 초기화 완료, 현재 체력 : {CurrentHealth}, 최대 체력 {MaxHealth}");
     }
 
     /// <summary>
@@ -428,7 +428,7 @@ public class CPlayerController : CEntityBase, IHealable
         _lastAttackTime = Time.fixedTime;
 
 #if UNITY_EDITOR
-        //Debug.Log($"[Attack] SO: {weaponData.name} | FireRate: {weaponData.WeaponFireRate} | Interval: {fireInterval:F3}s | Override: {_useTestWeaponOverride}");
+        //CDebug.Log($"[Attack] SO: {weaponData.name} | FireRate: {weaponData.WeaponFireRate} | Interval: {fireInterval:F3}s | Override: {_useTestWeaponOverride}");
 #endif
 
         Vector2 dir = (CurrentTarget.position - transform.position).normalized;
@@ -599,7 +599,7 @@ public class CPlayerController : CEntityBase, IHealable
         }
         else
         {
-            Debug.LogWarning("CSkillSystem이 씬에 없음");
+            CDebug.LogWarning("CSkillSystem이 씬에 없음");
         }
     }
 
@@ -611,7 +611,7 @@ public class CPlayerController : CEntityBase, IHealable
         }
         else
         {
-            Debug.LogWarning("CInventorySystemJ이 씬에 없음");
+            CDebug.LogWarning("CInventorySystemJ이 씬에 없음");
         }
     }
 
@@ -625,7 +625,7 @@ public class CPlayerController : CEntityBase, IHealable
 
         CAudioManager.Instance?.Play(_characterData.HitSFX, transform.position);
 
-        Debug.Log($"{gameObject.name} 데미지를 입음 : 데미지 {damage}");
+        CDebug.Log($"{gameObject.name} 데미지를 입음 : 데미지 {damage}");
 
         if (CurrentHealth <= 0) return; // 사망 처리는 Die()에 위임, 코루틴 불필요
 
@@ -706,7 +706,7 @@ public class CPlayerController : CEntityBase, IHealable
         if (CurrentHealth <= 0) return;
 
         CurrentHealth = Mathf.Min(MaxHealth, CurrentHealth + amount);
-        Debug.Log($"CPlayerController : 체력 회복 (현재 체력 : {CurrentHealth}/{MaxHealth})");
+        CDebug.Log($"CPlayerController : 체력 회복 (현재 체력 : {CurrentHealth}/{MaxHealth})");
     }
     #endregion
 }

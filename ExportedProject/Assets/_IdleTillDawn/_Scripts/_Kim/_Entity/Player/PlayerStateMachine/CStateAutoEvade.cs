@@ -11,12 +11,12 @@ public class CStateAutoEvade : IPlayerState
 
 	public void Enter()
 	{
-		Debug.Log("CStateAutoEvade : Enter");
+		CDebug.Log("CStateAutoEvade : Enter");
 	}
 
 	public void Exit()
 	{
-		//Debug.Log("CStateAutoEvade : Exit");
+		//CDebug.Log("CStateAutoEvade : Exit");
 	}
 
 	public void Update()

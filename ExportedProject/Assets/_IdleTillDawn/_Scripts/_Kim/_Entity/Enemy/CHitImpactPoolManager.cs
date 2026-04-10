@@ -80,7 +80,7 @@ public class CHitImpactPoolManager : MonoBehaviour
         if (_pool.Count > 0)
             return _pool.Dequeue();
 
-        Debug.LogWarning("[CHitImpactPoolManager] 풀 고갈 — 긴급 생성 발생. Inspector의 _poolSize 증가를 권장합니다.", this);
+        CDebug.LogWarning("[CHitImpactPoolManager] 풀 고갈 — 긴급 생성 발생. Inspector의 _poolSize 증가를 권장합니다.", this);
         return Instantiate(_prefab, transform);
     }
     #endregion

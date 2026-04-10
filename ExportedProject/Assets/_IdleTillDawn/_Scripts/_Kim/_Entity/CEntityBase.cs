@@ -181,7 +181,7 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     public virtual void TakeDamage(float damage)
     {
         CurrentHealth -= damage;
-        //Debug.Log($"[{gameObject.name}] [데미지 : {damage}, 현재 체력 : {CurrentHealth}]");
+        //CDebug.Log($"[{gameObject.name}] [데미지 : {damage}, 현재 체력 : {CurrentHealth}]");
 
         if (CurrentHealth <= 0)
         {
@@ -210,7 +210,7 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
 
     public virtual void Die()
     {
-        Debug.Log($"{gameObject.name} 사망");
+        CDebug.Log($"{gameObject.name} 사망");
         Destroy(gameObject);
     }
 

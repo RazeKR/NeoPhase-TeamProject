@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 1
   _itemId: potion_01
-  _itemName: Healing Potion
+  _itemName: "\uCCB4\uB825 \uD3EC\uC158"
   _type: 1
   _sprite: {fileID: 21300000, guid: a26b83233e6c34daf82f00b6a98bf9af, type: 3}
   _healAmount: 100

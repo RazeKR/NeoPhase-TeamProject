@@ -54,7 +54,7 @@ MonoBehaviour:
   _freezeSFX:
     _clips:
     - {fileID: 8300000, guid: d072734f9bc3e704db6d62cacc83499a, type: 3}
-    _volume: 0.3
+    _volume: 0.7
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1
     _spatialBlend: 1

@@ -99,7 +99,7 @@ public abstract class CEnemyBase : CEntityBase
     protected virtual void Start()
     {
         if (_enemyData == null)
-            Debug.LogWarning($"{gameObject.name} EnemyDataSO 없음. 참조 확인");
+            CDebug.LogWarning($"{gameObject.name} EnemyDataSO 없음. 참조 확인");
     }
 
     /// <summary>

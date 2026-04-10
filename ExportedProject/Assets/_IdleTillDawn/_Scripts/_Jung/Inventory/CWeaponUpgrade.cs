@@ -36,7 +36,7 @@ public class CWeaponUpgrade : MonoBehaviour
         if (target._upgrade >= 20)
         {
             target._upgrade = 20;
-            Debug.Log("이미 최대 업그레이드 입니다.");
+            CDebug.Log("이미 최대 업그레이드 입니다.");
             return false;
         }
 
@@ -46,12 +46,12 @@ public class CWeaponUpgrade : MonoBehaviour
         if (Random.value < rate)
         {
             target._upgrade ++;
-            if (_debugLog) Debug.Log($"강화 성공! : {target._itemData.ItemName}  |  강화 등급 : {target._upgrade}");
+            if (_debugLog) CDebug.Log($"강화 성공! : {target._itemData.ItemName}  |  강화 등급 : {target._upgrade}");
             return false;
         }
         else
         {
-            if (_debugLog) Debug.Log($"강화 실패.. : {target._itemData.ItemName}");
+            if (_debugLog) CDebug.Log($"강화 실패.. : {target._itemData.ItemName}");
 
             if (!_breakable) return false;
 

@@ -55,7 +55,7 @@ public class CStatusOrb : MonoBehaviour
 
         if (playerHPClass != null)
         {
-            Debug.Log("playerHPClass");
+            CDebug.Log("playerHPClass");
             playerHPClass.OnHealthChanged -= SetHealth;
             playerHPClass.OnHealthChanged += SetHealth;
             SetHealth(playerHPClass.CurrentHealth, playerHPClass.MaxHealth);
@@ -63,7 +63,7 @@ public class CStatusOrb : MonoBehaviour
 
         if (playerMPClass != null)
         {
-            Debug.Log("playerMPClass");
+            CDebug.Log("playerMPClass");
             playerMPClass.OnManaChanged -= SetMana;
             playerMPClass.OnExpChanged -= SetExp;
             playerMPClass.OnLevelUp   -= ResetExpBar;

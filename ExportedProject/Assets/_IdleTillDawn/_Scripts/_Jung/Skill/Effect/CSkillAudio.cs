@@ -18,7 +18,7 @@ public class CSkillAudio : MonoBehaviour, ISkill
         {
             case SFXType.Cast:
                 CAudioManager.Instance?.Play(data.CastSFX, transform.position);
-                Debug.Log("Cast¿Œ¿’ ================");
+                CDebug.Log("Cast¿Œ¿’ ================");
                 break;
 
             case SFXType.Area:
@@ -34,7 +34,7 @@ public class CSkillAudio : MonoBehaviour, ISkill
         for (int i = 0; i < count; i++)
         {
             CAudioManager.Instance?.Play(data.AreaSFX, transform.position);
-            Debug.Log("Area¿Œ¿’ ================");
+            CDebug.Log("Area¿Œ¿’ ================");
             yield return new WaitForSeconds(interval);
         }
     }

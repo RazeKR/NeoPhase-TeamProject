@@ -71,14 +71,14 @@ public class CBossManager : MonoBehaviour
 
         if (!stageData.HasBoss)
         {
-            Debug.LogWarning("[CBossManager] 이 스테이지에는 보스가 없습니다.");
+            CDebug.LogWarning("[CBossManager] 이 스테이지에는 보스가 없습니다.");
             return;
         }
 
         CBossDataSO bossData = CDataManager.Instance.GetBoss(stageData.BossId);
         if (bossData == null || bossData.Prefab == null)
         {
-            Debug.LogError($"[CBossManager] BossId {stageData.BossId}에 해당하는 보스 데이터 또는 프리팹이 없음");
+            CDebug.LogError($"[CBossManager] BossId {stageData.BossId}에 해당하는 보스 데이터 또는 프리팹이 없음");
             return;
         }
         currentBossData = bossData; // 골드 보상 참조를 위해 캐싱
@@ -89,7 +89,7 @@ public class CBossManager : MonoBehaviour
 
         if (currentBoss == null)
         {
-            Debug.LogError($"[CBossManager] {bossData.Prefab.name} 프리팹 루트에 CBossBase 컴포넌트가 없음");
+            CDebug.LogError($"[CBossManager] {bossData.Prefab.name} 프리팹 루트에 CBossBase 컴포넌트가 없음");
             Destroy(bossObj);
             return;
         }

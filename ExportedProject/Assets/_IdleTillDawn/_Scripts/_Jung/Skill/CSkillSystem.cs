@@ -345,7 +345,7 @@ public class CSkillSystem : MonoBehaviour
 
         if (manaUser != null && !manaUser.ConsumeMana(_manaUse ? requiredMana : 0))
         {
-            Debug.Log($"Mana Use : {playerStatManager.CurrentMana}");
+            CDebug.Log($"Mana Use : {playerStatManager.CurrentMana}");
             return;
         }
 
@@ -358,7 +358,7 @@ public class CSkillSystem : MonoBehaviour
 
             pStat.AddTemporaryBuff(datas.statType, datas.buffAmount, datas.duration);
 
-            Debug.Log("Buff On");
+            CDebug.Log("Buff On");
         }
 
         Vector3 spawnPos = playerObj.transform.position;
@@ -525,7 +525,7 @@ public class CSkillSystem : MonoBehaviour
         CSkillUI.Instance.TextSet(currentSkillPoints);
         RefreshAllNodes();
 
-        Debug.Log($"{data.skillName} : {currentSkillPoints}");
+        CDebug.Log($"{data.skillName} : {currentSkillPoints}");
 
         return true;
     }

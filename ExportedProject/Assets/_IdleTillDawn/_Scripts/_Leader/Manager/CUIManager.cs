@@ -93,7 +93,7 @@ public class CUIManager : MonoBehaviour
         CStageDataSO stageData = CGameManager.Instance.CurrentStageData;
         if (stageData == null)
         {
-            Debug.LogError(
+            CDebug.LogError(
                 "[CUIManager] CurrentStageData가 null입니다. KillGoal을 읽을 수 없어 게이지 초기화를 건너뜁니다.\n" +
                 "체크리스트:\n" +
                 "  1) CDataManager가 씬에 존재하는지 확인\n" +

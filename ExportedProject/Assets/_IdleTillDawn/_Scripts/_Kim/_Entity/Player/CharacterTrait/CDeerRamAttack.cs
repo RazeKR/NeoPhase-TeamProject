@@ -46,7 +46,7 @@ public class CDeerRamAttack : MonoBehaviour
             CFogFlashSource.SpawnImpact(target.transform.position,
                 outerRadius: isBoss ? 4f : 2f,
                 peakIntensity: isBoss ? 1f : 0.5f);
-            Debug.Log($"[사슴 박치기] '{target.EntityName}'에게 {fixedDamage} 고정 데미지!");
+            CDebug.Log($"[사슴 박치기] '{target.EntityName}'에게 {fixedDamage} 고정 데미지!");
         }
     }
 }

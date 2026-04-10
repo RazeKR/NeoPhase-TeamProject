@@ -50,7 +50,7 @@ public class CWallColliderBuilder : MonoBehaviour
     {
         if (_tileConfigs == null || _tileConfigs.Length == 0)
         {
-            Debug.LogWarning("[CWallColliderBuilder] Tile Configs가 비어있음");
+            CDebug.LogWarning("[CWallColliderBuilder] Tile Configs가 비어있음");
             return;
         }
 
@@ -100,7 +100,7 @@ public class CWallColliderBuilder : MonoBehaviour
             count++;
         }
 
-        Debug.Log($"[CWallColliderBuilder] 콜라이더 {count}개 생성 완료");
+        CDebug.Log($"[CWallColliderBuilder] 콜라이더 {count}개 생성 완료");
     }
 
 #if UNITY_EDITOR

@@ -166,7 +166,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
         if (_isPrintLog)
         {
-            Debug.Log($"경험치 획득 {finalExp}, 현재 경험치 {CurrentExp}/{requiredExp}");
+            CDebug.Log($"경험치 획득 {finalExp}, 현재 경험치 {CurrentExp}/{requiredExp}");
         }
 
         OnExpChanged?.Invoke(CurrentExp, requiredExp);
@@ -181,8 +181,8 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
 
         if (_isPrintLog)
         {
-            Debug.Log($"레벨업 : 현재 레벨 {CurrentLevel}");
-            Debug.Log($"현재 공격력 {GetFinalStat(EPlayerStatType.Damage)}");
+            CDebug.Log($"레벨업 : 현재 레벨 {CurrentLevel}");
+            CDebug.Log($"현재 공격력 {GetFinalStat(EPlayerStatType.Damage)}");
         }
     }
 
@@ -221,7 +221,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     public void RestoreMana(float amount)
     {
         CurrentMana = Mathf.Min(MaxMana, CurrentMana + amount);
-        Debug.Log($"CPlayerStatManager : 마나 회복 (현재 : {CurrentMana}/{MaxMana}");
+        CDebug.Log($"CPlayerStatManager : 마나 회복 (현재 : {CurrentMana}/{MaxMana}");
         OnManaChanged?.Invoke(CurrentMana, MaxMana);
     }
 
@@ -230,7 +230,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         if (CurrentMana - amount < 0) return false;
 
         CurrentMana -= amount;
-        Debug.Log($"CPlayerStatManager : 마나 사용 (사용량 : {amount}");
+        CDebug.Log($"CPlayerStatManager : 마나 사용 (사용량 : {amount}");
 
         OnManaChanged?.Invoke(CurrentMana, MaxMana);
         return true;

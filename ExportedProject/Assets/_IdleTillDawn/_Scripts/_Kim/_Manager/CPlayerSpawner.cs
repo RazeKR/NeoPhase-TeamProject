@@ -59,12 +59,12 @@ public class CPlayerSpawner : MonoBehaviour
         {
             // 3순위: 기본값 0 (어떤 저장 데이터도 유효하지 않을 때)
             playerId = 0;
-            Debug.LogWarning("[CPlayerSpawner] 유효한 캐릭터 ID를 찾지 못해 기본값(0)으로 폴백합니다.");
+            CDebug.LogWarning("[CPlayerSpawner] 유효한 캐릭터 ID를 찾지 못해 기본값(0)으로 폴백합니다.");
         }
 
         if (CDataManager.Instance == null)
         {
-            Debug.LogError("[CPlayerSpawner] CDataManager.Instance가 null입니다. 플레이어를 스폰할 수 없습니다.");
+            CDebug.LogError("[CPlayerSpawner] CDataManager.Instance가 null입니다. 플레이어를 스폰할 수 없습니다.");
             return;
         }
 
@@ -73,7 +73,7 @@ public class CPlayerSpawner : MonoBehaviour
         // null 체크를 Instantiate 호출 전에 수행
         if (playerData == null || playerData.Prefab == null)
         {
-            Debug.LogError($"CPlayerSpawner : {playerId}의 데이터 또는 프리팹 없음");
+            CDebug.LogError($"CPlayerSpawner : {playerId}의 데이터 또는 프리팹 없음");
             return;
         }
 
@@ -87,7 +87,7 @@ public class CPlayerSpawner : MonoBehaviour
             }
         }
 
-        Debug.Log($"[CPlayerSpawner] 캐릭터 스폰: {playerData.CharacterName} (id={playerId})");
+        CDebug.Log($"[CPlayerSpawner] 캐릭터 스폰: {playerData.CharacterName} (id={playerId})");
 
         SetPlayerTarget(playerObj.transform);
 
@@ -106,7 +106,7 @@ public class CPlayerSpawner : MonoBehaviour
 
         if (CInventorySystemJ.Instance == null)
         {
-            Debug.LogWarning("[CPlayerSpawner] CInventorySystemJ 인스턴스 없음 — 기본 무기 지급 실패");
+            CDebug.LogWarning("[CPlayerSpawner] CInventorySystemJ 인스턴스 없음 — 기본 무기 지급 실패");
             yield break;
         }
 
@@ -130,7 +130,7 @@ public class CPlayerSpawner : MonoBehaviour
                 CInventorySystemJ.Instance.EquipWeapon(first._instanceID);
             }
 
-            Debug.Log("[CPlayerSpawner] 인벤토리에 무기 존재 — 기본 무기 지급 생략");
+            CDebug.Log("[CPlayerSpawner] 인벤토리에 무기 존재 — 기본 무기 지급 생략");
             yield break;
         }
 
@@ -144,11 +144,11 @@ public class CPlayerSpawner : MonoBehaviour
         if (weapon != null)
         {
             CInventorySystemJ.Instance.EquipWeapon(weapon._instanceID);
-            Debug.Log($"[CPlayerSpawner] 기본 무기 지급 완료: id={defaultWeaponId}");
+            CDebug.Log($"[CPlayerSpawner] 기본 무기 지급 완료: id={defaultWeaponId}");
         }
         else
         {
-            Debug.LogError($"[CPlayerSpawner] 기본 무기 지급 실패: id={defaultWeaponId}. " +
+            CDebug.LogError($"[CPlayerSpawner] 기본 무기 지급 실패: id={defaultWeaponId}. " +
                            $"CDataManager._weaponList에 해당 SO가 등록되어 있는지 확인하세요.");
         }
     }
@@ -161,42 +161,42 @@ public class CPlayerSpawner : MonoBehaviour
         if (_cameraController != null)
             _cameraController.SetTarget(playerTransform);
         else
-            Debug.LogWarning("CPlayerSpawner : CameraController 미연결");
+            CDebug.LogWarning("CPlayerSpawner : CameraController 미연결");
 
         if (_spawnManager != null)
             _spawnManager.SetPlayerTarget(playerTransform);
         else
-            Debug.LogWarning("CPlayerSpawner : SpawnManager 미연결");
+            CDebug.LogWarning("CPlayerSpawner : SpawnManager 미연결");
 
         if (_worldShift != null)
             _worldShift.SetPlayerTarget(playerTransform);
         else if (_worldShiftHorizontal != null)
             _worldShiftHorizontal.SetPlayerTarget(playerTransform);
         else
-            Debug.LogWarning("CPlayerSpawner : WorldShift 미연결");
+            CDebug.LogWarning("CPlayerSpawner : WorldShift 미연결");
 
         if (_weaponEquip != null)
         {
             if (playerTransform.TryGetComponent<CPlayerController>(out CPlayerController playerController))
                 _weaponEquip.SetPlayerController(playerController);
             else
-                Debug.LogWarning("CPlayerSpawner : 플레이어에서 CPlayerController를 찾을 수 없음");
+                CDebug.LogWarning("CPlayerSpawner : 플레이어에서 CPlayerController를 찾을 수 없음");
 
             Transform weaponChild = FindDeepChild(playerTransform, _weaponChildName);
             if (weaponChild != null)
                 _weaponEquip.SetTargetObject(weaponChild.gameObject);
             else
-                Debug.LogWarning($"CPlayerSpawner : 플레이어 하위에서 '{_weaponChildName}' 오브젝트를 찾을 수 없음");
+                CDebug.LogWarning($"CPlayerSpawner : 플레이어 하위에서 '{_weaponChildName}' 오브젝트를 찾을 수 없음");
         }
         else
         {
-            Debug.LogWarning("CPlayerSpawner : WeaponEquip 미연결");
+            CDebug.LogWarning("CPlayerSpawner : WeaponEquip 미연결");
         }
 
         if (_bossManager != null)
             _bossManager.SetPlayerTarget(playerTransform);
         else
-            Debug.LogWarning("CPlayerSpawner : BossManager 미연결");
+            CDebug.LogWarning("CPlayerSpawner : BossManager 미연결");
     }
 
     /// <summary>

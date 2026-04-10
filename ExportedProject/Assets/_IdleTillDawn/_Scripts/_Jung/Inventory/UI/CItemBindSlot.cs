@@ -65,7 +65,7 @@ public class CItemBindSlot : MonoBehaviour, IDropHandler
     {
         if (CInventorySystemJ.Instance == null)
         {
-            Debug.Log("CInventorySystemJ.Instance ==  null");
+            CDebug.Log("CInventorySystemJ.Instance ==  null");
             return;
         }
 

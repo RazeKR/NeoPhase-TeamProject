@@ -3,7 +3,9 @@ guid: 8726a22553c1ae844a5e73b124c95cd1
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _burnEffectPrefab: {fileID: 6681001652336395680, guid: 65e10b681f139874f9ce6f32fcac5aa7,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

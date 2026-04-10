@@ -23,7 +23,7 @@ MonoBehaviour:
   _uniqueTrait: {fileID: 11400000, guid: 3fdc8ca40bfb0924ea6b217dbedfd3ff, type: 2}
   _statSettings:
   - StatType: 0
-    BaseValue: 70
+    BaseValue: 60
     GrowthPerLevel: 150
   - StatType: 1
     BaseValue: 100

@@ -90,7 +90,7 @@ public class CJsonManager : MonoBehaviour
         if (saveData == null)
         {
             string error = "[CJsonManager] null 데이터는 저장할 수 없습니다.";
-            Debug.LogError(error);
+            CDebug.LogError(error);
             OnError?.Invoke(error);
             return;
         }
@@ -105,12 +105,12 @@ public class CJsonManager : MonoBehaviour
 
             CurrentSaveData = saveData;
             OnSaveCompleted?.Invoke();
-            Debug.Log($"[CJsonManager] 저장 완료 → {_savePath}");
+            CDebug.Log($"[CJsonManager] 저장 완료 → {_savePath}");
         }
         catch (Exception ex)
         {
             string error = $"[CJsonManager] 저장 실패: {ex.Message}";
-            Debug.LogError(error);
+            CDebug.LogError(error);
             OnError?.Invoke(error);
         }
     }
@@ -124,7 +124,7 @@ public class CJsonManager : MonoBehaviour
     {
         if (!HasSaveFile)
         {
-            Debug.Log("[CJsonManager] 세이브 파일이 없습니다. 신규 데이터를 생성합니다.");
+            CDebug.Log("[CJsonManager] 세이브 파일이 없습니다. 신규 데이터를 생성합니다.");
             CurrentSaveData = CreateNewSaveData();
             OnLoadCompleted?.Invoke(CurrentSaveData);
             return CurrentSaveData;
@@ -139,13 +139,13 @@ public class CJsonManager : MonoBehaviour
 
             if (loaded == null)
             {
-                Debug.LogWarning("[CJsonManager] 역직렬화 실패. 신규 데이터를 생성합니다.");
+                CDebug.LogWarning("[CJsonManager] 역직렬화 실패. 신규 데이터를 생성합니다.");
                 CurrentSaveData = CreateNewSaveData();
             }
             else
             {
                 CurrentSaveData = loaded;
-                Debug.Log($"[CJsonManager] 로드 완료 ← {_savePath} (버전: {loaded.saveVersion})");
+                CDebug.Log($"[CJsonManager] 로드 완료 ← {_savePath} (버전: {loaded.saveVersion})");
             }
 
             OnLoadCompleted?.Invoke(CurrentSaveData);
@@ -154,7 +154,7 @@ public class CJsonManager : MonoBehaviour
         catch (Exception ex)
         {
             string error = $"[CJsonManager] 로드 실패: {ex.Message}. 신규 데이터를 생성합니다.";
-            Debug.LogError(error);
+            CDebug.LogError(error);
             OnError?.Invoke(error);
             CurrentSaveData = CreateNewSaveData();
             OnLoadCompleted?.Invoke(CurrentSaveData);
@@ -180,7 +180,7 @@ public class CJsonManager : MonoBehaviour
     {
         if (!HasSaveFile)
         {
-            Debug.LogWarning("[CJsonManager] 삭제할 세이브 파일이 없습니다.");
+            CDebug.LogWarning("[CJsonManager] 삭제할 세이브 파일이 없습니다.");
             return;
         }
 
@@ -188,12 +188,12 @@ public class CJsonManager : MonoBehaviour
         {
             File.Delete(_savePath);
             CurrentSaveData = null;
-            Debug.Log("[CJsonManager] 세이브 파일 삭제 완료.");
+            CDebug.Log("[CJsonManager] 세이브 파일 삭제 완료.");
         }
         catch (Exception ex)
         {
             string error = $"[CJsonManager] 삭제 실패: {ex.Message}";
-            Debug.LogError(error);
+            CDebug.LogError(error);
             OnError?.Invoke(error);
         }
     }

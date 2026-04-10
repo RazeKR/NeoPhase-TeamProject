@@ -20,11 +20,11 @@ public class CRangedController : CEnemyBase
             if (player != null)
             {
                 SetTarget(player.transform);
-                Debug.Log($"타겟 : {player.name}");
+                CDebug.Log($"타겟 : {player.name}");
             }
             else
             {
-                Debug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
+                CDebug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
             }
 
             InitEnemy(1);

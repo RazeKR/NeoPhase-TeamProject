@@ -48,7 +48,7 @@ public class CTraitDeerSO : CCharacterTraitSO
                 originAnimator = player.CurrentAnimator;
                 playerAnimator = player.GetComponentInChildren<Animator>();
 
-                Debug.Log($"originAnimator : {originAnimator.name}");
+                CDebug.Log($"originAnimator : {originAnimator.name}");
             }
 
             player.IsWeaponDisabled = true;
@@ -102,7 +102,7 @@ public class CTraitDeerSO : CCharacterTraitSO
 
             if (_deerAnimator != null && playerAnimator != null)
             {
-                Debug.Log("사람으로 변신");
+                CDebug.Log("사람으로 변신");
                 playerAnimator.SetTrigger(_transformToHumanTrigger);
                 PlaySFX(_castOffSFX, player);
                 yield return new WaitForSeconds(_transformToHumanDuration);

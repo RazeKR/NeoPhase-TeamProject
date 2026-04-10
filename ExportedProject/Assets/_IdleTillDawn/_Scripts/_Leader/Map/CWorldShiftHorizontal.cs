@@ -111,7 +111,7 @@ public class CWorldShiftHorizontal : MonoBehaviour
 
         _mapWidth = _localMaxX - _localMinX;
 
-        Debug.Log($"[CWorldShiftHorizontal] 경계 캐싱 완료 ({(_useManualBounds ? "수동" : "자동")}) — X: {_localMinX:F2} ~ {_localMaxX:F2}, MapWidth: {_mapWidth:F2}");
+        CDebug.Log($"[CWorldShiftHorizontal] 경계 캐싱 완료 ({(_useManualBounds ? "수동" : "자동")}) — X: {_localMinX:F2} ~ {_localMaxX:F2}, MapWidth: {_mapWidth:F2}");
     }
 
     /// <summary>

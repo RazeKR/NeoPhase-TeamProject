@@ -58,7 +58,7 @@ public class CItemDropManager : MonoBehaviour
 
         if (randomChance <= finalDropChance)
         {
-            Debug.Log($"{enemy.gameObject.name} : 아이템 획득, 현재 확률 {finalDropChance}");
+            CDebug.Log($"{enemy.gameObject.name} : 아이템 획득, 현재 확률 {finalDropChance}");
 
             // 아이템 드롭 효과 추가
 

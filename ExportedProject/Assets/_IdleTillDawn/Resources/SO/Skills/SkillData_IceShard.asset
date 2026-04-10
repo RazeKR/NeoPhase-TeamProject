@@ -67,7 +67,7 @@ MonoBehaviour:
     type: 3}
   _castSFX:
     _clips:
-    - {fileID: 8300000, guid: d072734f9bc3e704db6d62cacc83499a, type: 3}
+    - {fileID: 8300000, guid: b7d33692facb8c3449fd3b100d9d82ed, type: 3}
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1

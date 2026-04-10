@@ -99,7 +99,7 @@ public class CDataManager : MonoBehaviour
     public CPlayerDataSO GetPlayerData(int id)
     {
         if (TryGetData(_playerDict, id, out CPlayerDataSO data)) return data;
-        Debug.LogError($"[CDataManager] PlayerData 없음 - ID: {id} (경로: Resources/{PlayerSOPath})");
+        CDebug.LogError($"[CDataManager] PlayerData 없음 - ID: {id} (경로: Resources/{PlayerSOPath})");
         return null;
     }
 
@@ -107,7 +107,7 @@ public class CDataManager : MonoBehaviour
     public CEnemyDataSO GetMonster(int id)
     {
         if (TryGetData(_monsterDict, id, out CEnemyDataSO data)) return data;
-        Debug.LogError($"[CDataManager] MonsterData 없음 - ID: {id}");
+        CDebug.LogError($"[CDataManager] MonsterData 없음 - ID: {id}");
         return null;
     }
 
@@ -115,7 +115,7 @@ public class CDataManager : MonoBehaviour
     public CBossDataSO GetBoss(int id)
     {
         if (TryGetData(_bossDict, id, out CBossDataSO data)) return data;
-        Debug.LogError($"[CDataManager] BossData 없음 - ID: {id}");
+        CDebug.LogError($"[CDataManager] BossData 없음 - ID: {id}");
         return null;
     }
 
@@ -123,7 +123,7 @@ public class CDataManager : MonoBehaviour
     public CStageDataSO GetStage(int id)
     {
         if (TryGetData(_stageDict, id, out CStageDataSO data)) return data;
-        Debug.LogError($"[CDataManager] StageData 없음 - ID: {id}");
+        CDebug.LogError($"[CDataManager] StageData 없음 - ID: {id}");
         return null;
     }
 
@@ -134,7 +134,7 @@ public class CDataManager : MonoBehaviour
     public CItemDataSO GetItem(int id)
     {
         if (TryGetData(_allItemDict, id, out CItemDataSO data)) return data;
-        Debug.LogError($"[CDataManager] ItemData 없음 - ID: {id}");
+        CDebug.LogError($"[CDataManager] ItemData 없음 - ID: {id}");
         return null;
     }
 
@@ -142,7 +142,7 @@ public class CDataManager : MonoBehaviour
     public CWeaponDataSO GetWeapon(int id)
     {
         if (TryGetData(_weaponDict, id, out CWeaponDataSO data)) return data;
-        Debug.LogError($"[CDataManager] WeaponData 없음 - ID: {id}");
+        CDebug.LogError($"[CDataManager] WeaponData 없음 - ID: {id}");
         return null;
     }
 
@@ -150,7 +150,7 @@ public class CDataManager : MonoBehaviour
     public CSkillDataSO GetSkill(int id)
     {
         if (TryGetData(_skillDict, id, out CSkillDataSO data)) return data;
-        Debug.Log($"[CDataManager] SkillData 없음 - ID: {id}");
+        CDebug.Log($"[CDataManager] SkillData 없음 - ID: {id}");
         return null;
     }
 
@@ -177,7 +177,7 @@ public class CDataManager : MonoBehaviour
         {
             if (stage.StageIndex == stageIndex) return stage;
         }
-        Debug.LogError($"[CDataManager] StageIndex {stageIndex}에 해당하는 StageData가 없습니다.");
+        CDebug.LogError($"[CDataManager] StageIndex {stageIndex}에 해당하는 StageData가 없습니다.");
         return null;
     }
 
@@ -207,7 +207,7 @@ public class CDataManager : MonoBehaviour
     {
         ClearAllDictionaries();
         InitAllDictionaries();
-        Debug.Log("[CDataManager] 강제 재초기화 완료.");
+        CDebug.Log("[CDataManager] 강제 재초기화 완료.");
     }
 
     #endregion
@@ -228,7 +228,7 @@ public class CDataManager : MonoBehaviour
 
         _isInitialized = true;
         OnDataInitialized?.Invoke();
-        Debug.Log($"[CDataManager] 초기화 완료 - Player:{_playerDict.Count} Monster:{_monsterDict.Count} " +
+        CDebug.Log($"[CDataManager] 초기화 완료 - Player:{_playerDict.Count} Monster:{_monsterDict.Count} " +
                   $"Boss:{_bossDict.Count} Stage:{_stageDict.Count} Item:{_allItemDict.Count} Skill:{_skillDict.Count}");
     }
 
@@ -243,7 +243,7 @@ public class CDataManager : MonoBehaviour
 
         if (loaded == null || loaded.Length == 0)
         {
-            Debug.LogWarning($"[CDataManager] Resources/{StageSOPath} 경로에서 CStageDataSO를 찾을 수 없습니다.");
+            CDebug.LogWarning($"[CDataManager] Resources/{StageSOPath} 경로에서 CStageDataSO를 찾을 수 없습니다.");
             return;
         }
 
@@ -253,14 +253,14 @@ public class CDataManager : MonoBehaviour
 
             if (_stageDict.ContainsKey(stage.Id))
             {
-                Debug.LogWarning($"[CDataManager] StageData 중복 ID — SO 파일이 두 개 이상 같은 Id({stage.Id})를 사용 중입니다: {stage.name}. 에셋 Id를 확인하세요.");
+                CDebug.LogWarning($"[CDataManager] StageData 중복 ID — SO 파일이 두 개 이상 같은 Id({stage.Id})를 사용 중입니다: {stage.name}. 에셋 Id를 확인하세요.");
                 continue;
             }
 
             _stageDict.Add(stage.Id, stage);
         }
 
-        Debug.Log($"[CDataManager] StageData 자동 로드 완료 - {_stageDict.Count}개 (경로: Resources/{StageSOPath})");
+        CDebug.Log($"[CDataManager] StageData 자동 로드 완료 - {_stageDict.Count}개 (경로: Resources/{StageSOPath})");
     }
 
     /// <summary>
@@ -273,7 +273,7 @@ public class CDataManager : MonoBehaviour
 
         if (loaded == null || loaded.Length == 0)
         {
-            Debug.LogWarning($"[CDataManager] Resources/{PlayerSOPath} 경로에서 CPlayerDataSO를 찾을 수 없습니다.");
+            CDebug.LogWarning($"[CDataManager] Resources/{PlayerSOPath} 경로에서 CPlayerDataSO를 찾을 수 없습니다.");
             return;
         }
 
@@ -283,14 +283,14 @@ public class CDataManager : MonoBehaviour
 
             if (_playerDict.ContainsKey(playerData.Id))
             {
-                Debug.LogWarning($"[CDataManager] PlayerData 중복 ID 발견: {playerData.Id} ({playerData.name}). 건너뜁니다.");
+                CDebug.LogWarning($"[CDataManager] PlayerData 중복 ID 발견: {playerData.Id} ({playerData.name}). 건너뜁니다.");
                 continue;
             }
 
             _playerDict.Add(playerData.Id, playerData);
         }
 
-        Debug.Log($"[CDataManager] PlayerData 자동 로드 완료 - {_playerDict.Count}개 (경로: Resources/{PlayerSOPath})");
+        CDebug.Log($"[CDataManager] PlayerData 자동 로드 완료 - {_playerDict.Count}개 (경로: Resources/{PlayerSOPath})");
     }
 
     /// <summary>
@@ -306,13 +306,13 @@ public class CDataManager : MonoBehaviour
         {
             if (item == null)
             {
-                Debug.LogWarning($"[CDataManager] {typeName} 목록에 null 항목이 있습니다. 건너뜁니다.");
+                CDebug.LogWarning($"[CDataManager] {typeName} 목록에 null 항목이 있습니다. 건너뜁니다.");
                 continue;
             }
 
             if (dict.ContainsKey(item.Id))
             {
-                Debug.LogWarning($"[CDataManager] {typeName} 중복 ID 발견: {item.Id} ({item.name}). 건너뜁니다.");
+                CDebug.LogWarning($"[CDataManager] {typeName} 중복 ID 발견: {item.Id} ({item.name}). 건너뜁니다.");
                 continue;
             }
 
@@ -323,7 +323,7 @@ public class CDataManager : MonoBehaviour
             {
                 if (_allItemDict.ContainsKey(item.Id))
                 {
-                    Debug.LogWarning($"[CDataManager] Item 전체 캐시 중복 ID: {item.Id}. 건너뜁니다.");
+                    CDebug.LogWarning($"[CDataManager] Item 전체 캐시 중복 ID: {item.Id}. 건너뜁니다.");
                     continue;
                 }
                 _allItemDict.Add(item.Id, itemData);
@@ -343,13 +343,13 @@ public class CDataManager : MonoBehaviour
         {
             if (weapon == null)
             {
-                Debug.LogWarning("[CDataManager] Weapon 목록에 null 항목이 있습니다. 건너뜁니다.");
+                CDebug.LogWarning("[CDataManager] Weapon 목록에 null 항목이 있습니다. 건너뜁니다.");
                 continue;
             }
 
             if (_weaponDict.ContainsKey(weapon.Id))
             {
-                Debug.LogWarning($"[CDataManager] Weapon 중복 ID 발견: {weapon.Id} ({weapon.name}). 건너뜁니다.");
+                CDebug.LogWarning($"[CDataManager] Weapon 중복 ID 발견: {weapon.Id} ({weapon.name}). 건너뜁니다.");
                 continue;
             }
 
@@ -357,7 +357,7 @@ public class CDataManager : MonoBehaviour
 
             if (_allItemDict.ContainsKey(weapon.Id))
             {
-                Debug.LogWarning($"[CDataManager] Item 전체 캐시에 Weapon ID 충돌: {weapon.Id}. 건너뜁니다.");
+                CDebug.LogWarning($"[CDataManager] Item 전체 캐시에 Weapon ID 충돌: {weapon.Id}. 건너뜁니다.");
                 continue;
             }
 
@@ -372,7 +372,7 @@ public class CDataManager : MonoBehaviour
 
         if (!_isInitialized)
         {
-            Debug.LogError("[CDataManager] 초기화 전에 데이터를 요청했습니다. Awake 이후에 접근하세요.");
+            CDebug.LogError("[CDataManager] 초기화 전에 데이터를 요청했습니다. Awake 이후에 접근하세요.");
             return false;
         }
 

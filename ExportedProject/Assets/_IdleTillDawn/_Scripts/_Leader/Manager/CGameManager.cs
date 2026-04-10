@@ -26,7 +26,7 @@ public class CGameManager : MonoBehaviour
         GameObject prefab = Resources.Load<GameObject>("_Prefabs/GameManager_KSH");
         if (prefab == null)
         {
-            Debug.LogWarning("[CGameManager] Resources/_Prefabs/GameManager_KSH 프리팹을 찾을 수 없습니다.");
+            CDebug.LogWarning("[CGameManager] Resources/_Prefabs/GameManager_KSH 프리팹을 찾을 수 없습니다.");
             new GameObject("GameManager_KSH").AddComponent<CGameManager>();
             return;
         }
@@ -95,7 +95,7 @@ public class CGameManager : MonoBehaviour
         {
             if (CDataManager.Instance == null || !CDataManager.Instance.IsInitialized)
             {
-                Debug.LogError("[CGameManager] CDataManager가 아직 초기화되지 않았습니다.");
+                CDebug.LogError("[CGameManager] CDataManager가 아직 초기화되지 않았습니다.");
                 return null;
             }
 
@@ -104,7 +104,7 @@ public class CGameManager : MonoBehaviour
             // 저장된 인덱스에 해당하는 SO가 없으면 0으로 리셋 (손상된 세이브 데이터 방어)
             if (data == null && _currentStageIndex != 0)
             {
-                Debug.LogWarning($"[CGameManager] StageIndex {_currentStageIndex}에 해당하는 SO가 없습니다. " +
+                CDebug.LogWarning($"[CGameManager] StageIndex {_currentStageIndex}에 해당하는 SO가 없습니다. " +
                                  $"StageIndex를 0으로 리셋합니다. (세이브 데이터 손상 또는 SO 미등록)");
                 _currentStageIndex = 0;
                 SaveProgress();
@@ -162,7 +162,7 @@ public class CGameManager : MonoBehaviour
 
         if (!CDataManager.Instance.TryGetStageByIndex(_currentStageIndex, out _))
         {
-            Debug.LogWarning($"[CGameManager] StageIndex {_currentStageIndex}에 해당하는 SO가 없어 0으로 리셋합니다.");
+            CDebug.LogWarning($"[CGameManager] StageIndex {_currentStageIndex}에 해당하는 SO가 없어 0으로 리셋합니다.");
             _currentStageIndex = 0;
             SaveProgress();
         }
@@ -226,7 +226,7 @@ public class CGameManager : MonoBehaviour
         // 3. timeScale 복구
         Time.timeScale = 1f;
 
-        Debug.Log("[CGameManager] 전체 데이터 초기화 완료 → 메인 메뉴로 이동");
+        CDebug.Log("[CGameManager] 전체 데이터 초기화 완료 → 메인 메뉴로 이동");
 
         // 4. 자기 자신도 파괴한 뒤 메인 메뉴 로드 → AutoCreate가 새 인스턴스를 생성
         Destroy(gameObject);
@@ -356,7 +356,7 @@ public class CGameManager : MonoBehaviour
         {
             if (currentScene != _mainMenuSceneName)
             {
-                Debug.Log($"[CGameManager] 최초 실행 → 메인 메뉴 '{_mainMenuSceneName}'으로 이동");
+                CDebug.Log($"[CGameManager] 최초 실행 → 메인 메뉴 '{_mainMenuSceneName}'으로 이동");
                 SceneManager.LoadScene(_mainMenuSceneName);
             }
             return;
@@ -371,7 +371,7 @@ public class CGameManager : MonoBehaviour
         string expectedScene = _worldSceneNames[worldIndex];
         if (string.IsNullOrEmpty(expectedScene) || currentScene == expectedScene) return;
 
-        Debug.Log($"[CGameManager] StageIndex={_currentStageIndex} → 월드씬 '{expectedScene}'으로 리다이렉트 (현재: '{currentScene}')");
+        CDebug.Log($"[CGameManager] StageIndex={_currentStageIndex} → 월드씬 '{expectedScene}'으로 리다이렉트 (현재: '{currentScene}')");
         SceneManager.LoadScene(expectedScene);
     }
 
@@ -385,7 +385,7 @@ public class CGameManager : MonoBehaviour
 
         if (nextWorldIndex >= _worldSceneNames.Length)
         {
-            Debug.Log("[CGameManager] 모든 월드 클리어 — 엔딩 씬 처리 필요");
+            CDebug.Log("[CGameManager] 모든 월드 클리어 — 엔딩 씬 처리 필요");
             return;
         }
 

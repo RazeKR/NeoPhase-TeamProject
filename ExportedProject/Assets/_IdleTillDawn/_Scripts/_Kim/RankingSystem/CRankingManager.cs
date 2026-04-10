@@ -52,7 +52,7 @@ public class CRankingManager : MonoBehaviour
             },
             onError: (error) =>
             {
-                Debug.LogError($"가져오기 실패 : {error}");
+                CDebug.LogError($"가져오기 실패 : {error}");
                 onComplete?.Invoke(_cachedRankingData); // 이전에 캐시된 데이터라도 띄움
             }
         ));
@@ -66,7 +66,7 @@ public class CRankingManager : MonoBehaviour
     {
         if (localSaveData == null)
         {
-            Debug.LogWarning("CRankingManager : 로컬 세이브 데이터가 비어있음");
+            CDebug.LogWarning("CRankingManager : 로컬 세이브 데이터가 비어있음");
             return;
         }
 
@@ -74,8 +74,8 @@ public class CRankingManager : MonoBehaviour
 
         StartCoroutine(CRankingAPI.CoSaveRanking(
             saveDataToRankData,
-            onSuccess: () => Debug.Log("서버 전송 완료"),
-            onError: (error) => Debug.LogError($"전송 실패 : {error}")
+            onSuccess: () => CDebug.Log("서버 전송 완료"),
+            onError: (error) => CDebug.LogError($"전송 실패 : {error}")
         ));
     }
 
@@ -83,7 +83,7 @@ public class CRankingManager : MonoBehaviour
     {
         if (localSaveData == null)
         {
-            Debug.LogWarning("CRankingManager : 삭제하려는 데이터가 비어있음");
+            CDebug.LogWarning("CRankingManager : 삭제하려는 데이터가 비어있음");
             return;
         }
 
@@ -93,11 +93,11 @@ public class CRankingManager : MonoBehaviour
             saveDataToRankData,
             onSuccess: () =>
             {
-                Debug.Log($"서버 랭킹 데이터 삭제 완료 (UID : {saveDataToRankData.uid})");
+                CDebug.Log($"서버 랭킹 데이터 삭제 완료 (UID : {saveDataToRankData.uid})");
                 _cachedRankingData.Clear();
                 _lastFetchTime = -999f;
             },
-            onError: (error) => Debug.LogError($"서버 랭킹 데이터 삭제 실패 : {error}")
+            onError: (error) => CDebug.LogError($"서버 랭킹 데이터 삭제 실패 : {error}")
         ));
     }
 }

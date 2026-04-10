@@ -71,7 +71,7 @@ public class CFogOfWarManager : MonoBehaviour
         _mainCamera = _mainCameraOverride != null ? _mainCameraOverride : Camera.main;
 
         if (_mainCamera == null)
-            Debug.LogError("[CFogOfWarManager] 카메라를 찾을 수 없습니다. _mainCameraOverride에 카메라를 직접 연결하거나 Main Camera 태그를 확인하세요.");
+            CDebug.LogError("[CFogOfWarManager] 카메라를 찾을 수 없습니다. _mainCameraOverride에 카메라를 직접 연결하거나 Main Camera 태그를 확인하세요.");
 
         // FogCircle 머티리얼 미연결 시 자동 생성 시도
         if (_circleMaterial == null)
@@ -80,7 +80,7 @@ public class CFogOfWarManager : MonoBehaviour
             if (circleShader != null)
                 _circleMaterial = new Material(circleShader) { hideFlags = HideFlags.HideAndDontSave };
             else
-                Debug.LogError("[CFogOfWarManager] Hidden/FogCircle 셰이더를 찾을 수 없습니다. FogCircle.shader가 프로젝트에 포함되어 있는지 확인하세요.");
+                CDebug.LogError("[CFogOfWarManager] Hidden/FogCircle 셰이더를 찾을 수 없습니다. FogCircle.shader가 프로젝트에 포함되어 있는지 확인하세요.");
         }
     }
 

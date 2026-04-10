@@ -96,7 +96,7 @@ public class CDamageTextPoolManager : MonoBehaviour
             return _pool.Dequeue();
 
         // 풀 고갈 방어 처리 : GC 발생이 허용되므로 _poolSize 증가로 근본 원인을 해결할 것
-        Debug.LogWarning("[CDamageTextPoolManager] 풀 고갈 — 긴급 생성 발생. Inspector의 _poolSize 증가를 권장합니다.", this);
+        CDebug.LogWarning("[CDamageTextPoolManager] 풀 고갈 — 긴급 생성 발생. Inspector의 _poolSize 증가를 권장합니다.", this);
         return Instantiate(_prefab, transform);
     }
     #endregion

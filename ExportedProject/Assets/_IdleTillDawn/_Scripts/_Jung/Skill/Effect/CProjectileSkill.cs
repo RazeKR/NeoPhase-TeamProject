@@ -69,7 +69,7 @@ public class CProjectileSkill : MonoBehaviour, ISkill
 
         if (_data == null)
         {
-            Debug.Log("데이터가 할당되지 않음");
+            CDebug.Log("데이터가 할당되지 않음");
             return;
         }
 

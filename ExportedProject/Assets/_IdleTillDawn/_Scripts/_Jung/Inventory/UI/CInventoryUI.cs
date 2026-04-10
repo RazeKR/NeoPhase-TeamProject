@@ -157,7 +157,7 @@ public class CInventoryUI : MonoBehaviour
                 {
                     if (r.gameObject.transform.parent.CompareTag("Slot"))
                     {
-                        Debug.Log("Slot Clicked");
+                        CDebug.Log("Slot Clicked");
                         isClickedSlot = true;
                         break;
                     }
@@ -246,13 +246,13 @@ public class CInventoryUI : MonoBehaviour
 
         if (CInventorySystemJ.Instance == null || CInventorySystemJ.Instance.Inventory == null)
         {
-            Debug.LogWarning("CInventorySystemJ.Instance == null || CInventorySystemJ.Instance.Inventory == null"); return;
+            CDebug.LogWarning("CInventorySystemJ.Instance == null || CInventorySystemJ.Instance.Inventory == null"); return;
         }
 
         var inventory = CInventorySystemJ.Instance.Inventory;
         if (inventory ==  null)
         {
-            Debug.Log("inventory null"); return;
+            CDebug.Log("inventory null"); return;
         }
 
         // �κ��丮�� ��ȸ�ϸ� ����

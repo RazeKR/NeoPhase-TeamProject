@@ -120,7 +120,7 @@ public class CElectircWall : MonoBehaviour
     {
         if (_animFrames == null || _animFrames.Length == 0)
         {
-            Debug.LogWarning("[CElectircWall] AnimFrames가 비어있음");
+            CDebug.LogWarning("[CElectircWall] AnimFrames가 비어있음");
             yield break;
         }
         _tileSize = _animFrames[0].bounds.size * _tileScale;

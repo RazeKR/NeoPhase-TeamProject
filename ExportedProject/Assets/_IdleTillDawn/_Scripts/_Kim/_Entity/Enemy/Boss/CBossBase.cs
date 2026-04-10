@@ -43,12 +43,12 @@ public abstract class CBossBase : CEnemyBase
 
             if (player != null)
             {
-                Debug.Log($"타겟 : {player.name}");
+                CDebug.Log($"타겟 : {player.name}");
                 Initialize(1, 1, player.transform);
             }
             else
             {
-                Debug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
+                CDebug.LogWarning($"{gameObject.name} : 플레이어를 찾을 수 없음");
             }
         }
 
@@ -84,7 +84,7 @@ public abstract class CBossBase : CEnemyBase
     {
         base.TakeDamage(damage);
 
-        //Debug.Log($"{gameObject.name} : {damage} 데미지를 입음. 현재 체력 {CurrentHealth}");
+        //CDebug.Log($"{gameObject.name} : {damage} 데미지를 입음. 현재 체력 {CurrentHealth}");
     }
 
     /// <summary>

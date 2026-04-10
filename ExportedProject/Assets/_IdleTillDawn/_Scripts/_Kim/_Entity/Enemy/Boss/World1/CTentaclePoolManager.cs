@@ -27,6 +27,6 @@ public class CTentaclePoolManager : MonoBehaviour
             tentacle.InitTentacle();
         }
 
-        Debug.Log($"[임시 스포너] {key} 소환 완료!");
+        CDebug.Log($"[임시 스포너] {key} 소환 완료!");
     }
 }

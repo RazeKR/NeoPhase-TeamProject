@@ -277,14 +277,14 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
         int cost = WeaponBoxGoldCosts[itemIndex];
         if (CGoldManager.Instance.Gold < cost)
         {
-            Debug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {cost:N0})");
+            CDebug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {cost:N0})");
             return;
         }
 
@@ -300,7 +300,7 @@ public class CGoldShopUI : MonoBehaviour
 
         OnWeaponBoxCountChanged?.Invoke(data.weaponBoxCount);
         RefreshWeaponShopButtonStates();
-        Debug.Log($"[CGoldShopUI] 골드 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
+        CDebug.Log($"[CGoldShopUI] 골드 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
     }
 
     /// <summary>다이아로 무기 상자 구매 (3~5번 버튼)</summary>
@@ -308,14 +308,14 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
         int cost = WeaponBoxDiamondCosts[itemIndex];
         if (CGoldManager.Instance.Diamond < cost)
         {
-            Debug.Log($"[CGoldShopUI] 다이아 부족 (보유: {CGoldManager.Instance.Diamond:N0}, 필요: {cost:N0})");
+            CDebug.Log($"[CGoldShopUI] 다이아 부족 (보유: {CGoldManager.Instance.Diamond:N0}, 필요: {cost:N0})");
             return;
         }
 
@@ -331,7 +331,7 @@ public class CGoldShopUI : MonoBehaviour
 
         OnWeaponBoxCountChanged?.Invoke(data.weaponBoxCount);
         RefreshWeaponShopButtonStates();
-        Debug.Log($"[CGoldShopUI] 다이아 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
+        CDebug.Log($"[CGoldShopUI] 다이아 {cost:N0} 소모 → 무기 상자 {amount}개 지급 (총 {data.weaponBoxCount}개)");
     }
 
     private void RegisterItemShopButtons()
@@ -360,13 +360,13 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
         if (CGoldManager.Instance.Gold < cost)
         {
-            Debug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {cost:N0})");
+            CDebug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {cost:N0})");
             return;
         }
 
@@ -376,7 +376,7 @@ public class CGoldShopUI : MonoBehaviour
 
         if (!existsInInventory && CInventorySystemJ.Instance.IsFull)
         {
-            Debug.Log($"[CGoldShopUI] 인벤토리가 가득 차 {itemName}을(를) 지급할 수 없습니다.");
+            CDebug.Log($"[CGoldShopUI] 인벤토리가 가득 차 {itemName}을(를) 지급할 수 없습니다.");
             CInventorySystemJ.Instance.NotifyInventoryFull();
             return;
         }
@@ -386,7 +386,7 @@ public class CGoldShopUI : MonoBehaviour
 
         CInventorySystemJ.Instance.AddItem(itemId, amount);
         RefreshItemShopButtonStates();
-        Debug.Log($"[CGoldShopUI] 골드 {cost:N0} 소모 → {itemName} {amount}개 지급");
+        CDebug.Log($"[CGoldShopUI] 골드 {cost:N0} 소모 → {itemName} {amount}개 지급");
     }
 
     /// <summary>골드로 인벤토리 25칸을 확장합니다.</summary>
@@ -394,13 +394,13 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
         if (CGoldManager.Instance.Gold < InventoryExpandCost)
         {
-            Debug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {InventoryExpandCost:N0})");
+            CDebug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {InventoryExpandCost:N0})");
             return;
         }
 
@@ -409,7 +409,7 @@ public class CGoldShopUI : MonoBehaviour
 
         CInventorySystemJ.Instance.ExpandCapacity();
         RefreshItemShopButtonStates();
-        Debug.Log($"[CGoldShopUI] 골드 {InventoryExpandCost:N0} 소모 → 인벤토리 25칸 확장 (현재 {CInventorySystemJ.Instance.MaxCapacity}칸)");
+        CDebug.Log($"[CGoldShopUI] 골드 {InventoryExpandCost:N0} 소모 → 인벤토리 25칸 확장 (현재 {CInventorySystemJ.Instance.MaxCapacity}칸)");
     }
 
     /// <summary>주간 다이아 상품 구매 (0~3번 버튼)</summary>
@@ -417,7 +417,7 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
@@ -433,7 +433,7 @@ public class CGoldShopUI : MonoBehaviour
         int count = data.shopWeeklyBuyCounts[itemIndex];
         if (count >= WeeklyLimit)
         {
-            Debug.Log($"[CGoldShopUI] 주간 구매 한도 초과 (상품 {itemIndex}, {count}/{WeeklyLimit})");
+            CDebug.Log($"[CGoldShopUI] 주간 구매 한도 초과 (상품 {itemIndex}, {count}/{WeeklyLimit})");
             return;
         }
 
@@ -443,7 +443,7 @@ public class CGoldShopUI : MonoBehaviour
         SaveData(data);
         RefreshAllButtonStates();
 
-        Debug.Log($"[CGoldShopUI] 다이아 {DiamondRewards[itemIndex]:N0} 지급 " +
+        CDebug.Log($"[CGoldShopUI] 다이아 {DiamondRewards[itemIndex]:N0} 지급 " +
                   $"(주간 {data.shopWeeklyBuyCounts[itemIndex]}/{WeeklyLimit})");
     }
 
@@ -452,7 +452,7 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
@@ -463,7 +463,7 @@ public class CGoldShopUI : MonoBehaviour
 
         if (data.shopDailyBuyCount >= DailyLimit)
         {
-            Debug.Log($"[CGoldShopUI] 일일 무료 골드 이미 수령 ({data.shopDailyBuyCount}/{DailyLimit})");
+            CDebug.Log($"[CGoldShopUI] 일일 무료 골드 이미 수령 ({data.shopDailyBuyCount}/{DailyLimit})");
             return;
         }
 
@@ -473,7 +473,7 @@ public class CGoldShopUI : MonoBehaviour
         SaveData(data);
         RefreshAllButtonStates();
 
-        Debug.Log($"[CGoldShopUI] 골드 {DailyFreeGoldReward:N0} 지급 " +
+        CDebug.Log($"[CGoldShopUI] 골드 {DailyFreeGoldReward:N0} 지급 " +
                   $"(일일 {data.shopDailyBuyCount}/{DailyLimit})");
     }
 
@@ -482,13 +482,13 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CGoldManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
             return;
         }
 
         if (CGoldManager.Instance.Diamond < GoldWithDiamondCost)
         {
-            Debug.Log($"[CGoldShopUI] 다이아 부족 " +
+            CDebug.Log($"[CGoldShopUI] 다이아 부족 " +
                       $"(보유: {CGoldManager.Instance.Diamond}, 필요: {GoldWithDiamondCost})");
             return;
         }
@@ -497,7 +497,7 @@ public class CGoldShopUI : MonoBehaviour
         if (!success) return;
 
         RefreshAllButtonStates();
-        Debug.Log($"[CGoldShopUI] 다이아 {GoldWithDiamondCost} 소모 → 골드 {GoldWithDiamondReward:N0} 지급");
+        CDebug.Log($"[CGoldShopUI] 다이아 {GoldWithDiamondCost} 소모 → 골드 {GoldWithDiamondReward:N0} 지급");
     }
 
     #endregion
@@ -662,7 +662,7 @@ public class CGoldShopUI : MonoBehaviour
         data.shopWeeklyResetDate = monday;
         data.shopWeeklyBuyCounts = new System.Collections.Generic.List<int> { 0, 0, 0, 0 };
         SaveData(data);
-        Debug.Log($"[CGoldShopUI] 주간 구매 횟수 초기화 (기준: {monday})");
+        CDebug.Log($"[CGoldShopUI] 주간 구매 횟수 초기화 (기준: {monday})");
     }
 
     /// <summary>일일 리셋이 필요하면 구매 횟수를 초기화하고 저장합니다.</summary>
@@ -674,7 +674,7 @@ public class CGoldShopUI : MonoBehaviour
         data.shopDailyResetDate = today;
         data.shopDailyBuyCount  = 0;
         SaveData(data);
-        Debug.Log($"[CGoldShopUI] 일일 구매 횟수 초기화 (기준: {today})");
+        CDebug.Log($"[CGoldShopUI] 일일 구매 횟수 초기화 (기준: {today})");
     }
 
     #endregion
@@ -685,7 +685,7 @@ public class CGoldShopUI : MonoBehaviour
     {
         if (CJsonManager.Instance == null)
         {
-            Debug.LogError("[CGoldShopUI] CJsonManager.Instance가 null입니다.");
+            CDebug.LogError("[CGoldShopUI] CJsonManager.Instance가 null입니다.");
             return null;
         }
         return CJsonManager.Instance.GetOrCreateSaveData();

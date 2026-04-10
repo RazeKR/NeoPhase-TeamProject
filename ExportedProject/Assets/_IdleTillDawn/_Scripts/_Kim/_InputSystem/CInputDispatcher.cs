@@ -131,7 +131,7 @@ public class CInputDispatcher : MonoBehaviour
 
         if (_logInput)
         {
-            Debug.Log("바인드 완료");
+            CDebug.Log("바인드 완료");
         }
     }
 
@@ -194,7 +194,7 @@ public class CInputDispatcher : MonoBehaviour
 
         if (_logInput)
         {
-            Debug.Log("바인드 해제 완료");
+            CDebug.Log("바인드 해제 완료");
         }
     }
 
@@ -258,7 +258,7 @@ public class CInputDispatcher : MonoBehaviour
 
         if (_logInput)
         {
-            Debug.Log($"이동 입력 {v}");
+            CDebug.Log($"이동 입력 {v}");
         }
 
         OnMove?.Invoke(v);
@@ -268,7 +268,7 @@ public class CInputDispatcher : MonoBehaviour
     {
         if (_logInput)
         {
-            Debug.Log("입력 취소");
+            CDebug.Log("입력 취소");
         }
 
         OnMove?.Invoke(Vector2.zero);
@@ -282,7 +282,7 @@ public class CInputDispatcher : MonoBehaviour
             
             if (_logInput)
             {
-                Debug.Log($"{index + 1}번 슬롯 스킬 사용");
+                CDebug.Log($"{index + 1}번 슬롯 스킬 사용");
             }
         }
     }
@@ -295,7 +295,7 @@ public class CInputDispatcher : MonoBehaviour
 
             if (_logInput)
             {
-                Debug.Log($"{index + 1}번 아이템 슬롯 사용");
+                CDebug.Log($"{index + 1}번 아이템 슬롯 사용");
             }
         }
     }

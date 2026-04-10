@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 /// <summary>
 /// ID ��� �κ��丮 �ý����Դϴ�.
@@ -147,7 +146,7 @@ public class CInventorySystemJ : MonoBehaviour
             }
         }
 
-        Debug.Log("사용 완료");
+        CDebug.Log("사용 완료");
 
         RemoveItem(exist._instanceID, 1);
 
@@ -201,7 +200,7 @@ public class CInventorySystemJ : MonoBehaviour
             {
                 if (IsFull)
                 {
-                    Debug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
+                    CDebug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
                     OnInventoryFull?.Invoke();
                     break;
                 }
@@ -219,7 +218,7 @@ public class CInventorySystemJ : MonoBehaviour
             {
                 if (IsFull)
                 {
-                    Debug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
+                    CDebug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
                     OnInventoryFull?.Invoke();
                 }
                 else _inventory.Add(new CPotionInstance(so as CPotionDataSO, count));
@@ -234,7 +233,7 @@ public class CInventorySystemJ : MonoBehaviour
             {
                 if (IsFull)
                 {
-                    Debug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
+                    CDebug.LogWarning($"[CInventorySystemJ] 인벤토리가 가득 찼습니다. ({_maxCapacity}칸)");
                     OnInventoryFull?.Invoke();
                 }
                 else _inventory.Add(new CScrollInstance(so as CScrollDataSO, count));
@@ -257,7 +256,7 @@ public class CInventorySystemJ : MonoBehaviour
         _maxCapacity += ExpandStep;
         SyncAndSave();
         OnInventoryChanged?.Invoke();
-        Debug.Log($"[CInventorySystemJ] 인벤토리 확장 완료: {_maxCapacity}칸");
+        CDebug.Log($"[CInventorySystemJ] 인벤토리 확장 완료: {_maxCapacity}칸");
     }
 
     /// <summary>�������� �κ��丮���� �����մϴ�. count�� ���� ���� �̻��̸� �ش� ������ �׸� ��ü�� ���ŵ˴ϴ�.</summary>
@@ -306,7 +305,7 @@ public class CInventorySystemJ : MonoBehaviour
         {
             if (CWeaponUpgrade.Instance.TryUpgrade(weapon))     // true = weapon Broken
             {
-                Debug.Log("Weapon Broken!");
+                CDebug.Log("Weapon Broken!");
             }
 
             RemoveItem(scroll._instanceID, 1);            
@@ -393,7 +392,7 @@ public class CInventorySystemJ : MonoBehaviour
             CItemDataSO so = CDataManager.Instance.GetItem(sData.itemID);
             if (so == null)
             {
-                Debug.LogWarning($"[CInventorySystemJ] ID={sData.itemID} ({sData.type}) SO를 CDataManager에서 찾을 수 없습니다. CDataManager의 _weaponList/_itemList에 해당 SO가 등록되었는지 확인하세요.");
+                CDebug.LogWarning($"[CInventorySystemJ] ID={sData.itemID} ({sData.type}) SO를 CDataManager에서 찾을 수 없습니다. CDataManager의 _weaponList/_itemList에 해당 SO가 등록되었는지 확인하세요.");
                 continue;
             }
 

@@ -52,7 +52,7 @@ public class CUIInputHandler : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CUIInputHandler : CInventoryUI.Instance를 찾을 수 없음");
+            CDebug.LogWarning("CUIInputHandler : CInventoryUI.Instance를 찾을 수 없음");
         }
     }
 
@@ -73,7 +73,7 @@ public class CUIInputHandler : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CUIInputHandler : 씬에 COptionUI 없음");
+            CDebug.LogWarning("CUIInputHandler : 씬에 COptionUI 없음");
         }
     }
 
@@ -98,7 +98,7 @@ public class CUIInputHandler : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CUIInputHandler : CShopUI.Instance를 찾을 수 없음");
+            CDebug.LogWarning("CUIInputHandler : CShopUI.Instance를 찾을 수 없음");
         }
     }
 
@@ -110,7 +110,7 @@ public class CUIInputHandler : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("CUIInputHandler : CSkillUI.Instance를 찾을 수 없음");
+            CDebug.LogWarning("CUIInputHandler : CSkillUI.Instance를 찾을 수 없음");
         }
 
     }

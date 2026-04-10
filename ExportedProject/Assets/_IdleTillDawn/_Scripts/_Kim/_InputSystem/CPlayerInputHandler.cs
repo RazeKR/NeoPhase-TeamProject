@@ -70,7 +70,7 @@ public class CPlayerInputHandler : MonoBehaviour
         CInputDispatcher.Instance.OnSkill += HandleSkill;
         CInputDispatcher.Instance.OnItemUse += HandleItemUse;
 
-        Debug.Log("CPlayerMoveHandler : 구독 완료");
+        CDebug.Log("CPlayerMoveHandler : 구독 완료");
     }
 
     // 이동 입력이 들어올 때 실행

@@ -21,7 +21,7 @@ MonoBehaviour:
   _uniqueTrait: {fileID: 11400000, guid: c39d74c1e94e58a4ba9cce3912850e61, type: 2}
   _statSettings:
   - StatType: 0
-    BaseValue: 10000
+    BaseValue: 100
     GrowthPerLevel: 200
   - StatType: 1
     BaseValue: 100
