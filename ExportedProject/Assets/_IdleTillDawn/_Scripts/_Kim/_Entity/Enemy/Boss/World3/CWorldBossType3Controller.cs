@@ -29,11 +29,14 @@ public class CWorldBossType3Controller : CBossBase
     private float _lastBombardmentTime = 0f;
     private bool _isBombarding = false;
     private float _lastContactDamageTime = -999f;
+
+    private CParabolaProjectilePoolManager _projectilePool;
     #endregion
 
     protected override void Start()
     {
         base.Start();
+        _projectilePool = GetComponent<CParabolaProjectilePoolManager>();
         ConstructBehaviourTree();
     }
 
@@ -169,8 +172,15 @@ public class CWorldBossType3Controller : CBossBase
         if (EnemyData is CBossDataSO bd && bd.AttackSFX != null)
             CAudioManager.Instance?.Play(bd.AttackSFX, transform.position);
 
-        // 투사체 1개는 플레이어 좌표로 고정 발사
-        CParabolaProjectile trackedProjectile = Instantiate(_projectilePrefab, _bossSprite.position, Quaternion.identity);
+        if (_projectilePool == null)
+        {
+            Debug.LogError("CParabolaProjectilePoolManager 컴포넌트가 보스에 없음");
+            _isBombarding = false;
+            yield break;
+        }
+
+        CParabolaProjectile trackedProjectile = _projectilePool.GetProjectile();
+        trackedProjectile.transform.position = _bossSprite.position;
         trackedProjectile.Fire(_bossSprite.position, CurrentTarget.position, AttackDamage);
 
         float sectorSize = 360f / _projectileCount;
@@ -182,7 +192,8 @@ public class CWorldBossType3Controller : CBossBase
             Vector2 dir = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
             Vector2 targetPosition = (Vector2)transform.position + dir * radius;
 
-            CParabolaProjectile projectile = Instantiate(_projectilePrefab, _bossSprite.position, Quaternion.identity);
+            CParabolaProjectile projectile = _projectilePool.GetProjectile();
+            projectile.transform.position = _bossSprite.position;
             projectile.Fire(_bossSprite.position, targetPosition, AttackDamage);
         }
 

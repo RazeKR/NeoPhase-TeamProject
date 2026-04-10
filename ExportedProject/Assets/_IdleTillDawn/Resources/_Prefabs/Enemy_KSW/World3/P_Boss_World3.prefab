@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 566332770441042721}
   - component: {fileID: 1487024542475795033}
   - component: {fileID: -690067100776117534}
+  - component: {fileID: 4541650180748789729}
   m_Layer: 6
   m_Name: P_Boss_World3
   m_TagString: Enemy
@@ -236,6 +237,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8726a22553c1ae844a5e73b124c95cd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4541650180748789729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2289894174751621941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8d4dffc9dfdf54195df4e6927f2830, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _defaultCapacity: 50
+  _maxSize: 100
+  _projectilePrefab: {fileID: 3674075436809364576, guid: 5f561e20bc59da24685baae80a95e6ba,
+    type: 3}
+  _indicatorPrefab: {fileID: 4182942472854578259, guid: d6495ddde37287741936b0d4f173791d,
+    type: 3}
 --- !u!1 &4400145011238925315
 GameObject:
   m_ObjectHideFlags: 0

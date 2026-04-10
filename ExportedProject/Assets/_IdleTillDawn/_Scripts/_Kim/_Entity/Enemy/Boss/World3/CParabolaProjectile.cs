@@ -1,13 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class CParabolaProjectile : MonoBehaviour
 {
     #region 인스펙터
     [Header("참초")]
     [SerializeField] private Transform _projectileSprite;
-    [SerializeField] private GameObject _indicatorPrefab;
 
     [Header("포물선 설정")]
     [SerializeField] private float _height = 2f;
@@ -25,7 +25,16 @@ public class CParabolaProjectile : MonoBehaviour
     private Coroutine _flyCoroutine;
 
     private float _finalDamage;
+
+    private IObjectPool<CParabolaProjectile> _projectilePool;
+    private IObjectPool<GameObject> _indicatorPool;
     #endregion
+
+    public void SetPools(IObjectPool<CParabolaProjectile> projPool, IObjectPool<GameObject> indPool)
+    {
+        _projectilePool = projPool;
+        _indicatorPool = indPool;
+    }
 
     public void Fire(Vector2 startPos, Vector2 targetPos, float damage)
     {
@@ -35,9 +44,15 @@ public class CParabolaProjectile : MonoBehaviour
         _targetPos = targetPos;
         transform.position = _startPos;
 
-        if (_indicatorPrefab != null)
+        if (_indicatorPool != null)
         {
-            _currentIndicator = Instantiate(_indicatorPrefab, _targetPos, Quaternion.identity);
+            _currentIndicator = _indicatorPool.Get();
+            _currentIndicator.transform.position = _targetPos;
+        }
+
+        if (_flyCoroutine != null)
+        {
+            StopCoroutine(_flyCoroutine);
         }
 
         _flyCoroutine = StartCoroutine(CoFly());
@@ -72,7 +87,16 @@ public class CParabolaProjectile : MonoBehaviour
         {
             impactRadius = _currentIndicator.transform.localScale.x * 0.5f;
 
-            Destroy(_currentIndicator);
+            if (_indicatorPool != null)
+            {
+                _indicatorPool.Release(_currentIndicator);
+            }
+            else
+            {
+                Destroy(_currentIndicator);
+            }
+
+            _currentIndicator = null;
         }
 
         Collider2D hitCollider = Physics2D.OverlapCircle(transform.position, impactRadius, _playerLayer);
@@ -92,6 +116,33 @@ public class CParabolaProjectile : MonoBehaviour
             _flyCoroutine = null;
         }
 
-        Destroy(gameObject);
+        ReturnToPool();
+    }
+
+    private void ReturnToPool()
+    {
+        if (_flyCoroutine != null)
+        {
+            StopCoroutine(_flyCoroutine);
+            _flyCoroutine = null;
+        }
+
+        _projectileSprite.localPosition = Vector3.zero;
+
+        try
+        {
+            if (_projectilePool != null)
+            {
+                _projectilePool.Release(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+        catch
+        {
+            Destroy(gameObject);
+        }
     }
 }
