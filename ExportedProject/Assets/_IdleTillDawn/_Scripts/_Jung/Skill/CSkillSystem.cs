@@ -103,7 +103,6 @@ public class CSkillSystem : MonoBehaviour
         if (CJsonManager.Instance != null)
         {
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
-
             if (CJsonManager.Instance.CurrentSaveData != null)
             {
                 RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
@@ -650,34 +649,38 @@ public class CSkillSystem : MonoBehaviour
     /// <summary>���̺� ���� ����</summary>
     private void RestoreFromSaveData(CSaveData save)
     {
-        _saveData = save;
-        currentSkillPoints = save.skillPoints;
+        Debug.Log("[CSkillSystem] RestoreFromSaveData 시작");
 
-        if (_equippedSkills == null) _equippedSkills = new List<int> { 0, 0, 0 };
-
-        for (int i = 0; i < 3; i++)
+        try // 예외 처리로 로직 중단 방지
         {
-            // _equippedSkills.Count���� i�� ũ�� Add�ϰ�, �ƴϸ� ����ϴ�.
-            int skillId = save.GetEquippedSkill(i);
+            _saveData = save;
+            currentSkillPoints = save.skillPoints;
 
-            if (i < _equippedSkills.Count)
-                _equippedSkills[i] = skillId;
-            else
-                _equippedSkills.Add(skillId);
+            for (int i = 0; i < 3; i++)
+            {
+                int skillId = save.GetEquippedSkill(i);
+
+                if (i < _equippedSkills.Count)
+                    _equippedSkills[i] = skillId;
+                else
+                    _equippedSkills.Add(skillId);
+            }
+
+            OnSkillEquipped?.Invoke();
+            RefreshAllNodes();
+
+            // UI가 없을 수도 있으니 안전하게 체크
+            if (CSkillUI.Instance != null) CSkillUI.Instance.UpdateUIState();
         }
-
-
-        OnSkillEquipped?.Invoke();
-        RefreshAllNodes();
-
-        if (CSkillUI.Instance != null) CSkillUI.Instance.UpdateUIState();
-
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[CSkillSystem] System.Exception : {e.Message}");
+        }
         StartCoroutine(CoRefreshPassive());
     }
 
     private IEnumerator CoRefreshPassive()
     {
-        // 1단계: CPlayerStatManager 오브젝트가 씬에 생성될 때까지 대기
         CPlayerStatManager smg = null;
         while (smg == null)
         {
@@ -685,10 +688,10 @@ public class CSkillSystem : MonoBehaviour
             yield return null;
         }
 
-        // 2단계: CPlayerController.InitPlayer()가 완료되어 _baseData가 세팅될 때까지 대기
-        // MaxHealth가 0이면 아직 초기화 전 상태
-        while (smg.MaxHealth <= 0f)
+        CPlayerController ctr = smg.GetComponent<CPlayerController>();
+        while (ctr == null || smg.MaxHealth <= 0f)
         {
+            ctr = smg.GetComponent<CPlayerController>();
             yield return null;
         }
 
