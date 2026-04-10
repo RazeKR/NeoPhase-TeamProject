@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 114097102454479082}
   - component: {fileID: 114933314071086218}
   - component: {fileID: 50681549671693459}
-  - component: {fileID: 114323477868669540}
   - component: {fileID: 58285955888627426}
   - component: {fileID: 114943608188986817}
   - component: {fileID: 114287441773404540}
@@ -53,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 50681549671693459}
-  kb: {fileID: 114323477868669540}
+  kb: {fileID: 0}
   move: {fileID: 114933314071086218}
   trail: {fileID: 3673968081677559803}
   effect: {fileID: 0}
@@ -110,20 +109,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &114323477868669540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1848884527762117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22cc6141bfe7e19438ff28c753f4329d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  knockbackForce: 10
-  ignoreKBImmune: 0
 --- !u!58 &58285955888627426
 CircleCollider2D:
   m_ObjectHideFlags: 0

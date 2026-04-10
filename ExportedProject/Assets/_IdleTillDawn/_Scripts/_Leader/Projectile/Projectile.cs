@@ -9,9 +9,6 @@ namespace flanne
         protected Rigidbody2D rb;
 
         [SerializeField]
-        protected Knockback kb;
-
-        [SerializeField]
         protected MoveComponent2D move;
 
         [SerializeField]
@@ -58,14 +55,6 @@ namespace flanne
             }
         }
 
-        public float knockback
-        {
-            set
-            {
-                if (kb != null) kb.knockbackForce = value;
-            }
-        }
-
         public float angle
         {
             set
@@ -97,7 +86,7 @@ namespace flanne
             }
         }
 
-        protected virtual void OnCollisionEnter2D(Collision2D other)
+        private void OnTriggerEnter2D(Collider2D other)
         {
             // 발사자 자신은 무시
             if (owner != null && other.gameObject == owner) return;
@@ -119,34 +108,14 @@ namespace flanne
                     _fogImpactPeakIntensity,
                     _fogImpactFadeOutDuration);
             }
-            
+
             // 소멸/관통/반사는 IDamageable 여부와 무관하게 처리
             // (적이든 벽이든 pierce=0, bounce=0이면 총알 소멸)
             if (piercing == 0)
             {
-                if (bounce == 0)
-                {
-                    DetachEffects();
-                    Destroy(gameObject);
-                    return;
-                }
-
-                // 적에게 맞았을 때만 반사 횟수 차감 (벽은 횟수 유지)
-                if (damageable != null)
-                {
-                    bounce--;
-                }
-
-                // 충돌 법선 기준 반사
-                if (other.contactCount > 0)
-                {
-                    Vector2 normal   = other.contacts[0].normal;
-                    float   magnitude = move.vector.magnitude;
-                    Vector2 reflected = Vector2.Reflect(move.vector.normalized, normal) * magnitude;
-                    move.vector = reflected;
-                    if (!dontRotateOnBounce)
-                        angle = Mathf.Atan2(reflected.y, reflected.x) * Mathf.Rad2Deg;
-                }
+                DetachEffects();
+                Destroy(gameObject);
+                return;
             }
             else
             {
@@ -156,7 +125,70 @@ namespace flanne
                     piercing--;
                 }
             }
+
         }
+
+
+        //protected virtual void OnCollisionEnter2D(Collision2D other)
+        //{
+        //    // 발사자 자신은 무시
+        //    if (owner != null && other.gameObject == owner) return;
+        //
+        //    if (!damagable) return;
+        //
+        //    // 데미지는 IDamageable에만 적용
+        //    // move.vector : 현재 이동 방향을 hitDir로 전달하여 HitFlash·데미지텍스트 연출 활성화
+        //    IDamageable damageable = other.gameObject.GetComponent<IDamageable>();
+        //    if (damageable != null)
+        //    {
+        //        damageable.TakeDamage(_damage, move.vector.normalized);
+        //
+        //        // 피격 위치에서 안개 밝기 플래시 연출
+        //        CFogFlashSource.SpawnImpact(
+        //            transform.position,
+        //            _fogImpactOuterRadius,
+        //            _fogImpactInnerRatio,
+        //            _fogImpactPeakIntensity,
+        //            _fogImpactFadeOutDuration);
+        //    }
+        //    
+        //    // 소멸/관통/반사는 IDamageable 여부와 무관하게 처리
+        //    // (적이든 벽이든 pierce=0, bounce=0이면 총알 소멸)
+        //    if (piercing == 0)
+        //    {
+        //        if (bounce == 0)
+        //        {
+        //            DetachEffects();
+        //            Destroy(gameObject);
+        //            return;
+        //        }
+        //
+        //        // 적에게 맞았을 때만 반사 횟수 차감 (벽은 횟수 유지)
+        //        if (damageable != null)
+        //        {
+        //            bounce--;
+        //        }
+        //
+        //        // 충돌 법선 기준 반사
+        //        if (other.contactCount > 0)
+        //        {
+        //            Vector2 normal   = other.contacts[0].normal;
+        //            float   magnitude = move.vector.magnitude;
+        //            Vector2 reflected = Vector2.Reflect(move.vector.normalized, normal) * magnitude;
+        //            move.vector = reflected;
+        //            if (!dontRotateOnBounce)
+        //                angle = Mathf.Atan2(reflected.y, reflected.x) * Mathf.Rad2Deg;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // 관통은 적에게 맞았을 때만 차감
+        //        if (damageable != null)
+        //        {
+        //            piercing--;
+        //        }
+        //    }
+        //}
 
         protected virtual void SetSize(float size)
         {
