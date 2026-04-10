@@ -234,4 +234,14 @@ public abstract class CEnemyBase : CEntityBase
     /// 사망 애니메이션 재생 여부 — 자폭처럼 별도 연출이 있는 경우 false로 오버라이드
     /// </summary>
     protected virtual bool UseDeathAnimation() => true;
+
+    public override void ApplyFreeze(float duration, float slowAmount)
+    {
+        if (CAudioManager.Instance != null)
+        {
+            CAudioManager.Instance.Play(_enemyData.FreezeSFX, transform.position);
+        }
+
+        base.ApplyFreeze(duration, slowAmount);
+    }
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// 일반 몬스터의 기본 스탯, 스테이지당 성장치, 드롭 및 보상 정보를 정의하는 ScriptableObject입니다.
@@ -39,6 +39,7 @@ public class CEnemyDataSO : CBaseDataSO
     [Header("사운드")]
     [SerializeField] private CSoundData _hitSFX;   // 피격 시 재생 사운드
     [SerializeField] private CSoundData _dieSFX;   // 사망 시 재생 사운드
+    [SerializeField] private CSoundData _freezeSFX;   // 빙결 시 재생 사운드
 
     #endregion
 
@@ -62,6 +63,7 @@ public class CEnemyDataSO : CBaseDataSO
 
     public CSoundData HitSFX => _hitSFX;
     public CSoundData DieSFX => _dieSFX;
+    public CSoundData FreezeSFX => _freezeSFX;
 
     #endregion
 
