@@ -63,6 +63,8 @@ public class CSkillUI : MonoBehaviour
         {
             UpdateUIState();
         }
+
+        CSkillTooltip.Instance.Hide();
     }
 
     public void UpdateUIState()
