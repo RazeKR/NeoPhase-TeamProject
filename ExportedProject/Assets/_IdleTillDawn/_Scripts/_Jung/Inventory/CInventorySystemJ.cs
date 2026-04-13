@@ -2,25 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-/// <summary>
-/// ID ��� �κ��丮 �ý����Դϴ�.
-/// ������ ��ü�� int ID�θ� �����ϸ�, ǥ�á����� �� CDataManager�� ���� SO�� ��ȸ�մϴ�.
-/// CJsonManager�� ���� CSaveData�� �ڵ����� ���塤�����˴ϴ�.
-/// </summary>
-/// <example>
-/// // ������ �߰�
-/// CInventorySystem.Instance.AddItem(1001, 2);
-///
-/// // ���� ���� ��ü
-/// CInventorySystem.Instance.EquipWeapon(2001);
-///
-/// // UI ǥ�� (ID �� SO ��ȯ)
-/// foreach (int itemId in CInventorySystem.Instance.GetAllItemIds())
-/// {
-///     CItemDataSO so = CDataManager.Instance.GetItem(itemId);
-///     // so.ItemName, so.ItemSprite ������ UI ����
-/// }
-/// </example>
 public class CInventorySystemJ : MonoBehaviour
 {
     #region Events
@@ -38,9 +19,9 @@ public class CInventorySystemJ : MonoBehaviour
 
     #region PrivateVariables
 
-    private int _equippedWeaponId = 0;       // ���� ���� ���� ID (0 = ����)
-    private CWeaponInstance _equippedWeapon; // ���� ��� ���� ���� ����
-    public List<CItemInstance> _inventory = new List<CItemInstance>(); // ���� ������ ���� �κ��丮 ����
+    private int _equippedWeaponId = 0;       
+    private CWeaponInstance _equippedWeapon; 
+    public List<CItemInstance> _inventory = new List<CItemInstance>();
     public List<int> _equippedPotionIds = new List<int> { 0, 0 };
 
     private const int BaseCapacity      = 25;  // 기본 인벤토리 칸 수
@@ -54,10 +35,8 @@ public class CInventorySystemJ : MonoBehaviour
     public GameObject DragIconVisual;
     public CPotionDataSO CurrenlyDraggingPotion;
 
-    /// <summary>�̱��� �ν��Ͻ�.</summary>
     public static CInventorySystemJ Instance { get; private set; }
 
-    /// <summary>���� �κ��丮 ������ �����ɴϴ�.</summary>
     public List<CItemInstance> Inventory { get { return _inventory; } set { _inventory = value; } }
 
     /// <summary>현재 인벤토리 최대 칸 수.</summary>
@@ -69,10 +48,8 @@ public class CInventorySystemJ : MonoBehaviour
     /// <summary>인벤토리가 가득 찼는지 여부.</summary>
     public bool IsFull => _inventory.Count >= _maxCapacity;
 
-    /// <summary>���� ���� ���� ID. 0�̸� ���� ����.</summary>
     public int EquippedWeaponId => _equippedWeaponId;
 
-    /// <summary>���� ���� ���� �ν��Ͻ�/// </summary>
     public CWeaponInstance EquippedWeapon { get { return _equippedWeapon; } set { _equippedWeapon = value; } }
 
     #endregion
@@ -92,7 +69,6 @@ public class CInventorySystemJ : MonoBehaviour
 
     private void Start()
     {
-        // CJsonManager �ε� �̺�Ʈ ���� - �� �ε� �� �ڵ� ����
         if (CJsonManager.Instance != null)
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
 
@@ -136,13 +112,18 @@ public class CInventorySystemJ : MonoBehaviour
         if (player != null)
         {
             if (potionData.HealAmount > 0)
+            {
                 player.Heal(potionData.HealAmount);
+                CPlayerEffectVisual.Instance.LoadEffect(EffectList.Heal);
+            }
+                
 
             if (potionData.ManaHealAmount > 0)
             {
                 CPlayerStatManager statManager = player.GetComponent<CPlayerStatManager>();
                 if (statManager != null)
                     statManager.RestoreMana(potionData.ManaHealAmount);
+                CPlayerEffectVisual.Instance.LoadEffect(EffectList.Mana);
             }
         }
 
@@ -259,13 +240,12 @@ public class CInventorySystemJ : MonoBehaviour
         CDebug.Log($"[CInventorySystemJ] 인벤토리 확장 완료: {_maxCapacity}칸");
     }
 
-    /// <summary>�������� �κ��丮���� �����մϴ�. count�� ���� ���� �̻��̸� �ش� ������ �׸� ��ü�� ���ŵ˴ϴ�.</summary>
+    
     public bool RemoveItem(string targetInstanceID, int amount = 1)
     {
         var target = _inventory.Find(i => i._instanceID == targetInstanceID);
         if (target == null) return false;
 
-        // Ÿ�Ժ� ���� ���� �� ���� ó��
         if (target is CPotionInstance p)
         {
             p._amount -= amount;
@@ -276,7 +256,7 @@ public class CInventorySystemJ : MonoBehaviour
             s._amount -= amount;
             if (s._amount <= 0) _inventory.Remove(target);
         }
-        else // ���� �� ���� ���� ������
+        else
         {
             if (target == _equippedWeapon) return false;
             _inventory.Remove(target);
@@ -298,16 +278,15 @@ public class CInventorySystemJ : MonoBehaviour
         {
             return;
         }
-
         var scroll = _inventory.Find(i => i is CScrollInstance) as CScrollInstance;
 
+
         if (scroll != null)
-        {
+        {            
             if (CWeaponUpgrade.Instance.TryUpgrade(weapon))     // true = weapon Broken
             {
                 CDebug.Log("Weapon Broken!");
             }
-
             RemoveItem(scroll._instanceID, 1);            
         }
 

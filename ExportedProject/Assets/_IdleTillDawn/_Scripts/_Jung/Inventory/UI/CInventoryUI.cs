@@ -1,14 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
-/// <summary>
-/// �κ��丮 UI �������� �����ϰ� �ֽ�ȭ�մϴ�.
-/// CInventorySlot ������Ʈ�� ���� ���ֵ��� �����Ͽ� �κ��丮 UI�� �����մϴ�.
-/// </summary>
 
 public class CInventoryUI : MonoBehaviour
 {
@@ -18,29 +14,29 @@ public class CInventoryUI : MonoBehaviour
 
     #region Inspectors & PrivateVariables
 
-    [Header("�κ��丮 ���� �ν�����")]
-    [SerializeField] private Transform _slotParent = null;      // �κ��丮 ������ �� �θ� ��ü
-    [SerializeField] private GameObject _slotPrefab = null;     // �κ��丮 ���� ������
-    [SerializeField] private GameObject _inventoryUI = null;    // �κ��丮 UI (â On/Off ����)
+    [SerializeField] private Transform _slotParent = null;      
+    [SerializeField] private GameObject _slotPrefab = null;     
+    [SerializeField] private GameObject _inventoryUI = null;    
 
-    [Header("������ �� ���� �ν�����")]
+
     [SerializeField] private GameObject _itemInfoUI = null;
     [SerializeField] private Image _itemSprite = null;
     [SerializeField] private Image _itemRank = null;
     [SerializeField] private Sprite[] _itemRankSprites = null;
     [SerializeField] private Text _itemName = null;
+    [SerializeField] private Text _itemInfo = null;
     [SerializeField] private Text _upgradeText = null;
     
-    [Header("���� ��ȣ�ۿ� UI �ν�����")]
+
     [SerializeField] private GameObject _weaponUI = null;
     [SerializeField] private GameObject _equippedUI = null;
 
-    [Header("������ ��ȣ�ۿ� UI �ν�����")]
+
     [SerializeField] private GameObject _itemUI = null;
     [SerializeField] private Text _amountText = null;
     [SerializeField] private Button _deleteButton = null;
 
-    [Header("��ȭ UI �ν�����")]
+    
     [SerializeField] private GameObject _upgradeUI = null;
 
     private CItemInstance _item = null;
@@ -104,8 +100,11 @@ public class CInventoryUI : MonoBehaviour
         {
             // 기존 itemInfoUI를 재활용해 "N개 선택됨" 표시 + 버리기만 활성
             if (!_itemInfoUI.activeSelf) _itemInfoUI.SetActive(true);
+            _itemSprite.sprite = _item._itemData.ItemSprite;
+            _itemRank.sprite = _itemRankSprites[0];
             _itemName.text     = $"{_selectedInstanceIDs.Count}개 선택됨";
             _upgradeText.text  = "";
+            _itemInfo.text = "";
             _weaponUI.SetActive(false);
             _equippedUI.SetActive(false);
             _itemUI.SetActive(true);
@@ -134,7 +133,6 @@ public class CInventoryUI : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            // ���콺���� ���̸� ���, �� ������Ʈ�� �ɸ����� üũ
             if (EventSystem.current.IsPointerOverGameObject()
                 && RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), Input.mousePosition))
                 return;
@@ -233,12 +231,8 @@ public class CInventoryUI : MonoBehaviour
         RefreshUI();
     }
 
-    /// <summary>UI ������ �ֽ�ȭ�մϴ�.
-    /// OnInventoryChanged�� �����Ͽ� �����մϴ�.
-    /// </summary>
     public void RefreshUI()
     {
-        // �ڽ� ������ ��ȸ�ϸ� ����
         foreach (Transform child in _slotParent)
         {
             Destroy(child.gameObject);
@@ -255,7 +249,6 @@ public class CInventoryUI : MonoBehaviour
             CDebug.Log("inventory null"); return;
         }
 
-        // �κ��丮�� ��ȸ�ϸ� ����
         foreach (var item in inventory)
         {
             GameObject go = Instantiate(_slotPrefab, _slotParent);
@@ -263,12 +256,9 @@ public class CInventoryUI : MonoBehaviour
 
             slot.SetSlot(item);
         }
+        Debug.Log("리프레시 완료");
     }
 
-    /// <summary>
-    /// �κ��丮 UI�� ���ų� �ݽ��ϴ�.
-    /// ��ư ������Ʈ�� �����ϰų� Ű�� �Ҵ��Ͽ� ����մϴ�.
-    /// </summary>
     public void OnOffInventoryUI()
     {
         if (_inventoryUI == null) return;
@@ -285,10 +275,6 @@ public class CInventoryUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Ŭ�� �� ���� Item�� ���ε�� ����� ���� / ���� ��� / ��ũ���� ����� ���� ������ Ȱ��ȭ�մϴ�.
-    /// ��ư ������Ʈ�� �����ϰų� Ű�� �Ҵ��Ͽ� ����մϴ�.
-    /// </summary>
     public void ClickUse()
     {
         if (_item == null) return;
@@ -333,10 +319,6 @@ public class CInventoryUI : MonoBehaviour
         RefreshUI();
     }
 
-    /// <summary>
-    /// �������� �����մϴ�. (�Ҹ�ǰ�� ��� ClickAmountUpDown ��ư���� �߰��� ������ ���� �� �����մϴ�.)
-    /// ��ư ������Ʈ�� �����ϰų� Ű�� �Ҵ��Ͽ� ����մϴ�.
-    /// </summary>
     public void ClickDelete()
     {
         // 다중선택 모드면 일괄 삭제
@@ -353,10 +335,6 @@ public class CInventoryUI : MonoBehaviour
         RefreshUI();
     }
 
-    /// <summary>
-    /// ������ �������� ������ �ø��ų� �����ϴ�.
-    /// ��ư ������Ʈ�� �����ϰų� Ű�� �Ҵ��Ͽ� ����ϸ�, bool�� üũ�� �� ����, ������ �� �����մϴ�.
-    /// </summary>
     public void ClickAmountUpDown(bool isDown)
     {
         if (_item == null) return;
@@ -385,9 +363,6 @@ public class CInventoryUI : MonoBehaviour
 
     #region PrivateMethods
 
-    /// <summary>
-    /// ���� �������κ��� �޾ƿ� ������ �� UI�� Ȱ��ȭ/��Ȱ��ȭ�� �����մϴ�.
-    /// </summary>
     private void OnOffInfo()
     {
         if (_item == null || _item._itemData == null)
@@ -402,10 +377,6 @@ public class CInventoryUI : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// ������ ���� ��ư UI�� On/Off ���ϴ�.
-    /// </summary>
     private void OnOffButton()
     {
         if (_item ==  null) return;
@@ -445,10 +416,6 @@ public class CInventoryUI : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// ��������Ʈ, �̸�, ���� ���� ������Ʈ�մϴ�.
-    /// </summary>
     private void InfoUpdate()
     {
         if (_item == null) return;
@@ -459,6 +426,7 @@ public class CInventoryUI : MonoBehaviour
             _itemRank.sprite = _itemRankSprites[weapon._rank];
             _itemName.text = weapon._itemData.ItemName;
             _upgradeText.text = "+" + weapon._upgrade.ToString();
+            _itemInfo.text = "Atk +" + weapon.GetActualDamage();
         }
 
         else if (_item is CPotionInstance potion)
@@ -467,6 +435,9 @@ public class CInventoryUI : MonoBehaviour
             _itemRank.sprite = _itemRankSprites[0];
             _itemName.text = potion._itemData.ItemName;
             _upgradeText.text = "";
+            string heal = (potion._itemData as CPotionDataSO).HealAmount == 0 ? "" : $"Heal +{(potion._itemData as CPotionDataSO).HealAmount}";
+            string mana = (potion._itemData as CPotionDataSO).ManaHealAmount == 0 ? "" : $"Mana +{(potion._itemData as CPotionDataSO).ManaHealAmount}";
+            _itemInfo.text = heal + mana;
         }
 
         else if (_item is CScrollInstance scroll)
@@ -475,6 +446,7 @@ public class CInventoryUI : MonoBehaviour
             _itemRank.sprite = _itemRankSprites[0];
             _itemName.text = scroll._itemData.ItemName;
             _upgradeText.text = "";
+            _itemInfo.text = "";
         }
     }
 

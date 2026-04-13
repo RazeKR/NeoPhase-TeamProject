@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// �κ��丮 �Ŵ����� ������ �޾ƿͼ� UI�� �ݿ��մϴ�.
-/// </summary>
 
 public class CInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -105,6 +102,7 @@ public class CInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
             bool selected = CInventoryUI.Instance.ToggleMultiSelect(_item._instanceID);
             SetSelected(selected);
+            CInventoryUI.Instance.Item = _item;
             return;
         }
 
