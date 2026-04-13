@@ -90,6 +90,12 @@ public class CWeaponEquip : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(CoLoadEquippedWeapon());
+    }
+
+    private IEnumerator CoLoadEquippedWeapon()
+    {
+        yield return new WaitUntil(() => CInventorySystemJ.Instance != null);
         LoadEquippedWeapon();
     }
 
@@ -141,7 +147,10 @@ public class CWeaponEquip : MonoBehaviour
 
         float meleeOffset = 0;
 
-        if ((_itemDataSO as CWeaponDataSO).IsMelee) meleeOffset = -90f;
+        CWeaponDataSO weaponDataSO = _itemDataSO as CWeaponDataSO;
+        if (weaponDataSO == null) return;
+
+        if (weaponDataSO.IsMelee) meleeOffset = -90f;
 
         if (_isSwinging)
         {
@@ -187,6 +196,8 @@ public class CWeaponEquip : MonoBehaviour
 
     private void LoadEquippedWeapon()
     {
+        if (CInventorySystemJ.Instance == null) return;
+        if (_targetSpriteRdr == null) return;
         CWeaponInstance weapon = CInventorySystemJ.Instance.EquippedWeapon;
         if (weapon == null || weapon._itemData == null) return;
 

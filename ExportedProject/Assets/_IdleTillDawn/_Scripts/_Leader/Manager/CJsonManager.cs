@@ -175,6 +175,7 @@ public class CJsonManager : MonoBehaviour
     /// <summary>
     /// 세이브 파일을 삭제하고 CurrentSaveData를 초기화합니다.
     /// 게임 초기화(뉴 게임) 시 사용합니다.
+    /// 세이브 데이터 삭제 전 서버 랭킹에서도 해당 플레이어를 자동 제거합니다.
     /// </summary>
     public void DeleteSave()
     {
@@ -186,6 +187,10 @@ public class CJsonManager : MonoBehaviour
 
         try
         {
+            // 랭킹 서버에서 해당 플레이어 데이터를 삭제 (CurrentSaveData가 null이 되기 전에 호출)
+            if (CRankingManager.Instance != null && CurrentSaveData != null)
+                CRankingManager.Instance.DeleteMyRanking(CurrentSaveData);
+
             File.Delete(_savePath);
             CurrentSaveData = null;
             CDebug.Log("[CJsonManager] 세이브 파일 삭제 완료.");
@@ -273,6 +278,9 @@ public class CJsonManager : MonoBehaviour
     public void SavePlayerProfile(string nickname, EPlayerType type)
     {
         EnsureSaveDataLoaded();
+        // uid가 비어있으면 신규 생성 (P키 삭제 후 재등록 대비)
+        if (string.IsNullOrEmpty(CurrentSaveData.uid))
+            CurrentSaveData.uid = GenerateNumericUID();
         CurrentSaveData.nickname = nickname;
         CurrentSaveData.characterType = type;
         Save(CurrentSaveData);

@@ -66,5 +66,7 @@ public class CRankingTestScript : MonoBehaviour
                 });
             }
         }
+
+        // Delete : 전체 랭킹 초기화는 CRankingManager.Update()에서 처리
     }
 }

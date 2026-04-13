@@ -17,6 +17,7 @@ public class CItemBindSlot : MonoBehaviour, IDropHandler
 
     private void Start()
     {
+        if (CInventorySystemJ.Instance == null) return;
         _dragIcon = CInventorySystemJ.Instance.DragIconVisual;
         UpdateSlotUI();
     }

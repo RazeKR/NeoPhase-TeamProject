@@ -447,7 +447,9 @@ public class CPlayerController : CEntityBase, IHealable
             ? CWeaponEquip.Instance.MuzzleWorldPosition
             : transform.position;
 
-        int count = CWeaponEquip.Instance.GetProjectileAmount();
+        int count = CWeaponEquip.Instance != null
+            ? CWeaponEquip.Instance.GetProjectileAmount()
+            : 1;
 
         float step = 15f;
         float startAngle = rotZ - (step * (count - 1) / 2f);

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
@@ -115,6 +116,65 @@ public class CNicknamePanel : MonoBehaviour
             return;
         }
 
+        // 서버에서 닉네임 중복 확인 후 진입
+        StartCoroutine(CoCheckNicknameAndEnter(nickname));
+    }
+
+    /// <summary>
+    /// 서버 랭킹 목록에서 닉네임 중복을 확인한 뒤 게임에 진입합니다.
+    /// 본인의 기존 닉네임(같은 UID)은 중복으로 처리하지 않습니다.
+    /// </summary>
+    private IEnumerator CoCheckNicknameAndEnter(string nickname)
+    {
+        // 버튼 비활성화 후 확인 중 메시지 표시
+        if (_submitButton != null) _submitButton.interactable = false;
+        ShowError("닉네임 확인 중...");
+
+        bool isDuplicate = false;
+        bool fetchDone   = false;
+
+        string myUid = CJsonManager.Instance != null
+            ? CJsonManager.Instance.GetOrCreateSaveData().uid
+            : string.Empty;
+
+        if (CRankingManager.Instance != null)
+        {
+            CRankingManager.Instance.GetRankingData((rankList) =>
+            {
+                if (rankList != null)
+                {
+                    foreach (CRankData data in rankList)
+                    {
+                        // 자기 자신의 UID는 중복 검사에서 제외 (닉네임 변경 허용)
+                        if (data.uid == myUid) continue;
+
+                        if (data.nickname == nickname)
+                        {
+                            isDuplicate = true;
+                            break;
+                        }
+                    }
+                }
+                fetchDone = true;
+            });
+        }
+        else
+        {
+            fetchDone = true; // RankingManager 없으면 중복 검사 생략
+        }
+
+        // 콜백 완료까지 대기
+        yield return new WaitUntil(() => fetchDone);
+
+        if (_submitButton != null) _submitButton.interactable = true;
+
+        if (isDuplicate)
+        {
+            ShowError("이미 사용 중인 닉네임입니다.");
+            yield break;
+        }
+
+        HideError();
         SaveAndEnterGame(nickname);
     }
 

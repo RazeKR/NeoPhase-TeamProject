@@ -26,6 +26,18 @@ public class CRankingUI : MonoBehaviour
             return;
         }
 
+        // 1순위: 최고 스테이지 내림차순 / 2순위: 플레이어 레벨 내림차순 / 3순위: 총 킬 수 내림차순
+        rankList.Sort((a, b) =>
+        {
+            int stageCmp = b.highestStageIdx.CompareTo(a.highestStageIdx);
+            if (stageCmp != 0) return stageCmp;
+
+            int levelCmp = b.playerLevel.CompareTo(a.playerLevel);
+            if (levelCmp != 0) return levelCmp;
+
+            return b.totalKills.CompareTo(a.totalKills);
+        });
+
         for (int i = 0; i < rankList.Count; i++)
         {
             CRankData data = rankList[i];
@@ -35,7 +47,7 @@ public class CRankingUI : MonoBehaviour
             TextMeshProUGUI textComponent = slotGo.GetComponent<TextMeshProUGUI>();
             if (textComponent != null)
             {
-                textComponent.text = $"{i + 1}위 - {data.nickname} [Stage:{data.highestStageIdx} | {data.totalKills}Kills]";
+                textComponent.text = $"{i + 1}위  {data.nickname}  [{data.characterType}]  Lv.{data.playerLevel}  Stage {data.highestStageIdx + 1}";
             }
         }
     }
