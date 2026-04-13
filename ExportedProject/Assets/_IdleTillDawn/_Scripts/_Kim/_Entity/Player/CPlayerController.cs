@@ -777,6 +777,13 @@ public class CPlayerController : CEntityBase, IHealable
 
         int skillPointsToAdd = (newLevel == CPlayerStatManager.MaxLevel) ? 9 : 2;
         CSkillSystem.Instance?.AddSkillPoint(skillPointsToAdd);
+
+        // 레벨업 즉시 로컬 세이브에 반영 — 사망 후 자동저장 시 _cachedPlayer null 체크에 의해 누락되는 것 방지
+        CJsonManager.Instance?.SavePlayerProgress(newLevel, _statManager.CurrentExp, CurrentHealth, _statManager.CurrentMana);
+
+        // 레벨업 시 즉시 랭킹 서버에도 반영
+        if (CJsonManager.Instance != null && CRankingManager.Instance != null)
+            CRankingManager.Instance.SaveMyRanking(CJsonManager.Instance.CurrentSaveData);
     }
 
     private void RefreshStats()

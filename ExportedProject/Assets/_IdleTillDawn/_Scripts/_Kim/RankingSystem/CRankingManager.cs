@@ -13,6 +13,8 @@ public class CRankingManager : MonoBehaviour
     private bool _isDeletingAll = false;
     // 저장 중복 요청 방지
     private bool _isSaving = false;
+    // 저장 중 새 요청이 들어왔을 때 대기시킬 최신 데이터 (null이면 대기 없음)
+    private CSaveData _pendingSaveData = null;
 
     private float _lastFetchTime = -999f;
     private const float FETCH_COOLDOWN = 30f;
@@ -55,22 +57,7 @@ public class CRankingManager : MonoBehaviour
             );
         }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            CSaveData saveData = CJsonManager.Instance?.CurrentSaveData;
-            if (saveData == null)
-            {
-                Debug.LogWarning("[CRankingManager] P 키 — 로컬 세이브 데이터 없음");
-                return;
-            }
-            if (string.IsNullOrEmpty(saveData.uid))
-            {
-                Debug.LogWarning("[CRankingManager] P 키 — UID 없음, 삭제 불가");
-                return;
-            }
-            Debug.Log($"[CRankingManager] P 키 — 내 랭킹 삭제 시작 (uid: {saveData.uid}, nickname: {saveData.nickname})");
-            DeleteMyRanking(saveData);
-        }
+        // P키 처리는 CGameManager.ResetAllData()에서 일괄 처리 (CJsonManager.DeleteSave → DeleteMyRanking 호출)
     }
 
     /// <summary>
@@ -131,19 +118,20 @@ public class CRankingManager : MonoBehaviour
             return;
         }
 
-        // 이미 저장 요청이 진행 중이면 중복 차단
-        if (_isSaving)
-        {
-            CDebug.LogWarning("CRankingManager : 이미 저장 중 — 중복 요청 무시");
-            return;
-        }
-
         // UID 또는 닉네임이 없으면 서버에 저장하지 않음
         if (string.IsNullOrEmpty(localSaveData.uid) ||
             string.IsNullOrEmpty(localSaveData.nickname) ||
             localSaveData.nickname == "이름 없는 플레이어")
         {
             CDebug.LogWarning("CRankingManager : UID 또는 닉네임이 없어 랭킹 저장 생략");
+            return;
+        }
+
+        // 이미 저장 요청이 진행 중이면 최신 데이터를 대기열에 보관 (드롭하지 않음)
+        if (_isSaving)
+        {
+            CDebug.LogWarning("CRankingManager : 이미 저장 중 — 완료 후 재전송 예약");
+            _pendingSaveData = localSaveData;
             return;
         }
 
@@ -170,8 +158,20 @@ public class CRankingManager : MonoBehaviour
 
             if (success)
             {
-                CDebug.Log($"서버 전송 완료 (시도 {attempt}/3)");
+                CDebug.Log($"서버 전송 완료 (시도 {attempt}/3) | playerLevel={rankData.playerLevel}");
                 _isSaving = false;
+                // 저장 성공 시 캐시를 무효화해 다음 랭킹 조회 시 최신 데이터를 서버에서 받아오게 함
+                _cachedRankingData.Clear();
+                _lastFetchTime = -999f;
+
+                // 저장 완료 후 대기 중인 요청이 있으면 즉시 전송
+                if (_pendingSaveData != null)
+                {
+                    CSaveData pending = _pendingSaveData;
+                    _pendingSaveData = null;
+                    CDebug.Log($"[CRankingManager] 대기 중이던 랭킹 데이터 전송 | playerLevel={pending.playerLevel}");
+                    SaveMyRanking(pending);
+                }
                 yield break;
             }
 
@@ -202,8 +202,14 @@ public class CRankingManager : MonoBehaviour
                 _lastFetchTime = -999f;
 
                 // 로컬 닉네임만 초기화 — uid는 유지해서 재등록 가능하게 함
-                localSaveData.nickname = "";
-                CJsonManager.Instance?.Save(localSaveData);
+                // 단, 현재 세션의 세이브 데이터와 동일한 경우에만 저장
+                // (리셋 후 새 세션이 시작됐다면 이전 세이브 데이터를 덮어쓰면 안 됨)
+                if (CJsonManager.Instance != null &&
+                    object.ReferenceEquals(CJsonManager.Instance.CurrentSaveData, localSaveData))
+                {
+                    localSaveData.nickname = "";
+                    CJsonManager.Instance.Save(localSaveData);
+                }
                 CDebug.Log("[CRankingManager] 서버 랭킹 삭제 완료 — 로컬 닉네임 초기화");
             },
             onError: (error) => CDebug.LogError($"서버 랭킹 데이터 삭제 실패 : {error}")

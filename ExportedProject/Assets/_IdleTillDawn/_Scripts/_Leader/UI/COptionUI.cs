@@ -71,6 +71,14 @@ public class COptionUI : MonoBehaviour
     [Tooltip("전체화면 ON 시 해상도 행의 alpha 값 (어두운 정도)")]
     [SerializeField] private float _disabledAlpha = 0.35f;
 
+    [Header("ESC 키 처리 (인게임 ESC 메뉴가 별도로 있으면 false)")]
+    [Tooltip("true = Update에서 ESC 키 감지 / false = CInGameEscMenu 등 외부에서 Show/Hide 직접 호출")]
+    [SerializeField] private bool _handleEscKey = true;
+
+    [Header("인게임 옵션 열 때 시간 정지 여부")]
+    [Tooltip("false = 게임 계속 진행 / true = timeScale 0으로 정지 (기존 동작)")]
+    [SerializeField] private bool _pauseOnInGameOpen = false;
+
     [Header("버튼 참조")]
     [Tooltip("메인메뉴 화면의 '옵션' 버튼 — 인게임 모드면 비워둬도 됨 (ESC로 열림)")]
     [SerializeField] private Button _openButton;
@@ -172,6 +180,8 @@ public class COptionUI : MonoBehaviour
 
     private void Update()
     {
+        if (!_handleEscKey) return;
+
         // 인게임 모드에서만 ESC 처리
         bool isInGame = _state == UIState.InGame || _state == UIState.InGameOption;
         if (isInGame && Input.GetKeyDown(KeyCode.Escape))
@@ -201,9 +211,11 @@ public class COptionUI : MonoBehaviour
                 break;
 
             case UIState.InGame:
-                // 인게임: 시간 정지 후 즉시 표시
-                _prevTimeScale = Time.timeScale;
-                Time.timeScale = 0f;
+                if (_pauseOnInGameOpen)
+                {
+                    _prevTimeScale = Time.timeScale;
+                    Time.timeScale = 0f;
+                }
                 _state         = UIState.InGameOption;
                 _fadeCoroutine = StartCoroutine(Co_ShowOptionInstant());
                 break;
@@ -225,7 +237,7 @@ public class COptionUI : MonoBehaviour
 
             case UIState.InGameOption:
                 _state = UIState.InGame;
-                _fadeCoroutine = StartCoroutine(Co_HideOptionInstant());
+                _fadeCoroutine = StartCoroutine(Co_HideOptionInstant(_pauseOnInGameOpen));
                 break;
         }
     }
@@ -277,8 +289,8 @@ public class COptionUI : MonoBehaviour
         yield break;
     }
 
-    // 인게임 옵션: 즉시 닫기 + timeScale 복구
-    private IEnumerator Co_HideOptionInstant()
+    // 인게임 옵션: 즉시 닫기 (restoreTimeScale=true면 timeScale 복구)
+    private IEnumerator Co_HideOptionInstant(bool restoreTimeScale)
     {
         if (_optionCG != null)
         {
@@ -287,7 +299,8 @@ public class COptionUI : MonoBehaviour
             _optionCG.blocksRaycasts = false;
         }
         _optionPanel.SetActive(false);
-        Time.timeScale = _prevTimeScale;
+        if (restoreTimeScale)
+            Time.timeScale = _prevTimeScale;
         yield break;
     }
 

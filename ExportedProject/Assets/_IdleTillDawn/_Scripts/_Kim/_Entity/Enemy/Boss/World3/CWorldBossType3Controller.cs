@@ -42,6 +42,7 @@ public class CWorldBossType3Controller : CBossBase
 
     private void Update()
     {
+        base.Update(); // 빙결 시 애니메이터 정지 처리 (CEnemyBase.Update)
         Hovering();
     }
 

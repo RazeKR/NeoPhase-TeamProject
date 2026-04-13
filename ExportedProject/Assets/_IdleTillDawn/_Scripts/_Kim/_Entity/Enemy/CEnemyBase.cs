@@ -101,6 +101,7 @@ public abstract class CEnemyBase : CEntityBase
     protected virtual void Update()
     {
         if (_animator == null) return;
+        if (_isDead) return; // 사망 후에는 애니메이터 속도 변경 중단
         // 빙결 상태이면 애니메이션 정지, 해제되면 복구
         _animator.speed = HasStatus(EStatusEffect.Freeze) ? 0f : 1f;
     }
@@ -166,6 +167,10 @@ public abstract class CEnemyBase : CEntityBase
     {
         if (_isDead) return; // 중복 호출 방지
         _isDead = true;
+
+        // 빙결 중 사망 시에도 죽음 애니메이션이 재생되도록 상태이상 정리 및 애니메이터 속도 복구
+        ClearAllStatuses();
+        if (_animator != null) _animator.speed = 1f;
 
         if (_enemyData?.DieSFX != null)
             CAudioManager.Instance?.Play(_enemyData.DieSFX, transform.position);

@@ -7,7 +7,11 @@ using UnityEngine.Networking;
 
 public class CRankingAPI
 {
-    private const string WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwVZIX9ZRkvIQtU3_i0jhuEAgfTENbUvvM8TXKkuqU4arHK34BhL_f4Sepy10YAd5IT/exec";
+    private const string WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzR1Ss37K5ONb58lpp61aKUGQExq0w0GFOV8ZDqdb1gl9KDwjOMujWKV1VMsiQefj5v/exec";
+
+    // GET 요청에 타임스탬프를 붙여 HTTP 캐시를 무효화
+    private static string GetUrlNoCahce() =>
+        $"{WEB_APP_URL}?t={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
 
     /// <summary>
     /// 서버에서 랭킹을 읽어오는 코루틴 메서드
@@ -17,7 +21,7 @@ public class CRankingAPI
     /// <returns></returns>
     public static IEnumerator CoFetchRanking(Action<RankDataList> onSuccess, Action<string> onError)
     {
-        using (UnityWebRequest request = UnityWebRequest.Get(WEB_APP_URL))
+        using (UnityWebRequest request = UnityWebRequest.Get(GetUrlNoCahce()))
         {
             request.timeout = 30; // 30초 동안 응답이 없으면 에러 처리하고 종료
 
@@ -46,6 +50,7 @@ public class CRankingAPI
     public static IEnumerator CoSaveRanking(CRankData data, Action onSuccess, Action<string> onError)
     {
         string jsonToUpload = JsonUtility.ToJson(data);
+        Debug.Log($"[CoSaveRanking] 전송 JSON: {jsonToUpload}");
 
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonToUpload);
 
@@ -54,19 +59,32 @@ public class CRankingAPI
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-
-            request.timeout = 30; // 30초 동안 응답이 없으면 에러 처리하고 종료
+            request.timeout = 30;
 
             yield return request.SendWebRequest();
 
-            if (request.result == UnityWebRequest.Result.Success)
+            string resp = request.downloadHandler?.text ?? "(응답 없음)";
+            Debug.Log($"[CoSaveRanking] HTTP={request.responseCode} | 응답={resp}");
+
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                onSuccess?.Invoke();
+                onError?.Invoke(GetKoreanErrorMessage(request));
+                yield break;
+            }
+
+            // GAS 응답 파싱 — status가 명시적으로 error가 아니면 성공으로 처리
+            // (리다이렉트 후 HTML 반환 등 파싱 실패 시에도 HTTP 200이면 성공으로 간주)
+            GASResponse gasResp = null;
+            try { gasResp = JsonUtility.FromJson<GASResponse>(resp); } catch { }
+
+            if (gasResp != null && gasResp.status == "error")
+            {
+                Debug.LogError($"[CoSaveRanking] GAS 저장 실패 — {gasResp.message}");
+                onError?.Invoke($"GAS 저장 실패: {gasResp.message}");
             }
             else
             {
-                string koreanError = GetKoreanErrorMessage(request);
-                onError?.Invoke(koreanError);
+                onSuccess?.Invoke();
             }
         }
     }
@@ -96,17 +114,18 @@ public class CRankingAPI
                 yield break;
             }
 
-            // HTTP 200이어도 GAS가 error를 반환할 수 있으므로 body의 status 확인
-            GASResponse gasResp = JsonUtility.FromJson<GASResponse>(resp);
-            if (gasResp != null && gasResp.status == "success")
+            // GAS 응답 파싱 — status가 명시적으로 error가 아니면 성공으로 처리
+            GASResponse gasResp = null;
+            try { gasResp = JsonUtility.FromJson<GASResponse>(resp); } catch { }
+
+            if (gasResp != null && gasResp.status == "error")
             {
-                onSuccess?.Invoke();
+                Debug.LogError($"[CoDeleteRanking] 서버 삭제 실패 — {gasResp.message}");
+                onError?.Invoke($"서버 삭제 실패: {gasResp.message}");
             }
             else
             {
-                string reason = gasResp?.message ?? resp;
-                Debug.LogError($"[CoDeleteRanking] 서버 삭제 실패 — {reason}");
-                onError?.Invoke($"서버 삭제 실패: {reason}");
+                onSuccess?.Invoke();
             }
         }
     }
@@ -138,7 +157,7 @@ public class CRankingAPI
 
         // Step 2: deleteAll 직후 즉시 검증 — 성공했으면 개별 루프 없이 완료
         RankDataList afterDeleteAll = null;
-        using (UnityWebRequest request = UnityWebRequest.Get(WEB_APP_URL))
+        using (UnityWebRequest request = UnityWebRequest.Get(GetUrlNoCahce()))
         {
             request.timeout = 30;
             yield return request.SendWebRequest();
@@ -171,7 +190,7 @@ public class CRankingAPI
         {
             // 현재 서버 잔존 목록 조회
             RankDataList rankList = null;
-            using (UnityWebRequest request = UnityWebRequest.Get(WEB_APP_URL))
+            using (UnityWebRequest request = UnityWebRequest.Get(GetUrlNoCahce()))
             {
                 request.timeout = 30;
                 yield return request.SendWebRequest();
@@ -261,7 +280,7 @@ public class CRankingAPI
 
         // 최종 검증
         RankDataList finalCheck = null;
-        using (UnityWebRequest request = UnityWebRequest.Get(WEB_APP_URL))
+        using (UnityWebRequest request = UnityWebRequest.Get(GetUrlNoCahce()))
         {
             request.timeout = 30;
             yield return request.SendWebRequest();

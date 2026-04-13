@@ -36,10 +36,11 @@ public class CDashActionNode : CNode
 
     public override ENodeState Evaluate()
     {
-        // 대시 진행 중 빙결 감지 → 즉시 모션캔슬 후 패턴 리셋
-        if (_boss.HasStatus(EStatusEffect.Freeze) && _boss.IsAttacking)
+        // 빙결 상태이면 대시 불가 — 진행 중이면 즉시 취소, 대기 중이면 실패 반환
+        if (_boss.HasStatus(EStatusEffect.Freeze))
         {
-            CancelDash();
+            if (_boss.IsAttacking)
+                CancelDash();
             State = ENodeState.Failure;
             return State;
         }

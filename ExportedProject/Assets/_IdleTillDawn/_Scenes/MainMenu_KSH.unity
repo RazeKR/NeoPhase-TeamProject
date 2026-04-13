@@ -544,6 +544,7 @@ MonoBehaviour:
   _inventory: {fileID: 6473781313143616403, guid: c64b86f70fab656479be6b4c4ee91248,
     type: 3}
   _skillTree: {fileID: 0}
+  _bossSummon: {fileID: 0}
   _logInput: 0
 --- !u!4 &72716948
 Transform:
@@ -1966,7 +1967,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2C9\uB124\uC784\uC740 \uCD5C\uB300 6\uAE00\uC790 \uAE4C\uC9C0 \uAC00\uB2A5\uD569\uB2C8\uB2E4."
+  m_text: "\uB2C9\uB124\uC784\uC740 \uCD5C\uB300 6\uAE00\uC790\uAE4C\uC9C0 \uAC00\uB2A5\uD569\uB2C8\uB2E4."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 94e7a1471f076154a9892036de73a8c4, type: 2}
   m_sharedMaterial: {fileID: 4791065973830861759, guid: 94e7a1471f076154a9892036de73a8c4,

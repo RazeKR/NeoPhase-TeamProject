@@ -411,6 +411,7 @@ public abstract class CEntityBase : MonoBehaviour, IDamageable
     {
         if (!isActiveAndEnabled) return;
         if (HasStatus(EStatusEffect.Knockback)) return;
+        if (HasStatus(EStatusEffect.Freeze)) return; // 빙결 상태에서는 넉백 불가 — 피격 시 제자리 유지
 
         _knockbackCoroutine = StartCoroutine(CoKnockbackRoutine(force, duration));
     }
