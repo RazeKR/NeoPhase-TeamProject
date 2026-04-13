@@ -31,6 +31,7 @@ public class CUIInputHandler : MonoBehaviour
             CInputDispatcher.Instance.OnOption -= HandleOptionInput;
             CInputDispatcher.Instance.OnShop -= HandleShopInput;
             CInputDispatcher.Instance.OnSkillTree -= HandleSkillTreeInput;
+            CInputDispatcher.Instance.OnBossSummon -= HandleBossSummonInput;
         }
     }
 
@@ -42,6 +43,7 @@ public class CUIInputHandler : MonoBehaviour
         CInputDispatcher.Instance.OnOption += HandleOptionInput;
         CInputDispatcher.Instance.OnShop += HandleShopInput;
         CInputDispatcher.Instance.OnSkillTree += HandleSkillTreeInput;
+        CInputDispatcher.Instance.OnBossSummon += HandleBossSummonInput;
     }
 
     private void HandleInventoryInput()
@@ -113,5 +115,19 @@ public class CUIInputHandler : MonoBehaviour
             CDebug.LogWarning("CUIInputHandler : CSkillUI.Instance를 찾을 수 없음");
         }
 
+    }
+
+    private void HandleBossSummonInput()
+    {
+        CStageManager stageManager = FindAnyObjectByType<CStageManager>();
+
+        if (stageManager != null)
+        {
+            stageManager.OnBossChallengeButtonPressed();
+        }
+        else
+        {
+            CDebug.LogWarning("CUIInputHandler : CStageManager를 찾을 수 없음");
+        }
     }
 }
