@@ -48,12 +48,16 @@ public class CCharacterSelectUI : MonoBehaviour
     [SerializeField] private float _bobSpeed  = 1.4f;
 
     [Header("씬 전환")]
-    [Tooltip("캐릭터 확정 후 로드할 스테이지 씬 이름")]
+    [Tooltip("캐릭터 확정 후 로드할 스테이지 씬 이름 (닉네임 패널 미연결 시 폴백으로 사용)")]
     [SerializeField] private string _stageSceneName = "Stage1_KSH";
 
     [Header("기본 무기")]
     [Tooltip("최초 게임 시작 시 자동 지급할 무기 ID (WeaponData_Revolver._id = 6)")]
     [SerializeField] private int _defaultWeaponId = 6;
+
+    [Header("닉네임 패널 (랭킹 시스템)")]
+    [Tooltip("캐릭터 확정 후 표시할 닉네임 입력 패널. 연결하지 않으면 바로 스테이지로 이동합니다.")]
+    [SerializeField] private CNicknamePanel _nicknamePanel;
 
     #endregion
 
@@ -154,8 +158,16 @@ public class CCharacterSelectUI : MonoBehaviour
             CJsonManager.Instance.Save(saveData);
         }
 
-        CGameManager.Instance.MarkGameEntered(_focusedButton.Data.Id);
-        SceneManager.LoadScene(_stageSceneName);
+        // 닉네임 패널이 연결되어 있으면 패널을 띄우고, 없으면 바로 씬 전환 (폴백)
+        if (_nicknamePanel != null)
+        {
+            _nicknamePanel.SetUp(_focusedButton.Data.Id, _focusedButton.Data.CharacterType);
+        }
+        else
+        {
+            CGameManager.Instance.MarkGameEntered(_focusedButton.Data.Id);
+            SceneManager.LoadScene(_stageSceneName);
+        }
     }
 
     #endregion
