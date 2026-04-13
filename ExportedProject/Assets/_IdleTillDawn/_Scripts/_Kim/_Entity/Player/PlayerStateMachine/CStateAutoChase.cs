@@ -30,6 +30,10 @@ public class CStateAutoChase : IPlayerState
         {
             _player.StateMachine.ChangeState(_player.StateManual);
         }
+        else
+        {
+            _player.ExecuteAutoSkill();
+        }
     }
 
     public void FixedUpdate()

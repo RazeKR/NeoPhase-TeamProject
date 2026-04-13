@@ -23,6 +23,11 @@ public class CPlayerController : CEntityBase, IHealable
     //[SerializeField] private float _bulletSpeed = 10f;
     // SO -> ProjectileSpeed
 
+    [Header("포션 사용 설정")]
+    [SerializeField] private float _ratioForUseHealthPosion = 0.3f;
+    [SerializeField] private float _ratioForUseManaPosion = 0.3f;
+    [SerializeField] private float _autoPotionCooldown = 0.5f;
+
     [Header("테스트용 무기 직접 참조")]
     [Tooltip("true로 켜면 CInventoryManager를 무시하고 아래 SO를 직접 사용합니다.\n인스펙터에서 FireRate 등을 바로 조정할 때 사용하세요.")]
     [SerializeField] private bool _useTestWeaponOverride = false;
@@ -68,6 +73,9 @@ public class CPlayerController : CEntityBase, IHealable
 
     private int   _footstepIndex = 0;
     private float _footstepTimer = 0f;
+
+    private float _lastAutoHpTime = -999f;
+    private float _lastAutoMpTime = -999f;
     #endregion
 
     #region 프로퍼티
@@ -302,6 +310,8 @@ public class CPlayerController : CEntityBase, IHealable
         {
             StateMachine.Update();
         }
+
+        ExecuteAutoPosionUse();
     }
 
     protected override void FixedUpdate()
@@ -603,6 +613,25 @@ public class CPlayerController : CEntityBase, IHealable
         }
     }
 
+    public void ExecuteAutoSkill()
+    {
+        if (CSkillSystem.Instance == null) return;
+
+        if (CurrentTarget == null) return;
+
+        for (int i = 0; i < CSkillSystem.Instance._equippedSkills.Count; i++)
+        {
+            int skillId = CSkillSystem.Instance._equippedSkills[i];
+
+            if (skillId == 0) continue;
+
+            if (CSkillSystem.Instance.IsSkillReady(skillId))
+            {
+                CSkillSystem.Instance.UseBindSkill(i);
+            }
+        }
+    }
+
     private void ExecuteItemUse(int index)
     {
         if (CInventorySystemJ.Instance != null)
@@ -613,6 +642,67 @@ public class CPlayerController : CEntityBase, IHealable
         {
             CDebug.LogWarning("CInventorySystemJ이 씬에 없음");
         }
+    }
+
+    private void ExecuteAutoPosionUse()
+    {
+        if (CInventorySystemJ.Instance != null && _statManager != null)
+        {
+            if (CurrentHealth <= MaxHealth * _ratioForUseHealthPosion)
+            {
+                if (Time.time >= _lastAutoHpTime + _autoPotionCooldown)
+                {
+                    int hpSlot = FindUsablePotionSlot(isHp: true);
+                    if (hpSlot != -1)
+                    {
+                        CInventorySystemJ.Instance.UseBindPotion(hpSlot);
+                        _lastAutoHpTime = Time.time;
+                        CDebug.Log($"체력 포션 자동 사용 슬롯 {hpSlot}");
+                    }
+                }
+            }
+
+            if (_statManager.CurrentMana <= _statManager.MaxMana *  _ratioForUseManaPosion)
+            {
+                if (Time.time >= _lastAutoMpTime + _autoPotionCooldown)
+                {
+                    int mpSlot = FindUsablePotionSlot(isHp: false);
+                    if (mpSlot != -1)
+                    {
+                        CInventorySystemJ.Instance?.UseBindPotion(mpSlot);
+                        _lastAutoMpTime = Time.time;
+                        CDebug.Log($"마나 포션 자동 사용 슬롯 {mpSlot}");
+                    }
+                }
+            }
+        }
+    }
+
+    private int FindUsablePotionSlot(bool isHp)
+    {
+        var equipedIds = CInventorySystemJ.Instance._equippedPotionIds;
+
+        for (int i = 0; i < equipedIds.Count; i++)
+        {
+            int potionId = equipedIds[i];
+            if (potionId == 0) continue;
+
+            CItemDataSO data = CInventorySystemJ.Instance.GetItemData(potionId);
+
+            if (data is CPotionDataSO potionData)
+            {
+                var exist = CInventorySystemJ.Instance._inventory.Find(item => item._itemData.Id == potionId) as CPotionInstance;
+
+                if (exist != null && exist._amount > 0)
+                {
+                    if (isHp && potionData.HealAmount > 0) return i;
+
+                    if (!isHp && potionData.ManaHealAmount > 0) return i;
+                }
+            }
+        }
+
+        return -1;
     }
 
     public override void TakeDamage(float damage)

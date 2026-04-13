@@ -14,6 +14,7 @@ public class CInputDispatcher : MonoBehaviour
     [SerializeField] private InputActionReference _shop;
     [SerializeField] private InputActionReference _inventory;
     [SerializeField] private InputActionReference _skillTree;
+    [SerializeField] private InputActionReference _bossSummon;
 
     [Header("디버깅")]
     [SerializeField] private bool _logInput = true;
@@ -28,6 +29,7 @@ public class CInputDispatcher : MonoBehaviour
     public event Action OnShop;
     public event Action OnInventory;
     public event Action OnSkillTree;
+    public event Action OnBossSummon;
 
     // 중복 방지용 변수
     private bool _isReady = false;
@@ -127,6 +129,11 @@ public class CInputDispatcher : MonoBehaviour
             _skillTree.action.performed += OnSkillTreePerformed;
         }
 
+        if (_bossSummon != null && _bossSummon.action != null)
+        {
+            _bossSummon.action.performed += OnBossSummonPerformed;
+        }
+
         _isReady = true;
 
         if (_logInput)
@@ -190,6 +197,11 @@ public class CInputDispatcher : MonoBehaviour
             _skillTree.action.performed -= OnSkillTreePerformed;
         }
 
+        if (_bossSummon != null && _bossSummon.action != null)
+        {
+            _bossSummon.action.performed -= OnBossSummonPerformed;
+        }
+
         _isReady = false;
 
         if (_logInput)
@@ -225,6 +237,7 @@ public class CInputDispatcher : MonoBehaviour
             if (_shop != null && _shop.action != null) _shop.action.Enable();
             if (_inventory != null && _inventory.action != null) _inventory.action.Enable();
             if (_skillTree != null && _skillTree.action != null) _skillTree.action.Enable();
+            if (_bossSummon != null && _bossSummon.action != null) _bossSummon.action.Enable();
         }
         else
         {
@@ -249,6 +262,7 @@ public class CInputDispatcher : MonoBehaviour
             if (_shop != null && _shop.action != null) _shop.action.Disable();
             if (_inventory != null && _inventory.action != null) _inventory.action.Disable();
             if (_skillTree != null && _skillTree.action != null) _skillTree.action.Disable();
+            if (_bossSummon != null && _bossSummon.action != null) _bossSummon.action.Disable();
         }
     }
 
@@ -304,4 +318,5 @@ public class CInputDispatcher : MonoBehaviour
     private void OnShopPerformed(InputAction.CallbackContext ctx) => OnShop?.Invoke();
     private void OnInventoryPerformed(InputAction.CallbackContext ctx) => OnInventory?.Invoke();
     private void OnSkillTreePerformed(InputAction.CallbackContext ctx) => OnSkillTree?.Invoke();
+    private void OnBossSummonPerformed(InputAction.CallbackContext ctx) => OnBossSummon?.Invoke();
 }

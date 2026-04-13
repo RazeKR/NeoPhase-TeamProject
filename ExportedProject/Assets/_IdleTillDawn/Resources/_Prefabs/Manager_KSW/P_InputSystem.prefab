@@ -61,6 +61,8 @@ MonoBehaviour:
     type: 3}
   _skillTree: {fileID: 5126522503799373302, guid: c64b86f70fab656479be6b4c4ee91248,
     type: 3}
+  _bossSummon: {fileID: -2240916490448249825, guid: c64b86f70fab656479be6b4c4ee91248,
+    type: 3}
   _logInput: 0
 --- !u!114 &-4443796549817674344
 MonoBehaviour:
