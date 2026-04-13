@@ -47,6 +47,7 @@ public class CWeaponUpgrade : MonoBehaviour
         {
             target._upgrade ++;
             if (_debugLog) CDebug.Log($"강화 성공! : {target._itemData.ItemName}  |  강화 등급 : {target._upgrade}");
+            CUpgradePopUp.Instance.Show(true, target._itemData.ItemSprite, target._rank, $"강화등급이 {target._upgrade - 1} > {target._upgrade}로 올랐습니다!");
             return false;
         }
         else
@@ -57,10 +58,17 @@ public class CWeaponUpgrade : MonoBehaviour
 
             if (_breakableLevel <= target._upgrade &&  Random.value < _breakableRate)
             {
+                CUpgradePopUp.Instance.Show(false, target._itemData.ItemSprite, target._rank, $"무기가 파괴되어 강화 등급이 0이 되었습니다.");
                 target._upgrade = 0;
                 return true;
             }
+            else
+            {
+                CUpgradePopUp.Instance.Show(false, target._itemData.ItemSprite, target._rank, $"강화에 실패하여 강화 등급이 유지됩니다.");
+            }
         }
+
+        CInventoryUI.Instance.RefreshUI();
 
         return false;
     }

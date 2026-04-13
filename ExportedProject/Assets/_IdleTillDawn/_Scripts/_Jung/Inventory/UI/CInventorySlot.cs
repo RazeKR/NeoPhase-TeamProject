@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-/// <summary>
-/// �κ��丮 �Ŵ����� ������ �޾ƿͼ� UI�� �ݿ��մϴ�.
-/// </summary>
 
 public class CInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {

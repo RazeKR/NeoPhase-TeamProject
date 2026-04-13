@@ -240,13 +240,12 @@ public class CInventorySystemJ : MonoBehaviour
         CDebug.Log($"[CInventorySystemJ] 인벤토리 확장 완료: {_maxCapacity}칸");
     }
 
-    /// <summary>�������� �κ��丮���� �����մϴ�. count�� ���� ���� �̻��̸� �ش� ������ �׸� ��ü�� ���ŵ˴ϴ�.</summary>
+    
     public bool RemoveItem(string targetInstanceID, int amount = 1)
     {
         var target = _inventory.Find(i => i._instanceID == targetInstanceID);
         if (target == null) return false;
 
-        // Ÿ�Ժ� ���� ���� �� ���� ó��
         if (target is CPotionInstance p)
         {
             p._amount -= amount;
@@ -257,7 +256,7 @@ public class CInventorySystemJ : MonoBehaviour
             s._amount -= amount;
             if (s._amount <= 0) _inventory.Remove(target);
         }
-        else // ���� �� ���� ���� ������
+        else
         {
             if (target == _equippedWeapon) return false;
             _inventory.Remove(target);
@@ -279,16 +278,15 @@ public class CInventorySystemJ : MonoBehaviour
         {
             return;
         }
-
         var scroll = _inventory.Find(i => i is CScrollInstance) as CScrollInstance;
 
+
         if (scroll != null)
-        {
+        {            
             if (CWeaponUpgrade.Instance.TryUpgrade(weapon))     // true = weapon Broken
             {
                 CDebug.Log("Weapon Broken!");
             }
-
             RemoveItem(scroll._instanceID, 1);            
         }
 
