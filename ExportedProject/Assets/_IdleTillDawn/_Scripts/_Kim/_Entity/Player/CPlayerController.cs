@@ -613,6 +613,25 @@ public class CPlayerController : CEntityBase, IHealable
         }
     }
 
+    public void ExecuteAutoSkill()
+    {
+        if (CSkillSystem.Instance == null) return;
+
+        if (CurrentTarget == null) return;
+
+        for (int i = 0; i < CSkillSystem.Instance._equippedSkills.Count; i++)
+        {
+            int skillId = CSkillSystem.Instance._equippedSkills[i];
+
+            if (skillId == 0) continue;
+
+            if (CSkillSystem.Instance.IsSkillReady(skillId))
+            {
+                CSkillSystem.Instance.UseBindSkill(i);
+            }
+        }
+    }
+
     private void ExecuteItemUse(int index)
     {
         if (CInventorySystemJ.Instance != null)

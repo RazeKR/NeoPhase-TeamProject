@@ -29,6 +29,10 @@ public class CStateAutoEvade : IPlayerState
 		{
 			_player.StateMachine.ChangeState(_player.StateAutoChase);
 		}
+		else
+		{
+			_player.ExecuteAutoSkill();
+		}
 	}
 
 	public void FixedUpdate()
