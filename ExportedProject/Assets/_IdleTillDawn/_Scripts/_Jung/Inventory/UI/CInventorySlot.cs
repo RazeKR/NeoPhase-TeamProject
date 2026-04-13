@@ -105,6 +105,7 @@ public class CInventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
             bool selected = CInventoryUI.Instance.ToggleMultiSelect(_item._instanceID);
             SetSelected(selected);
+            CInventoryUI.Instance.Item = _item;
             return;
         }
 

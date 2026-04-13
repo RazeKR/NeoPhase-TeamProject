@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 1473068902611465577}
   - component: {fileID: 2882316132455469128}
   - component: {fileID: 185288884440073754}
+  - component: {fileID: 204064467350146933}
   m_Layer: 3
   m_Name: P_Spark
   m_TagString: Player
@@ -216,6 +217,10 @@ MonoBehaviour:
   _weaponVisualObj: {fileID: 0}
   _preventTime: 1.5
   _blinkInterval: 0.1
+  _damageKnockbackRadius: 3
+  _damageKnockbackForce: 10
+  _damageKnockbackDuration: 0.3
+  _footstepInterval: 0.35
 --- !u!114 &-7859340508443334934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,6 +300,33 @@ MonoBehaviour:
   _outerRadius: 5
   _innerRatio: 0.5
   _intensity: 0.85
+--- !u!114 &204064467350146933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8493900152578435068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b18092b8c834122459c37ea5798a0e44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _healVisual: {fileID: 904651187185394017, guid: 4dd331fb59a25234dbec6c9e87083bcc,
+    type: 3}
+  _manaVisual: {fileID: 3267751598968977454, guid: 4a58669c8646d1941a4b76e3745e30ae,
+    type: 3}
+  _healSound:
+    _clips:
+    - {fileID: 8300000, guid: 21847ed89cf37114fa1aea553d379801, type: 3}
+    _volume: 1
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
 --- !u!1001 &8272257796421102133
 PrefabInstance:
   m_ObjectHideFlags: 0
