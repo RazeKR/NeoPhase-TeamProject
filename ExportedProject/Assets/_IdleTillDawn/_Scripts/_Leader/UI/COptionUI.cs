@@ -71,10 +71,6 @@ public class COptionUI : MonoBehaviour
     [Tooltip("전체화면 ON 시 해상도 행의 alpha 값 (어두운 정도)")]
     [SerializeField] private float _disabledAlpha = 0.35f;
 
-    [Header("ESC 키 처리 (인게임 ESC 메뉴가 별도로 있으면 false)")]
-    [Tooltip("true = Update에서 ESC 키 감지 / false = CInGameEscMenu 등 외부에서 Show/Hide 직접 호출")]
-    [SerializeField] private bool _handleEscKey = true;
-
     [Header("인게임 옵션 열 때 시간 정지 여부")]
     [Tooltip("false = 게임 계속 진행 / true = timeScale 0으로 정지 (기존 동작)")]
     [SerializeField] private bool _pauseOnInGameOpen = false;
@@ -180,15 +176,10 @@ public class COptionUI : MonoBehaviour
 
     private void Update()
     {
-        if (!_handleEscKey) return;
-
-        // 인게임 모드에서만 ESC 처리
-        bool isInGame = _state == UIState.InGame || _state == UIState.InGameOption;
-        if (isInGame && Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (IsOptionOpen) Hide();
-            else               Show();
-        }
+        // MainMenu 씬에서만 ESC로 옵션 닫기 처리
+        // InGame 씬은 CInGameEscMenu가 ESC를 전담 처리
+        if (_state == UIState.Option && Input.GetKeyDown(KeyCode.Escape))
+            Hide();
     }
 
     #endregion

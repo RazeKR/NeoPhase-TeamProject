@@ -60,18 +60,16 @@ public class CUIInputHandler : MonoBehaviour
 
     private void HandleOptionInput()
     {
-        COptionUI optionUI = FindAnyObjectByType<COptionUI>();
+        // 인게임 ESC 메뉴가 있으면 해당 스크립트에 위임
+        // CInGameEscMenu가 CInputDispatcher.OnOption을 직접 구독하므로 여기서 중복 처리하지 않음
+        if (FindAnyObjectByType<CInGameEscMenu>() != null) return;
 
+        // 메인메뉴 씬: COptionUI 직접 제어
+        COptionUI optionUI = FindAnyObjectByType<COptionUI>();
         if (optionUI != null)
         {
-            if (optionUI.IsOptionOpen)
-            {
-                optionUI.Hide();
-            }
-            else
-            {
-                optionUI.Show();
-            }
+            if (optionUI.IsOptionOpen) optionUI.Hide();
+            else                       optionUI.Show();
         }
         else
         {

@@ -25,9 +25,9 @@ MonoBehaviour:
   _prefab: {fileID: 2902471189535920714, guid: df0dc33df636ece4a8255dae971a5fb2, type: 3}
   _dropItemId: 0
   _dropChance: 0
-  _expReward: 1000
-  _minGoldDrop: 4000
-  _maxGoldDrop: 5000
+  _expReward: 100000
+  _minGoldDrop: 1000000
+  _maxGoldDrop: 1200000
   _hitSFX:
     _clips:
     - {fileID: 8300000, guid: 14e046274192e7040afbf0038d6f260c, type: 3}

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// [Unity 계층 구조 권장]
 ///
 ///   InGameCanvas
-///   └── EscMenu_Root  ← 이 스크립트 부착
+///   └── EscMenu_Root  ← 이 스크립트 부착 (항상 활성 상태 유지!)
 ///       └── EscPanel  ← _escPanel 연결 (평소 비활성)
 ///           ├── Continue_Button  ← _continueButton
 ///           ├── Options_Button   ← _optionsButton
@@ -18,17 +18,21 @@ using UnityEngine.UI;
 ///   └── Option_Root  ← _optionUI 연결 (COptionUI 컴포넌트)
 ///
 /// ══════════════════════════════════════════════════════════════
-/// [동작]
-///   - ESC 키       → ESC 패널 열기/닫기 (게임 시간 정지 없음)
-///   - 계속하기 버튼 → ESC 패널 닫기
-///   - 옵션 버튼     → 옵션 패널 열기 (COptionUI.Show)
-///   - 종료 버튼     → 현재 시점 자동저장 후 게임 종료
+/// [ESC 키 우선순위]
+///   1. 옵션 패널이 열려있으면 → 옵션 패널 닫기
+///   2. ESC 패널이 열려있으면  → ESC 패널 닫기
+///   3. 둘 다 닫혀있으면       → ESC 패널 열기
 ///
 /// ══════════════════════════════════════════════════════════════
-/// [설정 주의사항]
-///   - COptionUI의 Initial State: InGame
-///   - COptionUI의 Handle Esc Key: false  ← 이 스크립트가 ESC 담당
-///   - COptionUI의 Pause On InGame Open: false  ← 게임 정지 없음
+/// [COptionUI 인스펙터 설정]
+///   - Initial State        : InGame
+///   - Pause On InGame Open : false (게임 정지 없음)
+///   ※ COptionUI.Update()는 InGame 상태에서 ESC를 처리하지 않음
+///      ESC 전담은 이 스크립트(CInGameEscMenu)
+///
+/// ══════════════════════════════════════════════════════════════
+/// [주의] EscMenu_Root는 항상 활성(active=true) 상태여야 Update가 동작함
+///        EscPanel만 비활성으로 시작할 것
 /// </summary>
 public class CInGameEscMenu : MonoBehaviour
 {
@@ -53,15 +57,38 @@ public class CInGameEscMenu : MonoBehaviour
     {
         if (_escPanel != null)
             _escPanel.SetActive(false);
+        else
+            Debug.LogError("[CInGameEscMenu] _escPanel이 null입니다. Inspector에서 EscPanel을 연결하세요.");
+
+        if (_optionUI != null)
+            _optionUI.SetState(COptionUI.UIState.InGame);
 
         _continueButton?.onClick.AddListener(OnClickContinue);
         _optionsButton?.onClick.AddListener(OnClickOptions);
         _quitButton?.onClick.AddListener(OnClickQuit);
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        if (!Input.GetKeyDown(KeyCode.Escape)) return;
+        StartCoroutine(CoBindInput());
+    }
+
+    private void OnDisable()
+    {
+        if (CInputDispatcher.Instance != null)
+            CInputDispatcher.Instance.OnOption -= OnEscInput;
+    }
+
+    private System.Collections.IEnumerator CoBindInput()
+    {
+        while (CInputDispatcher.Instance == null) yield return null;
+        CInputDispatcher.Instance.OnOption += OnEscInput;
+    }
+
+    // CInputDispatcher.OnOption 이벤트 콜백 (ESC 키)
+    private void OnEscInput()
+    {
+        if (_escPanel == null) return;
 
         // 옵션 패널이 열려 있으면 옵션만 먼저 닫기
         if (_optionUI != null && _optionUI.IsOptionOpen)
@@ -71,7 +98,7 @@ public class CInGameEscMenu : MonoBehaviour
         }
 
         // ESC 패널 토글
-        if (_escPanel != null && _escPanel.activeSelf)
+        if (_escPanel.activeSelf)
             HidePanel();
         else
             ShowPanel();
