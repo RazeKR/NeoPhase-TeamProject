@@ -53,10 +53,8 @@ public class CWeaponUpgrade : MonoBehaviour
         else
         {
             if (_debugLog) CDebug.Log($"강화 실패.. : {target._itemData.ItemName}");
-
-            if (!_breakable) return false;
-
-            if (_breakableLevel <= target._upgrade &&  Random.value < _breakableRate)
+            
+            if (_breakable && _breakableLevel <= target._upgrade &&  Random.value < _breakableRate)
             {
                 CUpgradePopUp.Instance.Show(false, target._itemData.ItemSprite, target._rank, $"무기가 파괴되어 강화 등급이 0이 되었습니다.");
                 target._upgrade = 0;

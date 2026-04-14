@@ -333,6 +333,15 @@ public class CSpawnManager : MonoBehaviour
         enemy.OnDied -= OnEnemyDied;
         enemy.OnDied += OnEnemyDied;
 
+        if (CItemDropManager.Instance != null)
+        {
+            CItemDropManager.Instance.RegisterEnemy(enemy);
+        }
+        else
+        {
+            CDebug.LogError("[CSpawnManager] CItemDropManager가 씬에 없음");
+        }
+
         return enemy;
     }
 

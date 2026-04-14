@@ -1,10 +1,16 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class CUIInputHandler : MonoBehaviour
 {
     #region 내부 변수
     private Coroutine _bindCo;
+    
+    private COptionUI _optionUI;
+    private CGoldShopUI _goldShopUI;
+    private CStageManager _stageManager;
+    private CLeaderboardPanel _leaderboardPanel;
     #endregion
 
     private void OnEnable()
@@ -13,6 +19,11 @@ public class CUIInputHandler : MonoBehaviour
         {
             StopCoroutine(_bindCo);
         }
+
+        _optionUI = FindAnyObjectByType<COptionUI>();
+        _goldShopUI = FindAnyObjectByType<CGoldShopUI>();
+        _stageManager = FindAnyObjectByType<CStageManager>();
+        _leaderboardPanel = FindAnyObjectByType<CLeaderboardPanel>(FindObjectsInactive.Include);
 
         _bindCo = StartCoroutine(CoBindDispatcher());
     }
@@ -32,6 +43,9 @@ public class CUIInputHandler : MonoBehaviour
             CInputDispatcher.Instance.OnShop -= HandleShopInput;
             CInputDispatcher.Instance.OnSkillTree -= HandleSkillTreeInput;
             CInputDispatcher.Instance.OnBossSummon -= HandleBossSummonInput;
+            CInputDispatcher.Instance.OnOpenRanking -= HandleOpenRankingInput;
+            CInputDispatcher.Instance.OnOpenPet -= HandleOpenPetInput;
+            CInputDispatcher.Instance.OnOpenWeaponBox -= HandleOpenWeaponBoxInput;
         }
     }
 
@@ -44,6 +58,9 @@ public class CUIInputHandler : MonoBehaviour
         CInputDispatcher.Instance.OnShop += HandleShopInput;
         CInputDispatcher.Instance.OnSkillTree += HandleSkillTreeInput;
         CInputDispatcher.Instance.OnBossSummon += HandleBossSummonInput;
+        CInputDispatcher.Instance.OnOpenRanking += HandleOpenRankingInput;
+        CInputDispatcher.Instance.OnOpenPet += HandleOpenPetInput;
+        CInputDispatcher.Instance.OnOpenWeaponBox += HandleOpenWeaponBoxInput;
     }
 
     private void HandleInventoryInput()
@@ -65,11 +82,10 @@ public class CUIInputHandler : MonoBehaviour
         if (FindAnyObjectByType<CInGameEscMenu>() != null) return;
 
         // 메인메뉴 씬: COptionUI 직접 제어
-        COptionUI optionUI = FindAnyObjectByType<COptionUI>();
-        if (optionUI != null)
+        if (_optionUI != null)
         {
-            if (optionUI.IsOptionOpen) optionUI.Hide();
-            else                       optionUI.Show();
+            if (_optionUI.IsOptionOpen) _optionUI.Hide();
+            else                       _optionUI.Show();
         }
         else
         {
@@ -89,10 +105,9 @@ public class CUIInputHandler : MonoBehaviour
             {
                 CShopUI.Instance.OpenShop();
 
-                CGoldShopUI goldShopUI = FindAnyObjectByType<CGoldShopUI>();
-                if (goldShopUI != null)
+                if (_goldShopUI != null)
                 {
-                    goldShopUI.OnShopOpened();
+                    _goldShopUI.OnShopOpened();
                 }
             }
         }
@@ -117,15 +132,51 @@ public class CUIInputHandler : MonoBehaviour
 
     private void HandleBossSummonInput()
     {
-        CStageManager stageManager = FindAnyObjectByType<CStageManager>();
-
-        if (stageManager != null)
+        if (_stageManager != null)
         {
-            stageManager.OnBossChallengeButtonPressed();
+            _stageManager.OnBossChallengeButtonPressed();
         }
         else
         {
             CDebug.LogWarning("CUIInputHandler : CStageManager를 찾을 수 없음");
+        }
+    }
+
+    private void HandleOpenRankingInput()
+    {
+        if (_leaderboardPanel != null)
+        {
+            if (_leaderboardPanel.IsOpen)
+            {
+                _leaderboardPanel.Close();
+            }
+            else
+            {
+                _leaderboardPanel.Open();
+            }
+        }
+        else
+        {
+            CDebug.LogWarning("CUIInputHandler : CLeaderboardPanel을 찾을 수 없음");
+        }
+    }
+
+    private void HandleOpenPetInput()
+    {
+
+    }
+
+    private void HandleOpenWeaponBoxInput()
+    {
+        CGenerateItem weaponBox = FindAnyObjectByType<CGenerateItem>();
+
+        if (weaponBox != null)
+        {
+            weaponBox.GenerateRandomRankItem();
+        }
+        else
+        {
+            CDebug.LogWarning("CUIInputHandler : CGenerateItem을 찾을 수 없음");
         }
     }
 }

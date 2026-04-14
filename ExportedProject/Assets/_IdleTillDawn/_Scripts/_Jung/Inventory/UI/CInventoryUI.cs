@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +52,8 @@ public class CInventoryUI : MonoBehaviour
     public CItemInstance Item { get { return _item; } set { _item = value; } }
     public bool IsChoiceUpgrade { get {  return _isChoiceUpgrade; } set { _isChoiceUpgrade = value; } }
     public bool IsMultiSelectMode => _selectedInstanceIDs.Count > 0;
+
+    public bool IsOpen => _inventoryUI != null && _inventoryUI.activeInHierarchy;
     #endregion
 
     #region UnityMethods
@@ -357,6 +359,11 @@ public class CInventoryUI : MonoBehaviour
                 _amountText.text = $"{_desiredAmount} / {scroll._amount}";
             }
         }
+    }
+
+    public void CloseUI()
+    {
+        if (IsOpen) OnOffInventoryUI();
     }
 
     #endregion

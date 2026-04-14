@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class CSkillUI : MonoBehaviour
 {
     public static CSkillUI Instance { get; private set; }
+
+    public bool IsOpen => _skillWindowUI != null && _skillWindowUI.activeSelf;
 
     [SerializeField] private GameObject _skillWindowUI;
     [SerializeField] private Text _pointsText;
@@ -50,8 +52,8 @@ public class CSkillUI : MonoBehaviour
     }
 
 
-    // Ã¢ On/Off
-    // ¹öÆ°¿¡ ¿¬°áÇÏ¿© »ç¿ë
+    // ì°½ On/Off
+    // ë²„íŠ¼ì— ì—°ê²°í•˜ì—¬ ì‚¬ìš©
     public void OnOffSkillWindow()
     {
         if (_skillWindowUI == null) return;
@@ -76,5 +78,10 @@ public class CSkillUI : MonoBehaviour
         CSkillSystem.Instance.RefreshAllNodes();
 
 
+    }
+
+    public void CloseUI()
+    {
+        if (IsOpen) OnOffSkillWindow();
     }
 }
