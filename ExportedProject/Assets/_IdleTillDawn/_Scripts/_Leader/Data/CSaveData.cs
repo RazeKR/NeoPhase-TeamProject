@@ -73,6 +73,12 @@ public class CSaveData
     // ── 무기 상자 ─────────────────────────────────────────────────────────
     public int weaponBoxCount = 0;  // 보유 무기 상자 수량
 
+    // ── 펫 상자 ───────────────────────────────────────────────────────────
+    public int petBoxCount = 0;     // 보유 펫 상자 수량
+
+    // ── 펫 인벤토리 ───────────────────────────────────────────────────────
+    public CPetInventorySaveData petInventorySaveData = new CPetInventorySaveData();
+
     // ── 메타데이터 ────────────────────────────────────────────────────────
     public string lastSavedTime = string.Empty; // 마지막 저장 시각 (ISO 8601)
     public int    saveVersion   = 1;             // 세이브 포맷 버전 (마이그레이션 대비)

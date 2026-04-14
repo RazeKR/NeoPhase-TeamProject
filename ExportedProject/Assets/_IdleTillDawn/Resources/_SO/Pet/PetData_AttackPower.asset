@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 837214cb4060ef74d9bdb01f7f687b4e, type: 3}
+  m_Name: PetData_AttackPower
+  m_EditorClassIdentifier: 
+  _id: 3
+  _itemId: pet_attackpower
+  _itemName: "\uB0AB"
+  _type: 3
+  _sprite: {fileID: 21300000, guid: 6f5efff64bea152458435f6bf898d384, type: 3}
+  _petType: 1
+  _bulletConfig: {fileID: 0}
+  _fireInterval: 2
+  _idleSprites: []
+  _attackSprites: []
+  _meleeSprite: {fileID: 21300000, guid: 58b7e990386581f4f829ebd8283f47b6, type: 2}
+  _orbitRadius: 2
+  _orbitSpeed: 90

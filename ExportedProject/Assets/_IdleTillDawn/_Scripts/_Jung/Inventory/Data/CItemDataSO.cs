@@ -5,7 +5,8 @@ public enum EItemType
 {
     Weapon, // 무기
     Potion, // 포션
-    Scroll  // 스크롤
+    Scroll, // 스크롤
+    Pet     // 펫
 }
 
 /// <summary>

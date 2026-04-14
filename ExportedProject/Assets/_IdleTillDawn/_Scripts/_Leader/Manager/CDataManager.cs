@@ -30,6 +30,9 @@ public class CDataManager : MonoBehaviour
     [Header("─── Skill ──────────────────────────────────────")]
     [SerializeField] private List<CSkillDataSO> _skillList = new();    // 스킬 SO 목록
 
+    [Header("─── Pet ────────────────────────────────────────")]
+    [SerializeField] private List<CPetDataSO> _petList = new();        // 펫 SO 목록
+
     #endregion
 
     #region Events
@@ -53,6 +56,7 @@ public class CDataManager : MonoBehaviour
     private Dictionary<int, CItemDataSO>   _itemDict     = new(); // 일반 아이템 캐시 (무기 제외)
     private Dictionary<int, CWeaponDataSO> _weaponDict   = new(); // 무기 캐시
     private Dictionary<int, CSkillDataSO>  _skillDict    = new(); // 스킬 캐시
+    private Dictionary<int, CPetDataSO>   _petDict      = new(); // 펫 캐시
 
     private bool _isInitialized = false; // 초기화 완료 여부
 
@@ -146,6 +150,14 @@ public class CDataManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>펫 데이터를 ID로 반환합니다.</summary>
+    public CPetDataSO GetPet(int id)
+    {
+        if (TryGetData(_petDict, id, out CPetDataSO data)) return data;
+        CDebug.LogError($"[CDataManager] PetData 없음 - ID: {id}");
+        return null;
+    }
+
     /// <summary>스킬 데이터를 ID로 반환합니다.</summary>
     public CSkillDataSO GetSkill(int id)
     {
@@ -165,6 +177,9 @@ public class CDataManager : MonoBehaviour
 
     /// <summary>무기를 포함한 모든 아이템 데이터를 읽기 전용 Dictionary로 반환합니다.</summary>
     public IReadOnlyDictionary<int, CItemDataSO> GetAllItems() => _allItemDict;
+
+    /// <summary>등록된 모든 펫 데이터를 읽기 전용 Dictionary로 반환합니다.</summary>
+    public IReadOnlyDictionary<int, CPetDataSO> GetAllPets() => _petDict;
 
     /// <summary>
     /// StageIndex((월드-1)×10+(스테이지-1)) 기준으로 스테이지 데이터를 반환합니다.
@@ -224,12 +239,14 @@ public class CDataManager : MonoBehaviour
         RegisterList(_bossList,    _bossDict,    "Boss");
         RegisterList(_itemList,    _itemDict,    "Item");
         RegisterList(_skillList,   _skillDict,   "Skill");
+        RegisterPetList();
         RegisterWeaponList();
 
         _isInitialized = true;
         OnDataInitialized?.Invoke();
         CDebug.Log($"[CDataManager] 초기화 완료 - Player:{_playerDict.Count} Monster:{_monsterDict.Count} " +
-                  $"Boss:{_bossDict.Count} Stage:{_stageDict.Count} Item:{_allItemDict.Count} Skill:{_skillDict.Count}");
+                  $"Boss:{_bossDict.Count} Stage:{_stageDict.Count} Item:{_allItemDict.Count} " +
+                  $"Skill:{_skillDict.Count} Pet:{_petDict.Count}");
     }
 
     /// <summary>
@@ -379,6 +396,40 @@ public class CDataManager : MonoBehaviour
         return dict.TryGetValue(id, out result);
     }
 
+    /// <summary>
+    /// 펫 리스트를 _petDict와 _allItemDict 양쪽에 등록합니다.
+    /// CPetDataSO는 CItemDataSO를 상속하므로 GetItem()으로도 조회 가능합니다.
+    /// </summary>
+    private void RegisterPetList()
+    {
+        if (_petList == null) return;
+
+        foreach (CPetDataSO pet in _petList)
+        {
+            if (pet == null)
+            {
+                CDebug.LogWarning("[CDataManager] Pet 목록에 null 항목이 있습니다. 건너뜁니다.");
+                continue;
+            }
+
+            if (_petDict.ContainsKey(pet.Id))
+            {
+                CDebug.LogWarning($"[CDataManager] Pet 중복 ID 발견: {pet.Id} ({pet.name}). 건너뜁니다.");
+                continue;
+            }
+
+            _petDict.Add(pet.Id, pet);
+
+            if (_allItemDict.ContainsKey(pet.Id))
+            {
+                CDebug.LogWarning($"[CDataManager] Item 전체 캐시에 Pet ID 충돌: {pet.Id}. 건너뜁니다.");
+                continue;
+            }
+
+            _allItemDict.Add(pet.Id, pet);
+        }
+    }
+
     /// <summary>모든 Dictionary를 비우고 초기화 상태를 해제합니다.</summary>
     private void ClearAllDictionaries()
     {
@@ -390,6 +441,7 @@ public class CDataManager : MonoBehaviour
         _itemDict.Clear();
         _weaponDict.Clear();
         _skillDict.Clear();
+        _petDict.Clear();
         _isInitialized = false;
     }
 
