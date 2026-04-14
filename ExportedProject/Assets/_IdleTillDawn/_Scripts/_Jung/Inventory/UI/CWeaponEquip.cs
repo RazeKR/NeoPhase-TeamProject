@@ -39,6 +39,8 @@ public class CWeaponEquip : MonoBehaviour
     private SpriteRenderer _targetSpriteRdr;
     private CItemDataSO _itemDataSO;
 
+    private int _petProjectileBonus = 0;
+
     // 총구화염 전용 오브젝트 (풀링 대신 단일 재사용)
     private GameObject     _muzzleFlashObj;
     private SpriteRenderer _muzzleFlashRdr;
@@ -382,7 +384,14 @@ public class CWeaponEquip : MonoBehaviour
     public int GetProjectileAmount()
     {
         CWeaponDataSO data = _itemDataSO as CWeaponDataSO;
-        return data.ProjectileAmount;
+        if (data == null) return 1;
+        return data.ProjectileAmount + _petProjectileBonus;
+    }
+
+    /// <summary>펫 투사체 보너스를 설정합니다. 해제 시 0으로 호출합니다.</summary>
+    public void SetPetProjectileBonus(int bonus)
+    {
+        _petProjectileBonus = Mathf.Max(0, bonus);
     }
 
 

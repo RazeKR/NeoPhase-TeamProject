@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 837214cb4060ef74d9bdb01f7f687b4e, type: 3}
   m_Name: PetData_AttackSpeed
   m_EditorClassIdentifier: 
-  _id: 2
+  _id: 21
   _itemId: pet_attackspeed
   _itemName: "\uC720\uB839"
   _type: 3

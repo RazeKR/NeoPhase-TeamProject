@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -73,12 +74,6 @@ public class CGeneratePet : MonoBehaviour
             return;
         }
 
-        if (CPetInventorySystem.Instance.IsFull)
-        {
-            CDebug.Log("[CGeneratePet] 펫 인벤토리가 가득 차 펫 상자를 열 수 없습니다.");
-            return;
-        }
-
         data.petBoxCount--;
         CJsonManager.Instance.Save(data);
         RefreshPetBoxCountText(data.petBoxCount);
@@ -101,6 +96,58 @@ public class CGeneratePet : MonoBehaviour
     }
 
     #endregion
+
+    /// <summary>
+    /// 펫을 summonCount마리 소환하고 생성된 CPetInstance 목록을 반환합니다.
+    /// boxCost개의 소환권을 선차감한 뒤 summonCount마리를 생성합니다.
+    ///   예) 33회 소환: summonCount=33, boxCost=30
+    /// 소환권 부족 또는 인벤토리 가득 찬 경우 가능한 만큼만 생성합니다.
+    /// </summary>
+    public List<CPetInstance> GeneratePets(int summonCount, int boxCost)
+    {
+        List<CPetInstance> results = new List<CPetInstance>();
+
+        if (CJsonManager.Instance == null) return results;
+
+        CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+
+        if (data.petBoxCount < boxCost)
+        {
+            CDebug.Log($"[CGeneratePet] 소환권 부족 (보유: {data.petBoxCount}, 필요: {boxCost})");
+            return results;
+        }
+
+        // 소환권 선차감
+        data.petBoxCount -= boxCost;
+
+        for (int i = 0; i < summonCount; i++)
+        {
+            if (CPetInventorySystem.Instance.IsFull) break;
+
+            int totalWeight = _commonRate + _rareRate + _epicRate + _legendaryRate;
+            int r = Random.Range(0, totalWeight + 1);
+
+            int desiredRank;
+            if      (r > _commonRate + _rareRate + _epicRate) desiredRank = 3;
+            else if (r > _commonRate + _rareRate)             desiredRank = 2;
+            else if (r > _commonRate)                         desiredRank = 1;
+            else                                              desiredRank = 0;
+
+            int rIndex = Random.Range(0, _petDataBaseSO.PetDataBaseCount());
+            CPetDataSO so = _petDataBaseSO.GetPetDataByIndex(rIndex);
+
+            CPetInventorySystem.Instance.AddPet(so.Id, desiredRank);
+
+            var pets = CPetInventorySystem.Instance.Pets;
+            if (pets.Count > 0)
+                results.Add(pets[pets.Count - 1]);
+        }
+
+        CJsonManager.Instance.Save(data);
+        RefreshPetBoxCountText(data.petBoxCount);
+
+        return results;
+    }
 
     #region Private Methods
 

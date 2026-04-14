@@ -44,7 +44,7 @@ public class CPetInstance : CItemInstance
     public float GetPetAttackPower() => _data.GetPetAttackPower(_upgrade);
 
     /// <summary>현재 등급 + 강화 합산 경험치 증가 퍼센트.</summary>
-    public float GetXpBoostPercent() => _data.GetXpBoostPercent(_rank);
+    public float GetXpBoostPercent() => _data.GetXpBoostPercent(_rank, _upgrade);
 
     /// <summary>현재 등급 + 강화 합산 투사체 증가 수량 (ProjectileBoost 타입).</summary>
     public int GetTotalProjectileBonus() => _data.GetTotalProjectileBonus(_rank, _upgrade);

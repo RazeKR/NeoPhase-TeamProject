@@ -18,8 +18,10 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     private float[] _bonusModifiers = new float[(int)EPlayerStatType.Count];
     // buff Stat Modifier
     private float[] _temporaryModifiers = new float[(int)EPlayerStatType.Count];
-    // passivr Stat Modifier
+    // passive Stat Modifier
     private float[] _passiveModifiers = new float[(int)EPlayerStatType.Count];
+    // pet Stat Modifier (장착 펫 버프 전용, 스킬/버프와 분리)
+    private float[] _petModifiers = new float[(int)EPlayerStatType.Count];
     #endregion
 
     #region 프로퍼티
@@ -143,7 +145,18 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         int index = (int)type;
         float baseValue = _baseData.GetStatInfo(type).BaseValue;
 
-        return (baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index]) * ( 1 + _passiveModifiers[index]);
+        return (baseValue + _levelModifiers[index] + _bonusModifiers[index] + _temporaryModifiers[index])
+               * (1 + _passiveModifiers[index] + _petModifiers[index]);
+    }
+
+    /// <summary>
+    /// 장착 펫 버프 전용 API. 스킬/일반 패시브와 독립된 슬롯을 사용합니다.
+    /// 펫 해제 시 amount = 0 으로 호출합니다.
+    /// </summary>
+    public void SetPetStatUpgrade(EPlayerStatType statType, float amount)
+    {
+        _petModifiers[(int)statType] = amount;
+        OnStatUpgraded?.Invoke();
     }
 
     public const int MaxLevel = 40;

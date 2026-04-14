@@ -79,6 +79,9 @@ public class CGameManager : MonoBehaviour
     private CPlayerController _cachedPlayer;
     private CPlayerStatManager _cachedStatManager;
 
+    /// <summary>플레이어가 씬에 등록될 때 발생합니다. 인자: 등록된 StatManager</summary>
+    public event System.Action<CPlayerStatManager> OnPlayerRegistered;
+
     #endregion
 
     #region Properties
@@ -344,10 +347,13 @@ public class CGameManager : MonoBehaviour
         return _maxDropChance - (_maxDropChance - _baseDropChance) * failReduction;
     }
 
+    public CPlayerStatManager CachedStatManager => _cachedStatManager;
+
     public void RegisterPlayer(CPlayerController player, CPlayerStatManager statManager)
     {
-        _cachedPlayer = player;
+        _cachedPlayer      = player;
         _cachedStatManager = statManager;
+        OnPlayerRegistered?.Invoke(_cachedStatManager);
     }
 
     #endregion

@@ -33,8 +33,6 @@ public class CPetInventorySystem : MonoBehaviour
     private List<CPetInstance> _pets = new List<CPetInstance>();
     private CPetInstance _equippedPet = null;
 
-    private const int BaseCapacity = 30;
-
     #endregion
 
     #region Properties
@@ -44,9 +42,8 @@ public class CPetInventorySystem : MonoBehaviour
     public List<CPetInstance> Pets     => _pets;
     public CPetInstance EquippedPet    => _equippedPet;
 
-    public int MaxCapacity  => BaseCapacity;
     public int UsedCapacity => _pets.Count;
-    public bool IsFull      => _pets.Count >= BaseCapacity;
+    public bool IsFull      => false;  // 인벤토리 제한 없음
 
     #endregion
 
@@ -84,11 +81,7 @@ public class CPetInventorySystem : MonoBehaviour
     /// <summary>int ID로 펫을 추가합니다. CDataManager에서 CPetDataSO를 조회합니다.</summary>
     public void AddPet(int petItemId, int rank = 0)
     {
-        if (IsFull)
-        {
-            CDebug.LogWarning($"[CPetInventorySystem] 펫 인벤토리가 가득 찼습니다. ({MaxCapacity}칸)");
-            return;
-        }
+        // IsFull은 항상 false (인벤토리 제한 없음)
 
         CPetDataSO so = CDataManager.Instance.GetPet(petItemId);
         if (so == null) return;

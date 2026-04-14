@@ -76,8 +76,8 @@ public class CPetDataSO : CItemDataSO
 
     #region Grade Buff Calculations  (rank: 0=Common ~ 3=Legendary)
 
-    /// <summary>경험치 획득량 증가 퍼센트. 기본 50%, 등급당 +25%.</summary>
-    public float GetXpBoostPercent(int rank) => 50f + rank * 25f;
+    /// <summary>경험치 획득량 증가 퍼센트. 기본 50%, 등급당 +25%, 강화당 +10%.</summary>
+    public float GetXpBoostPercent(int rank, int upgrade = 0) => 50f + rank * 25f + upgrade * 10f;
 
     /// <summary>투사체 증가 수량 (등급 기반). 기본 1, 등급당 +1.</summary>
     public int GetGradeProjectileBonus(int rank) => 1 + rank;

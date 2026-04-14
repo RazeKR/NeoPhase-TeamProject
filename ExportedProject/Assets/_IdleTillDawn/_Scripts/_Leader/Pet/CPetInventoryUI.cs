@@ -122,13 +122,14 @@ public class CPetInventoryUI : MonoBehaviour
             return;
         }
         Instance = this;
+
+        // 첫 프레임부터 숨김 — Start()보다 먼저 실행되므로 스프라이트가 미리 노출되지 않음
+        if (_petInventoryPanel != null) _petInventoryPanel.SetActive(false);
+        if (_infoPanel         != null) _infoPanel.SetActive(false);
     }
 
     private void Start()
     {
-        if (_petInventoryPanel != null) _petInventoryPanel.SetActive(false);
-        if (_infoPanel         != null) _infoPanel.SetActive(false);
-
         _closeButton?.onClick.AddListener(OnOffPetInventoryUI);
         _petListTabButton?.onClick.AddListener(() => SelectTab(0));
         _petGachaTabButton?.onClick.AddListener(() => SelectTab(1));
@@ -137,6 +138,10 @@ public class CPetInventoryUI : MonoBehaviour
 
         if (CPetInventorySystem.Instance != null)
             CPetInventorySystem.Instance.OnPetInventoryChanged += OnInventoryChanged;
+
+        CGoldShopUI.OnPetBoxCountChanged += OnPetBoxCountChanged;
+        if (CGoldManager.Instance != null)
+            CGoldManager.Instance.OnDiamondChanged += OnDiamondChanged;
     }
 
     private void OnDestroy()
@@ -145,6 +150,10 @@ public class CPetInventoryUI : MonoBehaviour
 
         if (CPetInventorySystem.Instance != null)
             CPetInventorySystem.Instance.OnPetInventoryChanged -= OnInventoryChanged;
+
+        CGoldShopUI.OnPetBoxCountChanged -= OnPetBoxCountChanged;
+        if (CGoldManager.Instance != null)
+            CGoldManager.Instance.OnDiamondChanged -= OnDiamondChanged;
     }
 
     #endregion
@@ -161,6 +170,7 @@ public class CPetInventoryUI : MonoBehaviour
 
         if (open)
         {
+            ClearSelection();
             RefreshCurrencyDisplay();
             SelectTab(0);
             BuildGrid();
@@ -371,7 +381,7 @@ public class CPetInventoryUI : MonoBehaviour
 
         // 강화 단계
         if (_infoUpgradeText != null)
-            _infoUpgradeText.text = $"+{_selectedPet._upgrade} / +{CPetInstance.MaxUpgrade}";
+            _infoUpgradeText.text = $"+{_selectedPet._upgrade}";
 
         // 보유 수량 — 선택된 슬롯에서 가져옴
         if (_infoCountText != null)
@@ -399,7 +409,7 @@ public class CPetInventoryUI : MonoBehaviour
         if (_enhanceCostText != null)
             _enhanceCostText.text = maxUpgrade
                 ? "최대 강화"
-                : $"◆ {EnhanceCost:N0}";
+                : $"{EnhanceCost:N0}";
     }
 
     /// <summary>펫 인스턴스의 모든 버프를 문자열로 자동 생성합니다.</summary>
@@ -455,6 +465,8 @@ public class CPetInventoryUI : MonoBehaviour
     /// <summary>탭을 전환하고 버튼 색상을 갱신합니다. 0 = 보관함, 1 = 소환.</summary>
     private void SelectTab(int index)
     {
+        ClearSelection();
+
         if (_petListPanel  != null) _petListPanel.SetActive(index == 0);
         if (_petGachaPanel != null) _petGachaPanel.SetActive(index == 1);
 
@@ -493,9 +505,22 @@ public class CPetInventoryUI : MonoBehaviour
         if (_infoPanel != null) _infoPanel.SetActive(false);
     }
 
+    private void OnPetBoxCountChanged(int count)
+    {
+        if (_petBoxCountText != null)
+            _petBoxCountText.text = count.ToString();
+    }
+
+    private void OnDiamondChanged(int amount)
+    {
+        if (_diamondCountText != null)
+            _diamondCountText.text = amount.ToString("N0");
+    }
+
     private void OnInventoryChanged()
     {
         if (_petInventoryPanel == null || !_petInventoryPanel.activeSelf) return;
+        RefreshCurrencyDisplay();
         BuildGrid();
 
         // 선택 중인 펫이 인벤토리에 여전히 존재하면 정보 패널 갱신
