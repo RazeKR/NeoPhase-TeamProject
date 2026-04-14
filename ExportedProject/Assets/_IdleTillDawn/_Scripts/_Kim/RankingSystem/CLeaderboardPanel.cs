@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -47,6 +47,12 @@ public class CLeaderboardPanel : MonoBehaviour
     [Header("내 순위 표시 (선택)")]
     [Tooltip("내 순위를 별도로 표시할 텍스트 (예: '내 순위: 3위')")]
     [SerializeField] private TextMeshProUGUI _myRankText;
+
+    #endregion
+
+    #region Properties
+
+    public bool IsOpen => _panelRoot != null && _panelRoot.activeSelf;
 
     #endregion
 

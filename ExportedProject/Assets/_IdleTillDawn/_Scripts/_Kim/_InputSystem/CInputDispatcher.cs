@@ -15,6 +15,8 @@ public class CInputDispatcher : MonoBehaviour
     [SerializeField] private InputActionReference _inventory;
     [SerializeField] private InputActionReference _skillTree;
     [SerializeField] private InputActionReference _bossSummon;
+    [SerializeField] private InputActionReference _openRanking;
+    [SerializeField] private InputActionReference _openPet;
 
     [Header("디버깅")]
     [SerializeField] private bool _logInput = true;
@@ -30,6 +32,8 @@ public class CInputDispatcher : MonoBehaviour
     public event Action OnInventory;
     public event Action OnSkillTree;
     public event Action OnBossSummon;
+    public event Action OnOpenRanking;
+    public event Action OnOpenPet;
 
     // 중복 방지용 변수
     private bool _isReady = false;
@@ -134,6 +138,16 @@ public class CInputDispatcher : MonoBehaviour
             _bossSummon.action.performed += OnBossSummonPerformed;
         }
 
+        if (_openRanking != null && _openRanking.action != null)
+        {
+            _openRanking.action.performed += OnOpenRankingPerformed;
+        }
+
+        if (_openPet != null && _openPet.action != null)
+        {
+            _openPet.action.performed += OnOpenPetPerformed;
+        }
+
         _isReady = true;
 
         if (_logInput)
@@ -202,6 +216,16 @@ public class CInputDispatcher : MonoBehaviour
             _bossSummon.action.performed -= OnBossSummonPerformed;
         }
 
+        if (_openRanking != null && _openRanking.action != null)
+        {
+            _openRanking.action.performed -= OnOpenRankingPerformed;
+        }
+
+        if (_openPet != null && _openPet.action != null)
+        {
+            _openPet.action.performed -= OnOpenPetPerformed;
+        }
+
         _isReady = false;
 
         if (_logInput)
@@ -238,6 +262,8 @@ public class CInputDispatcher : MonoBehaviour
             if (_inventory != null && _inventory.action != null) _inventory.action.Enable();
             if (_skillTree != null && _skillTree.action != null) _skillTree.action.Enable();
             if (_bossSummon != null && _bossSummon.action != null) _bossSummon.action.Enable();
+            if (_openRanking != null && _openRanking.action != null) _openRanking.action.Enable();
+            if (_openPet != null && _openPet.action != null) _openPet.action.Enable();
         }
         else
         {
@@ -263,6 +289,8 @@ public class CInputDispatcher : MonoBehaviour
             if (_inventory != null && _inventory.action != null) _inventory.action.Disable();
             if (_skillTree != null && _skillTree.action != null) _skillTree.action.Disable();
             if (_bossSummon != null && _bossSummon.action != null) _bossSummon.action.Disable();
+            if (_openRanking != null && _openRanking.action != null) _openRanking.action.Disable();
+            if (_openPet != null && _openPet.action != null) _openPet.action.Disable();
         }
     }
 
@@ -319,4 +347,6 @@ public class CInputDispatcher : MonoBehaviour
     private void OnInventoryPerformed(InputAction.CallbackContext ctx) => OnInventory?.Invoke();
     private void OnSkillTreePerformed(InputAction.CallbackContext ctx) => OnSkillTree?.Invoke();
     private void OnBossSummonPerformed(InputAction.CallbackContext ctx) => OnBossSummon?.Invoke();
+    private void OnOpenRankingPerformed(InputAction.CallbackContext ctx) => OnOpenRanking?.Invoke();
+    private void OnOpenPetPerformed(InputAction.CallbackContext ctx) => OnOpenPet?.Invoke();
 }

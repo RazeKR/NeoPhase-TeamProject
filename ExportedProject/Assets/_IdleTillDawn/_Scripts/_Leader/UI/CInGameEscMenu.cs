@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -89,6 +89,28 @@ public class CInGameEscMenu : MonoBehaviour
     private void OnEscInput()
     {
         if (_escPanel == null) return;
+
+        bool isAnyUIClosed = false;
+
+        if (CInventoryUI.Instance != null && CInventoryUI.Instance.IsOpen)
+        {
+            CInventoryUI.Instance.CloseUI();
+            isAnyUIClosed = true;
+        }
+
+        if (CShopUI.Instance != null && CShopUI.Instance.IsOpen)
+        {
+            CShopUI.Instance.CloseShop();
+            isAnyUIClosed = true;
+        }
+
+        if (CSkillUI.Instance != null && CSkillUI.Instance.IsOpen)
+        {
+            CSkillUI.Instance.CloseUI();
+            isAnyUIClosed = true;
+        }
+
+        if (isAnyUIClosed) return;
 
         // 옵션 패널이 열려 있으면 옵션만 먼저 닫기
         if (_optionUI != null && _optionUI.IsOptionOpen)
