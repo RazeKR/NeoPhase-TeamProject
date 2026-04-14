@@ -58,14 +58,16 @@ public class CUpgradePopUp : MonoBehaviour
             _resultText.text = "SUCCESS!";
             _subText.text = messsage;
             _upgradeEft.Play("Upgrade", 0, 0f);
-            CAudioManager.Instance.Play(_successSound);
+            if (CAudioManager.Instance != null)
+                CAudioManager.Instance.Play(_successSound);
         }
         else
         {
             _resultText.text = "Fail..";
             _subText.text = messsage;
             _upgradeEft.Play("Fail", 0, 0f);
-            CAudioManager.Instance.Play(_failSound);
+            if (CAudioManager.Instance != null)
+                CAudioManager.Instance.Play(_failSound);
         }
     }
 
