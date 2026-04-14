@@ -52,7 +52,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 50681549671693459}
-  kb: {fileID: 0}
   move: {fileID: 114933314071086218}
   trail: {fileID: 3673968081677559803}
   effect: {fileID: 0}
