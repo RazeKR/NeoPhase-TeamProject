@@ -56,6 +56,7 @@ MonoBehaviour:
   _baseDropChance: 5
   _maxDropChance: 25
   _growthRate: 0.005
+  _autoSaveInterval: 300
 --- !u!114 &2469163721615239967
 MonoBehaviour:
   m_ObjectHideFlags: 0

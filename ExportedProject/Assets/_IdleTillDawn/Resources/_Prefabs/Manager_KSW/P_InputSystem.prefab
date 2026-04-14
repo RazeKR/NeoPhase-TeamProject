@@ -67,6 +67,8 @@ MonoBehaviour:
     type: 3}
   _openPet: {fileID: -8524120753710692147, guid: c64b86f70fab656479be6b4c4ee91248,
     type: 3}
+  _openWeaponBox: {fileID: -2922199789988193579, guid: c64b86f70fab656479be6b4c4ee91248,
+    type: 3}
   _logInput: 0
 --- !u!114 &-4443796549817674344
 MonoBehaviour:

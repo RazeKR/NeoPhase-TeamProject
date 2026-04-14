@@ -45,6 +45,7 @@ public class CUIInputHandler : MonoBehaviour
             CInputDispatcher.Instance.OnBossSummon -= HandleBossSummonInput;
             CInputDispatcher.Instance.OnOpenRanking -= HandleOpenRankingInput;
             CInputDispatcher.Instance.OnOpenPet -= HandleOpenPetInput;
+            CInputDispatcher.Instance.OnOpenWeaponBox -= HandleOpenWeaponBoxInput;
         }
     }
 
@@ -59,6 +60,7 @@ public class CUIInputHandler : MonoBehaviour
         CInputDispatcher.Instance.OnBossSummon += HandleBossSummonInput;
         CInputDispatcher.Instance.OnOpenRanking += HandleOpenRankingInput;
         CInputDispatcher.Instance.OnOpenPet += HandleOpenPetInput;
+        CInputDispatcher.Instance.OnOpenWeaponBox += HandleOpenWeaponBoxInput;
     }
 
     private void HandleInventoryInput()
@@ -162,5 +164,19 @@ public class CUIInputHandler : MonoBehaviour
     private void HandleOpenPetInput()
     {
 
+    }
+
+    private void HandleOpenWeaponBoxInput()
+    {
+        CGenerateItem weaponBox = FindAnyObjectByType<CGenerateItem>();
+
+        if (weaponBox != null)
+        {
+            weaponBox.GenerateRandomRankItem();
+        }
+        else
+        {
+            CDebug.LogWarning("CUIInputHandler : CGenerateItem을 찾을 수 없음");
+        }
     }
 }

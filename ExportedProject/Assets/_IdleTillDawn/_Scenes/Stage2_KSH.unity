@@ -1324,6 +1324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 134641153}
   - component: {fileID: 134641152}
+  - component: {fileID: 134641154}
   m_Layer: 0
   m_Name: SpawnManager_KSH
   m_TagString: Untagged
@@ -1383,6 +1384,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &134641154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 134641151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1798b3caf18ae8f4ebb1baeb8c8379df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &151041431
 GameObject:
   m_ObjectHideFlags: 0
@@ -46009,7 +46022,7 @@ PrefabInstance:
     - target: {fileID: 6291755094896709387, guid: 5f6de21e0b6a282488815f6d742a51c4,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -114
+      value: -111.85448
       objectReference: {fileID: 0}
     - target: {fileID: 7649153159741360658, guid: 5f6de21e0b6a282488815f6d742a51c4,
         type: 3}
@@ -51093,7 +51106,7 @@ PrefabInstance:
     - target: {fileID: 2006921249512957054, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 267.8403
+      value: 267.8588
       objectReference: {fileID: 0}
     - target: {fileID: 2045833833162962790, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}

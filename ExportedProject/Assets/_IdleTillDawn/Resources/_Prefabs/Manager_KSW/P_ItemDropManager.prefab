@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5665563153681539815}
   - component: {fileID: 7013840588019974825}
-  - component: {fileID: 6212376219174282938}
   m_Layer: 0
   m_Name: P_ItemDropManager
   m_TagString: Untagged
@@ -45,24 +44,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1798b3caf18ae8f4ebb1baeb8c8379df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _itemGenerator: {fileID: 6212376219174282938}
-  _baseDropChance: 5
-  _maxDropChance: 25
-  _growthRate: 0.005
---- !u!114 &6212376219174282938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 413189473874728503}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7a6402f98358df49bd085063f438dd3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _commonRate: 85
-  _rareRate: 10
-  _epicRate: 4
-  _legendaryRate: 1
-  _weaponDataBaseSO: {fileID: 11400000, guid: 2aa6dadc1ea36564f94a392452a69ee9, type: 2}

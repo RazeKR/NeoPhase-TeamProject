@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class CItemDropManager : MonoBehaviour
 {
-    #region 인스펙터
-    [Header("참조")]
-    [SerializeField] private CGenerateItem _itemGenerator;
-
-    #endregion
-
     #region 내부 변수
     public static CItemDropManager Instance { get; private set; }
     #endregion
@@ -22,11 +16,6 @@ public class CItemDropManager : MonoBehaviour
         }
 
         Instance = this;
-
-        if (_itemGenerator == null)
-        {
-            _itemGenerator = GetComponent<CGenerateItem>();
-        }
     }
 
     private void OnDestroy()
@@ -44,25 +33,38 @@ public class CItemDropManager : MonoBehaviour
     public void RegisterEnemy(CEnemyBase enemy)
     {
         enemy.OnDied += HandleEnemyDrop;
+
+        //CDebug.Log($"[CItemDropManager] {enemy.gameObject.name}의 OnDied 이벤트 구독 완료!");
     }
 
     private void HandleEnemyDrop(CEnemyBase enemy)
     {
+        //CDebug.Log($"[CItemDropManager] {enemy.gameObject.name} 사망 이벤트 수신 완료!");
+
         enemy.OnDied -= HandleEnemyDrop;
 
         if (CGameManager.Instance == null) return;
 
-        float finalDropChance = CGameManager.Instance.GetCurrentDropChance();
+        float baseDropChance = CGameManager.Instance.GetCurrentDropChance();
+
+        float finalDropChance = baseDropChance * 0.05f;
+
+        CDebug.Log($"현재 드랍 확률 {finalDropChance}");
 
         float randomChance = Random.Range(0f, 100f);
 
         if (randomChance <= finalDropChance)
         {
-            CDebug.Log($"{enemy.gameObject.name} : 아이템 획득, 현재 확률 {finalDropChance}");
+            if (CJsonManager.Instance != null)
+            {
+                var data = CJsonManager.Instance.GetOrCreateSaveData();
+                data.weaponBoxCount++;
 
-            // 아이템 드롭 효과 추가
+                CGoldShopUI.TriggerWeaponBoxCountChanged(data.weaponBoxCount);
 
-            _itemGenerator.GenerateRandomRankItem();
+                CDebug.Log($"{enemy.gameObject.name} : 아이템 획득, 현재 확률 {finalDropChance}");
+            }
+
         }
     }
 }

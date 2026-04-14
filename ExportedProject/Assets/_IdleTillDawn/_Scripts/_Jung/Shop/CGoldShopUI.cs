@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -180,6 +180,14 @@ public class CGoldShopUI : MonoBehaviour
 
     /// <summary>무기 상자 보유 수량 변경 시 발행됩니다. 인자: 변경 후 보유 수량</summary>
     public static event Action<int> OnWeaponBoxCountChanged;
+
+    /// <summary>
+    /// 외부에서 무기 상자 개수 변경 이벤트를 발생시키기 위한 래퍼(Wrapper) 메서드입니다.
+    /// </summary>
+    public static void TriggerWeaponBoxCountChanged(int count)
+    {
+        OnWeaponBoxCountChanged?.Invoke(count);
+    }
 
     #endregion
 
