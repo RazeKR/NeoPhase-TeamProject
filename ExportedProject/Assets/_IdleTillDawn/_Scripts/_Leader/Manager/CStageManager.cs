@@ -47,10 +47,11 @@ public class CStageManager : MonoBehaviour
 
     #region Private Variables
 
-    private EStageState  currentState;     // 현재 상태 (외부에서 직접 변경 불가)
-    private int          currentKillCount; // 이번 스테이지 누적 처치 수
-    private CStageDataSO stageData;        // 현재 스테이지 데이터 캐시 (GameManager에서 수신)
-    private bool         _stageCleared;    // StageClear 여부 — OnDestroy에서 중복 저장 방지용
+    private EStageState  currentState;      // 현재 상태 (외부에서 직접 변경 불가)
+    private int          currentKillCount;  // 보스 도전 조건용 처치 수 (Farming 상태에서만 집계)
+    private int          _totalSessionKills; // 이번 씬 진입 후 처치한 총 몬스터 수 (상태 무관)
+    private CStageDataSO stageData;         // 현재 스테이지 데이터 캐시 (GameManager에서 수신)
+    private bool         _stageCleared;     // StageClear 여부 — OnDestroy에서 중복 저장 방지용
 
     #endregion
 
@@ -58,6 +59,12 @@ public class CStageManager : MonoBehaviour
 
     /// <summary>현재 상태를 외부에서 읽기 전용으로 노출한다</summary>
     public EStageState CurrentState => currentState;
+
+    /// <summary>보스 도전 조건용 처치 수 (Farming 상태에서만 집계)</summary>
+    public int CurrentKillCount => currentKillCount;
+
+    /// <summary>이번 씬 진입 후 상태 무관하게 처치한 총 몬스터 수 — 결과 패널 표시용</summary>
+    public int TotalSessionKills => _totalSessionKills;
 
     #endregion
 
@@ -121,6 +128,9 @@ public class CStageManager : MonoBehaviour
     /// </summary>
     public void RegisterKill()
     {
+        // 상태 무관 — 결과 패널 표시용 총 처치 수는 항상 누적
+        _totalSessionKills++;
+
         if (currentState != EStageState.Farming) return;
 
         currentKillCount++;
@@ -154,10 +164,14 @@ public class CStageManager : MonoBehaviour
 
     private void HandleBossDefeated() => TransitionTo(EStageState.StageClear);
 
-    private void HandlePlayerDefeated()
-    {
-        OnPlayerDied?.Invoke();
-    }
+    private void HandlePlayerDefeated() => OnPlayerDied?.Invoke();
+
+    /// <summary>
+    /// 보스전 이외 경로(일반 몬스터 등)에서 플레이어가 사망했을 때 외부에서 호출한다.
+    /// OnPlayerDied 이벤트를 발행하여 UIManager가 사망 패널을 표시하도록 한다.
+    /// 씬 리로드는 UIManager의 카운트다운 또는 재도전 버튼 클릭 시 수행된다.
+    /// </summary>
+    public void TriggerPlayerDeath() => OnPlayerDied?.Invoke();
 
     private void TransitionTo(EStageState nextState)
     {
@@ -188,8 +202,9 @@ public class CStageManager : MonoBehaviour
                 _stageCleared = true;
                 SaveKillCountReset(); // 다음 스테이지를 위해 킬카운트 0으로 저장
 
+                // ProgressToNextStage는 CUIManager가 카운트다운 후 직접 호출한다
+                // (계속하기 버튼 또는 10초 타임아웃)
                 OnStageClear?.Invoke();
-                CGameManager.Instance.ProgressToNextStage();
                 break;
         }
     }

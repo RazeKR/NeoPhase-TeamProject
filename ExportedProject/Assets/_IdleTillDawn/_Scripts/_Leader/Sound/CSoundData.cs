@@ -32,6 +32,8 @@ public class CSoundData
     [Header("재생 제어")]
     [SerializeField] private bool _allowOverlap = true;                       // false면 이미 재생 중인 경우 신규 요청 무시 (단일 인스턴스 사운드)
     [SerializeField] private float _cooldown = 0.05f;                         // 동일 SoundData 최소 재생 간격 (초). 0이면 제한 없음
+    [Tooltip("true면 동시 재생 수에 따른 볼륨 덕킹을 무시합니다. 클리어·사망 패널 효과음처럼 항상 최대 볼륨으로 재생해야 할 때 사용합니다.")]
+    [SerializeField] private bool _ignoreDucking = false;                     // true면 볼륨 덕킹 무시 (우선순위 SFX)
 
     #endregion
 
@@ -59,10 +61,13 @@ public class CSoundData
     public float       MaxDistance  => _maxDistance;
 
     /// <summary>동시 중복 재생 허용 여부</summary>
-    public bool        AllowOverlap => _allowOverlap;
+    public bool        AllowOverlap  => _allowOverlap;
 
     /// <summary>동일 사운드 최소 재생 간격 (초)</summary>
-    public float       Cooldown     => _cooldown;
+    public float       Cooldown      => _cooldown;
+
+    /// <summary>볼륨 덕킹 무시 여부. true면 동시 재생 수와 무관하게 항상 최대 볼륨으로 재생됩니다.</summary>
+    public bool        IgnoreDucking => _ignoreDucking;
 
     #endregion
 

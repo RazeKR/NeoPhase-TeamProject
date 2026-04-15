@@ -49,6 +49,10 @@ public class CPetDataSO : CItemDataSO
     [Tooltip("다중 투사체일 때 인접 투사체 사이 각도(도). 3발이면 -Angle, 0, +Angle 방향으로 발사됩니다.")]
     [SerializeField] private float _projectileSpreadAngle = 15f;
 
+    [Header("발사 효과음 (ProjectileBoost / AttackSpeedBoost 전용)")]
+    [Tooltip("투사체 발사 시 재생할 효과음")]
+    [SerializeField] private CSoundData _fireSFX = null;
+
     [Header("화상 상태이상 (ProjectileBoost / AttackSpeedBoost 전용)")]
     [Tooltip("투사체 피격 시 화상 상태이상을 적용합니다.")]
     [SerializeField] private bool  _applyBurnOnHit   = false;
@@ -81,6 +85,7 @@ public class CPetDataSO : CItemDataSO
 
     public EPetType PetType              => _petType;
     public CWeaponDataSO BulletConfig   => _bulletConfig;
+    public CSoundData FireSFX           => _fireSFX;
     public float FireInterval           => _fireInterval;
     public int   ProjectileCount        => Mathf.Max(1, _projectileCount);
     public float ProjectileSpreadAngle  => _projectileSpreadAngle;

@@ -511,15 +511,11 @@ public class CPlayerController : CEntityBase, IHealable
     }
 
     /// <summary>
-    /// 플레이어 사망 — 씬 리로드로 현재 스테이지 재시작
+    /// 플레이어 사망 — 사망 패널을 표시하고 UIManager에 이후 처리를 위임한다.
+    /// 씬 리로드는 UIManager의 재도전 버튼 또는 10초 카운트다운 완료 시 수행된다.
     /// </summary>
     public override void Die()
     {
-        // 킬카운트 초기화
-        CStageManager stageManager = UnityEngine.Object.FindObjectOfType<CStageManager>();
-        if (stageManager != null)
-            stageManager.ResetKillCountOnDeath();
-
         // 경험치 20% 패널티 적용 (UI 이벤트도 함께 발생)
         _statManager.ApplyDeathExpPenalty();
 
@@ -538,7 +534,6 @@ public class CPlayerController : CEntityBase, IHealable
 
             int currentStage = CGameManager.Instance != null ? CGameManager.Instance.CurrentStageIndex : 1;
 
-
             currentData.UpdateProgress
             (
                 _statManager.CurrentLevel,
@@ -553,11 +548,13 @@ public class CPlayerController : CEntityBase, IHealable
 
         base.Die();
 
-        if (CGameManager.Instance != null)
-        {
-            CGameManager.Instance.RespawnCurrentStage();
-        }
-
+        // OnPlayerDied 이벤트를 발행하여 UIManager가 사망 패널과 카운트다운을 처리하도록 한다.
+        // 킬카운트 초기화 및 씬 리로드는 UIManager의 재도전 버튼 또는 타임아웃에서 수행된다.
+        CStageManager stageManager = UnityEngine.Object.FindObjectOfType<CStageManager>();
+        if (stageManager != null)
+            stageManager.TriggerPlayerDeath();
+        else if (CGameManager.Instance != null)
+            CGameManager.Instance.RespawnCurrentStage(); // StageManager가 없는 예외 상황 폴백
     }
 
     /// <summary>

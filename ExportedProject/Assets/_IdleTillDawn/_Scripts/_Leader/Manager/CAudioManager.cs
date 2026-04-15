@@ -156,7 +156,11 @@ public class CAudioManager : MonoBehaviour
     /// <summary>BGM을 즉시 정지합니다.</summary>
     public void StopBGM()
     {
-        if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
+        if (_fadeCoroutine != null)
+        {
+            StopCoroutine(_fadeCoroutine);
+            _fadeCoroutine = null;
+        }
         _bgmSource.Stop();
     }
 
@@ -173,6 +177,22 @@ public class CAudioManager : MonoBehaviour
     {
         if (clip == null) return;
         _sfxSource.PlayOneShot(clip);
+    }
+
+    #endregion
+
+    #region Public API — SFX Priority
+
+    /// <summary>
+    /// 반드시 들려야 하는 우선순위 SFX (패널 효과음 등)를 재생합니다.
+    /// 풀·덕킹·쿨다운·3D 거리 감쇠를 모두 우회하여 _sfxSource 에서 직접 PlayOneShot 합니다.
+    /// </summary>
+    public void PlayPriority(CSoundData data)
+    {
+        if (data == null || !data.IsValid()) return;
+        AudioClip clip = data.GetRandomClip();
+        if (clip == null) return;
+        _sfxSource.PlayOneShot(clip, data.Volume * _sfxVolumeMultiplier);
     }
 
     #endregion
@@ -338,7 +358,8 @@ public class CAudioManager : MonoBehaviour
         source.transform.position = data.Is3D ? position : transform.position;
 
         source.clip              = clip;
-        source.volume            = data.Volume * _sfxVolumeMultiplier * GetDuckingMultiplier();
+        float duckMultiplier     = data.IgnoreDucking ? 1f : GetDuckingMultiplier();
+        source.volume            = data.Volume * _sfxVolumeMultiplier * duckMultiplier;
         source.pitch             = data.GetRandomPitch();
         source.spatialBlend      = data.Is3D ? data.SpatialBlend : 0f;
         source.minDistance       = data.MinDistance;

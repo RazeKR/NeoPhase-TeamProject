@@ -35,7 +35,9 @@ public class CPlayerSpawner : MonoBehaviour
         Vector3 spawnPoint = transform.position;
 
         // CJsonManager.Instance가 null일 수 있음 (씬 직접 실행 또는 Script Execution Order 문제)
-        CSaveData saveData = CJsonManager.Instance != null ? CJsonManager.Instance.Load() : null;
+        // GetOrCreateSaveData() 사용: 메모리에 이미 로드된 데이터가 있으면 재사용하여
+        // 씬 전환 시마다 파일을 다시 읽어 역직렬화 실패로 데이터가 초기화되는 문제를 방지합니다.
+        CSaveData saveData = CJsonManager.Instance != null ? CJsonManager.Instance.GetOrCreateSaveData() : null;
 
         // ── 캐릭터 ID 결정 우선순위 ──────────────────────────────────────
         // 1순위: CGameManager 메모리 (_selectedPlayerId) — 이번 세션 선택 또는 PlayerPrefs 복원

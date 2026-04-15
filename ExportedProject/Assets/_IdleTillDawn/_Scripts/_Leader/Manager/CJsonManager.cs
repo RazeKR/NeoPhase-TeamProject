@@ -139,8 +139,17 @@ public class CJsonManager : MonoBehaviour
 
             if (loaded == null)
             {
-                CDebug.LogWarning("[CJsonManager] 역직렬화 실패. 신규 데이터를 생성합니다.");
-                CurrentSaveData = CreateNewSaveData();
+                // 역직렬화 실패 시 — 이미 메모리에 유효한 데이터가 있으면 기존 데이터를 보존합니다.
+                // 씬 전환 중 파일 접근 타이밍 문제로 역직렬화가 실패해도 플레이어 데이터가 날아가지 않습니다.
+                if (CurrentSaveData != null)
+                {
+                    CDebug.LogWarning("[CJsonManager] 역직렬화 실패. 기존 메모리 데이터를 유지합니다.");
+                }
+                else
+                {
+                    CDebug.LogWarning("[CJsonManager] 역직렬화 실패. 신규 데이터를 생성합니다.");
+                    CurrentSaveData = CreateNewSaveData();
+                }
             }
             else
             {
@@ -153,10 +162,21 @@ public class CJsonManager : MonoBehaviour
         }
         catch (Exception ex)
         {
-            string error = $"[CJsonManager] 로드 실패: {ex.Message}. 신규 데이터를 생성합니다.";
+            string error = $"[CJsonManager] 로드 실패: {ex.Message}.";
             CDebug.LogError(error);
             OnError?.Invoke(error);
-            CurrentSaveData = CreateNewSaveData();
+
+            // 예외 발생 시 — 이미 메모리에 유효한 데이터가 있으면 기존 데이터를 보존합니다.
+            if (CurrentSaveData == null)
+            {
+                CDebug.LogWarning("[CJsonManager] 메모리에 데이터 없음 → 신규 데이터를 생성합니다.");
+                CurrentSaveData = CreateNewSaveData();
+            }
+            else
+            {
+                CDebug.LogWarning("[CJsonManager] 기존 메모리 데이터를 유지합니다.");
+            }
+
             OnLoadCompleted?.Invoke(CurrentSaveData);
             return CurrentSaveData;
         }

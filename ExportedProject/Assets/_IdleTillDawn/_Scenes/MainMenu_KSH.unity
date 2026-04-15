@@ -305,9 +305,9 @@ MonoBehaviour:
   _fadeInDuration: 0.8
   _bgmSource: {fileID: 0}
   _sfxSource: {fileID: 0}
-  _initialPoolSize: 16
-  _maxPoolSize: 32
-  _maxConcurrentSFX: 8
+  _initialPoolSize: 30
+  _maxPoolSize: 50
+  _maxConcurrentSFX: 12
   _minDuckMultiplier: 0.3
   _sfxMixerGroup: {fileID: 0}
   _bgmMixerGroup: {fileID: 0}
@@ -1078,8 +1078,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager_KSH
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 531419206932575076, guid: cb90adfa522f6a1438d76fdd7a47f2c7, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

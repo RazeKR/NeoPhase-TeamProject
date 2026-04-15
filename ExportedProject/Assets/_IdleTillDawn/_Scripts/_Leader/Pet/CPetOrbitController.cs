@@ -256,6 +256,10 @@ public class CPetOrbitController : MonoBehaviour
             return;
         }
 
+        // 발사 효과음 재생
+        if (_data.FireSFX != null && CAudioManager.Instance != null)
+            CAudioManager.Instance.Play(_data.FireSFX, transform.position);
+
         int   count  = _data.ProjectileCount;
         float spread = _data.ProjectileSpreadAngle;
         float baseAngle = Mathf.Atan2(

@@ -129,9 +129,11 @@ public class CPetInventoryUI : MonoBehaviour
         }
         Instance = this;
 
-        // 첫 프레임부터 숨김 — Start()보다 먼저 실행되므로 스프라이트가 미리 노출되지 않음
-        if (_petInventoryPanel != null) _petInventoryPanel.SetActive(false);
-        if (_infoPanel         != null) _infoPanel.SetActive(false);
+        // [중요] Awake에서 SetActive(false)를 호출하면 Pet_InventoryPanel이 비활성화되어
+        // 같은 패널에 붙어있는 CPetInventorySystem·CPetBuffApplier의 Awake가 실행되지 않습니다.
+        // (씬에서 CPetInventoryUI가 Pet_InventoryPanel보다 먼저 배치되어 있기 때문)
+        // → SetActive 호출을 Start()로 이동합니다.
+        // Start()도 첫 Update() 전에 실행되므로 패널이 화면에 노출되지 않습니다.
 
         // 명시적 호출 전까지 이펙트 오브젝트 자체를 숨김 (마지막 프레임 잔상 방지)
         if (_upgradeAnimator != null)
@@ -143,6 +145,12 @@ public class CPetInventoryUI : MonoBehaviour
 
     private void Start()
     {
+        // Pet_InventoryPanel과 infoPanel 숨김
+        // Awake 단계가 모두 완료된 후 실행되므로
+        // CPetInventorySystem·CPetBuffApplier의 Awake 실행이 보장됩니다.
+        if (_petInventoryPanel != null) _petInventoryPanel.SetActive(false);
+        if (_infoPanel         != null) _infoPanel.SetActive(false);
+
         _closeButton?.onClick.AddListener(OnOffPetInventoryUI);
         _petListTabButton?.onClick.AddListener(() => SelectTab(0));
         _petGachaTabButton?.onClick.AddListener(() => SelectTab(1));

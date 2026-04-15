@@ -22,6 +22,21 @@ MonoBehaviour:
   _fireInterval: 1
   _projectileCount: 1
   _projectileSpreadAngle: 15
+  _fireSFX:
+    _clips:
+    - {fileID: 8300000, guid: 71d6b8714d149904fa10db63b6956346, type: 3}
+    _volume: 0.6
+    _pitchRange: {x: 0.9, y: 1.1}
+    _is3D: 1
+    _spatialBlend: 1
+    _minDistance: 1
+    _maxDistance: 20
+    _allowOverlap: 1
+    _cooldown: 0.05
+  _applyBurnOnHit: 0
+  _burnDuration: 3
+  _burnTickDamage: 10
+  _burnTickInterval: 1
   _idleSprites:
   - {fileID: 21300000, guid: 5fd54a4822d678c4cba61403d8146af5, type: 2}
   - {fileID: 21300000, guid: 51856092c9b46cf438143c4123a2bea8, type: 2}

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -21,13 +22,38 @@ public class CUIManager : MonoBehaviour
     [SerializeField] private Text _stageInfoText; // 현재 스테이지 번호 표시
 
     [Header("사망 UI")]
-    [SerializeField] private GameObject _deathPanel; // 플레이어 사망 시 표시할 패널
+    [SerializeField] private GameObject _deathPanel;             // 플레이어 사망 시 표시할 패널
+    [SerializeField] private Button     _retryButton;            // 사망 패널 - 재도전 버튼
+    [SerializeField] private Button     _previousStageButton;    // 사망 패널 - 이전 스테이지 버튼
+    [SerializeField] private Text       _deathKillCountText;     // 사망 패널 - 처치 수 표시 (숫자만)
+    [SerializeField] private Text       _deathExpGainedText;     // 사망 패널 - 획득 경험치 표시 (숫자만)
+    [SerializeField] private Text       _deathCountdownText;     // 사망 패널 - 카운트다운 표시 (숫자만)
+
+    [Header("패널 효과음")]
+    [SerializeField] private CSoundData _deathPanelSFX;  // 사망 패널 활성화 시 재생할 효과음
+    [SerializeField] private CSoundData _clearPanelSFX;  // 클리어 패널 활성화 시 재생할 효과음
 
     [Header("클리어 UI")]
-    [SerializeField] private GameObject _clearPanel; // 스테이지 클리어 시 표시할 패널
+    [SerializeField] private GameObject _clearPanel;             // 스테이지 클리어 시 표시할 패널
+    [SerializeField] private Button     _continueButton;         // 클리어 패널 - 계속하기 버튼
+    [SerializeField] private Button     _restartButton;          // 클리어 패널 - 재시작 버튼
+    [SerializeField] private Text       _clearKillCountText;     // 클리어 패널 - 처치 수 표시 (숫자만)
+    [SerializeField] private Text       _clearExpGainedText;     // 클리어 패널 - 획득 경험치 표시 (숫자만)
+    [SerializeField] private Text       _clearCountdownText;     // 클리어 패널 - 카운트다운 표시 (숫자만)
 
     [Header("스테이지 매니저 연결")]
     [SerializeField] private CStageManager _stageManager; // 이벤트 구독 대상
+
+    #endregion
+
+    #region Private Variables
+
+    private const float PanelDisplayDuration = 10f; // 패널 자동 처리 대기 시간(초)
+
+    private float _sessionExpGained;  // 이번 스테이지에서 획득한 총 경험치 (배율 적용 후)
+    private Coroutine _countdownCoroutine; // 실행 중인 카운트다운 코루틴 (취소 시 사용)
+
+    private CPlayerStatManager _subscribedStatManager; // 경험치 이벤트 구독 중인 스탯매니저
 
     #endregion
 
@@ -54,7 +80,14 @@ public class CUIManager : MonoBehaviour
 
         // CGameManager는 DontDestroyOnLoad이므로 씬 언로드 시 반드시 구독 해제해야 누수가 없다
         if (CGameManager.Instance != null)
+        {
             CGameManager.Instance.OnStageIndexChanged -= UpdateStageInfoFromData;
+            CGameManager.Instance.OnPlayerRegistered  -= OnPlayerRegistered;
+        }
+
+        // 경험치 이벤트 구독 해제
+        if (_subscribedStatManager != null)
+            _subscribedStatManager.OnExpAdded -= AccumulateSessionExp;
     }
 
     #endregion
@@ -75,9 +108,41 @@ public class CUIManager : MonoBehaviour
         // 인덱스 증가 직후 발행 — 씬 리로드 이전에 스테이지 텍스트를 즉시 갱신한다
         CGameManager.Instance.OnStageIndexChanged += UpdateStageInfoFromData;
 
+        // 플레이어 등록 이벤트 — 경험치 추적을 위해 StatManager를 받아온다
+        CGameManager.Instance.OnPlayerRegistered += OnPlayerRegistered;
+
+        // 이미 등록된 플레이어가 있으면 즉시 연결 (Start 순서 차이 대응)
+        if (CGameManager.Instance.CachedStatManager != null)
+            OnPlayerRegistered(CGameManager.Instance.CachedStatManager);
+
         // 보스 버튼 클릭 이벤트를 StageManager에 연결
         _bossChallengeButton.onClick.AddListener(_stageManager.OnBossChallengeButtonPressed);
+
+        // 사망 패널 버튼 연결
+        if (_retryButton         != null) _retryButton.onClick.AddListener(OnRetryPressed);
+        if (_previousStageButton != null) _previousStageButton.onClick.AddListener(OnPreviousStagePressed);
+
+        // 클리어 패널 버튼 연결
+        if (_continueButton != null) _continueButton.onClick.AddListener(OnContinuePressed);
+        if (_restartButton  != null) _restartButton.onClick.AddListener(OnRestartPressed);
     }
+
+    /// <summary>
+    /// 플레이어가 씬에 등록될 때 호출된다.
+    /// StatManager의 OnExpAdded를 구독하여 세션 경험치를 누적한다.
+    /// </summary>
+    private void OnPlayerRegistered(CPlayerStatManager statManager)
+    {
+        // 이전 구독이 있으면 해제 (중복 구독 방지)
+        if (_subscribedStatManager != null)
+            _subscribedStatManager.OnExpAdded -= AccumulateSessionExp;
+
+        _subscribedStatManager = statManager;
+        _subscribedStatManager.OnExpAdded += AccumulateSessionExp;
+    }
+
+    /// <summary>이번 스테이지에서 획득한 경험치를 누적한다</summary>
+    private void AccumulateSessionExp(float amount) => _sessionExpGained += amount;
 
     /// <summary>
     /// UI 초기 상태를 설정한다
@@ -88,6 +153,9 @@ public class CUIManager : MonoBehaviour
         _bossChallengeButton.gameObject.SetActive(false); // 보스 버튼 초기 숨김
         _deathPanel.SetActive(false);                     // 사망 패널 초기 숨김
         _clearPanel.SetActive(false);                     // 클리어 패널 초기 숨김
+
+        // 씬 시작 시 세션 통계 초기화
+        _sessionExpGained = 0f;
 
         // 씬 시작 시 게이지를 0으로 즉시 초기화 (Lerp 연출 없이 깔끔하게 시작)
         CStageDataSO stageData = CGameManager.Instance.CurrentStageData;
@@ -143,19 +211,167 @@ public class CUIManager : MonoBehaviour
     private void ShowBossChallengeButton() =>
         _bossChallengeButton.gameObject.SetActive(true); // 목표 달성 시 버튼 노출
 
-    /// <summary>
-    /// 스테이지 클리어 패널을 표시한다
-    /// 씬 전환 전 짧은 시간 동안 클리어 연출을 보여주는 용도로 사용한다
-    /// </summary>
-    private void ShowClearPanel() =>
-        _clearPanel.SetActive(true); // 클리어 연출 패널 표시
+    // ── 사망 패널 ────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// 플레이어 사망 패널을 표시한다
-    /// 씬 리로드 전까지 사망 UI가 유지되어 플레이어가 상황을 인지할 수 있도록 한다
+    /// 플레이어 사망 패널을 표시한다.
+    /// 이번 스테이지 통계(킬 수, 경험치)를 표시하고 10초 카운트다운 후 자동 재도전한다.
+    /// 이전 스테이지 버튼은 같은 월드 내 첫 번째 스테이지(X-1)일 때 비활성화한다.
     /// </summary>
-    private void ShowDeathPanel() =>
-        _deathPanel.SetActive(true); // 사망 UI 표시
+    private void ShowDeathPanel()
+    {
+        _deathPanel.SetActive(true);
+
+        // 패널 효과음 먼저 재생 → BGM 중지
+        // PlayPriority: 풀·덕킹·3D 거리 감쇠를 우회하여 확실히 재생
+        if (_deathPanelSFX != null)
+            CAudioManager.Instance?.PlayPriority(_deathPanelSFX);
+        CAudioManager.Instance?.StopBGM();
+
+        // 이번 스테이지 통계 표시
+        if (_deathKillCountText != null)
+            _deathKillCountText.text = _stageManager.TotalSessionKills.ToString();
+        if (_deathExpGainedText != null)
+            _deathExpGainedText.text = Mathf.FloorToInt(_sessionExpGained).ToString();
+
+        // 이전 스테이지 버튼 활성화 여부 (월드 내 첫 스테이지이면 이동 불가)
+        if (_previousStageButton != null)
+            _previousStageButton.interactable = CGameManager.Instance.CanGoToPreviousStage;
+
+        // 10초 카운트다운 후 자동 재도전
+        _countdownCoroutine = StartCoroutine(CountdownCoroutine(
+            PanelDisplayDuration,
+            _deathCountdownText,
+            ExecuteRetry));
+    }
+
+    // ── 클리어 패널 ──────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// 스테이지 클리어 패널을 표시한다.
+    /// 이번 스테이지 통계(킬 수, 경험치)를 표시하고 10초 카운트다운 후 자동으로 계속하기 처리된다.
+    /// X-10 스테이지(IsLastStage)이면 재시작 버튼을 비활성화한다.
+    /// </summary>
+    private void ShowClearPanel()
+    {
+        _clearPanel.SetActive(true);
+
+        // 패널 효과음 먼저 재생 → BGM 중지
+        // PlayPriority: 풀·덕킹·3D 거리 감쇠를 우회하여 확실히 재생
+        if (_clearPanelSFX != null)
+            CAudioManager.Instance?.PlayPriority(_clearPanelSFX);
+        CAudioManager.Instance?.StopBGM();
+
+        // 이번 스테이지 통계 표시
+        if (_clearKillCountText != null)
+            _clearKillCountText.text = _stageManager.TotalSessionKills.ToString();
+        if (_clearExpGainedText != null)
+            _clearExpGainedText.text = Mathf.FloorToInt(_sessionExpGained).ToString();
+
+        // X-10 스테이지는 재시작 불가 — 반드시 다음 스테이지로 넘어가야 한다
+        if (_restartButton != null)
+        {
+            CStageDataSO data = CGameManager.Instance.CurrentStageData;
+            bool isLastStage  = data != null && data.IsLastStage;
+            _restartButton.gameObject.SetActive(!isLastStage);
+        }
+
+        // 10초 카운트다운 후 자동 계속하기
+        _countdownCoroutine = StartCoroutine(CountdownCoroutine(
+            PanelDisplayDuration,
+            _clearCountdownText,
+            ExecuteContinue));
+    }
+
+    // ── 버튼 콜백 ────────────────────────────────────────────────────────────
+
+    /// <summary>재도전 버튼 — 카운트다운을 취소하고 즉시 재도전한다</summary>
+    private void OnRetryPressed()
+    {
+        StopCountdown();
+        ExecuteRetry();
+    }
+
+    /// <summary>이전 스테이지 버튼 — 카운트다운을 취소하고 한 단계 낮은 스테이지로 이동한다</summary>
+    private void OnPreviousStagePressed()
+    {
+        StopCountdown();
+        CGameManager.Instance.GoToPreviousStage();
+    }
+
+    /// <summary>계속하기 버튼 — 카운트다운을 취소하고 즉시 다음 스테이지로 진행한다</summary>
+    private void OnContinuePressed()
+    {
+        StopCountdown();
+        ExecuteContinue();
+    }
+
+    /// <summary>
+    /// 재시작 버튼 — 카운트다운을 취소하고 현재 스테이지를 처음부터 다시 시작한다.
+    /// X-10 스테이지는 재시작 버튼이 숨겨지므로 이 콜백이 호출되지 않는다.
+    /// </summary>
+    private void OnRestartPressed()
+    {
+        StopCountdown();
+        ExecuteRestart();
+    }
+
+    // ── 실행 로직 ─────────────────────────────────────────────────────────────
+
+    /// <summary>재도전 실행 — 킬카운트 초기화 후 씬 리로드</summary>
+    private void ExecuteRetry()
+    {
+        _stageManager.ResetKillCountOnDeath();
+        CGameManager.Instance.RespawnCurrentStage();
+    }
+
+    /// <summary>계속하기 실행 — 다음 스테이지로 진행</summary>
+    private void ExecuteContinue() =>
+        CGameManager.Instance.ProgressToNextStage();
+
+    /// <summary>재시작 실행 — 킬카운트 초기화 후 동일 씬 리로드</summary>
+    private void ExecuteRestart()
+    {
+        _stageManager.ResetKillCountOnDeath();
+        CGameManager.Instance.RespawnCurrentStage();
+    }
+
+    // ── 카운트다운 코루틴 ────────────────────────────────────────────────────
+
+    /// <summary>실행 중인 카운트다운 코루틴을 중단한다</summary>
+    private void StopCountdown()
+    {
+        if (_countdownCoroutine != null)
+        {
+            StopCoroutine(_countdownCoroutine);
+            _countdownCoroutine = null;
+        }
+    }
+
+    /// <summary>
+    /// 지정된 시간 동안 카운트다운을 진행하고 완료되면 콜백을 실행하는 코루틴.
+    /// countdownText가 연결된 경우 남은 초(정수)를 매 프레임 갱신한다.
+    /// Time.unscaledDeltaTime을 사용하여 timeScale 영향을 받지 않는다.
+    /// </summary>
+    private IEnumerator CountdownCoroutine(float duration, Text countdownText, System.Action onComplete)
+    {
+        float remaining = duration;
+
+        while (remaining > 0f)
+        {
+            if (countdownText != null)
+                countdownText.text = Mathf.CeilToInt(remaining).ToString();
+
+            yield return null;
+            remaining -= Time.unscaledDeltaTime;
+        }
+
+        if (countdownText != null)
+            countdownText.text = "0";
+
+        _countdownCoroutine = null;
+        onComplete?.Invoke();
+    }
 
     #endregion
 }

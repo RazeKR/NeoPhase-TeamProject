@@ -182,8 +182,14 @@ public class CGameManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+#if UNITY_EDITOR
+        // 에디터 전용 디버그 기능: P키로 전체 데이터 초기화
+        // 빌드에서는 비활성화 — 실수로 P키를 눌러 플레이어 데이터가 날아가는 사고를 방지합니다.
+        // 메인메뉴 씬에서는 동작하지 않습니다.
+        if (Input.GetKeyDown(KeyCode.P) &&
+            SceneManager.GetActiveScene().name != _mainMenuSceneName)
             ResetAllData();
+#endif
     }
 
     #endregion
@@ -214,6 +220,42 @@ public class CGameManager : MonoBehaviour
     /// <summary>플레이어 사망 시 동일 스테이지를 재시작합니다.</summary>
     public void RespawnCurrentStage() =>
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+    /// <summary>
+    /// 같은 월드 내 한 단계 낮은 스테이지로 이동합니다.
+    /// 현재 스테이지가 월드의 첫 번째(X-1)이면 이동하지 않습니다. (다른 월드로 역행 불가)
+    /// </summary>
+    public void GoToPreviousStage()
+    {
+        if (!CanGoToPreviousStage) return;
+
+        _currentStageIndex--;
+
+        // 이전 스테이지 킬카운트 초기화 (처음부터 재시작)
+        if (CJsonManager.Instance != null)
+        {
+            CSaveData data = CJsonManager.Instance.GetOrCreateSaveData();
+            data.currentKillCount = 0;
+            CJsonManager.Instance.Save(data);
+        }
+        PlayerPrefs.SetInt("StageIndex", _currentStageIndex);
+        PlayerPrefs.Save();
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    /// <summary>
+    /// 이전 스테이지로 이동 가능한지 여부.
+    /// 현재 스테이지가 월드 내 1번(StageNumber == 1)이면 false를 반환합니다.
+    /// </summary>
+    public bool CanGoToPreviousStage
+    {
+        get
+        {
+            CStageDataSO current = CurrentStageData;
+            return current != null && current.StageNumber > 1;
+        }
+    }
 
     /// <summary>
     /// 모든 플레이어 데이터(스테이지 진행도·스킬트리·인벤토리)를 초기화하고

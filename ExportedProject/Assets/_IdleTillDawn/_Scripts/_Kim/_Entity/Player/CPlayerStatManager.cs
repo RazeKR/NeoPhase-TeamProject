@@ -41,6 +41,8 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
     public event Action OnStatUpgraded;
     public event Action<float, float> OnManaChanged;
     public event Action<float, float> OnExpChanged;
+    /// <summary>경험치가 실제로 추가될 때 발행 — 인자: 최종 적용된 경험치량 (배율 적용 후)</summary>
+    public event Action<float> OnExpAdded;
     #endregion
 
     private void Awake()
@@ -166,6 +168,7 @@ public class CPlayerStatManager : MonoBehaviour, IManaUser
         if (CurrentLevel >= MaxLevel) return;
 
         float finalExp = amount * GetFinalStat(EPlayerStatType.ExpMultiplier);
+        OnExpAdded?.Invoke(finalExp);
         CurrentExp += finalExp;
 
         float requiredExp = GetRequiredExp(CurrentLevel);

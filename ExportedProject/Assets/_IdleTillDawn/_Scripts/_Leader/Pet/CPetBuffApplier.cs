@@ -13,29 +13,22 @@
 /// </summary>
 public class CPetBuffApplier : UnityEngine.MonoBehaviour
 {
-    #region Private Variables
-
-    // 중복 구독 방지 플래그 (Pet_InventoryPanel이 비활성화된 상태에서 Start()가
-    // 지연 실행될 때 이중 구독이 일어나지 않도록 합니다)
-    private bool _isSubscribed = false;
-
-    #endregion
-
     #region Unity Methods
 
     private void Awake()
     {
         // [핵심] Start()는 오브젝트가 비활성화되면 지연 실행됩니다.
         // Pet_InventoryPanel은 CPetInventoryUI.Awake()에서 SetActive(false)되므로
-        // Start()가 씬 시작 시 호출되지 않아 OnPlayerRegistered 등 초기 이벤트를 놓칩니다.
-        // → CPetInventorySystem과 동일하게 Awake에서 구독을 처리합니다.
-        TrySubscribe();
+        // Start()가 씬 시작 시 호출되지 않아 초기 이벤트를 놓칩니다.
+        // → Awake에서 구독을 처리합니다.
+        Subscribe();
     }
 
     private void Start()
     {
-        // Awake 시점에 인스턴스가 준비되지 않은 경우 (씬 직접 실행 등)를 위한 재시도
-        TrySubscribe();
+        // Awake 시점에 CPetInventorySystem이 아직 초기화되지 않은 경우(씬 직접 실행 등)를
+        // 위한 재시도. -=후 += 패턴으로 중복 구독 없이 안전합니다.
+        Subscribe();
 
         // 이미 장착된 펫이 있고 플레이어가 등록된 상태면 즉시 적용
         RefreshAllBuffs(CGameManager.Instance?.CachedStatManager);
@@ -58,18 +51,33 @@ public class CPetBuffApplier : UnityEngine.MonoBehaviour
     #region Private Methods
 
     /// <summary>
-    /// 이벤트 구독을 한 번만 수행합니다.
-    /// Awake와 Start 양쪽에서 호출되므로 플래그로 중복을 방지합니다.
+    /// 이벤트 구독을 수행합니다. -=후 += 패턴으로 중복 구독을 방지합니다.
+    ///
+    /// [CGameManager.OnPlayerRegistered]
+    ///   CGameManager는 DontDestroyOnLoad이므로 Awake에서 항상 구독 가능합니다.
+    ///   플레이어가 씬마다 새로 등록되므로 이 구독이 버프 재적용의 핵심입니다.
+    ///
+    /// [CPetInventorySystem 이벤트]
+    ///   씬 전용 오브젝트이므로 Awake 순서에 따라 Instance가 null일 수 있습니다.
+    ///   그 경우 Start()에서 재시도합니다.
     /// </summary>
-    private void TrySubscribe()
+    private void Subscribe()
     {
-        if (_isSubscribed) return;
-        if (CPetInventorySystem.Instance == null || CGameManager.Instance == null) return;
+        // CGameManager는 항상 존재(DontDestroyOnLoad) → OnPlayerRegistered 무조건 구독
+        if (CGameManager.Instance != null)
+        {
+            CGameManager.Instance.OnPlayerRegistered -= OnPlayerRegistered;
+            CGameManager.Instance.OnPlayerRegistered += OnPlayerRegistered;
+        }
 
-        _isSubscribed = true;
-        CPetInventorySystem.Instance.OnPetEquipped   += ApplyPetBuff;
-        CPetInventorySystem.Instance.OnPetUnequipped += RemoveAllPetBuffs;
-        CGameManager.Instance.OnPlayerRegistered     += OnPlayerRegistered;
+        // CPetInventorySystem은 씬 전용이므로 null인 경우 Start()에서 재시도됨
+        if (CPetInventorySystem.Instance != null)
+        {
+            CPetInventorySystem.Instance.OnPetEquipped   -= ApplyPetBuff;
+            CPetInventorySystem.Instance.OnPetUnequipped -= RemoveAllPetBuffs;
+            CPetInventorySystem.Instance.OnPetEquipped   += ApplyPetBuff;
+            CPetInventorySystem.Instance.OnPetUnequipped += RemoveAllPetBuffs;
+        }
     }
 
     private void ApplyPetBuff(CPetInstance pet)
