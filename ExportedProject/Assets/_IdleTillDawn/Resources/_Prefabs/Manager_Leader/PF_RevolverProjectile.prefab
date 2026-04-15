@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 114943608188986817}
   - component: {fileID: 114287441773404540}
   - component: {fileID: 114863579359868585}
+  - component: {fileID: 5328910346760237986}
   m_Layer: 0
   m_Name: PF_RevolverProjectile
   m_TagString: Bullet
@@ -52,7 +53,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 50681549671693459}
-  kb: {fileID: 0}
   move: {fileID: 114933314071086218}
   trail: {fileID: 3673968081677559803}
   effect: {fileID: 0}
@@ -184,6 +184,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f57d454bd46d654a99b56fb80b9c4c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5328910346760237986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848884527762117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d0b7a552e65cc408768aef0c0092b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5293860927513481702

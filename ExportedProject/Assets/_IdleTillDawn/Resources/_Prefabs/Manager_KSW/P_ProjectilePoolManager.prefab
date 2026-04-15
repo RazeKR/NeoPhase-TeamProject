@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2879095891576988131}
   - component: {fileID: 5764858506302520055}
+  - component: {fileID: 502456685317903172}
   m_Layer: 0
-  m_Name: P_RangedProjectilePoolManager
+  m_Name: P_ProjectilePoolManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,3 +48,34 @@ MonoBehaviour:
   _projectilePrefab: {fileID: -8765975851643369271, guid: 80c80dbbd962bf041a9f628479595b46,
     type: 3}
   _prewarmSize: 20
+--- !u!114 &502456685317903172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9063450268846475491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d678b4c43d4c7d4ea7a434e66b1aa19, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _poolConfigs:
+  - PoolKey: PF_BladeProjectile
+    Prefab: {fileID: 1848884527762117, guid: ece0be26f589faa458499300f655d728, type: 3}
+    InitialCount: 20
+  - PoolKey: PF_CrossbowProjectile
+    Prefab: {fileID: 1848884527762117, guid: 9f21cc250fa3a8e499bb6a525c7d9e9a, type: 3}
+    InitialCount: 20
+  - PoolKey: PF_GrenadeProjectile
+    Prefab: {fileID: 1848884527762117, guid: 334fbd4e37972f9408dc108bf8f8f648, type: 3}
+    InitialCount: 20
+  - PoolKey: PF_RevolverProjectile
+    Prefab: {fileID: 1848884527762117, guid: caee3bafe8ddac549ae04810beeff6ac, type: 3}
+    InitialCount: 20
+  - PoolKey: PF_ShotgunProjectile
+    Prefab: {fileID: 1848884527762117, guid: a933e7fc90e20df47b799720ef492ef4, type: 3}
+    InitialCount: 20
+  - PoolKey: MeleeSpin
+    Prefab: {fileID: 1848884527762117, guid: a16e4ba1d2e22c84abaaaa5fbf9ab9fe, type: 3}
+    InitialCount: 10

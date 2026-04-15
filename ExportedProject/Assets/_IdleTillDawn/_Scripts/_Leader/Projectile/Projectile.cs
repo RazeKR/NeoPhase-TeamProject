@@ -43,6 +43,9 @@ namespace flanne
 
         private int _damage;
 
+        private int _initialPiercing;
+        private int _initialBounce;
+
         public virtual float damage
         {
             get
@@ -86,6 +89,23 @@ namespace flanne
             }
         }
 
+        private void Awake()
+        {
+            _initialPiercing = piercing;
+            _initialBounce = bounce;
+        }
+
+        private void OnEnable()
+        {
+            piercing = _initialPiercing;
+            bounce = _initialBounce;
+
+            if (trail != null)
+            {
+                trail.Clear();
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             // 발사자 자신은 무시
@@ -113,8 +133,8 @@ namespace flanne
             // (적이든 벽이든 pierce=0, bounce=0이면 총알 소멸)
             if (piercing == 0)
             {
-                DetachEffects();
-                Destroy(gameObject);
+                //DetachEffects();
+                gameObject.SetActive(false);
                 return;
             }
             else
@@ -199,20 +219,20 @@ namespace flanne
             }
         }
 
-        private void DetachEffects()
-        {
-            if (trail != null)
-            {
-                trail.transform.SetParent(null);
-                trail.emitting = false;
-                Destroy(trail.gameObject, trail.time);
-            }
+        //private void DetachEffects()
+        //{
+        //    if (trail != null)
+        //    {
+        //        trail.transform.SetParent(null);
+        //        trail.emitting = false;
+        //        Destroy(trail.gameObject, trail.time);
+        //    }
 
-            if (effect != null)
-            {
-                effect.transform.SetParent(null);
-                Destroy(effect, 0.5f);
-            }
-        }
+        //    if (effect != null)
+        //    {
+        //        effect.transform.SetParent(null);
+        //        Destroy(effect, 0.5f);
+        //    }
+        //}
     }
 }

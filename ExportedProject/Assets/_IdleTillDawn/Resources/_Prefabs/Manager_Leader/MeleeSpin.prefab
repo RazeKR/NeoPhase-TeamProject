@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 114287441773404540}
   - component: {fileID: 114863579359868585}
   - component: {fileID: 2521830510545500826}
+  - component: {fileID: 4205814877962111296}
   m_Layer: 0
   m_Name: MeleeSpin
   m_TagString: Bullet
@@ -52,7 +53,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 50681549671693459}
-  kb: {fileID: 0}
   move: {fileID: 114933314071086218}
   trail: {fileID: 0}
   effect: {fileID: 5293860927513481702}
@@ -186,6 +186,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 4
+--- !u!114 &4205814877962111296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1848884527762117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2d0b7a552e65cc408768aef0c0092b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5293860927513481702
 GameObject:
   m_ObjectHideFlags: 0

@@ -163,7 +163,14 @@ public class CUIInputHandler : MonoBehaviour
 
     private void HandleOpenPetInput()
     {
-
+        if (CPetInventoryUI.Instance != null)
+        {
+            CPetInventoryUI.Instance.OnOffPetInventoryUI();
+        }
+        else
+        {
+            CDebug.LogWarning("CUIInputHandler : CPetInventoryUI를 찾을 수 없음");
+        }
     }
 
     private void HandleOpenWeaponBoxInput()
