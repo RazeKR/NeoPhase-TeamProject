@@ -59,6 +59,8 @@ public class CPetCardInfoPanel : MonoBehaviour
     {
         if (instance == null || _panel == null) return;
 
+        // 루트 GameObject도 활성화 — 비활성 상태에서 호출될 경우 대비
+        gameObject.SetActive(true);
         _panel.SetActive(true);
 
         // 등급 배경 이미지
@@ -81,6 +83,8 @@ public class CPetCardInfoPanel : MonoBehaviour
     public void Close()
     {
         _panel?.SetActive(false);
+        // 루트 GameObject까지 비활성화 — _panel만 숨기면 루트의 Image가 레이캐스트를 계속 막음
+        gameObject.SetActive(false);
     }
 
     #endregion

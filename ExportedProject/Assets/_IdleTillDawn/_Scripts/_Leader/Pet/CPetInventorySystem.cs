@@ -32,6 +32,8 @@ public class CPetInventorySystem : MonoBehaviour
 
     private List<CPetInstance> _pets = new List<CPetInstance>();
     private CPetInstance _equippedPet = null;
+    private bool _isSubscribedToJson = false;
+    private bool _isRestored = false;
 
     #endregion
 
@@ -57,19 +59,38 @@ public class CPetInventorySystem : MonoBehaviour
             return;
         }
         Instance = this;
+
+        // Start()는 오브젝트가 비활성화되면 지연 실행되므로
+        // CJsonManager 구독을 Awake에서 처리합니다.
+        // Pet_InventoryPanel처럼 씬 시작 직후 SetActive(false)가 되는 오브젝트에
+        // 붙어 있어도 Load 이벤트를 놓치지 않습니다.
+        if (CJsonManager.Instance != null)
+        {
+            _isSubscribedToJson = true;
+            CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
+
+            // 이미 로드가 완료된 경우(씬 직접 실행 등) 즉시 복구
+            if (CJsonManager.Instance.CurrentSaveData != null)
+                RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
+        }
     }
 
     private void Start()
     {
-        if (CJsonManager.Instance != null)
+        // Awake 시점에 CJsonManager가 없었던 경우에만 재시도
+        if (!_isSubscribedToJson && CJsonManager.Instance != null)
+        {
+            _isSubscribedToJson = true;
             CJsonManager.Instance.OnLoadCompleted += RestoreFromSaveData;
 
-        if (CJsonManager.Instance?.CurrentSaveData != null)
-            RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
+            if (CJsonManager.Instance.CurrentSaveData != null)
+                RestoreFromSaveData(CJsonManager.Instance.CurrentSaveData);
+        }
     }
 
     private void OnDestroy()
     {
+        if (Instance == this) Instance = null;
         if (CJsonManager.Instance != null)
             CJsonManager.Instance.OnLoadCompleted -= RestoreFromSaveData;
     }
@@ -175,7 +196,27 @@ public class CPetInventorySystem : MonoBehaviour
         target._upgrade++;
         SyncAndSave();
         OnPetInventoryChanged?.Invoke();
+
+        // 강화된 펫이 장착 중이면 버프를 즉시 재적용
+        if (target._isEquipped)
+            OnPetEquipped?.Invoke(target);
+
         return true;
+    }
+
+    /// <summary>
+    /// 현재 강화 단계에 따른 강화 성공 확률(%)을 반환합니다.
+    /// +0: 100% / +1: 80% / +2: 60% / +3: 40%  (20%씩 감소)
+    /// +4: 35% / +5: 30% / +6: 25% / +7: 20% / +8: 15% / +9: 10%  (5%씩 감소)
+    /// </summary>
+    public static int GetUpgradeSuccessChance(int currentUpgrade)
+    {
+        // 0~3강: 100%에서 20%씩 감소 → 40%까지
+        // 4강~9강: 35%에서 5%씩 감소 → 10%까지
+        if (currentUpgrade <= 3)
+            return 100 - currentUpgrade * 20;
+        else
+            return Mathf.Max(10, 35 - (currentUpgrade - 4) * 5);
     }
 
     /// <summary>int ID로 CPetDataSO를 반환합니다.</summary>
@@ -189,6 +230,15 @@ public class CPetInventorySystem : MonoBehaviour
     private void RestoreFromSaveData(CSaveData saveData)
     {
         if (saveData?.petInventorySaveData == null) return;
+
+        // 이미 복구된 상태에서 OnLoadCompleted가 중복 호출되는 경우 방지
+        if (_isRestored)
+        {
+            OnPetInventoryChanged?.Invoke();
+            if (_equippedPet != null) OnPetEquipped?.Invoke(_equippedPet);
+            return;
+        }
+        _isRestored = true;
 
         _pets.Clear();
         _equippedPet = null;
@@ -215,6 +265,11 @@ public class CPetInventorySystem : MonoBehaviour
         }
 
         OnPetInventoryChanged?.Invoke();
+
+        // 복구된 장착 펫이 있으면 OnPetEquipped도 발생시켜
+        // CPetSpawner 등 구독자가 펫을 씬에 스폰할 수 있도록 합니다.
+        if (_equippedPet != null)
+            OnPetEquipped?.Invoke(_equippedPet);
     }
 
     #endregion

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 344424968031287394}
   - component: {fileID: 6836445097533004366}
   - component: {fileID: 2469163721615239967}
+  - component: {fileID: 531419206932575076}
   m_Layer: 0
   m_Name: GameManager_KSH
   m_TagString: Untagged
@@ -71,3 +72,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _saveFileName: save_data.dat
   _prettyPrint: 0
+--- !u!114 &531419206932575076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8230997245667025029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f21439cb6cf94b7448f532502df0a96e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerTransform: {fileID: 0}
+  _sortingLayerName: Default
+  _sortingOrder: 200

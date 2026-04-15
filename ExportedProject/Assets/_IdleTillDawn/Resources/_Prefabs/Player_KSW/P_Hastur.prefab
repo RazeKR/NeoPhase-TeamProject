@@ -176,6 +176,9 @@ MonoBehaviour:
     m_Bits: 1984
   _paramSpeed: aSpeed
   _defaultAttackRange: 10
+  _ratioForUseHealthPosion: 0.3
+  _ratioForUseManaPosion: 0.3
+  _autoPotionCooldown: 0.5
   _useTestWeaponOverride: 0
   _testWeaponData:
     _instanceID: 

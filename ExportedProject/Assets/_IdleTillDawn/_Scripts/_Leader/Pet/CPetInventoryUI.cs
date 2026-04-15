@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -93,6 +94,11 @@ public class CPetInventoryUI : MonoBehaviour
     [SerializeField] private Button          _enhanceButton   = null;
     [SerializeField] private TextMeshProUGUI _enhanceCostText = null;   // "◆ 5,000" / "최대 강화"
 
+    [Header("강화 이펙트")]
+    [SerializeField] private Animator        _upgradeAnimator    = null;  // UpgradeAnimator.controller 연결
+    [SerializeField] private AudioClip       _upgradeSuccessClip = null;  // 강화 성공 사운드
+    [SerializeField] private AudioClip       _upgradeFailClip    = null;  // 강화 실패 사운드
+
     #endregion
 
     #region Private
@@ -126,6 +132,13 @@ public class CPetInventoryUI : MonoBehaviour
         // 첫 프레임부터 숨김 — Start()보다 먼저 실행되므로 스프라이트가 미리 노출되지 않음
         if (_petInventoryPanel != null) _petInventoryPanel.SetActive(false);
         if (_infoPanel         != null) _infoPanel.SetActive(false);
+
+        // 명시적 호출 전까지 이펙트 오브젝트 자체를 숨김 (마지막 프레임 잔상 방지)
+        if (_upgradeAnimator != null)
+        {
+            _upgradeAnimator.enabled = false;
+            _upgradeAnimator.gameObject.SetActive(false);
+        }
     }
 
     private void Start()
@@ -221,7 +234,7 @@ public class CPetInventoryUI : MonoBehaviour
         UpdateInfoPanel();
     }
 
-    /// <summary>강화 버튼 클릭 처리. 다이아 5,000개 소모, 최대 +10.</summary>
+    /// <summary>강화 버튼 클릭 처리. 다이아 5,000개 소모, 최대 +10. 확률 판정 후 성공 시 강화.</summary>
     public void ClickEnhance()
     {
         if (_selectedPet == null) return;
@@ -239,12 +252,28 @@ public class CPetInventoryUI : MonoBehaviour
             return;
         }
 
+        int successChance = CPetInventorySystem.GetUpgradeSuccessChance(_selectedPet._upgrade);
+        int roll          = UnityEngine.Random.Range(0, 100); // 0~99
+        bool success      = roll < successChance;
+
         int prevUpgrade = _selectedPet._upgrade;
         CGoldManager.Instance.SpendDiamond(EnhanceCost);
-        CPetInventorySystem.Instance.UpgradePet(_selectedPet._instanceID);
 
-        CDebug.Log($"[CPetInventoryUI] 펫 강화 완료: {_selectedPet._data?.ItemName} " +
-                   $"+{prevUpgrade} → +{_selectedPet._upgrade} (다이아 {EnhanceCost:N0} 소모)");
+        if (success)
+        {
+            CPetInventorySystem.Instance.UpgradePet(_selectedPet._instanceID);
+            CDebug.Log($"[CPetInventoryUI] 펫 강화 성공! {_selectedPet._data?.ItemName} " +
+                       $"+{prevUpgrade} → +{_selectedPet._upgrade} " +
+                       $"(확률: {successChance}% / 다이아 {EnhanceCost:N0} 소모)");
+        }
+        else
+        {
+            CDebug.Log($"[CPetInventoryUI] 펫 강화 실패. {_selectedPet._data?.ItemName} " +
+                       $"+{prevUpgrade} 유지 " +
+                       $"(확률: {successChance}% / 다이아 {EnhanceCost:N0} 소모)");
+        }
+
+        PlayUpgradeEffect(success);
 
         UpdateInfoPanel();
     }
@@ -407,9 +436,15 @@ public class CPetInventoryUI : MonoBehaviour
             _enhanceButton.interactable = !maxUpgrade && hasEnoughDiamond;
 
         if (_enhanceCostText != null)
-            _enhanceCostText.text = maxUpgrade
-                ? "최대 강화"
-                : $"{EnhanceCost:N0}";
+        {
+            if (maxUpgrade)
+                _enhanceCostText.text = "최대 강화";
+            else
+            {
+                int chance = CPetInventorySystem.GetUpgradeSuccessChance(_selectedPet._upgrade);
+                _enhanceCostText.text = $"{EnhanceCost:N0}  ({chance}%)";
+            }
+        }
     }
 
     /// <summary>펫 인스턴스의 모든 버프를 문자열로 자동 생성합니다.</summary>
@@ -456,6 +491,36 @@ public class CPetInventoryUI : MonoBehaviour
         };
 
         return $"경험치 +{pet.GetXpBoostPercent():F0}% | 펫공격력 {pet.GetPetAttackPower():F0} | {typeBuff}";
+    }
+
+    /// <summary>강화 성공/실패 애니메이션과 사운드를 재생합니다.</summary>
+    private void PlayUpgradeEffect(bool success)
+    {
+        if (_upgradeAnimator != null)
+        {
+            string stateName = success ? "Upgrade" : "Fail";
+            _upgradeAnimator.gameObject.SetActive(true);
+            _upgradeAnimator.enabled = true;
+            _upgradeAnimator.Play(stateName, 0, 0f);
+            StartCoroutine(DisableAnimatorAfterPlay(stateName));
+        }
+
+        AudioClip clip = success ? _upgradeSuccessClip : _upgradeFailClip;
+        if (clip != null)
+            CAudioManager.Instance?.PlaySFX(clip);
+    }
+
+    /// <summary>애니메이션 클립 길이만큼 기다린 뒤 Animator를 비활성화합니다.</summary>
+    private IEnumerator DisableAnimatorAfterPlay(string stateName)
+    {
+        yield return null;  // 스테이트 전환이 적용될 때까지 한 프레임 대기
+
+        AnimatorStateInfo info = _upgradeAnimator.GetCurrentAnimatorStateInfo(0);
+        float clipLength = info.IsName(stateName) ? info.length : 0f;
+        yield return new WaitForSeconds(clipLength);
+
+        _upgradeAnimator.enabled = false;
+        _upgradeAnimator.gameObject.SetActive(false);
     }
 
     #endregion

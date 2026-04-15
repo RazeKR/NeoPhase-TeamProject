@@ -101,6 +101,7 @@ public class CPetCardRevealPanel : MonoBehaviour
         }
 
         SetBottomButtonsVisible(false);
+        if (_backgroundBlocker != null) _backgroundBlocker.interactable = true;
         _touchHintObject?.SetActive(true);
 
         gameObject.SetActive(true);
@@ -147,6 +148,7 @@ public class CPetCardRevealPanel : MonoBehaviour
     private void OnAllRevealed()
     {
         _touchHintObject?.SetActive(false);
+        if (_backgroundBlocker != null) _backgroundBlocker.interactable = false;
         RefreshSummonButton();
         SetBottomButtonsVisible(true);
     }

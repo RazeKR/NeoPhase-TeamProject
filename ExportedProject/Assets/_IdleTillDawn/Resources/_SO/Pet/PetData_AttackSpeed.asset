@@ -18,8 +18,10 @@ MonoBehaviour:
   _type: 3
   _sprite: {fileID: 21300000, guid: d43b15a3c95abdb48a6d178450ab001d, type: 2}
   _petType: 2
-  _bulletConfig: {fileID: 0}
-  _fireInterval: 2
+  _bulletConfig: {fileID: 11400000, guid: c517be5b50277e04086c7be04db23253, type: 2}
+  _fireInterval: 1
+  _projectileCount: 1
+  _projectileSpreadAngle: 15
   _idleSprites:
   - {fileID: 21300000, guid: 5fd54a4822d678c4cba61403d8146af5, type: 2}
   - {fileID: 21300000, guid: 51856092c9b46cf438143c4123a2bea8, type: 2}
@@ -33,5 +35,6 @@ MonoBehaviour:
   - {fileID: 21300000, guid: d43b15a3c95abdb48a6d178450ab001d, type: 2}
   - {fileID: 21300000, guid: d6ddb55be406ef846ae333fd24ed94e2, type: 2}
   _meleeSprite: {fileID: 0}
+  _selfRotationSpeed: 360
   _orbitRadius: 2
   _orbitSpeed: 90

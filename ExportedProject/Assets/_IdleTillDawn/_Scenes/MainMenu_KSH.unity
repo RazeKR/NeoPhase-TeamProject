@@ -545,6 +545,9 @@ MonoBehaviour:
     type: 3}
   _skillTree: {fileID: 0}
   _bossSummon: {fileID: 0}
+  _openRanking: {fileID: 0}
+  _openPet: {fileID: 0}
+  _openWeaponBox: {fileID: 0}
   _logInput: 0
 --- !u!4 &72716948
 Transform:
@@ -1075,7 +1078,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameManager_KSH
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 531419206932575076, guid: cb90adfa522f6a1438d76fdd7a47f2c7, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -4398,6 +4402,7 @@ MonoBehaviour:
   _fadeDuration: 0.4
   _resolutionRow: {fileID: 486307737}
   _disabledAlpha: 0.35
+  _pauseOnInGameOpen: 0
   _openButton: {fileID: 1516875336}
   _musicVolumeButton: {fileID: 1050131617}
   _sfxVolumeButton: {fileID: 700715245}

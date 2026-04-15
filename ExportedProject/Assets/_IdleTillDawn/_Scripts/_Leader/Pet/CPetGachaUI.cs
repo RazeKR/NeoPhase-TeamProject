@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -46,6 +47,27 @@ public class CPetGachaUI : MonoBehaviour
     [SerializeField] private CPetCardRevealPanel _revealPanel1    = null;  // 1회 전용
     [SerializeField] private CPetCardRevealPanel _revealPanel33   = null;  // 33회 전용
 
+    [Header("확률 정보 패널")]
+    [SerializeField] private Button          _probInfoButton      = null;  // 확률 정보 버튼
+    [SerializeField] private Button          _probInfoCloseButton = null;  // 확률 정보 패널 닫기 버튼
+    [SerializeField] private GameObject      _probInfoPanel       = null;  // 확률 정보 패널
+    [SerializeField] private TextMeshProUGUI _commonRateText      = null;  // 일반 확률 텍스트
+    [SerializeField] private TextMeshProUGUI _rareRateText        = null;  // 레어 확률 텍스트
+    [SerializeField] private TextMeshProUGUI _epicRateText        = null;  // 에픽 확률 텍스트
+    [SerializeField] private TextMeshProUGUI _legendaryRateText   = null;  // 레전드 확률 텍스트
+
+    [Header("핑퐁 이미지 (위아래 왕복)")]
+    [SerializeField] private RectTransform[] _pingPongImages      = null;  // 5장
+    [SerializeField] private float           _pingPongAmplitude   = 20f;   // 왕복 거리 (px)
+    [SerializeField] private float           _pingPongSpeed       = 0.5f;  // 속도 (낮을수록 느림)
+
+    #endregion
+
+    #region Fields
+
+    private Vector2[] _pingPongOrigins = null;
+    private Coroutine _pingPongCoroutine = null;
+
     #endregion
 
     #region Unity Methods
@@ -63,25 +85,49 @@ public class CPetGachaUI : MonoBehaviour
         if (_revealPanel1  == null) Debug.LogError("[CPetGachaUI] RevealPanel_1 을 찾을 수 없습니다. Inspector 또는 자식 계층을 확인하세요.", this);
         if (_revealPanel33 == null) Debug.LogError("[CPetGachaUI] RevealPanel_33 을 찾을 수 없습니다. Inspector 또는 자식 계층을 확인하세요.", this);
         if (_generatePet   == null) Debug.LogError("[CPetGachaUI] CGeneratePet 이 연결되지 않았습니다.", this);
-    }
 
-    private void Start()
-    {
-        if (CJsonManager.Instance != null)
-            CJsonManager.Instance.OnLoadCompleted += OnSaveDataLoaded;
-
-        RefreshButtons();
+        // 확률 정보 패널은 시작 시 닫아 둠
+        if (_probInfoPanel != null)
+            _probInfoPanel.SetActive(false);
     }
 
     private void OnEnable()
     {
+        // 저장 데이터 로드 완료 시 버튼 갱신
+        if (CJsonManager.Instance != null)
+            CJsonManager.Instance.OnLoadCompleted += OnSaveDataLoaded;
+
+        // 소환권 구매 시 버튼 즉시 갱신 — 이 구독이 없으면 패널이 열린 채로 구매해도 버튼이 활성화되지 않음
+        CGoldShopUI.OnPetBoxCountChanged += OnPetBoxCountChanged;
+
         RefreshButtons();
+        StartPingPong();
+
+        if (_probInfoButton != null)
+            _probInfoButton.onClick.AddListener(OnProbInfoButtonClick);
+
+        if (_probInfoCloseButton != null)
+            _probInfoCloseButton.onClick.AddListener(CloseProbInfoPanel);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (CJsonManager.Instance != null)
             CJsonManager.Instance.OnLoadCompleted -= OnSaveDataLoaded;
+
+        CGoldShopUI.OnPetBoxCountChanged -= OnPetBoxCountChanged;
+
+        StopPingPong();
+
+        if (_probInfoButton != null)
+            _probInfoButton.onClick.RemoveListener(OnProbInfoButtonClick);
+
+        if (_probInfoCloseButton != null)
+            _probInfoCloseButton.onClick.RemoveListener(CloseProbInfoPanel);
+
+        // 패널 열린 채로 탭을 벗어날 때 닫아 둠
+        if (_probInfoPanel != null)
+            _probInfoPanel.SetActive(false);
     }
 
     #endregion
@@ -130,10 +176,52 @@ public class CPetGachaUI : MonoBehaviour
 
     #region Private Methods
 
-    private void OnSaveDataLoaded(CSaveData data)
+    private void OnProbInfoButtonClick()
     {
-        RefreshButtons();
+        if (_probInfoPanel == null) return;
+
+        bool isOpen = !_probInfoPanel.activeSelf;
+        _probInfoPanel.SetActive(isOpen);
+
+        if (isOpen)
+            RefreshProbTexts();
     }
+
+    private void CloseProbInfoPanel()
+    {
+        if (_probInfoPanel != null)
+            _probInfoPanel.SetActive(false);
+    }
+
+    private void RefreshProbTexts()
+    {
+        if (_generatePet == null) return;
+
+        int total = _generatePet.CommonRate
+                  + _generatePet.RareRate
+                  + _generatePet.EpicRate
+                  + _generatePet.LegendaryRate;
+
+        if (total <= 0) return;
+
+        SetProbText(_commonRateText,    "일반",   _generatePet.CommonRate,    total, new Color32(200, 200, 200, 255)); // 회색
+        SetProbText(_rareRateText,      "레어",   _generatePet.RareRate,      total, new Color32( 80, 160, 255, 255)); // 파랑
+        SetProbText(_epicRateText,      "에픽",   _generatePet.EpicRate,      total, new Color32(180,  80, 255, 255)); // 보라
+        SetProbText(_legendaryRateText, "레전드", _generatePet.LegendaryRate, total, new Color32(255, 185,   0, 255)); // 골드
+    }
+
+    private void SetProbText(TextMeshProUGUI label, string gradeName, int rate, int total, Color32 color)
+    {
+        if (label == null) return;
+
+        float percent = rate * 100f / total;
+        label.text  = $"{gradeName} ({percent:F1}%)";
+        label.color = color;
+    }
+
+    private void OnSaveDataLoaded(CSaveData data) => RefreshButtons();
+
+    private void OnPetBoxCountChanged(int count) => RefreshButtons();
 
     private void OnSummonClicked(int summonCount, int boxCost, CPetCardRevealPanel targetPanel)
     {
@@ -191,9 +279,74 @@ public class CPetGachaUI : MonoBehaviour
         targetPanel.Setup(results, this, summonCount, boxCost);
     }
 
+    private void StartPingPong()
+    {
+        if (_pingPongImages == null || _pingPongImages.Length == 0) return;
+
+        // 각 이미지의 초기 위치 저장
+        _pingPongOrigins = new Vector2[_pingPongImages.Length];
+        for (int i = 0; i < _pingPongImages.Length; i++)
+        {
+            if (_pingPongImages[i] != null)
+                _pingPongOrigins[i] = _pingPongImages[i].anchoredPosition;
+        }
+
+        _pingPongCoroutine = StartCoroutine(PingPongRoutine());
+    }
+
+    private void StopPingPong()
+    {
+        if (_pingPongCoroutine != null)
+        {
+            StopCoroutine(_pingPongCoroutine);
+            _pingPongCoroutine = null;
+        }
+
+        // 원래 위치로 복원
+        if (_pingPongOrigins != null)
+        {
+            for (int i = 0; i < _pingPongImages.Length; i++)
+            {
+                if (_pingPongImages[i] != null)
+                    _pingPongImages[i].anchoredPosition = _pingPongOrigins[i];
+            }
+        }
+    }
+
+    /// <summary>
+    /// 이미지들을 위아래로 느리게 왕복시킵니다.
+    /// 각 이미지는 오프셋을 두어 물결 효과가 납니다.
+    /// </summary>
+    private IEnumerator PingPongRoutine()
+    {
+        float time = 0f;
+        int count = _pingPongImages.Length;
+
+        while (true)
+        {
+            time += Time.deltaTime * _pingPongSpeed;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (_pingPongImages[i] == null) continue;
+
+                // 이미지마다 위상 오프셋을 주어 순차적으로 물결치는 느낌
+                float offset = (float)i / count * Mathf.PI * 2f;
+                float yDelta = Mathf.Sin(time * Mathf.PI * 2f + offset) * _pingPongAmplitude;
+
+                _pingPongImages[i].anchoredPosition = _pingPongOrigins[i] + new Vector2(0f, yDelta);
+            }
+
+            yield return null;
+        }
+    }
+
     private void RefreshButtons()
     {
         int owned = CJsonManager.Instance?.CurrentSaveData?.petBoxCount ?? 0;
+        Debug.Log($"[CPetGachaUI] RefreshButtons — 소환권:{owned} | " +
+                  $"CJsonManager:{CJsonManager.Instance != null} | " +
+                  $"CurrentSaveData:{CJsonManager.Instance?.CurrentSaveData != null}");
 
         if (_summon1Button != null)
             _summon1Button.interactable = owned >= Summon1Cost;

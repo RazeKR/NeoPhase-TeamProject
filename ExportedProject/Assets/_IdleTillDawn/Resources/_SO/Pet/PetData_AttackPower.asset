@@ -20,8 +20,11 @@ MonoBehaviour:
   _petType: 1
   _bulletConfig: {fileID: 0}
   _fireInterval: 2
+  _projectileCount: 1
+  _projectileSpreadAngle: 15
   _idleSprites: []
   _attackSprites: []
   _meleeSprite: {fileID: 21300000, guid: 58b7e990386581f4f829ebd8283f47b6, type: 2}
+  _selfRotationSpeed: 540
   _orbitRadius: 2
-  _orbitSpeed: 90
+  _orbitSpeed: 200

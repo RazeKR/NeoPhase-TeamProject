@@ -259,6 +259,9 @@ MonoBehaviour:
     m_Bits: 1984
   _paramSpeed: aSpeed
   _defaultAttackRange: 0.05
+  _ratioForUseHealthPosion: 0.3
+  _ratioForUseManaPosion: 0.3
+  _autoPotionCooldown: 0.5
   _useTestWeaponOverride: 0
   _testWeaponData:
     _instanceID: 
@@ -371,17 +374,6 @@ MonoBehaviour:
   _healSound:
     _clips:
     - {fileID: 8300000, guid: 21847ed89cf37114fa1aea553d379801, type: 3}
-    _volume: 1
-    _pitchRange: {x: 0.9, y: 1.1}
-    _is3D: 1
-    _spatialBlend: 1
-    _minDistance: 1
-    _maxDistance: 20
-    _allowOverlap: 1
-    _cooldown: 0.05
-  _manaSound:
-    _clips:
-    - {fileID: 0}
     _volume: 1
     _pitchRange: {x: 0.9, y: 1.1}
     _is3D: 1

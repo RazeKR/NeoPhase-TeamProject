@@ -44,3 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d22cfa81d4e2cba41ad4c80d6eeab861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cameraController: {fileID: 0}
+  _spawnManager: {fileID: 0}
+  _worldShift: {fileID: 0}
+  _worldShiftHorizontal: {fileID: 0}
+  _weaponEquip: {fileID: 0}
+  _bossManager: {fileID: 0}
+  _weaponChildName: WeaponTarget
+  _defaultWeaponId: 6

@@ -157,6 +157,15 @@ public abstract class CEnemyBase : CEntityBase
         Rb.constraints     = RigidbodyConstraints2D.FreezeRotation; // 사망 시 FreezeAll 복구
         CurrentHealth      = MaxHealth;
 
+        // 화상 안개 광원 정리 — 제거하지 않으면 재스폰 시 SetActive(true)에 의해
+        // 자식 오브젝트가 함께 활성화되어 안개 시스템에 재등록됨
+        if (_burnLight != null)
+        {
+            _burnLight.gameObject.SetActive(false);
+            Destroy(_burnLight.gameObject);
+            _burnLight = null;
+        }
+
         ClearAllStatuses();
     }
 
@@ -171,6 +180,14 @@ public abstract class CEnemyBase : CEntityBase
         // 빙결 중 사망 시에도 죽음 애니메이션이 재생되도록 상태이상 정리 및 애니메이터 속도 복구
         ClearAllStatuses();
         if (_animator != null) _animator.speed = 1f;
+
+        // 사망 시 화상 안개 광원 즉시 제거 — 사망 애니메이션 재생 중 광원이 남지 않도록
+        if (_burnLight != null)
+        {
+            _burnLight.gameObject.SetActive(false);
+            Destroy(_burnLight.gameObject);
+            _burnLight = null;
+        }
 
         if (_enemyData?.DieSFX != null)
             CAudioManager.Instance?.Play(_enemyData.DieSFX, transform.position);
