@@ -22,6 +22,10 @@ MonoBehaviour:
   _fireInterval: 2
   _projectileCount: 3
   _projectileSpreadAngle: 15
+  _applyBurnOnHit: 1
+  _burnDuration: 2
+  _burnTickDamage: 50
+  _burnTickInterval: 0.5
   _idleSprites:
   - {fileID: 21300000, guid: 4e2c8cd24fb59bf44a224326db5b48e8, type: 2}
   - {fileID: 21300000, guid: de28967532a17994781e57c35253c826, type: 2}

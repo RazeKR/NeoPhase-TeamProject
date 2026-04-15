@@ -480,6 +480,55 @@ public class CSkillSystem : MonoBehaviour
     }
 
     /// <summary>��ų ���� �� JsonManager�� ����</summary>
+    /// <summary>
+    /// 투자된 모든 스킬 포인트를 환급하고 스킬 레벨을 초기화합니다.
+    /// 기존 보유(미투자) 포인트는 보존되며, 투자했던 포인트만 되돌아옵니다.
+    /// 장착 스킬 슬롯도 비워집니다(레벨 0인 스킬은 사용 불가하므로).
+    /// </summary>
+    public void ResetAllSkillPoints()
+    {
+        if (CJsonManager.Instance == null) return;
+        CSaveData save = CJsonManager.Instance.CurrentSaveData;
+        if (save == null) return;
+
+        // 투자된 포인트 계산: 각 스킬 레벨 × requiredPoints 합산
+        int refunded = 0;
+        for (int i = 0; i < save.skillIds.Count; i++)
+        {
+            int level = (i < save.skillLevelValues.Count) ? save.skillLevelValues[i] : 0;
+            if (level <= 0) continue;
+            CSkillDataSO skillData = CDataManager.Instance.GetSkill(save.skillIds[i]);
+            if (skillData != null)
+                refunded += skillData.requiredPoints * level;
+        }
+
+        // 스킬 레벨 전체 초기화
+        save.skillIds.Clear();
+        save.skillLevelValues.Clear();
+
+        // 장착 슬롯 초기화 (레벨 0인 스킬은 사용 불가)
+        for (int i = 0; i < save.equippedSkillIds.Count; i++)
+            save.equippedSkillIds[i] = 0;
+
+        // 환급 포인트 적용 (기존 보유 포인트는 그대로 유지됨)
+        save.skillPoints += refunded;
+        currentSkillPoints = save.skillPoints;
+
+        // 메모리 장착 슬롯 동기화
+        for (int i = 0; i < _equippedSkills.Count; i++)
+            _equippedSkills[i] = 0;
+
+        CJsonManager.Instance.Save(save);
+
+        if (CSkillUI.Instance != null)
+            CSkillUI.Instance.TextSet(currentSkillPoints);
+
+        RefreshAllNodes();
+        OnSkillEquipped?.Invoke();
+
+        CDebug.Log($"[CSkillSystem] 스킬 초기화 완료 — 환급 포인트: {refunded}, 총 보유: {currentSkillPoints}");
+    }
+
     public bool EquipSkill(CSkillDataSO data, int slotIndex)
     {
         if (GetSkillLevel(data.Id) <= 0) return false;   // ������ ���� �� false ��ȯ

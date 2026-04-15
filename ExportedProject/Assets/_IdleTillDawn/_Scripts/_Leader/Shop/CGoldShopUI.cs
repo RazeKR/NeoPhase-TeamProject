@@ -59,6 +59,7 @@ public class CGoldShopUI : MonoBehaviour
     private static readonly int   ManaPotionCost      = 100000;
     private static readonly int   WeaponScrollCost    = 1000000;
     private static readonly int   InventoryExpandCost = 1000000;
+    private static readonly int   SkillResetCost      = 100000;  // 스킬 초기화 비용
     private static readonly int   ItemShopAmount      = 10;
 
     #endregion
@@ -102,8 +103,8 @@ public class CGoldShopUI : MonoBehaviour
     [Header("ItemShopPanel (아이템 탭)")]
     [SerializeField] private GameObject _itemShopPanel = null;
 
-    [Header("아이템 구매 버튼 4개 (0: HP포션 / 1: 마나포션 / 2: 무기주문서 / 3: 인벤토리 확장)")]
-    [SerializeField] private Button[] _itemShopButtons = new Button[4];
+    [Header("아이템 구매 버튼 5개 (0: HP포션 / 1: 마나포션 / 2: 무기주문서 / 3: 인벤토리 확장 / 4: 스킬 초기화)")]
+    [SerializeField] private Button[] _itemShopButtons = new Button[5];
 
     #endregion
 
@@ -433,6 +434,7 @@ public class CGoldShopUI : MonoBehaviour
             case 1: TryBuyItemWithGold(ManaPotionId,   ManaPotionCost,      ItemShopAmount, "마나 포션");      break;
             case 2: TryBuyItemWithGold(WeaponScrollId, WeaponScrollCost,    ItemShopAmount, "무기 주문서");    break;
             case 3: TryBuyInventoryExpand();                                                                   break;
+            case 4: TryBuySkillReset();                                                                        break;
         }
     }
 
@@ -491,6 +493,35 @@ public class CGoldShopUI : MonoBehaviour
         CInventorySystemJ.Instance.ExpandCapacity();
         RefreshItemShopButtonStates();
         CDebug.Log($"[CGoldShopUI] 골드 {InventoryExpandCost:N0} 소모 → 인벤토리 25칸 확장 (현재 {CInventorySystemJ.Instance.MaxCapacity}칸)");
+    }
+
+    /// <summary>골드 10만 소모 → 투자한 모든 스킬 포인트를 즉시 환급합니다. 보유(미투자) 포인트는 보존됩니다.</summary>
+    private void TryBuySkillReset()
+    {
+        if (CGoldManager.Instance == null)
+        {
+            CDebug.LogError("[CGoldShopUI] CGoldManager.Instance가 null입니다. 구매 취소.");
+            return;
+        }
+
+        if (CGoldManager.Instance.Gold < SkillResetCost)
+        {
+            CDebug.Log($"[CGoldShopUI] 골드 부족 (보유: {CGoldManager.Instance.Gold:N0}, 필요: {SkillResetCost:N0})");
+            return;
+        }
+
+        if (CSkillSystem.Instance == null)
+        {
+            CDebug.LogError("[CGoldShopUI] CSkillSystem.Instance가 null입니다. 구매 취소.");
+            return;
+        }
+
+        bool success = CGoldManager.Instance.SpendGold(SkillResetCost);
+        if (!success) return;
+
+        CSkillSystem.Instance.ResetAllSkillPoints();
+        RefreshItemShopButtonStates();
+        CDebug.Log($"[CGoldShopUI] 골드 {SkillResetCost:N0} 소모 → 스킬 포인트 초기화 완료");
     }
 
     /// <summary>주간 다이아 상품 구매 (0~3번 버튼)</summary>
@@ -718,7 +749,7 @@ public class CGoldShopUI : MonoBehaviour
         if (CGoldManager.Instance == null) return;
 
         int   gold       = CGoldManager.Instance.Gold;
-        int[] costs      = { HpPotionCost, ManaPotionCost, WeaponScrollCost, InventoryExpandCost };
+        int[] costs      = { HpPotionCost, ManaPotionCost, WeaponScrollCost, InventoryExpandCost, SkillResetCost };
 
         for (int i = 0; i < _itemShopButtons.Length; i++)
         {
