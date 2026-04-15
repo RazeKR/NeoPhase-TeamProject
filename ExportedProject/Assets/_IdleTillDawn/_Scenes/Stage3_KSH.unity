@@ -7564,7 +7564,7 @@ PrefabInstance:
     - target: {fileID: 9063450268846475491, guid: be5279239dbfbc2498e174cf0d792058,
         type: 3}
       propertyPath: m_Name
-      value: P_RangedProjectilePoolManager
+      value: P_ProjectilePoolManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9176,7 +9176,7 @@ PrefabInstance:
     - target: {fileID: 2006921249512957054, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 267.85873
+      value: 267.85883
       objectReference: {fileID: 0}
     - target: {fileID: 2045833833162962790, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
@@ -13230,6 +13230,15 @@ MonoBehaviour:
   - {fileID: 961541756}
   - {fileID: 204917162}
   - {fileID: 403373530}
+  _petShopPanel: {fileID: 0}
+  _petShopButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  _petShopCostTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   _weaponShopPanel: {fileID: 1907510359}
   _weaponShopButtons:
   - {fileID: 634060159}

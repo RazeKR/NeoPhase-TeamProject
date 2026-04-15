@@ -464,18 +464,21 @@ public class CPlayerController : CEntityBase, IHealable
             // melee bifurcation
             if (weaponData.IsMelee && _meleeSpinCount >= 2)
             {
-                bulletObj = Instantiate(weaponData.MeleeSpin, spawnPos, rot);
+                string poolKey = weaponData.MeleeSpin.name;
+                bulletObj = CProjectilePool.Instance.SpawnProjectile(poolKey, spawnPos, rot);
+
                 _meleeSpinCount = 0;
             }
             else
             {
-                bulletObj = Instantiate(weaponData.BulletPrefab, spawnPos, rot);                
+                string poolKey = weaponData.BulletPrefab.name;
+                bulletObj = CProjectilePool.Instance.SpawnProjectile(poolKey, spawnPos, rot);
                 _meleeSpinCount++;
             }
 
-            float finalDamage = _statManager != null
-                                          ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponInstance.GetActualDamage()
-                                          : weaponInstance.GetActualDamage();
+            if (bulletObj == null) continue;
+
+            float finalDamage = _statManager != null ? _statManager.GetFinalStat(EPlayerStatType.Damage) + weaponInstance.GetActualDamage() : weaponInstance.GetActualDamage();
 
             // flanne.Projectile 계열 투사체
             flanne.Projectile proj = bulletObj.GetComponent<flanne.Projectile>();
