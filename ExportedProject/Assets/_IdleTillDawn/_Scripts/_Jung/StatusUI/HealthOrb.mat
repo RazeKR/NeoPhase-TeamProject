@@ -29,7 +29,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FillAmount: 0.7785714
+    - _FillAmount: 0.65683544
     - _WaveAmp: 0.02
     - _WaveSpeed: 2
     m_Colors:

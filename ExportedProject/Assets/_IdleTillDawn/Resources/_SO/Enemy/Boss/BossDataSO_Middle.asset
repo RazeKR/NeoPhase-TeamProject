@@ -22,7 +22,7 @@ MonoBehaviour:
   _moveSpeed: 3
   _attackRange: 3
   _healthGrowthPerStage: 10000
-  _damageGrowthPerStage: 30
+  _damageGrowthPerStage: 500
   _prefab: {fileID: 4372230758617115628, guid: b4f9240c6f7375947afec7ecc2963589, type: 3}
   _dropItemId: 0
   _dropChance: 0
@@ -40,6 +40,7 @@ MonoBehaviour:
     _maxDistance: 20
     _allowOverlap: 1
     _cooldown: 0.05
+    _ignoreDucking: 0
   _dieSFX:
     _clips:
     - {fileID: 8300000, guid: 9b6bf7e856027d945a85bd9db31f42c6, type: 3}
@@ -51,6 +52,7 @@ MonoBehaviour:
     _maxDistance: 20
     _allowOverlap: 1
     _cooldown: 0.05
+    _ignoreDucking: 0
   _freezeSFX:
     _clips:
     - {fileID: 8300000, guid: d072734f9bc3e704db6d62cacc83499a, type: 3}
@@ -62,6 +64,7 @@ MonoBehaviour:
     _maxDistance: 20
     _allowOverlap: 1
     _cooldown: 0.05
+    _ignoreDucking: 0
   _specialAttackCooldown: 5
   _specialAttackEffect: {fileID: 0}
   _telegraphDuration: 1
@@ -86,3 +89,4 @@ MonoBehaviour:
     _maxDistance: 20
     _allowOverlap: 1
     _cooldown: 0.05
+    _ignoreDucking: 0
