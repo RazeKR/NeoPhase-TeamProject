@@ -40,7 +40,7 @@ public class CParabolaProjectilePoolManager : MonoBehaviour
         );
 
         _indicatorPool = new ObjectPool<GameObject>(
-            createFunc: () => Instantiate(_indicatorPrefab, transform),
+            createFunc: () => Instantiate(_indicatorPrefab),
             actionOnGet: ind => ind.SetActive(true),
             actionOnRelease: ind => ind.SetActive(false),
             actionOnDestroy: ind => Destroy(ind),
@@ -52,7 +52,7 @@ public class CParabolaProjectilePoolManager : MonoBehaviour
 
     private CParabolaProjectile CreateProjectile()
     {
-        CParabolaProjectile projectile = Instantiate(_projectilePrefab, transform);
+        CParabolaProjectile projectile = Instantiate(_projectilePrefab);
         projectile.SetPools(_projectilePool, _indicatorPool);
         return projectile;
     }
