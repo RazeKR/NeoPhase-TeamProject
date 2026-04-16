@@ -83,17 +83,7 @@ public class CProjectilePool : MonoBehaviour
 
         proj.transform.position = position;
         proj.transform.rotation = rotation;
-
-        var trail = proj.GetComponentInChildren<TrailRenderer>();
-        if (trail != null)
-        {
-            trail.Clear();
-            trail.enabled = false;
-        }
-
         proj.SetActive(true);
-
-        if (trail != null) trail.enabled = true;
 
         return proj;
     }
