@@ -32069,11 +32069,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatusUI_JHW
       objectReference: {fileID: 0}
-    - target: {fileID: 3840389159104488990, guid: a1deb65c8203c8e4e90a7a3e5fbf23f2,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7164901297240874638, guid: a1deb65c8203c8e4e90a7a3e5fbf23f2,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -35048,7 +35043,7 @@ PrefabInstance:
     - target: {fileID: 2006921249512957054, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 267.83972
+      value: 267.84027
       objectReference: {fileID: 0}
     - target: {fileID: 2045833833162962790, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
@@ -35178,12 +35173,12 @@ PrefabInstance:
     - target: {fileID: 5656690836653777151, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.99999726
       objectReference: {fileID: 0}
     - target: {fileID: 5656690836653777151, guid: 5fb7e465cd0924e45a1876cb626361e8,
         type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

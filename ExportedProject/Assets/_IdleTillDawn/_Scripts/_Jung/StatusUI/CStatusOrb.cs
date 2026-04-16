@@ -103,7 +103,7 @@ public class CStatusOrb : MonoBehaviour
 
         float targetFill = Mathf.Clamp01(currentHP / MaxHP);
 
-        textHP.text = $"{currentHP}/{MaxHP}";
+        textHP.text = $"{Mathf.RoundToInt(currentHP)}/{Mathf.RoundToInt(MaxHP)}";
 
         if (hpCo != null) StopCoroutine(hpCo);
         hpCo = StartCoroutine(CoLerpFill(orbMatHP, targetFill));
@@ -115,7 +115,7 @@ public class CStatusOrb : MonoBehaviour
 
         float targetFill = Mathf.Clamp01(currentMP / MaxMP);
 
-        textMP.text = $"{currentMP}/{MaxMP}";
+        textMP.text = $"{Mathf.RoundToInt(currentMP)}/{Mathf.RoundToInt(MaxMP)}";
 
         if (mpCo != null) StopCoroutine(mpCo);
         mpCo = StartCoroutine(CoLerpFill(orbMatMP, targetFill));

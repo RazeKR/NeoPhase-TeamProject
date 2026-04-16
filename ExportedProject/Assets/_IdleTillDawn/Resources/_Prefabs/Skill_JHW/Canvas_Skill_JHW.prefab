@@ -126,7 +126,7 @@ MonoBehaviour:
   _enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  _manaUse: 0
+  _manaUse: 1
   currentSkillPoints: 10
   CurrentlyDraggingSkill: {fileID: 0}
   DragIconVisual: {fileID: 6077629946996377268}
