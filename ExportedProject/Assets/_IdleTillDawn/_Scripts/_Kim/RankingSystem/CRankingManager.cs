@@ -47,13 +47,13 @@ public class CRankingManager : MonoBehaviour
         {
             if (_isDeletingAll)
             {
-                Debug.LogWarning("[CRankingManager] 이미 전체 삭제 진행 중입니다.");
+                CDebug.LogWarning("[CRankingManager] 이미 전체 삭제 진행 중입니다.");
                 return;
             }
-            Debug.Log("[CRankingManager] Del 키 감지 — 전체 랭킹 초기화 시작...");
+            CDebug.Log("[CRankingManager] Del 키 감지 — 전체 랭킹 초기화 시작...");
             DeleteAllRankings(
-                onSuccess: (count) => Debug.Log($"[CRankingManager] 전체 랭킹 삭제 완료 : {count}개"),
-                onError:   (error)  => Debug.LogError($"[CRankingManager] 전체 랭킹 삭제 실패 : {error}")
+                onSuccess: (count) => CDebug.Log($"[CRankingManager] 전체 랭킹 삭제 완료 : {count}개"),
+                onError:   (error)  => CDebug.LogError($"[CRankingManager] 전체 랭킹 삭제 실패 : {error}")
             );
         }
 

@@ -103,8 +103,8 @@ public class CGoldShopUI : MonoBehaviour
     [Header("ItemShopPanel (아이템 탭)")]
     [SerializeField] private GameObject _itemShopPanel = null;
 
-    [Header("아이템 구매 버튼 5개 (0: HP포션 / 1: 마나포션 / 2: 무기주문서 / 3: 인벤토리 확장 / 4: 스킬 초기화)")]
-    [SerializeField] private Button[] _itemShopButtons = new Button[5];
+    [Header("아이템 구매 버튼 6개 (0: HP포션 / 1: 마나포션 / 2: 무기주문서 / 3: 인벤토리 확장 / 4: 스킬 초기화 / 5: 전체 데이터 초기화)")]
+    [SerializeField] private Button[] _itemShopButtons = new Button[6];
 
     #endregion
 
@@ -435,6 +435,7 @@ public class CGoldShopUI : MonoBehaviour
             case 2: TryBuyItemWithGold(WeaponScrollId, WeaponScrollCost,    ItemShopAmount, "무기 주문서");    break;
             case 3: TryBuyInventoryExpand();                                                                   break;
             case 4: TryBuySkillReset();                                                                        break;
+            case 5: TryResetAllData();                                                                         break;
         }
     }
 
@@ -522,6 +523,21 @@ public class CGoldShopUI : MonoBehaviour
         CSkillSystem.Instance.ResetAllSkillPoints();
         RefreshItemShopButtonStates();
         CDebug.Log($"[CGoldShopUI] 골드 {SkillResetCost:N0} 소모 → 스킬 포인트 초기화 완료");
+    }
+
+    /// <summary>무료 전체 데이터 초기화 — 재화 차감 없이 모든 저장 데이터를 삭제하고 메인 메뉴로 이동합니다.</summary>
+    private void TryResetAllData()
+    {
+        if (CGameManager.Instance == null)
+        {
+            CDebug.LogError("[CGoldShopUI] CGameManager.Instance가 null입니다. 초기화 취소.");
+            return;
+        }
+
+        // ResetAllData()는 각 매니저를 Destroy한 뒤 씬을 전환합니다.
+        // CGoldShopUI.OnDestroy에서 CGoldManager 구독 해제 시 null 체크가 이미 있으므로 안전합니다.
+        CDebug.Log("[CGoldShopUI] 전체 데이터 초기화 요청 → CGameManager.ResetAllData()");
+        CGameManager.Instance.ResetAllData();
     }
 
     /// <summary>주간 다이아 상품 구매 (0~3번 버튼)</summary>
@@ -749,7 +765,8 @@ public class CGoldShopUI : MonoBehaviour
         if (CGoldManager.Instance == null) return;
 
         int   gold       = CGoldManager.Instance.Gold;
-        int[] costs      = { HpPotionCost, ManaPotionCost, WeaponScrollCost, InventoryExpandCost, SkillResetCost };
+        // 마지막(5번) 전체 초기화 버튼은 무료이므로 cost=0 → 항상 구매 가능
+        int[] costs      = { HpPotionCost, ManaPotionCost, WeaponScrollCost, InventoryExpandCost, SkillResetCost, 0 };
 
         for (int i = 0; i < _itemShopButtons.Length; i++)
         {

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -82,9 +82,9 @@ public class CPetGachaUI : MonoBehaviour
             if (panels.Length >= 2 && _revealPanel33 == null) _revealPanel33 = panels[1];
         }
 
-        if (_revealPanel1  == null) Debug.LogError("[CPetGachaUI] RevealPanel_1 을 찾을 수 없습니다. Inspector 또는 자식 계층을 확인하세요.", this);
-        if (_revealPanel33 == null) Debug.LogError("[CPetGachaUI] RevealPanel_33 을 찾을 수 없습니다. Inspector 또는 자식 계층을 확인하세요.", this);
-        if (_generatePet   == null) Debug.LogError("[CPetGachaUI] CGeneratePet 이 연결되지 않았습니다.", this);
+        if (_revealPanel1  == null) CDebug.LogError("[CPetGachaUI] RevealPanel_1 을 찾을 수 없습니다. Inspector 또는 자식 계층을 확인하세요.", this);
+        if (_revealPanel33 == null) CDebug.LogError("[CPetGachaUI] RevealPanel_33 을 찾을 수 없습니다. Inspector 또는 자식 계층을 확인하세요.", this);
+        if (_generatePet   == null) CDebug.LogError("[CPetGachaUI] CGeneratePet 이 연결되지 않았습니다.", this);
 
         // 확률 정보 패널은 시작 시 닫아 둠
         if (_probInfoPanel != null)
@@ -137,14 +137,14 @@ public class CPetGachaUI : MonoBehaviour
     /// <summary>소환 1회 버튼 OnClick에 연결합니다.</summary>
     public void OnSummon1ButtonClick()
     {
-        Debug.Log("[CPetGachaUI] 소환 1회 버튼 클릭");
+        CDebug.Log("[CPetGachaUI] 소환 1회 버튼 클릭");
         OnSummonClicked(1, Summon1Cost, _revealPanel1);
     }
 
     /// <summary>소환 33회 버튼 OnClick에 연결합니다.</summary>
     public void OnSummon33ButtonClick()
     {
-        Debug.Log("[CPetGachaUI] 소환 33회 버튼 클릭");
+        CDebug.Log("[CPetGachaUI] 소환 33회 버튼 클릭");
         OnSummonClicked(Summon33Count, Summon33Cost, _revealPanel33);
     }
 
@@ -225,57 +225,57 @@ public class CPetGachaUI : MonoBehaviour
 
     private void OnSummonClicked(int summonCount, int boxCost, CPetCardRevealPanel targetPanel)
     {
-        Debug.Log($"[CPetGachaUI] 소환 버튼 클릭 — summonCount:{summonCount}, boxCost:{boxCost}");
+        CDebug.Log($"[CPetGachaUI] 소환 버튼 클릭 — summonCount:{summonCount}, boxCost:{boxCost}");
 
         if (CJsonManager.Instance == null)
         {
-            Debug.LogError("[CPetGachaUI] CJsonManager.Instance가 null입니다.");
+            CDebug.LogError("[CPetGachaUI] CJsonManager.Instance가 null입니다.");
             return;
         }
 
         if (CJsonManager.Instance.CurrentSaveData == null)
         {
-            Debug.LogError("[CPetGachaUI] CurrentSaveData가 null입니다.");
+            CDebug.LogError("[CPetGachaUI] CurrentSaveData가 null입니다.");
             return;
         }
 
         if (_generatePet == null)
         {
-            Debug.LogError("[CPetGachaUI] _generatePet이 연결되지 않았습니다.", this);
+            CDebug.LogError("[CPetGachaUI] _generatePet이 연결되지 않았습니다.", this);
             return;
         }
 
         if (targetPanel == null)
         {
-            Debug.LogError($"[CPetGachaUI] targetPanel이 null입니다. (summonCount={summonCount})", this);
+            CDebug.LogError($"[CPetGachaUI] targetPanel이 null입니다. (summonCount={summonCount})", this);
             return;
         }
 
         if (CPetInventorySystem.Instance == null)
         {
-            Debug.LogError("[CPetGachaUI] CPetInventorySystem.Instance가 null입니다.");
+            CDebug.LogError("[CPetGachaUI] CPetInventorySystem.Instance가 null입니다.");
             return;
         }
 
         int owned = CJsonManager.Instance.CurrentSaveData.petBoxCount;
-        Debug.Log($"[CPetGachaUI] 소환권 보유: {owned}, 필요: {boxCost}");
+        CDebug.Log($"[CPetGachaUI] 소환권 보유: {owned}, 필요: {boxCost}");
 
         if (owned < boxCost)
         {
-            Debug.LogWarning($"[CPetGachaUI] 소환권 부족 (보유:{owned} / 필요:{boxCost})");
+            CDebug.LogWarning($"[CPetGachaUI] 소환권 부족 (보유:{owned} / 필요:{boxCost})");
             return;
         }
 
         List<CPetInstance> results = PerformSummon(summonCount, boxCost);
-        Debug.Log($"[CPetGachaUI] 소환 결과 수: {results.Count}");
+        CDebug.Log($"[CPetGachaUI] 소환 결과 수: {results.Count}");
 
         if (results.Count == 0)
         {
-            Debug.LogError("[CPetGachaUI] 소환 결과가 0개입니다. 인벤토리 가득 참 여부 또는 GeneratePets 로직을 확인하세요.");
+            CDebug.LogError("[CPetGachaUI] 소환 결과가 0개입니다. 인벤토리 가득 참 여부 또는 GeneratePets 로직을 확인하세요.");
             return;
         }
 
-        Debug.Log($"[CPetGachaUI] Setup 호출 → {targetPanel.gameObject.name}");
+        CDebug.Log($"[CPetGachaUI] Setup 호출 → {targetPanel.gameObject.name}");
         targetPanel.Setup(results, this, summonCount, boxCost);
     }
 
@@ -344,7 +344,7 @@ public class CPetGachaUI : MonoBehaviour
     private void RefreshButtons()
     {
         int owned = CJsonManager.Instance?.CurrentSaveData?.petBoxCount ?? 0;
-        Debug.Log($"[CPetGachaUI] RefreshButtons — 소환권:{owned} | " +
+        CDebug.Log($"[CPetGachaUI] RefreshButtons — 소환권:{owned} | " +
                   $"CJsonManager:{CJsonManager.Instance != null} | " +
                   $"CurrentSaveData:{CJsonManager.Instance?.CurrentSaveData != null}");
 

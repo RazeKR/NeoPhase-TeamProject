@@ -180,18 +180,6 @@ public class CGameManager : MonoBehaviour
     /// <summary>앱 종료 시 현재 스테이지 인덱스를 저장합니다.</summary>
     private void OnApplicationQuit() => SaveProgress();
 
-    private void Update()
-    {
-#if UNITY_EDITOR
-        // 에디터 전용 디버그 기능: P키로 전체 데이터 초기화
-        // 빌드에서는 비활성화 — 실수로 P키를 눌러 플레이어 데이터가 날아가는 사고를 방지합니다.
-        // 메인메뉴 씬에서는 동작하지 않습니다.
-        if (Input.GetKeyDown(KeyCode.P) &&
-            SceneManager.GetActiveScene().name != _mainMenuSceneName)
-            ResetAllData();
-#endif
-    }
-
     #endregion
 
     #region PublicMethods
@@ -466,7 +454,7 @@ public class CGameManager : MonoBehaviour
             if (_hasEnteredGame)
             {
                 SaveProgress();
-                Debug.Log($"[CGameManager] {_autoSaveInterval}초 경과 -> 자동 저장 완료");
+                CDebug.Log($"[CGameManager] {_autoSaveInterval}초 경과 -> 자동 저장 완료");
 
                 // (선택 사항) 화면 한쪽에 "저장 중..." 이라는 작은 UI를 잠깐 띄웠다 끄면 유저가 안심합니다!
             }

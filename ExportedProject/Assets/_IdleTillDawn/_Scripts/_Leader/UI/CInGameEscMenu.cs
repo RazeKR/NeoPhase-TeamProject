@@ -58,7 +58,7 @@ public class CInGameEscMenu : MonoBehaviour
         if (_escPanel != null)
             _escPanel.SetActive(false);
         else
-            Debug.LogError("[CInGameEscMenu] _escPanel이 null입니다. Inspector에서 EscPanel을 연결하세요.");
+            CDebug.LogError("[CInGameEscMenu] _escPanel이 null입니다. Inspector에서 EscPanel을 연결하세요.");
 
         if (_optionUI != null)
             _optionUI.SetState(COptionUI.UIState.InGame);

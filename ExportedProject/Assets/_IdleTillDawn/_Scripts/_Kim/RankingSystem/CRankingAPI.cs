@@ -50,7 +50,7 @@ public class CRankingAPI
     public static IEnumerator CoSaveRanking(CRankData data, Action onSuccess, Action<string> onError)
     {
         string jsonToUpload = JsonUtility.ToJson(data);
-        Debug.Log($"[CoSaveRanking] 전송 JSON: {jsonToUpload}");
+        CDebug.Log($"[CoSaveRanking] 전송 JSON: {jsonToUpload}");
 
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonToUpload);
 
@@ -64,7 +64,7 @@ public class CRankingAPI
             yield return request.SendWebRequest();
 
             string resp = request.downloadHandler?.text ?? "(응답 없음)";
-            Debug.Log($"[CoSaveRanking] HTTP={request.responseCode} | 응답={resp}");
+            CDebug.Log($"[CoSaveRanking] HTTP={request.responseCode} | 응답={resp}");
 
             if (request.result != UnityWebRequest.Result.Success)
             {
@@ -79,7 +79,7 @@ public class CRankingAPI
 
             if (gasResp != null && gasResp.status == "error")
             {
-                Debug.LogError($"[CoSaveRanking] GAS 저장 실패 — {gasResp.message}");
+                CDebug.LogError($"[CoSaveRanking] GAS 저장 실패 — {gasResp.message}");
                 onError?.Invoke($"GAS 저장 실패: {gasResp.message}");
             }
             else
@@ -106,7 +106,7 @@ public class CRankingAPI
             yield return request.SendWebRequest();
 
             string resp = request.downloadHandler?.text ?? "(응답 없음)";
-            Debug.Log($"[CoDeleteRanking] uid='{data.uid}' | HTTP={request.responseCode} | 응답={resp}");
+            CDebug.Log($"[CoDeleteRanking] uid='{data.uid}' | HTTP={request.responseCode} | 응답={resp}");
 
             if (request.result != UnityWebRequest.Result.Success)
             {
@@ -120,7 +120,7 @@ public class CRankingAPI
 
             if (gasResp != null && gasResp.status == "error")
             {
-                Debug.LogError($"[CoDeleteRanking] 서버 삭제 실패 — {gasResp.message}");
+                CDebug.LogError($"[CoDeleteRanking] 서버 삭제 실패 — {gasResp.message}");
                 onError?.Invoke($"서버 삭제 실패: {gasResp.message}");
             }
             else
@@ -140,7 +140,7 @@ public class CRankingAPI
     public static IEnumerator CoDeleteAllRankings(Action<int> onSuccess, Action<string> onError)
     {
         // Step 1: deleteAll 단일 요청
-        Debug.Log("[CoDeleteAllRankings] deleteAll 요청 전송...");
+        CDebug.Log("[CoDeleteAllRankings] deleteAll 요청 전송...");
         {
             byte[] body = Encoding.UTF8.GetBytes("{\"action\":\"deleteAll\"}");
             using (UnityWebRequest req = new UnityWebRequest(WEB_APP_URL, "POST"))
@@ -150,7 +150,7 @@ public class CRankingAPI
                 req.SetRequestHeader("Content-Type", "application/json");
                 req.timeout = 30;
                 yield return req.SendWebRequest();
-                Debug.Log($"[CoDeleteAllRankings] deleteAll 응답: {req.downloadHandler?.text}");
+                CDebug.Log($"[CoDeleteAllRankings] deleteAll 응답: {req.downloadHandler?.text}");
             }
         }
         yield return new WaitForSeconds(1f);
@@ -173,13 +173,13 @@ public class CRankingAPI
         int remaining = afterDeleteAll?.rankings?.Count ?? 0;
         if (remaining == 0)
         {
-            Debug.Log("[CoDeleteAllRankings] deleteAll 성공 — 서버 데이터 전체 삭제 완료");
+            CDebug.Log("[CoDeleteAllRankings] deleteAll 성공 — 서버 데이터 전체 삭제 완료");
             onSuccess?.Invoke(0);
             yield break;
         }
 
         // Step 3: deleteAll로 지워지지 않은 잔존 항목 개별 삭제
-        Debug.LogWarning($"[CoDeleteAllRankings] deleteAll 후 {remaining}개 잔존 — 개별 삭제 시작");
+        CDebug.LogWarning($"[CoDeleteAllRankings] deleteAll 후 {remaining}개 잔존 — 개별 삭제 시작");
 
         int totalDeleted = 0;
         const int MAX_ROUNDS = 2;
@@ -205,7 +205,7 @@ public class CRankingAPI
 
             if (rankList == null || rankList.rankings == null || rankList.rankings.Count == 0)
             {
-                Debug.Log($"[CoDeleteAllRankings] Round {round}: 잔존 없음 — 완료");
+                CDebug.Log($"[CoDeleteAllRankings] Round {round}: 잔존 없음 — 완료");
                 break;
             }
 
@@ -218,11 +218,11 @@ public class CRankingAPI
 
             if (toDelete.Count == 0)
             {
-                Debug.Log($"[CoDeleteAllRankings] Round {round}: 조회된 모든 항목이 기삭제됨 — 완료");
+                CDebug.Log($"[CoDeleteAllRankings] Round {round}: 조회된 모든 항목이 기삭제됨 — 완료");
                 break;
             }
 
-            Debug.Log($"[CoDeleteAllRankings] Round {round}: {toDelete.Count}개 개별 삭제 시작");
+            CDebug.Log($"[CoDeleteAllRankings] Round {round}: {toDelete.Count}개 개별 삭제 시작");
 
             foreach (CRankData data in toDelete)
             {
@@ -243,12 +243,12 @@ public class CRankingAPI
                     // uid 없는 구버전 항목: nickname만으로 삭제 시도
                     json        = $"{{\"action\":\"deleteByNickname\", \"nickname\":\"{nick}\"}}";
                     trackingKey = $"nick:{nick}";
-                    Debug.LogWarning($"[CoDeleteAllRankings] uid 없는 항목 발견 — nickname으로만 삭제 시도: nickname='{nick}'");
+                    CDebug.LogWarning($"[CoDeleteAllRankings] uid 없는 항목 발견 — nickname으로만 삭제 시도: nickname='{nick}'");
                 }
                 else
                 {
                     // uid도 nickname도 없으면 클라이언트에서 삭제 불가
-                    Debug.LogError($"[CoDeleteAllRankings] uid와 nickname 모두 없는 항목 — GAS 시트에서 직접 삭제 필요");
+                    CDebug.LogError($"[CoDeleteAllRankings] uid와 nickname 모두 없는 항목 — GAS 시트에서 직접 삭제 필요");
                     continue;
                 }
 
@@ -262,7 +262,7 @@ public class CRankingAPI
                     yield return request.SendWebRequest();
 
                     string resp = request.downloadHandler?.text ?? "(응답 없음)";
-                    Debug.Log($"[CoDeleteAllRankings] uid='{uid}' nick='{nick}' | HTTP={request.responseCode} | 응답={resp}");
+                    CDebug.Log($"[CoDeleteAllRankings] uid='{uid}' nick='{nick}' | HTTP={request.responseCode} | 응답={resp}");
 
                     if (request.result == UnityWebRequest.Result.Success)
                     {
@@ -291,13 +291,13 @@ public class CRankingAPI
         int finalRemaining = finalCheck?.rankings?.Count ?? 0;
         if (finalRemaining > 0)
         {
-            Debug.LogWarning($"[CoDeleteAllRankings] 최종 검증: {finalRemaining}개 잔존 (uid 없는 레거시 데이터 또는 GAS 서버 미지원 — 시트에서 직접 삭제 필요)");
-            finalCheck.rankings?.ForEach(d => Debug.LogWarning($"  uid='{d.uid}' nickname='{d.nickname}'"));
+            CDebug.LogWarning($"[CoDeleteAllRankings] 최종 검증: {finalRemaining}개 잔존 (uid 없는 레거시 데이터 또는 GAS 서버 미지원 — 시트에서 직접 삭제 필요)");
+            finalCheck.rankings?.ForEach(d => CDebug.LogWarning($"  uid='{d.uid}' nickname='{d.nickname}'"));
             onError?.Invoke($"삭제 후 {finalRemaining}개 잔존 — GAS 시트에서 직접 삭제 필요");
         }
         else
         {
-            Debug.Log($"[CoDeleteAllRankings] 전체 삭제 완료. 개별 삭제 {totalDeleted}개");
+            CDebug.Log($"[CoDeleteAllRankings] 전체 삭제 완료. 개별 삭제 {totalDeleted}개");
             onSuccess?.Invoke(totalDeleted);
         }
     }

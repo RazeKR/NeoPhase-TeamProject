@@ -258,7 +258,7 @@ public class CInventoryUI : MonoBehaviour
 
             slot.SetSlot(item);
         }
-        Debug.Log("리프레시 완료");
+        CDebug.Log("리프레시 완료");
     }
 
     public void OnOffInventoryUI()

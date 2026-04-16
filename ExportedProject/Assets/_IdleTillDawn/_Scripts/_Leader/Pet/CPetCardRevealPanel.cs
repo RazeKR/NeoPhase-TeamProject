@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -72,7 +72,7 @@ public class CPetCardRevealPanel : MonoBehaviour
     /// <param name="boxCost">이번 소환에서 소모한 소환권 수 (1 or 30)</param>
     public void Setup(List<CPetInstance> instances, CPetGachaUI gachaUI, int summonCount, int boxCost)
     {
-        Debug.Log($"[CPetCardRevealPanel] Setup 진입 | panel={gameObject.name} | instances={instances.Count}");
+        CDebug.Log($"[CPetCardRevealPanel] Setup 진입 | panel={gameObject.name} | instances={instances.Count}");
 
         _gachaUI            = gachaUI;
         _currentSummonCount = summonCount;
@@ -84,8 +84,8 @@ public class CPetCardRevealPanel : MonoBehaviour
         _cards.Clear();
 
         // 카드 생성
-        if (_cardItemPrefab == null) Debug.LogError("[CPetCardRevealPanel] _cardItemPrefab 이 null입니다.", this);
-        if (_cardContainer  == null) Debug.LogError("[CPetCardRevealPanel] _cardContainer 가 null입니다.", this);
+        if (_cardItemPrefab == null) CDebug.LogError("[CPetCardRevealPanel] _cardItemPrefab 이 null입니다.", this);
+        if (_cardContainer  == null) CDebug.LogError("[CPetCardRevealPanel] _cardContainer 가 null입니다.", this);
 
         foreach (CPetInstance instance in instances)
         {
@@ -105,7 +105,7 @@ public class CPetCardRevealPanel : MonoBehaviour
         _touchHintObject?.SetActive(true);
 
         gameObject.SetActive(true);
-        Debug.Log($"[CPetCardRevealPanel] SetActive(true) 완료 | activeInHierarchy={gameObject.activeInHierarchy}");
+        CDebug.Log($"[CPetCardRevealPanel] SetActive(true) 완료 | activeInHierarchy={gameObject.activeInHierarchy}");
     }
 
     /// <summary>미공개 카드를 모두 공개합니다. 배경 클릭 시 호출됩니다.</summary>

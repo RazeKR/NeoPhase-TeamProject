@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -698,7 +698,7 @@ public class CSkillSystem : MonoBehaviour
     /// <summary>���̺� ���� ����</summary>
     private void RestoreFromSaveData(CSaveData save)
     {
-        Debug.Log("[CSkillSystem] RestoreFromSaveData 시작");
+        CDebug.Log("[CSkillSystem] RestoreFromSaveData 시작");
 
         try // 예외 처리로 로직 중단 방지
         {
@@ -723,7 +723,7 @@ public class CSkillSystem : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[CSkillSystem] System.Exception : {e.Message}");
+            CDebug.LogError($"[CSkillSystem] System.Exception : {e.Message}");
         }
         StartCoroutine(CoRefreshPassive());
     }
