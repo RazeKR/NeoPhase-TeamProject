@@ -15,7 +15,7 @@ public class CJsonManager : MonoBehaviour
     #region InspectorVariables
 
     [Header("저장 설정")]
-    [SerializeField] private string _saveFileName = "save_data.dat"; // 세이브 파일 이름 , 보안성을 위해 확장자를 .dat으로 변경
+    [SerializeField] private string _saveFileName = DefaultSaveFileName; // 세이브 파일 이름 , 보안성을 위해 확장자를 .dat으로 변경
     [SerializeField] private bool _prettyPrint = false;                // 개발 중 true로 설정 시 가독성 좋은 JSON 출력
 
     #endregion
@@ -37,7 +37,8 @@ public class CJsonManager : MonoBehaviour
 
     private string _savePath; // 전체 저장 경로 캐시
 
-    private const string EncryptionKey = "ITD_Encryption_Key"; // 암호화 키
+    private const string EncryptionKey    = "ITD_Encryption_Key"; // 암호화 키
+    private const string DefaultSaveFileName = "save_data.dat";   // 기본 파일명 (Inspector 기본값과 동일)
 
     #endregion
 
@@ -51,6 +52,13 @@ public class CJsonManager : MonoBehaviour
 
     /// <summary>persistentDataPath에 세이브 파일이 존재하는지 여부.</summary>
     public bool HasSaveFile => File.Exists(_savePath);
+
+    /// <summary>
+    /// CJsonManager 인스턴스 없이도 호출 가능한 세이브 파일 존재 여부 확인.
+    /// CGameManager.Awake() 처럼 싱글톤 생성 전 타이밍에서도 사용할 수 있습니다.
+    /// </summary>
+    public static bool SaveFileExists
+        => File.Exists(Path.Combine(Application.persistentDataPath, DefaultSaveFileName));
 
     /// <summary>세이브 파일의 전체 경로.</summary>
     public string SavePath => _savePath;

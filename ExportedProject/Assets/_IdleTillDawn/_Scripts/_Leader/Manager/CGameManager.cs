@@ -335,6 +335,19 @@ public class CGameManager : MonoBehaviour
     /// </summary>
     public void LoadProgress()
     {
+        // 세이브 파일이 없으면 PlayerPrefs도 함께 초기화합니다.
+        // (JSON 삭제 후 재시작 시 PlayerPrefs에 남은 이전 스테이지 정보로 잘못된 씬에 진입하는 문제 방지)
+        if (!CJsonManager.SaveFileExists)
+        {
+            _currentStageIndex = 0;
+            _hasEnteredGame    = false;
+            _selectedPlayerId  = -1;
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+            CDebug.Log("[CGameManager] 세이브 파일 없음 → PlayerPrefs 초기화 후 기본값 사용");
+            return;
+        }
+
         // PlayerPrefs는 항상 읽음 (BeforeSceneLoad 타이밍 대응)
         _currentStageIndex = PlayerPrefs.GetInt("StageIndex", 0);
         _hasEnteredGame    = PlayerPrefs.GetInt("HasEnteredGame", 0) == 1;
