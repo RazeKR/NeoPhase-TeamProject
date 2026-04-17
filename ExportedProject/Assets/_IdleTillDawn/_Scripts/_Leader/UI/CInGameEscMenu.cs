@@ -110,6 +110,19 @@ public class CInGameEscMenu : MonoBehaviour
             isAnyUIClosed = true;
         }
 
+        CLeaderboardPanel leaderboardPanel = FindAnyObjectByType<CLeaderboardPanel>();
+        if (leaderboardPanel != null && leaderboardPanel.IsOpen)
+        {
+            leaderboardPanel.Close();
+            isAnyUIClosed = true;
+        }
+
+        if (CPetInventoryUI.Instance != null && CPetInventoryUI.Instance.IsOpen)
+        {
+            CPetInventoryUI.Instance.CloseUI();
+            isAnyUIClosed = true;
+        }
+
         if (isAnyUIClosed) return;
 
         // 옵션 패널이 열려 있으면 옵션만 먼저 닫기

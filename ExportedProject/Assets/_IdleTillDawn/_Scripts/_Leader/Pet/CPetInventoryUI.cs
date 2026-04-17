@@ -1,6 +1,7 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using TMPro;
 using UnityEngine;
@@ -116,6 +117,8 @@ public class CPetInventoryUI : MonoBehaviour
     /// <summary>현재 선택된 펫 인스턴스. CPetSlot에서 참조합니다.</summary>
     public CPetInstance SelectedPet => _selectedPet;
 
+    public bool IsOpen => _petInventoryPanel != null && _petInventoryPanel.activeInHierarchy;
+
     #endregion
 
     #region Unity Methods
@@ -200,6 +203,11 @@ public class CPetInventoryUI : MonoBehaviour
         {
             ClearSelection();
         }
+    }
+
+    public void CloseUI()
+    {
+        if (IsOpen) OnOffPetInventoryUI();
     }
 
     #endregion

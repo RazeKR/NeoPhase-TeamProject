@@ -46,6 +46,7 @@ public class CUIInputHandler : MonoBehaviour
             CInputDispatcher.Instance.OnOpenRanking -= HandleOpenRankingInput;
             CInputDispatcher.Instance.OnOpenPet -= HandleOpenPetInput;
             CInputDispatcher.Instance.OnOpenWeaponBox -= HandleOpenWeaponBoxInput;
+            CInputDispatcher.Instance.OnOpenKeyHelp -= HandleOpenKeyHelpInput;
         }
     }
 
@@ -61,6 +62,7 @@ public class CUIInputHandler : MonoBehaviour
         CInputDispatcher.Instance.OnOpenRanking += HandleOpenRankingInput;
         CInputDispatcher.Instance.OnOpenPet += HandleOpenPetInput;
         CInputDispatcher.Instance.OnOpenWeaponBox += HandleOpenWeaponBoxInput;
+        CInputDispatcher.Instance.OnOpenKeyHelp += HandleOpenKeyHelpInput;
     }
 
     private void HandleInventoryInput()
@@ -184,6 +186,18 @@ public class CUIInputHandler : MonoBehaviour
         else
         {
             CDebug.LogWarning("CUIInputHandler : CGenerateItem을 찾을 수 없음");
+        }
+    }
+
+    private void HandleOpenKeyHelpInput()
+    {
+        if (CHelpUI.Instance != null)
+        {
+            CHelpUI.Instance.OnOffHelpUIPanel();
+        }
+        else
+        {
+            CDebug.LogWarning("CUIInputHandler : CHelpUI을 찾을 수 없음");
         }
     }
 }

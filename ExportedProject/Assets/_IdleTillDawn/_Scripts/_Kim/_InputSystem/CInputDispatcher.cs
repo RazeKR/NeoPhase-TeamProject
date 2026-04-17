@@ -18,6 +18,7 @@ public class CInputDispatcher : MonoBehaviour
     [SerializeField] private InputActionReference _openRanking;
     [SerializeField] private InputActionReference _openPet;
     [SerializeField] private InputActionReference _openWeaponBox;
+    [SerializeField] private InputActionReference _keyHelp;
 
     [Header("디버깅")]
     [SerializeField] private bool _logInput = true;
@@ -36,6 +37,7 @@ public class CInputDispatcher : MonoBehaviour
     public event Action OnOpenRanking;
     public event Action OnOpenPet;
     public event Action OnOpenWeaponBox;
+    public event Action OnOpenKeyHelp;
 
     // 중복 방지용 변수
     private bool _isReady = false;
@@ -131,6 +133,8 @@ public class CInputDispatcher : MonoBehaviour
 
         if (_openWeaponBox != null && _openWeaponBox.action != null) _openWeaponBox.action.performed += OnOpenWeaponBoxPerformed;
 
+        if (_keyHelp != null && _keyHelp.action != null) _keyHelp.action.performed += OnOpenKeyHelpPerformed;
+
         _isReady = true;
 
         if (_logInput)
@@ -190,6 +194,8 @@ public class CInputDispatcher : MonoBehaviour
 
         if (_openWeaponBox != null && _openWeaponBox.action != null) _openWeaponBox.action.performed -= OnOpenWeaponBoxPerformed;
 
+        if (_keyHelp != null && _keyHelp.action != null) _keyHelp.action.performed -= OnOpenKeyHelpPerformed;
+
         _isReady = false;
 
         if (_logInput)
@@ -229,6 +235,7 @@ public class CInputDispatcher : MonoBehaviour
             if (_openRanking != null && _openRanking.action != null) _openRanking.action.Enable();
             if (_openPet != null && _openPet.action != null) _openPet.action.Enable();
             if (_openWeaponBox != null && _openWeaponBox.action != null) _openWeaponBox.action.Enable();
+            if (_keyHelp != null && _keyHelp.action != null) _keyHelp.action.Enable();
         }
         else
         {
@@ -257,6 +264,7 @@ public class CInputDispatcher : MonoBehaviour
             if (_openRanking != null && _openRanking.action != null) _openRanking.action.Disable();
             if (_openPet != null && _openPet.action != null) _openPet.action.Disable();
             if (_openWeaponBox != null && _openWeaponBox.action != null) _openWeaponBox.action.Disable();
+            if (_keyHelp != null && _keyHelp.action != null) _keyHelp.action.Disable();
         }
     }
 
@@ -316,4 +324,5 @@ public class CInputDispatcher : MonoBehaviour
     private void OnOpenRankingPerformed(InputAction.CallbackContext ctx) => OnOpenRanking?.Invoke();
     private void OnOpenPetPerformed(InputAction.CallbackContext ctx) => OnOpenPet?.Invoke();
     private void OnOpenWeaponBoxPerformed(InputAction.CallbackContext ctx) => OnOpenWeaponBox?.Invoke();
+    private void OnOpenKeyHelpPerformed(InputAction.CallbackContext ctx) => OnOpenKeyHelp?.Invoke();
 }
