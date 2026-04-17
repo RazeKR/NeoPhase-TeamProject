@@ -125,10 +125,12 @@ public class CSkillSystem : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             AddSkillPoint(5);
         }
+#endif
 
         UpdateCooldowns();
     }

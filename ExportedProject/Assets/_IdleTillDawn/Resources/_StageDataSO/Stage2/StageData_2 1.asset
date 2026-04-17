@@ -15,7 +15,7 @@ MonoBehaviour:
   _id: 11
   _world: 2
   _stageNumber: 1
-  _killGoal: 10
+  _killGoal: 100
   _maxActiveCount: 100
   _spawnInterval: 2
   _bossId: 9
